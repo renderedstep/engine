@@ -3,8 +3,9 @@
 The Ruby engine's stored scripts of typed lines, and what it wrote after
 every step of each, copied from
 [calebl/text-adventure](https://github.com/calebl/text-adventure) at commit
-`f15d07b1bfff79cda40cb59e0269c8b38c6592f1`. That repository's
-`docs/engine-parity.md` documents the dump and the command contract.
+`f15d07b1bfff79cda40cb59e0269c8b38c6592f1`, and unchanged at `b4c9921c008ac1e459486318324aec66672a9366`,
+the commit whose runner CI plays them through. That repository's
+`docs/engine-parity.md` documents the dump and both command contracts.
 
 | Directory | Source | What it is |
 | --- | --- | --- |
@@ -12,6 +13,8 @@ every step of each, copied from
 | `goldens/` | `test/engine_parity/*.json` | the Ruby engine's dump after every step of each |
 | `worlds/` | produced from `lib/engine_sweep/worlds/` and `db/seeds/worlds/` (below) | each world as the Ruby engine loads it for a walk, as SQL text |
 | `PASSING` | this repository | the scripts this engine plays exactly as the Ruby engine does |
+| `PASSING_WITH_RUNNER` | this repository | the scripts with `reseed:` steps that agree when the Ruby engine's runner plays them |
+| `runner.sh` | this repository | plays both lists through the Ruby engine's runner in its shared-database mode |
 
 Never edit the scripts or the goldens by hand. The scripts are re-emitted
 by Ruby's YAML library with the comments and the `why:` notes (which no
@@ -71,4 +74,6 @@ The world loader stays in Ruby. A script with `reseed:` steps is played in
 the shared-database mode instead (`--database`, `--player` and `ENGINE_STEP`,
 see the crate README): the Ruby engine's runner owns the database, plays
 each `reseed:` step with `WorldSeed::Loader`, and asks this engine for each
-typed step in turn.
+typed step in turn. `parity/runner.sh <text-adventure checkout> <parity binary>`
+does that for every script in `PASSING` and `PASSING_WITH_RUNNER`, and CI
+runs it on Linux against the commit named at the top.

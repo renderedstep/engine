@@ -30,3 +30,30 @@ jobs:
       - run: cargo test --workspace --locked
       - name: the engine sweep against the Ruby engine's goldens
         run: cargo run --release --locked --bin parity -- --check parity
+
+  runner:
+    name: the engine sweep through the Ruby engine's runner
+    runs-on: ubuntu-latest
+    env:
+      # The text-adventure commit parity/README.md names.
+      RUBY_ENGINE_COMMIT: b4c9921c008ac1e459486318324aec66672a9366
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: calebl/text-adventure
+          ref: ${{ env.RUBY_ENGINE_COMMIT }}
+          path: ruby-engine
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release --locked --bin parity
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ruby-engine
+          bundler-cache: true
+      - name: load the Ruby engine's test schema
+        working-directory: ruby-engine
+        env:
+          RAILS_ENV: test
+        run: bin/rails db:schema:load
+      - run: parity/runner.sh ruby-engine target/release/parity
