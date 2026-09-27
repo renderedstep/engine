@@ -82,6 +82,8 @@ fn build(worlds: &Value, name: &Value) -> Built {
             .map(|exit| Exit {
                 place: place(exit),
                 barrier: exit["barrier"].as_str().unwrap_or("open").to_string(),
+                edge: exit["id"].as_i64().expect("an exit's id"),
+                key: None,
             })
             .collect(),
         cast: list(&world["cast"]).iter().map(person).collect(),

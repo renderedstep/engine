@@ -99,6 +99,28 @@ impl Engine {
         })
     }
 
+    /// Plays a line that talks to somebody, with a fixed decision standing
+    /// in for the answer a model would give (`turn::Mechanics::run_deciding`).
+    /// The engine sweep plays its conversations this way.
+    pub fn play_deciding(
+        &mut self,
+        playthrough: i64,
+        line: &str,
+        decision: &str,
+        on_chunk: &mut dyn FnMut(&str),
+    ) -> Result<Outcome, Error> {
+        let _ = on_chunk;
+        let store = &self.store;
+        transaction(store, || {
+            let mut mechanics = Mechanics::new(store, playthrough)?;
+            let report = mechanics.run_deciding(line, decision)?;
+            Ok(Outcome {
+                report,
+                state: State::read(mechanics.records(), playthrough),
+            })
+        })
+    }
+
     /// The records with nothing played: what a console prints before the
     /// first line. Writes nothing.
     pub fn read(&self, playthrough: i64, note: Vec<String>) -> Result<Outcome, Error> {

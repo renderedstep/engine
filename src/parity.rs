@@ -226,15 +226,12 @@ fn play_step(
     if step.browser {
         return Err(Error::Unsupported("a browser submission".into()));
     }
-    if step.npc_action.is_some() {
-        return Err(Error::Unsupported("a fixed character decision".into()));
-    }
     let before = Counts::of(engine, playthrough)?;
-    let outcome = engine.play(
-        playthrough,
-        step.typed.as_deref().unwrap_or_default(),
-        &mut |_| {},
-    )?;
+    let typed = step.typed.as_deref().unwrap_or_default();
+    let outcome = match &step.npc_action {
+        Some(decision) => engine.play_deciding(playthrough, typed, decision, &mut |_| {})?,
+        None => engine.play(playthrough, typed, &mut |_| {})?,
+    };
     let after = Counts::of(engine, playthrough)?;
     Ok(dump(&outcome, &before, &after))
 }

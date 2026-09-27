@@ -32,6 +32,8 @@ pub struct Thing {
     pub combustible: bool,
     /// In the party's hands rather than lying in the room.
     pub carried: bool,
+    /// The world's own row this is a game's copy of, where it is one.
+    pub template: Option<i64>,
 }
 
 /// How hard a thing is to pick up and throw: the penalty taken off a
@@ -66,6 +68,7 @@ impl Thing {
             use_kind: "ordinary".into(),
             combustible: false,
             carried,
+            template: None,
         }
     }
 
@@ -111,13 +114,16 @@ fn strip_leading_article(name: &str) -> &str {
 }
 
 /// A way out of the room: the place beyond it and the doorway's barrier.
-/// The doorway carries the place's id.
 #[derive(Clone, Debug)]
 pub struct Exit {
     pub place: Place,
-    /// `open`, or `jammed` until somebody forces or prises it. A keyed
-    /// doorway, which needs a key template to open, is not modelled here yet.
+    /// `open` for this game; otherwise `jammed` until somebody forces or
+    /// prises it, or `keyed` until somebody unlocks it or picks its lock.
     pub barrier: String,
+    /// The doorway's own id.
+    pub edge: i64,
+    /// The key template a keyed doorway opens to.
+    pub key: Option<i64>,
 }
 
 /// One physical attempt the room offers, built from this game's own things
@@ -144,7 +150,7 @@ impl Choice {
         let ids = [
             self.item.as_ref().map(|t| t.id),
             self.recipient.as_ref().map(|p| p.id),
-            self.connection.as_ref().map(|e| e.place.id),
+            self.connection.as_ref().map(|e| e.edge),
             self.tool.as_ref().map(|t| t.id),
         ];
         let mut parts = vec!["use".to_string(), self.kind.clone()];
@@ -392,7 +398,8 @@ impl Room {
     }
 
     /// Every physical attempt this room offers, in the order the engine
-    /// lists them: consuming, offering, burning, then each closed doorway.
+    /// lists them: consuming, offering, burning, then each closed doorway
+    /// in the order the doorways were written.
     pub fn physical_actions(&self) -> Vec<Choice> {
         if self.protagonist.is_none() || self.here.is_none() || self.over {
             return Vec::new();
@@ -437,7 +444,28 @@ impl Room {
                 }
             }
         }
-        for edge in &self.exits {
+        let mut doorways: Vec<&Exit> = self.exits.iter().collect();
+        doorways.sort_by_key(|edge| edge.edge);
+        for edge in doorways {
+            if edge.barrier == "keyed" {
+                for tool in carried {
+                    let kind = if tool.use_kind == "key"
+                        && tool.template.is_some()
+                        && tool.template == edge.key
+                    {
+                        "unlock"
+                    } else if tool.use_kind == "lockpick" {
+                        "pick"
+                    } else {
+                        continue;
+                    };
+                    result.push(Choice {
+                        connection: Some(edge.clone()),
+                        tool: Some(tool.clone()),
+                        ..choice(kind)
+                    });
+                }
+            }
             if edge.barrier == "jammed" {
                 result.push(Choice {
                     connection: Some(edge.clone()),
