@@ -2,10 +2,10 @@
 //! its answers in the shape the vectors record.
 
 use crate::check;
-use engine_core::boxes::{Box, Spot};
-use engine_core::parameters::{self, Parameters};
-use engine_core::random::Random;
-use engine_core::{danger, population, roll, spot, stat_block};
+use renderedstep_engine::boxes::{Box, Spot};
+use renderedstep_engine::parameters::{self, Parameters};
+use renderedstep_engine::random::Random;
+use renderedstep_engine::{danger, population, roll, spot, stat_block};
 use serde_json::{json, Value};
 
 pub const NAMES: &[&str] = &[
@@ -227,7 +227,7 @@ fn population() {
         let name = input["name"].as_str().expect("a name");
         let (label, count) = population::for_room(name, input["population"].as_str());
         json!({
-            "natural_key": engine_core::text::natural_key(name),
+            "natural_key": renderedstep_engine::text::natural_key(name),
             "key": population::key_for(name),
             "label": label,
             "count": count,
@@ -327,7 +327,7 @@ fn parameters() {
 
 #[test]
 fn boxes() {
-    use engine_core::boxes;
+    use renderedstep_engine::boxes;
     let constants = json!({
         "metres_per_pace": boxes::METRES_PER_PACE,
         "minimum_doorway": boxes::MINIMUM_DOORWAY,
@@ -360,7 +360,7 @@ fn boxes() {
 
 #[test]
 fn world_mechanic() {
-    use engine_core::world_mechanic::{cadence, CADENCES};
+    use renderedstep_engine::world_mechanic::{cadence, CADENCES};
     let constants = json!({
         "cadences": pairs(&CADENCES, |c| json!([["period", c.period], ["at", c.at]])),
     });
@@ -388,7 +388,7 @@ fn id_pairs(value: &Value) -> Vec<(i64, i64)> {
 
 #[test]
 fn deadline() {
-    use engine_core::deadline::{self, Room, GRACE_ROOMS, MAX_EXITS};
+    use renderedstep_engine::deadline::{self, Room, GRACE_ROOMS, MAX_EXITS};
     let constants = json!({ "max_exits": MAX_EXITS, "grace_rooms": GRACE_ROOMS });
     check("deadline", constants, |input| {
         let rooms: Vec<Room> = input["rooms"]
@@ -414,7 +414,7 @@ fn deadline() {
 
 #[test]
 fn shuffle_connections() {
-    use engine_core::shuffle_connections::{Graph, ATTEMPTS, SEED_STORY_MULTIPLIER};
+    use renderedstep_engine::shuffle_connections::{Graph, ATTEMPTS, SEED_STORY_MULTIPLIER};
     let constants =
         json!({ "attempts": ATTEMPTS, "seed_story_multiplier": SEED_STORY_MULTIPLIER as i64 });
     check("shuffle_connections", constants, |input| {
@@ -447,7 +447,7 @@ const INTERIOR_STORY_START: i64 = 1_767_225_600;
 
 #[test]
 fn interior() {
-    use engine_core::interior::{self, Place};
+    use renderedstep_engine::interior::{self, Place};
     let range = |(low, high): (i64, i64)| json!([low, high]);
     let constants = json!({
         "minimum_side": interior::MINIMUM_SIDE,
@@ -495,7 +495,7 @@ fn interior() {
 
 #[test]
 fn cast() {
-    use engine_core::cast::{self, Race};
+    use renderedstep_engine::cast::{self, Race};
     let constants = json!({
         "sexes": cast::SEXES,
         "npc_ages": [cast::NPC_AGES.0, cast::NPC_AGES.1],

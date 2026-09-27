@@ -1,4 +1,4 @@
-# engine-core
+# renderedstep-engine
 
 The text-adventure engine's pure rules in Rust: the dice and the geometry.
 Every function takes values and returns values. Nothing here touches a
@@ -36,7 +36,7 @@ the golden vectors that engine exports (`vectors/`, see its README).
 ## Testing
 
 ```sh
-cargo test -p engine-core -- --nocapture
+cargo test -- --nocapture
 ```
 
 `tests/vectors/` runs every case of every vector file and prints a pass count
@@ -45,4 +45,4 @@ tables, and refuses a file whose format version it does not know.
 
 ## Licence
 
-MIT OR Apache-2.0, at your option, as the rest of this repository is.
+MIT OR Apache-2.0, at your option, see `LICENSE-MIT` and `LICENSE-APACHE`.

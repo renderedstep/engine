@@ -14,6 +14,6 @@ bin/rails engine:vectors
 ```
 
 then copy `test/engine_vectors/*.json` here, update the commit above, and run
-`cargo test -p engine-core`. A case that fails is a rule the Ruby engine
+`cargo test`. A case that fails is a rule the Ruby engine
 changed; port the change. A new format version fails every portion until the
 harness in `tests/vectors/main.rs` learns to read it.
