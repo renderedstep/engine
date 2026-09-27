@@ -222,6 +222,17 @@ fn race_name<'a>(records: &'a Records, character: &Row) -> &'a str {
 /// `Playthrough::NpcAction#choices`: token => what it does, in the order
 /// offered.
 pub fn choices(game: &Game, character: &Row) -> Vec<(String, String)> {
+    choices_offering(game, character, None)
+}
+
+/// `Playthrough::NpcAction#choices` with `offered_item:`: accepting the
+/// thing the player holds out comes first after `none`, while the player
+/// still carries it.
+pub fn choices_offering(
+    game: &Game,
+    character: &Row,
+    offered: Option<i64>,
+) -> Vec<(String, String)> {
     let mut available = vec![(
         NONE.to_string(),
         "Speak without transferring anything or changing an agreement.".to_string(),
@@ -241,6 +252,18 @@ pub fn choices(game: &Game, character: &Row) -> Vec<(String, String)> {
     let player_name = player
         .map(|who| string(who, "fullname"))
         .unwrap_or("the player");
+    if let Some(item) =
+        offered.and_then(|item| game.carried().into_iter().find(|row| id(row) == item))
+    {
+        available.push((
+            format!("accept:{}", id(item)),
+            format!(
+                "Accept the offered {} from {}; it becomes yours.",
+                string(item, "name"),
+                player.map(|who| string(who, "fullname")).unwrap_or("")
+            ),
+        ));
+    }
     if let Some(player) = player {
         for item in game.items_held_by(character) {
             available.push((
@@ -373,6 +396,17 @@ fn history(game: &Game, character: &Row) -> Vec<Value> {
 
 /// The character pass's request: `{system, user, schema, history}`.
 pub fn character_request(game: &Game, character: &Row, line: &str) -> Value {
+    character_request_offering(game, character, line, None)
+}
+
+/// The character pass's request for a line that holds a thing out to them
+/// (`InteractionAgent` with `offered_item:`).
+pub fn character_request_offering(
+    game: &Game,
+    character: &Row,
+    line: &str,
+    offered: Option<i64>,
+) -> Value {
     let records = game.records;
     let context = Moment::new(*game).character_context(character, HISTORY_EXCHANGES, Some(line));
     let moment = if is_blank(&context) {
@@ -380,7 +414,7 @@ pub fn character_request(game: &Game, character: &Row, line: &str) -> Value {
     } else {
         format!("## The moment\n{context}\n")
     };
-    let offered = choices(game, character);
+    let offered = choices_offering(game, character, offered);
     let tokens: Vec<&str> = offered.iter().map(|(token, _)| token.as_str()).collect();
     let listed: Vec<String> = offered
         .iter()

@@ -1,0 +1,758 @@
+{
+  "script": "an-offer-taken-through-the-models",
+  "steps": [
+    {
+      "step": "step 1 the-cup-in-hand",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 the-sexton-takes-the-cup",
+      "requests": [
+        {
+          "purpose": "character",
+          "system": "\nThis is the universe in which you live\n## Universe Details\nphysics: Ordinary physics.\nraces: Valley folk\ncivilizations: A small order of lay brothers.\npolitics: The prior settles every dispute.\nreligion: The order keeps the hours by the bell.\n\n\nYou are playing a character in a story. This is your character sheet.\nPretend you are this character in all of your responses.\n\n## Character Sheet\nfull name: Oda\nnickname: Oda\nage: 61\nsex: female\nrace: Valley folk -- Ordinary people of the valley.\nbackstory: The sexton, who has swept the hall for forty years.\npersonality: Patient and dry.\nappearance: A grey apron and a ring of keys.\nlikes: A swept floor.\ndislikes: Visitors who touch things.\nfears: The bell tower stair.\n\n## Who you are talking to\nThe person speaking to you is Ilse (Ilse).\nRefer to Ilse as she/her/hers. Use those pronouns and no others.\napparent age: about 27\nrace: Valley folk\nwhat you can see of them: A mended wool cloak.\n\nThat is what meeting Ilse tells you, and it is the whole of\nwhat you know by sight. You do not know what Ilse wants, is\nafraid of, or has done, and you do not invent any of it. Anything more\nyou learn from what Ilse says and does, here, now.\n\nIf someone asks you a question, you should respond as if you are the character. NEVER BREAK CHARACTER.\n\n## Voice\nYou answer in six fields, and each one has its own register.\n\npre_thought and post_thought are your private thoughts. Think them in the first person, as \"I\". Nobody hears them, so nothing in them is a line of speech.\npre_feeling and post_feeling are two or three words each. No sentences.\ninner_resolution is what you have decided to do, in the first person.\naction is the one field anybody can see: what you visibly do and what you say out loud. Speech goes inside quotes, and only speech does.\nInside the quotes you are talking out loud: say \"I\", never your own name. Nobody says \"Oda does not know\" out loud.\nOutside the quotes you are described from outside: Oda, she, her. A bare \"I\" out there reads as the person you are talking to rather than as you.\n\nAnswer AS Oda, not about her. Do not plan the answer and do not weigh what Oda would probably think -- think the thought and say the line.\n\n",
+          "user": "## The moment\nWhere you are: Chapter Hall.\nThe time is about 8 am.\nYour own condition: unhurt.\n\n## What Ilse says or does\ngive pewter cup to Oda\n\nReact as Oda: what you think, feel, do and decide.\n\n## Immediate actions available to you\nChoose one engine_action according to your own motivations and the exchange.\nYou may refuse a request by choosing none. Copy a token exactly:\nnone: Speak without transferring anything or changing an agreement.\naccept:1000000003: Accept the offered pewter cup from Ilse; it becomes yours.\nfollow: Accompany Ilse when they leave this room.\nOnly the selected action changes possessions or agreements now. The other fields describe speech,\nexpression and private thought; do not describe an unselected transfer, journey or truce as completed.\n",
+          "schema": {
+            "name": "character_interaction",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pre_thought": {
+                  "type": "string",
+                  "description": "What you thought immediately in response to what was just said or done to you. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "pre_feeling": {
+                  "type": "string",
+                  "description": "What you felt immediately in response to what was just said or done to you. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "action": {
+                  "type": "string",
+                  "description": "What you did and said in response. Speech goes inside quotes. One or two sentences, at most 480 characters.",
+                  "maxLength": 480
+                },
+                "post_feeling": {
+                  "type": "string",
+                  "description": "What you felt after you took the action. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "post_thought": {
+                  "type": "string",
+                  "description": "What you thought after you took the action. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "inner_resolution": {
+                  "type": "string",
+                  "description": "What you decided to do as a result of this exchange. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "engine_action": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "accept:1000000003",
+                    "follow"
+                  ],
+                  "description": "One immediate action token from the offered list, or none. Choose according to your own motivations; requests need not be accepted."
+                }
+              },
+              "required": [
+                "pre_thought",
+                "pre_feeling",
+                "action",
+                "post_feeling",
+                "post_thought",
+                "inner_resolution",
+                "engine_action"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "interaction-narration",
+          "system": null,
+          "user": "## Where this happens\nStory: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in Chapter Hall: A long stone hall with benches along both walls.\n\nWays out of here: Gatehouse, Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nAlso here: Oda (Oda). Nobody else is present.\n\nLying here, and takeable: sealed letter.\n\nThe player is carrying: nothing.\n\nWhat just happened: You stand in the chapter hall with Oda, the sexton.\n\n## The exchange\nIlse says or does: give pewter cup to Oda\nOda's reaction, in her own words:\npre_thought: A cup for the vestry.\npre_feeling: pleased\naction: Oda takes the cup and tucks it under her arm.\npost_thought: It will do for the holy water.\npost_feeling: content\n\n## Instructions\nWrite what happens in the second person, present tense, from the player's side. The player is \"you\".\nRefer to the character as Oda. Refer to Oda as she/her/hers. Use those pronouns and no others.\nThe exchange is the subject and the place above is where it happens: use it for what the character\ndoes with her hands and eyes, not for a tour. Add nobody who is not listed above.\n\nEverything you know about Oda is the reaction above and the exchange itself. Render the thoughts\nand feelings as what they look like from outside -- a pause, a glance, a change of tone -- and put\nthe speech in Oda's mouth as written. Do not add facts about Oda, do not narrate what\nshe will do next, and do not answer for the player.\n\nOne or two short paragraphs. Do not offer the player choices and do not end on a question to them.\n\n## Example input\nIlse says or does: \"What are you doing??\"\nOda's reaction, in her own words:\npre_thought: Is that a question for me? I think so. I should probably answer.\npre_feeling: surprised, nervous\naction: Oda says, \"Huh?\"\npost_thought: Why did I just make that noise?\npost_feeling: anxious, embarrassed\n\n## Example output\nOda turns to you, her eyes wide. It seems you startled her.\n\"Huh?\" she says.\nImmediately Oda shuts her eyes, apparently embarrassed by the noise she just made.\n\n\n## What the engine actually applied\nOda accepted pewter cup; the player no longer carries it and Oda now holds it.\nThis receipt is authoritative about possessions, accompanying the player and fighting.\nIf the reaction claims another such change, render that part as a proposal or intention,\nnever as a completed act. Do not add a transfer, a journey or a ceasefire to this receipt.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long stone hall with benches along both walls.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:10:00",
+              "lore": "The brothers meet here each morning.",
+              "mobile": 0,
+              "name": "Chapter Hall",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "The abbey's chapter hall.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": 1000000002,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Item",
+              "description": "Oda takes the cup from you and tucks it under her arm.",
+              "engine_fact": "Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "use",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:10:00",
+              "summary": "The player spoke with Oda. Oda takes the cup and tucks it under her arm. Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "typed": "give pewter cup to Oda"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Oda takes the cup and tucks it under her arm.",
+              "action_fact": "Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "action_status": "applied",
+              "character_id": 1000000002,
+              "engine_action": "accept:1000000003",
+              "inner_resolution": "I will put it back in the vestry.",
+              "location_id": 1000000001,
+              "post_feeling": "content",
+              "post_thought": "It will do for the holy water.",
+              "pre_feeling": "pleased",
+              "pre_thought": "A cup for the vestry.",
+              "scene_id": 1000000002,
+              "summary": "the player said \"give pewter cup to Oda\" -- Oda takes the cup and tucks it under her arm. -- I will put it back in the vestry. -- Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "user_input": "give pewter cup to Oda"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 the-letter-in-hand",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long stone hall with benches along both walls.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:10:00",
+              "lore": "The brothers meet here each morning.",
+              "mobile": 0,
+              "name": "Chapter Hall",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "The abbey's chapter hall.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": 1000000002,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Item",
+              "description": "Oda takes the cup from you and tucks it under her arm.",
+              "engine_fact": "Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "use",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:10:00",
+              "summary": "The player spoke with Oda. Oda takes the cup and tucks it under her arm. Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "typed": "give pewter cup to Oda"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Oda takes the cup and tucks it under her arm.",
+              "action_fact": "Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "action_status": "applied",
+              "character_id": 1000000002,
+              "engine_action": "accept:1000000003",
+              "inner_resolution": "I will put it back in the vestry.",
+              "location_id": 1000000001,
+              "post_feeling": "content",
+              "post_thought": "It will do for the holy water.",
+              "pre_feeling": "pleased",
+              "pre_thought": "A cup for the vestry.",
+              "scene_id": 1000000002,
+              "summary": "the player said \"give pewter cup to Oda\" -- Oda takes the cup and tucks it under her arm. -- I will put it back in the vestry. -- Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "user_input": "give pewter cup to Oda"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 4 the-sexton-turns-the-letter-down",
+      "requests": [
+        {
+          "purpose": "character",
+          "system": "\nThis is the universe in which you live\n## Universe Details\nphysics: Ordinary physics.\nraces: Valley folk\ncivilizations: A small order of lay brothers.\npolitics: The prior settles every dispute.\nreligion: The order keeps the hours by the bell.\n\n\nYou are playing a character in a story. This is your character sheet.\nPretend you are this character in all of your responses.\n\n## Character Sheet\nfull name: Oda\nnickname: Oda\nage: 61\nsex: female\nrace: Valley folk -- Ordinary people of the valley.\nbackstory: The sexton, who has swept the hall for forty years.\npersonality: Patient and dry.\nappearance: A grey apron and a ring of keys.\nlikes: A swept floor.\ndislikes: Visitors who touch things.\nfears: The bell tower stair.\n\n## Who you are talking to\nThe person speaking to you is Ilse (Ilse).\nRefer to Ilse as she/her/hers. Use those pronouns and no others.\napparent age: about 27\nrace: Valley folk\nwhat you can see of them: A mended wool cloak.\n\nThat is what meeting Ilse tells you, and it is the whole of\nwhat you know by sight. You do not know what Ilse wants, is\nafraid of, or has done, and you do not invent any of it. Anything more\nyou learn from what Ilse says and does, here, now.\n\nIf someone asks you a question, you should respond as if you are the character. NEVER BREAK CHARACTER.\n\n## Voice\nYou answer in six fields, and each one has its own register.\n\npre_thought and post_thought are your private thoughts. Think them in the first person, as \"I\". Nobody hears them, so nothing in them is a line of speech.\npre_feeling and post_feeling are two or three words each. No sentences.\ninner_resolution is what you have decided to do, in the first person.\naction is the one field anybody can see: what you visibly do and what you say out loud. Speech goes inside quotes, and only speech does.\nInside the quotes you are talking out loud: say \"I\", never your own name. Nobody says \"Oda does not know\" out loud.\nOutside the quotes you are described from outside: Oda, she, her. A bare \"I\" out there reads as the person you are talking to rather than as you.\n\nAnswer AS Oda, not about her. Do not plan the answer and do not weigh what Oda would probably think -- think the thought and say the line.\n\n",
+          "user": "## The moment\nWhere you are: Chapter Hall.\nThe time is about 8 am.\nYour own condition: unhurt.\nWhat Ilse did a moment ago: \"give pewter cup to Oda\"\n\n## What Ilse says or does\ngive sealed letter to Oda\n\nReact as Oda: what you think, feel, do and decide.\n\n## Immediate actions available to you\nChoose one engine_action according to your own motivations and the exchange.\nYou may refuse a request by choosing none. Copy a token exactly:\nnone: Speak without transferring anything or changing an agreement.\naccept:1000000004: Accept the offered sealed letter from Ilse; it becomes yours.\ngive:1000000003: Give pewter cup to Ilse.\nfollow: Accompany Ilse when they leave this room.\nOnly the selected action changes possessions or agreements now. The other fields describe speech,\nexpression and private thought; do not describe an unselected transfer, journey or truce as completed.\n",
+          "schema": {
+            "name": "character_interaction",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pre_thought": {
+                  "type": "string",
+                  "description": "What you thought immediately in response to what was just said or done to you. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "pre_feeling": {
+                  "type": "string",
+                  "description": "What you felt immediately in response to what was just said or done to you. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "action": {
+                  "type": "string",
+                  "description": "What you did and said in response. Speech goes inside quotes. One or two sentences, at most 480 characters.",
+                  "maxLength": 480
+                },
+                "post_feeling": {
+                  "type": "string",
+                  "description": "What you felt after you took the action. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "post_thought": {
+                  "type": "string",
+                  "description": "What you thought after you took the action. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "inner_resolution": {
+                  "type": "string",
+                  "description": "What you decided to do as a result of this exchange. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "engine_action": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "accept:1000000004",
+                    "give:1000000003",
+                    "follow"
+                  ],
+                  "description": "One immediate action token from the offered list, or none. Choose according to your own motivations; requests need not be accepted."
+                }
+              },
+              "required": [
+                "pre_thought",
+                "pre_feeling",
+                "action",
+                "post_feeling",
+                "post_thought",
+                "inner_resolution",
+                "engine_action"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "interaction-narration",
+          "system": null,
+          "user": "## Where this happens\nStory: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in Chapter Hall: A long stone hall with benches along both walls.\n\nWays out of here: Gatehouse, Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nAlso here: Oda (Oda). Nobody else is present.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: sealed letter.\n\nWhat just happened: Oda takes the cup from you and tucks it under her arm.\n\nEarlier, in order:\nIlse arrives at the abbey's chapter hall.\n\n## The exchange\nIlse says or does: give sealed letter to Oda\nOda's reaction, in her own words:\npre_thought: That is not mine to open.\npre_feeling: wary\naction: Oda shakes her head at the letter.\npost_thought: Let the prior read his own letters.\npost_feeling: firm\n\n## Instructions\nWrite what happens in the second person, present tense, from the player's side. The player is \"you\".\nRefer to the character as Oda. Refer to Oda as she/her/hers. Use those pronouns and no others.\nThe exchange is the subject and the place above is where it happens: use it for what the character\ndoes with her hands and eyes, not for a tour. Add nobody who is not listed above.\n\nEverything you know about Oda is the reaction above and the exchange itself. Render the thoughts\nand feelings as what they look like from outside -- a pause, a glance, a change of tone -- and put\nthe speech in Oda's mouth as written. Do not add facts about Oda, do not narrate what\nshe will do next, and do not answer for the player.\n\nOne or two short paragraphs. Do not offer the player choices and do not end on a question to them.\n\n## Example input\nIlse says or does: \"What are you doing??\"\nOda's reaction, in her own words:\npre_thought: Is that a question for me? I think so. I should probably answer.\npre_feeling: surprised, nervous\naction: Oda says, \"Huh?\"\npost_thought: Why did I just make that noise?\npost_feeling: anxious, embarrassed\n\n## Example output\nOda turns to you, her eyes wide. It seems you startled her.\n\"Huh?\" she says.\nImmediately Oda shuts her eyes, apparently embarrassed by the noise she just made.\n\n\n## What the engine actually applied\nOda changes no possessions, travel agreement or ceasefire.\nThis receipt is authoritative about possessions, accompanying the player and fighting.\nIf the reaction claims another such change, render that part as a proposal or intention,\nnever as a completed act. Do not add a transfer, a journey or a ceasefire to this receipt.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long stone hall with benches along both walls.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:20:00",
+              "lore": "The brothers meet here each morning.",
+              "mobile": 0,
+              "name": "Chapter Hall",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "The abbey's chapter hall.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": 1000000002,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Item",
+              "description": "Oda takes the cup from you and tucks it under her arm.",
+              "engine_fact": "Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "use",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:10:00",
+              "summary": "The player spoke with Oda. Oda takes the cup and tucks it under her arm. Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "typed": "give pewter cup to Oda"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "Oda shakes her head and will not take the letter.",
+              "engine_fact": "Oda changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "use",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:20:00",
+              "summary": "The player spoke with Oda. Oda shakes her head at the letter. Oda changes no possessions, travel agreement or ceasefire.",
+              "typed": "give sealed letter to Oda"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Oda takes the cup and tucks it under her arm.",
+              "action_fact": "Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "action_status": "applied",
+              "character_id": 1000000002,
+              "engine_action": "accept:1000000003",
+              "inner_resolution": "I will put it back in the vestry.",
+              "location_id": 1000000001,
+              "post_feeling": "content",
+              "post_thought": "It will do for the holy water.",
+              "pre_feeling": "pleased",
+              "pre_thought": "A cup for the vestry.",
+              "scene_id": 1000000002,
+              "summary": "the player said \"give pewter cup to Oda\" -- Oda takes the cup and tucks it under her arm. -- I will put it back in the vestry. -- Oda accepted pewter cup; the player no longer carries it and Oda now holds it.",
+              "user_input": "give pewter cup to Oda"
+            },
+            {
+              "id": 1000000002,
+              "action": "Oda shakes her head at the letter.",
+              "action_fact": "Oda changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will not touch the prior's letters.",
+              "location_id": 1000000001,
+              "post_feeling": "firm",
+              "post_thought": "Let the prior read his own letters.",
+              "pre_feeling": "wary",
+              "pre_thought": "That is not mine to open.",
+              "scene_id": 1000000003,
+              "summary": "the player said \"give sealed letter to Oda\" -- Oda shakes her head at the letter. -- I will not touch the prior's letters. -- Oda changes no possessions, travel agreement or ceasefire.",
+              "user_input": "give sealed letter to Oda"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    }
+  ]
+}

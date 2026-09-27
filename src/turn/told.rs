@@ -59,6 +59,12 @@ fn truncated(text: &str) -> bool {
     }
 }
 
+/// `Item::Inscriber`'s purpose.
+const INSCRIPTION: &str = "inscription";
+
+/// `Item::INSCRIPTION_LIMIT`.
+const INSCRIPTION_LIMIT: usize = 400;
+
 /// `Scene::TURN_MINUTES["action"]`, in seconds.
 const ACTION_SECONDS: i64 = 5 * 60;
 
@@ -656,18 +662,164 @@ impl<'s, 'm> Turn<'s, 'm> {
         if !flag(&row, "readable") {
             return self.narrate(command, None, None, None, None);
         }
-        let Some(words) = presence(text(&row, "inscription")).map(str::to_string) else {
-            return Err(Error::Unsupported(
-                "writing an inscription through the models".into(),
-            ));
-        };
+        let (words, inscriber) = self.inscribe(item)?;
         let fact = format!(
             "{} has writing on it. {}",
             upcase_first(&definite_name(&row)),
             written_words_fact(&words)
         );
         let fallback = format!("On {} you read: {words}", definite_name(&row));
-        self.narrate(command, Some(fact), None, None, Some(fallback))
+        let told = self.narrate(command, Some(fact), None, None, Some(fallback))?;
+        if let (Some(told), Some(agent)) = (&told, &inscriber) {
+            let mut book = Book {
+                store: self.m.store,
+                records: &mut self.m.records,
+            };
+            self.models.attribute(&mut book, agent, told.id)?;
+        }
+        Ok(told)
+    }
+
+    /// `Item::Inscriber#inscribe!`: the words on a readable thing, written
+    /// down once. A thing that holds words answers them with no call; one
+    /// that has none is asked for them, and they are kept on it and on the
+    /// world's own copy, if that has none either, before any prose. Hands
+    /// back the agent that asked, for the scene to claim.
+    fn inscribe(&mut self, item: i64) -> Result<(String, Option<Agent>), Error> {
+        let row = self.m.row("items", item)?;
+        if let Some(words) = presence(text(&row, "inscription")) {
+            return Ok((words.to_string(), None));
+        }
+        let call = Call {
+            system: Some(data::inscriber_instructions().to_string()),
+            schema: Some(crate::schemas::item_inscription()),
+            ..Call::prompt(self.inscription_prompt(&row))
+        };
+        let mut agent = Agent::new(self.filed(INSCRIPTION));
+        let mut verified = None;
+        let mut verify = |content: &Value| {
+            let raw = content["inscription"].as_str().unwrap_or_default();
+            let length = raw.chars().count();
+            if length >= INSCRIPTION_LIMIT {
+                return Err(format!(
+                    "generated text arrived at its {INSCRIPTION_LIMIT}-character cap ({length} characters), so it was cut off rather than finished"
+                ));
+            }
+            verified = Some(sanitize(raw));
+            Ok(())
+        };
+        {
+            let mut book = Book {
+                store: self.m.store,
+                records: &mut self.m.records,
+            };
+            self.models
+                .ask(&mut book, &mut agent, &call, Some(&mut verify), None)
+                .map_err(model)?;
+        }
+        let words = verified.unwrap_or_default();
+        if is_blank(&words) {
+            return Err(model(Failure::SchemaIgnored(format!(
+                "the inscription for {} came back empty",
+                crate::text::inspect(string(&row, "name"))
+            ))));
+        }
+        self.m.store.savepoint()?;
+        let written = (|| {
+            self.m.update(
+                "items",
+                item,
+                vec![("inscription", Value::from(words.as_str()))],
+            )?;
+            let template = int(&row, "template_id")
+                .and_then(|template| self.m.records.find("items", template))
+                .filter(|template| {
+                    flag(template, "readable") && presence(text(template, "inscription")).is_none()
+                })
+                .map(id);
+            if let Some(template) = template {
+                self.m.update(
+                    "items",
+                    template,
+                    vec![("inscription", Value::from(words.as_str()))],
+                )?;
+            }
+            Ok(())
+        })();
+        match written {
+            Ok(()) => self.m.store.release()?,
+            Err(error) => {
+                self.m.store.rollback_to();
+                return Err(error);
+            }
+        }
+        Ok((words, Some(agent)))
+    }
+
+    /// `Item::Inscriber#prompt`: the world, the thing, and where it is,
+    /// which is what whoever wrote on it would have known.
+    fn inscription_prompt(&self, row: &Row) -> String {
+        let records = &self.m.records;
+        let room = int(row, "location_id").and_then(|room| records.find("locations", room));
+        let holder = int(row, "character_id").and_then(|who| records.find("characters", who));
+        let story = room
+            .and_then(|room| int(room, "story_id"))
+            .or_else(|| holder.and_then(|who| int(who, "story_id")))
+            .or_else(|| {
+                int(row, "playthrough_id")
+                    .and_then(|game| records.find("playthroughs", game))
+                    .and_then(|game| int(game, "story_id"))
+            })
+            .and_then(|story| records.find("stories", story));
+        let context = match story {
+            None => String::new(),
+            Some(story) => {
+                let details = int(story, "universe_id")
+                    .and_then(|universe| records.find("universes", universe))
+                    .map(|universe| {
+                        crate::arrival::prompt_details(
+                            records,
+                            universe,
+                            &[
+                                "physics",
+                                "technology",
+                                "geographies",
+                                "race_names",
+                                "civilizations",
+                            ],
+                        )
+                    })
+                    .unwrap_or_default();
+                format!(
+                    "## Universe Details\n{details}\n\n## Story Details\ntitle: {}\ngenre: {}\npreface: {}\nsummary: {}\n",
+                    string(story, "title"),
+                    string(story, "genre"),
+                    string(story, "preface"),
+                    string(story, "summary"),
+                )
+            }
+        };
+        let whereabouts = match room {
+            None => format!("where it is: {}", whereabouts(records, row)),
+            Some(room) => format!(
+                "where it is: {}\n{}: {}",
+                whereabouts(records, row),
+                string(room, "name"),
+                presence(text(room, "description")).unwrap_or(string(room, "teaser"))
+            ),
+        };
+        let name = string(row, "name");
+        format!(
+            "{context}\n\n## The Thing\nname: {name}\nwhat it is: {}\n{whereabouts}\n\n## Instructions\n\
+             Write what is written on the {name}.\n\
+             - The text itself, as it appears on the object. Not a description of it\n\
+             - Consistent with the world above and with what the thing is\n\
+             - Whoever wrote it wrote it before now, for their own reasons, and not for\n  \
+             the person reading it\n\
+             - It may be a few words, a line, or a short paragraph. Short is usual\n\
+             - Respect the stated length\n",
+            string(row, "description")
+        )
     }
 
     /// `#move_to`: the room realized, walked into at its way in, paid for,
@@ -1123,4 +1275,29 @@ fn dropped_fact(item: &Row, here: &Row, dropper: Option<&Row>) -> String {
         string(here, "name"),
         upcase_first(&definite_name(item)),
     )
+}
+
+/// `Item#whereabouts`: where a thing is, and whose layer of the world it
+/// belongs to.
+fn whereabouts(records: &Records, item: &Row) -> String {
+    let intact = text(item, "disposition") == Some("intact");
+    let instance = int(item, "playthrough_id").is_some();
+    let holder = int(item, "character_id").and_then(|who| records.find("characters", who));
+    let room = int(item, "location_id").and_then(|room| records.find("locations", room));
+    let place = match (intact, holder, room) {
+        (true, Some(who), _) => format!("held by {}", string(who, "fullname")),
+        (true, None, Some(room)) => format!("lying in {}", string(room, "name")),
+        (true, None, None) if instance => "in the party's hands".to_string(),
+        _ => "nowhere".to_string(),
+    };
+    let layer = match int(item, "playthrough_id") {
+        None => "the world's own".to_string(),
+        Some(game) => format!(
+            "playthrough #{game}'s{}",
+            int(item, "template_id")
+                .map(|template| format!(" copy of #{template}"))
+                .unwrap_or_default()
+        ),
+    };
+    format!("{place} ({layer})")
 }
