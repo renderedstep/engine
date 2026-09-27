@@ -4,6 +4,7 @@
 //! Each portion checks its `constants` too, so a Ruby table that changed
 //! under an unchanged case list still fails here.
 
+mod lines;
 mod portions;
 
 use serde_json::{json, Value};
@@ -89,6 +90,20 @@ pub fn check(portion: &str, expected_constants: Value, answer: impl Fn(&Value) -
             .collect::<Vec<_>>()
             .join("\n")
     );
+}
+
+/// Runs every case of a portion that stands in rooms: `answer` gets the
+/// file's `worlds` constant with each case's input. The portion's other
+/// constants must equal `tables`, this crate's own.
+pub fn check_rooms(portion: &str, tables: Value, answer: impl Fn(&Value, &Value) -> Value) {
+    let vectors = load(portion);
+    let worlds = vectors.constants["worlds"].clone();
+    let mut expected = serde_json::Map::new();
+    expected.insert("worlds".into(), worlds.clone());
+    expected.extend(tables.as_object().expect("tables").clone());
+    check(portion, Value::Object(expected), |input| {
+        answer(&worlds, input)
+    });
 }
 
 #[test]

@@ -1,1 +1,2 @@
 vectors/*.json -text
+data/**/*.yml -text
