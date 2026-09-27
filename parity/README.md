@@ -19,9 +19,11 @@ are built from. That repository's
 | `PASSING_WITH_RUNNER` | this repository | the scripts that agree only when the Ruby engine's runner plays them: those with `reseed:` steps, and those whose browser steps assert `shown` |
 | `runner.sh` | this repository | plays both lists through the Ruby engine's runner in its shared-database mode |
 
-Three scripts are ahead of that commit: `a-room-written-while-the-arc-waits`,
-`an-ending-kept-when-the-narrator-fails` and
-`a-deadline-places-what-the-arc-waits-for`, with the worlds
+Five scripts are ahead of that commit: `a-room-written-while-the-arc-waits`,
+`an-ending-kept-when-the-narrator-fails`,
+`a-deadline-places-what-the-arc-waits-for`,
+`a-letter-read-for-the-first-time` and `an-offer-taken-through-the-models`,
+with the worlds
 `a-bell-nobody-has-rung` and `a-yard-before-the-winter` they walk. They
 were written in this repository and played by the Ruby engine at the
 commit above, with two changes to its sweep that they need: a browser

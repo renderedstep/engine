@@ -57,7 +57,7 @@ with the state it wrote after every step (`parity/`, see its README).
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
-| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!`, `Quest::Binder`, `Quest::Deadline`, `Scene::Ending` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
+| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!`, `Quest::Binder`, `Quest::Deadline`, `Scene::Ending`, `Item::Inscriber` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
 | `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
 | `parity` | `EngineSweep::Walk`, `EngineSweep::Dump`, `EngineSweep::Parity` | a sweep script played through this engine, dumped step by step and compared |
 | `model` | `BaseAgent`, `BaseAgent::Refusal`, `SystemOneAgent`, RubyLLM's OpenRouter provider and its `chats`/`messages` receipts, `EngineSweep::BrowserTurn`'s fixed replies | where a model call goes, the body it sends, whether an answer is kept, the model rotation, and what a call leaves in the database |
@@ -136,9 +136,12 @@ after a named step commits, as a killed worker stops, and comes back as
 `Error::Stopped` with the submission still running; the engine sweep plays
 its interrupted workers this way.
 
-What `submit` does not play yet (an offer of a thing to somebody; reading
-a readable thing whose words nobody has written yet) comes back as
-`Error::Unsupported`.
+Reading a readable thing that has no words yet writes them first
+(`Item::Inscriber`): one call, kept on the game's copy and on the world's
+own before the narrator is told them, so every later reading, in any game,
+reads the same words and asks for nothing. Offering a thing to somebody is
+a conversation with one more choice in it: the person may accept what the
+player holds out, and only the engine moves it.
 
 A line with no slash, and a slashed line the grammar cannot place, is read
 by System One first where it is on (`cascade`), and by the classifier model

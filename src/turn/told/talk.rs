@@ -83,11 +83,6 @@ impl Turn<'_, '_> {
         if self.done("talked") {
             return self.saved("talked").map(Option::flatten);
         }
-        if offered.is_some() {
-            return Err(Error::Unsupported(
-                "offering a thing to somebody through the models".into(),
-            ));
-        }
         let person = self.m.row("characters", character)?;
         let playthrough = self.m.playthrough;
         let chat = {
@@ -110,7 +105,7 @@ impl Turn<'_, '_> {
 
         let (reaction, fields) = self.remember("character_answer", |turn| {
             let game = Game::new(&turn.m.records, playthrough);
-            let request = dialogue::character_request(&game, &person, command);
+            let request = dialogue::character_request_offering(&game, &person, command, offered);
             let call = Call::from_request(&request);
             let mut verified = None;
             let mut verify = |content: &Value| {

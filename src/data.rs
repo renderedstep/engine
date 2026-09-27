@@ -106,12 +106,20 @@ const DESIRES: &str = include_str!("../data/character/desires.yml");
 const NARRATOR: &str = include_str!("../data/scene/narrator.yml");
 const CLASSIFIER: &str = include_str!("../data/playthrough/classifier.yml");
 const ENDING: &str = include_str!("../data/scene/ending.yml");
+const INSCRIBER: &str = include_str!("../data/item/inscriber.yml");
 
 /// `config/engine/scene/ending.yml`: the instructions the last paragraph of
 /// a game is written under (`Scene::Ending::INSTRUCTIONS`).
 pub fn ending_instructions() -> &'static str {
     static FILE: OnceLock<Yaml> = OnceLock::new();
     text_of(&FILE, "scene/ending.yml", ENDING, "instructions")
+}
+
+/// `config/engine/item/inscriber.yml`: the instructions the words on a
+/// readable thing are written under (`Item::Inscriber::INSTRUCTIONS`).
+pub fn inscriber_instructions() -> &'static str {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    text_of(&FILE, "item/inscriber.yml", INSCRIBER, "instructions")
 }
 
 /// `config/engine/playthrough/classifier.yml`: the classifier's

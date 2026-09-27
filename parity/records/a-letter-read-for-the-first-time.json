@@ -1,0 +1,638 @@
+{
+  "script": "a-letter-read-for-the-first-time",
+  "steps": [
+    {
+      "step": "step 1 the-first-reading-writes-the-words",
+      "requests": [
+        {
+          "purpose": "inscription",
+          "system": "You write the words that are actually written on objects in a text\nadventure: what is on a note, a letter, a docket, a label, a sign, a page.\n\nYou are not narrating and you are not describing the object. You write only\nthe text a person would read off it, in the hand and the register of the\nworld it belongs to.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Bells, candles and iron locks.\ngeographies: A hill abbey and the valley below it.\nraces: Valley folk\ncivilizations: A small order of lay brothers.\n\n\n## Story Details\ntitle: A Bell Nobody Has Rung (engine sweep)\ngenre: quiet mystery\npreface: The abbey bell has been silent since before you were born.\nsummary: Ilse climbs to the abbey to find out why its bell no longer rings.\n\n\n## The Thing\nname: sealed letter\nwhat it is: A folded letter under a cracked wax seal.\nwhere it is: lying in Chapter Hall (playthrough #1000000001's copy of #1000000002)\nChapter Hall: A long stone hall with benches along both walls.\n\n## Instructions\nWrite what is written on the sealed letter.\n- The text itself, as it appears on the object. Not a description of it\n- Consistent with the world above and with what the thing is\n- Whoever wrote it wrote it before now, for their own reasons, and not for\n  the person reading it\n- It may be a few words, a line, or a short paragraph. Short is usual\n- Respect the stated length\n",
+          "schema": {
+            "name": "Item::InscriptionSchema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "inscription": {
+                  "type": "string",
+                  "description": "The words written on this thing, exactly as they appear on it, as the player would read them. Not a description of the object and not a narration of reading it -- the text itself. Keep the register and the period of the world. It may be a few words, a line, or a short paragraph.",
+                  "maxLength": 400
+                }
+              },
+              "required": [
+                "inscription"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "narration",
+          "system": "You are the narrator of a text adventure. Write in the second person,\npresent tense, addressing the player as \"you\". Describe what happens in\nresponse to what they did, in one or two short paragraphs of prose.\n\nNever break character, never offer the player a numbered menu, and never\nmention that you are an AI or a narrator. The ways out of here, the people\npresent and what the player carries are listed in the prompt: do not add a\nway out, a person or a possession that is not on those lists. If the\nplayer tries something impossible, narrate the failure rather than\nrefusing.\n",
+          "user": "Story: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in Chapter Hall: A long stone hall with benches along both walls.\n\nWays out of here: Gatehouse, Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nThe story is asking for: Take up the brass censer the bell-keeper carried.\n\nAlso here: Oda (Oda). Nobody else is present.\n\nLying here, and takeable: pewter cup, sealed letter.\n\nThe player is carrying: nothing.\n\nWhat just happened: You stand in the chapter hall with Oda, the sexton.\n\nWhat has ALREADY happened, recorded by the game: The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.\nNarrate it as done. Do not contradict it and do not undo it.\n\n\nThe player types: read sealed letter\n\nNarrate what happens.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long stone hall with benches along both walls.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:05:00",
+              "lore": "The brothers meet here each morning.",
+              "mobile": 0,
+              "name": "Chapter Hall",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "The abbey's chapter hall.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": "Ring it at vespers, and not before. The rope is in the tower.",
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": null,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": null,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": "Ring it at vespers, and not before. The rope is in the tower.",
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "You break the cracked seal and read the letter.",
+              "engine_fact": "The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "examine",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:05:00",
+              "summary": null,
+              "typed": "read sealed letter"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 the-second-reading-reads-the-record",
+      "requests": [
+        {
+          "purpose": "narration",
+          "system": "You are the narrator of a text adventure. Write in the second person,\npresent tense, addressing the player as \"you\". Describe what happens in\nresponse to what they did, in one or two short paragraphs of prose.\n\nNever break character, never offer the player a numbered menu, and never\nmention that you are an AI or a narrator. The ways out of here, the people\npresent and what the player carries are listed in the prompt: do not add a\nway out, a person or a possession that is not on those lists. If the\nplayer tries something impossible, narrate the failure rather than\nrefusing.\n",
+          "user": "Story: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in Chapter Hall: A long stone hall with benches along both walls.\n\nWays out of here: Gatehouse, Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nThe story is asking for: Take up the brass censer the bell-keeper carried.\n\nAlso here: Oda (Oda). Nobody else is present.\n\nLying here, and takeable: pewter cup, sealed letter.\n\nThe player is carrying: nothing.\n\nWhat just happened: You break the cracked seal and read the letter.\n\nEarlier, in order:\nIlse arrives at the abbey's chapter hall.\n\nWhat has ALREADY happened, recorded by the game: The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.\nNarrate it as done. Do not contradict it and do not undo it.\n\n\nThe player types: read sealed letter\n\nNarrate what happens.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long stone hall with benches along both walls.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:10:00",
+              "lore": "The brothers meet here each morning.",
+              "mobile": 0,
+              "name": "Chapter Hall",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "The abbey's chapter hall.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": "Ring it at vespers, and not before. The rope is in the tower.",
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": null,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": null,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": "Ring it at vespers, and not before. The rope is in the tower.",
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "You break the cracked seal and read the letter.",
+              "engine_fact": "The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "examine",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:05:00",
+              "summary": null,
+              "typed": "read sealed letter"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "You read the letter again.",
+              "engine_fact": "The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "examine",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:10:00",
+              "summary": null,
+              "typed": "read sealed letter"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 another-game-reads-the-same-words (second)",
+      "requests": [
+        {
+          "purpose": "narration",
+          "system": "You are the narrator of a text adventure. Write in the second person,\npresent tense, addressing the player as \"you\". Describe what happens in\nresponse to what they did, in one or two short paragraphs of prose.\n\nNever break character, never offer the player a numbered menu, and never\nmention that you are an AI or a narrator. The ways out of here, the people\npresent and what the player carries are listed in the prompt: do not add a\nway out, a person or a possession that is not on those lists. If the\nplayer tries something impossible, narrate the failure rather than\nrefusing.\n",
+          "user": "Story: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in Chapter Hall: A long stone hall with benches along both walls.\n\nWays out of here: Gatehouse, Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nThe story is asking for: Take up the brass censer the bell-keeper carried.\n\nAlso here: Oda (Oda). Nobody else is present.\n\nLying here, and takeable: pewter cup, sealed letter.\n\nThe player is carrying: nothing.\n\nWhat just happened: You stand in the chapter hall with Oda, the sexton.\n\nWhat has ALREADY happened, recorded by the game: The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.\nNarrate it as done. Do not contradict it and do not undo it.\n\n\nThe player types: read sealed letter\n\nNarrate what happens.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long stone hall with benches along both walls.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:05:00",
+              "lore": "The brothers meet here each morning.",
+              "mobile": 0,
+              "name": "Chapter Hall",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "The abbey's chapter hall.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": "Ring it at vespers, and not before. The rope is in the tower.",
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": null,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": null,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": "Ring it at vespers, and not before. The rope is in the tower.",
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000005,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000002,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": "Ring it at vespers, and not before. The rope is in the tower.",
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000002,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "You break the cracked seal and read the letter.",
+              "engine_fact": "The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "examine",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:05:00",
+              "summary": null,
+              "typed": "read sealed letter"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "You read the letter again.",
+              "engine_fact": "The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "examine",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:10:00",
+              "summary": null,
+              "typed": "read sealed letter"
+            },
+            {
+              "id": 1000000004,
+              "acted_on_id": 1000000006,
+              "acted_on_type": "Item",
+              "description": "You read the letter.",
+              "engine_fact": "The sealed letter has writing on it. This is exactly what is written on it, word for word: \"Ring it at vespers, and not before. The rope is in the tower.\" -- those are the words on it, and they do not change between readings. Quote them as they are; do not add to them, and do not write different ones.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "examine",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:05:00",
+              "summary": null,
+              "typed": "read sealed letter"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000004
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000004
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    }
+  ]
+}
