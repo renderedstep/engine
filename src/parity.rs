@@ -939,12 +939,7 @@ pub fn open_world_for(worlds: &Path, script: &Script) -> Result<Engine, String> 
 /// in `dir/PASSING` must agree, and every script that agrees must be named
 /// there.
 pub fn check(dir: &Path) -> Result<Checked, String> {
-    let passing: Vec<String> = read(&dir.join("PASSING"))?
-        .lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty() && !line.starts_with('#'))
-        .map(str::to_string)
-        .collect();
+    let passing = listed(&read(&dir.join("PASSING"))?);
     let mut paths: Vec<PathBuf> = std::fs::read_dir(dir.join("scripts"))
         .map_err(|error| error.to_string())?
         .filter_map(|entry| entry.ok().map(|entry| entry.path()))
@@ -1051,6 +1046,162 @@ pub fn golden_dumps(golden: &Value) -> Vec<Value> {
         .as_array()
         .map(|steps| steps.iter().map(|step| step["dump"].clone()).collect())
         .unwrap_or_default()
+}
+
+/// A script's golden file, as the game repository's
+/// `EngineSweep::Parity.render` writes it: `{script, story, steps: [{step,
+/// player, typed, dump}]}`, two-space indented, with a trailing newline.
+pub fn render_golden(script: &Script, dumps: &[Value]) -> String {
+    let steps: Vec<Value> = script
+        .steps
+        .iter()
+        .zip(dumps)
+        .map(|(step, dump)| {
+            json!({ "step": step.label(), "player": step.player, "typed": step.typed, "dump": dump })
+        })
+        .collect();
+    let document = json!({ "script": script.name, "story": script.story, "steps": steps });
+    format!("{}\n", pretty(&document))
+}
+
+/// A records file: what each step asked the providers and wrote.
+pub fn render_records(script: &Script, recorded: &[Recorded]) -> String {
+    let steps: Vec<Value> = script
+        .steps
+        .iter()
+        .zip(recorded)
+        .map(|(step, recorded)| {
+            json!({ "step": step.label(), "requests": recorded.requests, "written": recorded.written })
+        })
+        .collect();
+    format!(
+        "{}\n",
+        pretty(&json!({ "script": script.name, "steps": steps }))
+    )
+}
+
+fn pretty(value: &Value) -> String {
+    serde_json::to_string_pretty(value).expect("a JSON value renders")
+}
+
+/// The scripts in `dir/PASSING_WITH_RUNNER`: those only the game
+/// repository's runner can play whole (`parity/runner.sh`).
+pub fn runner_only(dir: &Path) -> Result<Vec<String>, String> {
+    Ok(listed(&read(&dir.join("PASSING_WITH_RUNNER"))?))
+}
+
+fn listed(text: &str) -> Vec<String> {
+    text.lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(str::to_string)
+        .collect()
+}
+
+/// What writing a directory's goldens did.
+#[derive(Debug, Default)]
+pub struct Written {
+    /// The goldens this engine played and wrote again because they moved.
+    pub goldens: Vec<String>,
+    /// The records files it wrote again because a request or a row moved.
+    pub records: Vec<String>,
+    /// The scripts it played and found unchanged.
+    pub unchanged: Vec<String>,
+    /// The scripts only the game repository's runner plays whole, left to
+    /// `parity/runner.sh --write`.
+    pub runner: Vec<String>,
+    /// Each script that stopped before its last step, and why.
+    pub stopped: Vec<String>,
+}
+
+/// Plays every script in `dir/scripts` on the worlds in `dir/worlds`, as
+/// [`check`] does, and writes each golden in `dir/goldens` again whose dumps
+/// moved, and each records file in `dir/records` whose requests or rows
+/// did. A file whose contents still agree is left as it is, byte for byte,
+/// so what a rule change moved is the whole of the diff. A script listed in
+/// `dir/PASSING_WITH_RUNNER` is left to the runner; one that stops before
+/// its last step writes nothing.
+pub fn write(dir: &Path) -> Result<Written, String> {
+    let runner = runner_only(dir)?;
+    let mut paths: Vec<PathBuf> = std::fs::read_dir(dir.join("scripts"))
+        .map_err(|error| error.to_string())?
+        .filter_map(|entry| entry.ok().map(|entry| entry.path()))
+        .filter(|path| path.extension().is_some_and(|ext| ext == "yml"))
+        .collect();
+    paths.sort();
+
+    let mut written = Written::default();
+    for path in &paths {
+        let script = load_script(path)?;
+        if runner.contains(&script.name) {
+            written.runner.push(script.name);
+            continue;
+        }
+        let golden_path = dir.join("goldens").join(format!("{}.json", script.name));
+        let records_path = dir.join("records").join(format!("{}.json", script.name));
+        let mut engine = open_world_for(&dir.join("worlds"), &script)?;
+        let recorded = if records_path.exists() {
+            match play_recording(&mut engine, &script) {
+                Ok(recorded) => Some(recorded),
+                Err((_, step, error)) => {
+                    written
+                        .stopped
+                        .push(format!("{}: {step} stopped: {error}", script.name));
+                    continue;
+                }
+            }
+        } else {
+            None
+        };
+        let dumps = match &recorded {
+            Some(recorded) => recorded.iter().map(|step| step.dump.clone()).collect(),
+            None => match play(&mut engine, &script) {
+                Ok(dumps) => dumps,
+                Err(stopped) => {
+                    written.stopped.push(format!(
+                        "{}: {} stopped: {}",
+                        script.name, stopped.step, stopped.error
+                    ));
+                    continue;
+                }
+            },
+        };
+        let kept: Option<Value> = std::fs::read_to_string(&golden_path)
+            .ok()
+            .and_then(|text| serde_json::from_str(&text).ok());
+        let moved = kept.as_ref().is_none_or(|golden| {
+            let expected = golden_dumps(golden);
+            expected.len() != dumps.len() || first_divergence(&script, &expected, &dumps).is_some()
+        });
+        let mut changed = false;
+        if moved {
+            write_file(&golden_path, &render_golden(&script, &dumps))?;
+            written.goldens.push(script.name.clone());
+            changed = true;
+        }
+        if let Some(recorded) = &recorded {
+            let kept: Option<Value> = std::fs::read_to_string(&records_path)
+                .ok()
+                .and_then(|text| serde_json::from_str(&text).ok());
+            let moved = kept.as_ref().is_none_or(|records| {
+                records["steps"].as_array().map_or(0, Vec::len) != recorded.len()
+                    || first_record_divergence(&script, records, recorded).is_some()
+            });
+            if moved {
+                write_file(&records_path, &render_records(&script, recorded))?;
+                written.records.push(script.name.clone());
+                changed = true;
+            }
+        }
+        if !changed {
+            written.unchanged.push(script.name);
+        }
+    }
+    Ok(written)
+}
+
+fn write_file(path: &Path, contents: &str) -> Result<(), String> {
+    std::fs::write(path, contents).map_err(|error| format!("{}: {error}", path.display()))
 }
 
 #[cfg(test)]
