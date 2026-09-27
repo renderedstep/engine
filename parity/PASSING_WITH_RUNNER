@@ -1,0 +1,6 @@
+# Scripts with `reseed:` steps that agree step for step when the Ruby
+# engine's runner plays them in its shared-database mode: it reloads the
+# world file itself and asks this engine for each typed step
+# (`parity/runner.sh`). The whole-script check cannot play them.
+re-seeding-a-building-somebody-is-inside
+reseed-a-played-world
