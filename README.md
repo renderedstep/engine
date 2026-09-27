@@ -53,7 +53,7 @@ with the state it wrote after every step (`parity/`, see its README).
 | `realization` | `Location::Generator`, `Character::Desires.instructions` | the room writer's detail and exits requests |
 | `dialogue` | `InteractionAgent`, `Character#interaction_instructions`, `Playthrough::NpcAction` | the character pass and narrator pass of one exchange |
 | `clock` | Rails' datetime columns | a stored time as whole seconds since the epoch, and back |
-| `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version checked, every table the loop reads loaded as records, a row inserted or updated |
+| `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version and the shape of every table it touches checked, every table the loop reads loaded as records, a row inserted or updated |
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
@@ -78,10 +78,15 @@ println!("{:?} {:?}", outcome.report.change, outcome.state.carrying);
 where the Rails app hands each whole turn to this engine in-process:
 
 - **Its own connection.** `Engine::open` opens the database file on a new
-  SQLite connection and refuses it with `Error::SchemaMismatch` unless its
-  newest migration is `store::SCHEMA_VERSION`. The app keeps
-  `bin/rails generate migration`; a new migration needs this constant, and
-  whatever it changes, ported before the engine will open that database.
+  SQLite connection and checks its schema. A database whose newest
+  migration is older than `store::SCHEMA_VERSION` is refused with
+  `Error::SchemaMismatch`. One at a newer migration is opened only when
+  every table the engine reads or writes still has the columns, indexes,
+  foreign keys and triggers `store::SHAPE` records, and nothing new points
+  into one of them; otherwise it is refused with `Error::SchemaChanged`,
+  which lists each difference. A migration that only adds a table the engine
+  never touches is therefore accepted; one that changes a table it does
+  needs the change ported before the engine will open that database.
 - **One transaction per line.** `play` takes SQLite's write lock
   (`BEGIN IMMEDIATE`), plays the line, and commits. The caller must hold no
   transaction on the same database while it runs. Anything that fails rolls

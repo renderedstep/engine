@@ -3,7 +3,7 @@
 
 use renderedstep_engine::engine::{Engine, Error};
 use renderedstep_engine::parity::{open_world, TITLE_SUFFIX};
-use renderedstep_engine::store::SCHEMA_VERSION;
+use renderedstep_engine::store::{shape, SCHEMA_VERSION, SHAPE};
 use std::path::{Path, PathBuf};
 
 fn world(name: &str) -> String {
@@ -68,21 +68,133 @@ fn a_turn_is_written_to_the_database_and_read_back_by_the_next_connection() {
 }
 
 #[test]
-fn a_database_at_another_schema_is_refused() {
+fn a_database_at_an_older_schema_is_refused() {
     let conn = rusqlite::Connection::open_in_memory().unwrap();
     conn.execute_batch(&world("the-quay-house")).unwrap();
+    conn.execute_batch(&format!(
+        "DELETE FROM schema_migrations WHERE version = '{SCHEMA_VERSION}'"
+    ))
+    .unwrap();
+    match Engine::from_connection(conn) {
+        Err(Error::SchemaMismatch { found, expected }) => {
+            assert!(found.unwrap().as_str() < SCHEMA_VERSION);
+            assert_eq!(expected, SCHEMA_VERSION);
+        }
+        other => panic!("expected a schema mismatch, got {:?}", other.err()),
+    }
+}
+
+/// A world with one more migration run over it: `sql`, and its version
+/// recorded after this engine's.
+fn migrated(name: &str, sql: &str) -> rusqlite::Connection {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch(&world(name)).unwrap();
+    conn.execute_batch(sql).unwrap();
     conn.execute(
         "INSERT INTO schema_migrations (version) VALUES ('29990101000000')",
         [],
     )
     .unwrap();
+    conn
+}
+
+fn changed(conn: rusqlite::Connection) -> Vec<String> {
     match Engine::from_connection(conn) {
-        Err(Error::SchemaMismatch { found, expected }) => {
-            assert_eq!(found.as_deref(), Some("29990101000000"));
-            assert_eq!(expected, SCHEMA_VERSION);
+        Err(Error::SchemaChanged { found, differences }) => {
+            assert_eq!(found, "29990101000000");
+            differences
         }
-        other => panic!("expected a schema mismatch, got {:?}", other.err()),
+        other => panic!("expected a changed schema, got {:?}", other.err()),
     }
+}
+
+#[test]
+fn every_world_has_the_shape_the_engine_is_written_against() {
+    let worlds = Path::new(env!("CARGO_MANIFEST_DIR")).join("parity/worlds");
+    for entry in std::fs::read_dir(worlds).unwrap() {
+        let path = entry.unwrap().path();
+        let conn = rusqlite::Connection::open_in_memory().unwrap();
+        conn.execute_batch(&std::fs::read_to_string(&path).unwrap())
+            .unwrap();
+        let found = shape(&conn).unwrap();
+        assert!(
+            found.iter().map(String::as_str).eq(SHAPE.lines()),
+            "{} does not have store::SHAPE; its shape is:\n{}\n",
+            path.display(),
+            found.join("\n")
+        );
+    }
+}
+
+#[test]
+fn a_newer_schema_that_only_adds_a_table_the_engine_never_touches_is_opened() {
+    let conn = migrated(
+        "the-quay-house",
+        r#"CREATE TABLE "lanterns" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "player_id" integer NOT NULL, "lit" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_lanterns" FOREIGN KEY ("player_id") REFERENCES "players" ("id"));
+           CREATE INDEX "index_lanterns_on_player_id" ON "lanterns" ("player_id");"#,
+    );
+    let mut engine = Engine::from_connection(conn).expect("the newer schema is opened");
+    let story = engine
+        .story_titled(&format!("The Quay House{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let outcome = engine
+        .play(playthrough, "look around", &mut |_| {})
+        .unwrap();
+    assert!(outcome.state.location.is_some());
+}
+
+#[test]
+fn a_newer_schema_that_changes_a_column_the_engine_uses_is_refused() {
+    let differences = changed(migrated(
+        "the-quay-house",
+        r#"CREATE TABLE "characters_scenes_new" ("character_id" integer NOT NULL, "scene_id" varchar NOT NULL);
+           INSERT INTO "characters_scenes_new" SELECT * FROM "characters_scenes";
+           DROP TABLE "characters_scenes";
+           ALTER TABLE "characters_scenes_new" RENAME TO "characters_scenes";
+           CREATE INDEX "index_characters_scenes_on_character_id_and_scene_id" ON "characters_scenes" ("character_id", "scene_id");
+           CREATE INDEX "index_characters_scenes_on_scene_id_and_character_id" ON "characters_scenes" ("scene_id", "character_id");"#,
+    ));
+    assert_eq!(
+        differences,
+        [
+            "expected column characters_scenes.scene_id integer not null pk=0",
+            "found column characters_scenes.scene_id varchar not null pk=0",
+        ]
+    );
+}
+
+#[test]
+fn a_newer_schema_that_adds_a_column_to_a_table_the_engine_uses_is_refused() {
+    let differences = changed(migrated(
+        "the-quay-house",
+        r#"ALTER TABLE "items" ADD "weight" decimal NOT NULL DEFAULT 0;"#,
+    ));
+    assert_eq!(
+        differences,
+        ["found column items.weight decimal not null default 0 pk=0"]
+    );
+}
+
+#[test]
+fn a_newer_schema_that_adds_a_unique_index_to_a_table_the_engine_uses_is_refused() {
+    let differences = changed(migrated(
+        "the-quay-house",
+        r#"CREATE UNIQUE INDEX "index_items_on_name" ON "items" ("name");"#,
+    ));
+    assert_eq!(differences, ["found index items (name) unique"]);
+}
+
+#[test]
+fn a_newer_table_that_points_into_one_the_engine_deletes_from_is_refused() {
+    let differences = changed(migrated(
+        "the-quay-house",
+        r#"CREATE TABLE "message_flags" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "message_id" integer NOT NULL, CONSTRAINT "fk_rails_message_flags" FOREIGN KEY ("message_id") REFERENCES "messages" ("id"));"#,
+    ));
+    assert_eq!(
+        differences,
+        ["found foreign key message_flags.message_id -> messages.id on update NO ACTION on delete NO ACTION"]
+    );
 }
 
 #[test]

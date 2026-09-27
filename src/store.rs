@@ -16,11 +16,17 @@ use serde_json::{Map, Number, Value};
 use std::collections::HashMap;
 use std::path::Path;
 
-/// The last migration the engine is written against
-/// (`db/schema.rb`'s `version:`). A database at any other version is refused:
-/// a column this engine does not know about, or one it expects and the
-/// database lacks, would be read or written wrongly.
-pub const SCHEMA_VERSION: &str = "20260927031841";
+/// The last migration the engine is written against (`db/schema.rb`'s
+/// `version:`). A database at an older version is refused. One at a newer
+/// version is opened only when every table the engine touches still has the
+/// shape it had at this version ([`SHAPE`]): a later migration that adds a
+/// table the engine never reads is harmless, and one that changes a table
+/// the engine reads or writes is refused.
+pub const SCHEMA_VERSION: &str = "20260927152056";
+
+/// The shape, at [`SCHEMA_VERSION`], of every table the engine touches, as
+/// [`shape`] describes it, one fact per line.
+pub const SHAPE: &str = include_str!("store/shape.txt");
 
 /// Every table the turn loop reads or writes, loaded whole at the start of a
 /// turn.
@@ -62,6 +68,131 @@ pub const TABLES: &[&str] = &[
 /// leaves (`ruby_llm_usages` for a chat call, `system_one_receipts` for a
 /// System One request), which no rule reads back.
 pub const WRITTEN: &[&str] = &["ruby_llm_usages", "system_one_receipts"];
+
+/// Tables the engine queries directly and never loads: the model registry a
+/// receipt is priced from.
+pub const QUERIED: &[&str] = &["ruby_llm_models"];
+
+/// What the engine relies on in a database, one fact per line, sorted: for
+/// every table it touches, each column's declared type (in lower case, as
+/// SQLite compares it), nullability, default
+/// and key position, each index's uniqueness, columns and condition, each
+/// foreign key and its actions, and each trigger; and every foreign key in
+/// any other table that points into one of them, since a row there can stop
+/// the engine deleting or rewriting one of its own. A table the engine does
+/// not touch, with no foreign key into one it does, is left out, so a
+/// migration that only adds such a table leaves the shape as it was.
+pub fn shape(conn: &Connection) -> Result<Vec<String>, Error> {
+    let touched: Vec<&str> = TABLES
+        .iter()
+        .chain(WRITTEN)
+        .chain(QUERIED)
+        .copied()
+        .collect();
+    let mut facts = Vec::new();
+    for table in &touched {
+        let mut statement = conn
+            .prepare("SELECT name, type, \"notnull\", dflt_value, pk FROM pragma_table_info(?1)")?;
+        let columns = statement
+            .query_map([table], |row| {
+                Ok(format!(
+                    "column {table}.{} {}{}{} pk={}",
+                    row.get::<_, String>(0)?,
+                    row.get::<_, String>(1)?.to_ascii_lowercase(),
+                    if row.get::<_, bool>(2)? {
+                        " not null"
+                    } else {
+                        ""
+                    },
+                    row.get::<_, Option<String>>(3)?
+                        .map_or(String::new(), |default| format!(" default {default}")),
+                    row.get::<_, i64>(4)?,
+                ))
+            })?
+            .collect::<Result<Vec<_>, _>>()?;
+        if columns.is_empty() {
+            facts.push(format!("missing {table}"));
+        }
+        facts.extend(columns);
+        let mut statement = conn.prepare(
+            "SELECT l.name, l.\"unique\", l.origin, l.partial, m.sql FROM pragma_index_list(?1) l \
+             LEFT JOIN sqlite_master m ON m.type = 'index' AND m.name = l.name",
+        )?;
+        let indexes = statement
+            .query_map([table], |row| {
+                Ok((
+                    row.get::<_, String>(0)?,
+                    row.get::<_, bool>(1)?,
+                    row.get::<_, String>(2)?,
+                    row.get::<_, bool>(3)?,
+                    row.get::<_, Option<String>>(4)?,
+                ))
+            })?
+            .collect::<Result<Vec<_>, _>>()?;
+        for (name, unique, origin, partial, sql) in indexes {
+            let mut statement =
+                conn.prepare("SELECT name FROM pragma_index_info(?1) ORDER BY seqno")?;
+            let columns = statement
+                .query_map([&name], |row| row.get::<_, Option<String>>(0))?
+                .map(|column| column.map(|column| column.unwrap_or_else(|| "(expression)".into())))
+                .collect::<Result<Vec<_>, _>>()?;
+            let condition = match (partial, sql) {
+                (true, Some(sql)) => sql
+                    .find(" WHERE ")
+                    .map_or(String::new(), |at| sql[at..].to_string()),
+                _ => String::new(),
+            };
+            facts.push(format!(
+                "index {table} ({}){}{}{condition}",
+                columns.join(", "),
+                if unique { " unique" } else { "" },
+                if origin == "pk" { " primary key" } else { "" },
+            ));
+        }
+        let mut statement = conn
+            .prepare("SELECT name FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?1")?;
+        let triggers = statement
+            .query_map([table], |row| {
+                Ok(format!("trigger {table} {}", row.get::<_, String>(0)?))
+            })?
+            .collect::<Result<Vec<_>, _>>()?;
+        facts.extend(triggers);
+    }
+    let mut statement = conn.prepare(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+    )?;
+    let every: Vec<String> = statement
+        .query_map([], |row| row.get(0))?
+        .collect::<Result<_, _>>()?;
+    for table in &every {
+        let mut statement = conn.prepare(
+            "SELECT \"table\", \"from\", \"to\", on_update, on_delete FROM pragma_foreign_key_list(?1)",
+        )?;
+        let keys = statement
+            .query_map([table], |row| {
+                Ok((
+                    row.get::<_, String>(0)?,
+                    format!(
+                        "foreign key {table}.{} -> {}.{} on update {} on delete {}",
+                        row.get::<_, String>(1)?,
+                        row.get::<_, String>(0)?,
+                        row.get::<_, Option<String>>(2)?
+                            .unwrap_or_else(|| "id".into()),
+                        row.get::<_, String>(3)?,
+                        row.get::<_, String>(4)?,
+                    ),
+                ))
+            })?
+            .collect::<Result<Vec<_>, _>>()?;
+        for (target, fact) in keys {
+            if touched.contains(&table.as_str()) || touched.contains(&target.as_str()) {
+                facts.push(fact);
+            }
+        }
+    }
+    facts.sort();
+    Ok(facts)
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Kind {
@@ -130,11 +261,35 @@ impl Store {
                 found: None,
                 expected: SCHEMA_VERSION.to_string(),
             })?;
-        if found.as_deref() != Some(SCHEMA_VERSION) {
-            return Err(Error::SchemaMismatch {
-                found,
-                expected: SCHEMA_VERSION.to_string(),
-            });
+        match found.as_deref() {
+            Some(version) if version == SCHEMA_VERSION => {}
+            Some(version) if newer(version) => {
+                let expected: Vec<&str> = SHAPE.lines().collect();
+                let actual = shape(&conn)?;
+                let mut differences: Vec<String> = expected
+                    .iter()
+                    .filter(|fact| !actual.iter().any(|found| found == *fact))
+                    .map(|fact| format!("expected {fact}"))
+                    .collect();
+                differences.extend(
+                    actual
+                        .iter()
+                        .filter(|fact| !expected.contains(&fact.as_str()))
+                        .map(|fact| format!("found {fact}")),
+                );
+                if !differences.is_empty() {
+                    return Err(Error::SchemaChanged {
+                        found: version.to_string(),
+                        differences,
+                    });
+                }
+            }
+            _ => {
+                return Err(Error::SchemaMismatch {
+                    found,
+                    expected: SCHEMA_VERSION.to_string(),
+                })
+            }
         }
         let mut columns = HashMap::new();
         for table in TABLES.iter().chain(WRITTEN) {
@@ -336,6 +491,15 @@ impl Store {
 
     pub fn rollback(&self) {
         let _ = self.conn.execute_batch("ROLLBACK");
+    }
+}
+
+/// Whether a migration version comes after [`SCHEMA_VERSION`]. Rails'
+/// versions are fourteen-digit timestamps, so they order as numbers.
+fn newer(version: &str) -> bool {
+    match (version.parse::<u64>(), SCHEMA_VERSION.parse::<u64>()) {
+        (Ok(found), Ok(pinned)) => found > pinned,
+        _ => false,
     }
 }
 

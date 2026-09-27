@@ -3,8 +3,9 @@
 The Ruby engine's stored scripts of typed lines, and what it wrote after
 every step of each, copied from
 [calebl/text-adventure](https://github.com/calebl/text-adventure) at commit
-`f15d07b1bfff79cda40cb59e0269c8b38c6592f1`, and unchanged at `b4c9921c008ac1e459486318324aec66672a9366`,
-the commit whose runner CI plays them through. That repository's
+`f15d07b1bfff79cda40cb59e0269c8b38c6592f1`, and unchanged at `b9407f4499c319748aab1ba2a5f118bf401f1901`,
+the commit whose runner CI plays them through and whose schema the worlds
+are built from. That repository's
 `docs/engine-parity.md` documents the dump and both command contracts.
 
 | Directory | Source | What it is |
@@ -59,8 +60,13 @@ reads them.
 Copy `scripts/` and `goldens/` from a newer commit, rebuild `worlds/` as
 above, update the commit at the top, and run `cargo test`. A script that
 stops agreeing is a rule the Ruby engine changed; port the change. A new
-migration changes the schema version, so the engine refuses every world
-until `store::SCHEMA_VERSION`, and whatever the migration changed, is ported.
+migration changes the schema version. The engine still opens the worlds
+when the migration leaves every table it touches as `store::SHAPE` records
+them; otherwise it refuses them until whatever the migration changed is
+ported. Either way, move `store::SCHEMA_VERSION` to the new version and
+rebuild the worlds, and when the shape changed, replace `src/store/shape.txt`
+with the shape the failing
+`every_world_has_the_shape_the_engine_is_written_against` test prints.
 
 ## What this engine cannot play yet
 

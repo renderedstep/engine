@@ -1,0 +1,613 @@
+column characters.age integer pk=0
+column characters.appearance text pk=0
+column characters.backstory text pk=0
+column characters.conscious_desire text pk=0
+column characters.created_at datetime(6) not null pk=0
+column characters.deliberately_absent boolean not null default FALSE pk=0
+column characters.desire_pursuit varchar pk=0
+column characters.dexterity integer pk=0
+column characters.dislikes text pk=0
+column characters.fears text pk=0
+column characters.fullname varchar pk=0
+column characters.hit_die integer pk=0
+column characters.hostile boolean not null default FALSE pk=0
+column characters.id integer not null pk=1
+column characters.is_companion boolean pk=0
+column characters.is_protagonist boolean not null default FALSE pk=0
+column characters.level integer pk=0
+column characters.likes text pk=0
+column characters.location_id integer pk=0
+column characters.need_pursuit varchar pk=0
+column characters.nickname varchar pk=0
+column characters.personality text pk=0
+column characters.race_id integer not null pk=0
+column characters.recognized_need text pk=0
+column characters.sex varchar pk=0
+column characters.story_id integer not null pk=0
+column characters.strength integer pk=0
+column characters.unconscious_desire text pk=0
+column characters.unrecognized_need text pk=0
+column characters.updated_at datetime(6) not null pk=0
+column characters.will integer pk=0
+column characters.x integer pk=0
+column characters.y integer pk=0
+column characters_scenes.character_id integer not null pk=0
+column characters_scenes.scene_id integer not null pk=0
+column chats.cancelled boolean not null default FALSE pk=0
+column chats.character_id integer pk=0
+column chats.created_at datetime(6) not null pk=0
+column chats.id integer not null pk=1
+column chats.model_id_string varchar pk=0
+column chats.player_id integer pk=0
+column chats.playthrough_id integer pk=0
+column chats.purpose varchar pk=0
+column chats.ruby_llm_model_id integer pk=0
+column chats.updated_at datetime(6) not null pk=0
+column interactions.action text pk=0
+column interactions.action_fact text pk=0
+column interactions.action_status varchar pk=0
+column interactions.character_id integer not null pk=0
+column interactions.created_at datetime(6) not null pk=0
+column interactions.engine_action varchar pk=0
+column interactions.id integer not null pk=1
+column interactions.inner_resolution text pk=0
+column interactions.location_id integer pk=0
+column interactions.post_feeling text pk=0
+column interactions.post_thought text pk=0
+column interactions.pre_feeling text pk=0
+column interactions.pre_thought text pk=0
+column interactions.scene_id integer pk=0
+column interactions.summary text pk=0
+column interactions.updated_at datetime(6) not null pk=0
+column interactions.user_input text pk=0
+column items.bulk varchar not null default 'handy' pk=0
+column items.character_id integer pk=0
+column items.combustible boolean not null default FALSE pk=0
+column items.created_at datetime(6) not null pk=0
+column items.description text pk=0
+column items.disposition varchar not null default 'intact' pk=0
+column items.id integer not null pk=1
+column items.inscription text pk=0
+column items.location_id integer pk=0
+column items.name varchar pk=0
+column items.playthrough_id integer pk=0
+column items.properties text pk=0
+column items.readable boolean not null default FALSE pk=0
+column items.template_id integer pk=0
+column items.updated_at datetime(6) not null pk=0
+column items.use_kind varchar not null default 'ordinary' pk=0
+column items.x integer pk=0
+column items.y integer pk=0
+column location_connections.barrier varchar not null default 'open' pk=0
+column location_connections.connected_location_id integer not null pk=0
+column location_connections.created_at datetime(6) not null pk=0
+column location_connections.distance text pk=0
+column location_connections.hazard varchar pk=0
+column location_connections.hazard_die integer pk=0
+column location_connections.id integer not null pk=1
+column location_connections.key_template_id integer pk=0
+column location_connections.location_id integer not null pk=0
+column location_connections.time_to_travel text pk=0
+column location_connections.travel_method text pk=0
+column location_connections.updated_at datetime(6) not null pk=0
+column locations.created_at datetime(6) not null pk=0
+column locations.danger varchar not null default 'safe' pk=0
+column locations.depth integer pk=0
+column locations.description text pk=0
+column locations.detail_level varchar not null default 'stub' pk=0
+column locations.generation_checkpoint json pk=0
+column locations.hazard varchar pk=0
+column locations.hazard_die integer pk=0
+column locations.id integer not null pk=1
+column locations.last_protagonist_visit datetime(6) pk=0
+column locations.lore text pk=0
+column locations.mobile boolean not null default FALSE pk=0
+column locations.name varchar pk=0
+column locations.parent_location_id integer pk=0
+column locations.population varchar pk=0
+column locations.story_id integer not null pk=0
+column locations.teaser text pk=0
+column locations.updated_at datetime(6) not null pk=0
+column locations.width integer pk=0
+column locations.x integer pk=0
+column locations.y integer pk=0
+column locations.z integer pk=0
+column locations_world_events.location_id integer not null pk=0
+column locations_world_events.world_event_id integer not null pk=0
+column messages.cache_until_here boolean not null default FALSE pk=0
+column messages.chat_id integer not null pk=0
+column messages.citations json pk=0
+column messages.content text pk=0
+column messages.content_raw json pk=0
+column messages.created_at datetime(6) not null pk=0
+column messages.finish_reason varchar pk=0
+column messages.id integer not null pk=1
+column messages.input_tokens integer pk=0
+column messages.model_id integer pk=0
+column messages.model_id_string varchar pk=0
+column messages.output_tokens integer pk=0
+column messages.raw_content json pk=0
+column messages.raw_reasoning json pk=0
+column messages.role varchar pk=0
+column messages.scene_id integer pk=0
+column messages.server_tool_calls json pk=0
+column messages.tool_call_id integer pk=0
+column messages.updated_at datetime(6) not null pk=0
+column playthrough_beats.created_at datetime(6) not null pk=0
+column playthrough_beats.id integer not null pk=1
+column playthrough_beats.playthrough_id integer not null pk=0
+column playthrough_beats.quest_step_id integer not null pk=0
+column playthrough_beats.reached_at datetime(6) not null pk=0
+column playthrough_beats.updated_at datetime(6) not null pk=0
+column playthrough_blows.attacker_id integer not null pk=0
+column playthrough_blows.created_at datetime(6) not null pk=0
+column playthrough_blows.damage integer not null pk=0
+column playthrough_blows.hp_after integer not null pk=0
+column playthrough_blows.id integer not null pk=1
+column playthrough_blows.location_id integer not null pk=0
+column playthrough_blows.playthrough_id integer not null pk=0
+column playthrough_blows.round integer not null pk=0
+column playthrough_blows.scene_id integer pk=0
+column playthrough_blows.sequence integer not null pk=0
+column playthrough_blows.story_timestamp datetime(6) not null pk=0
+column playthrough_blows.target_id integer not null pk=0
+column playthrough_blows.updated_at datetime(6) not null pk=0
+column playthrough_commands.command text not null pk=0
+column playthrough_commands.created_at datetime(6) not null pk=0
+column playthrough_commands.error_kind varchar pk=0
+column playthrough_commands.id integer not null pk=1
+column playthrough_commands.journal json not null default '{}' pk=0
+column playthrough_commands.playthrough_id integer not null pk=0
+column playthrough_commands.refusal json not null default '{}' pk=0
+column playthrough_commands.request_token varchar not null pk=0
+column playthrough_commands.result_scene_id integer pk=0
+column playthrough_commands.status varchar not null default 'pending' pk=0
+column playthrough_commands.updated_at datetime(6) not null pk=0
+column playthrough_drifts.action varchar not null pk=0
+column playthrough_drifts.command text not null pk=0
+column playthrough_drifts.created_at datetime(6) not null pk=0
+column playthrough_drifts.id integer not null pk=1
+column playthrough_drifts.location_id integer pk=0
+column playthrough_drifts.offered text pk=0
+column playthrough_drifts.playthrough_id integer not null pk=0
+column playthrough_drifts.scene_id integer pk=0
+column playthrough_drifts.story_timestamp datetime(6) pk=0
+column playthrough_drifts.updated_at datetime(6) not null pk=0
+column playthrough_endings.created_at datetime(6) not null pk=0
+column playthrough_endings.id integer not null pk=1
+column playthrough_endings.playthrough_id integer not null pk=0
+column playthrough_endings.quest_outcome_id integer not null pk=0
+column playthrough_endings.reached_at datetime(6) not null pk=0
+column playthrough_endings.updated_at datetime(6) not null pk=0
+column playthrough_npc_states.ceasefire boolean not null default FALSE pk=0
+column playthrough_npc_states.character_id integer not null pk=0
+column playthrough_npc_states.created_at datetime(6) not null pk=0
+column playthrough_npc_states.following boolean not null default FALSE pk=0
+column playthrough_npc_states.id integer not null pk=1
+column playthrough_npc_states.location_id integer pk=0
+column playthrough_npc_states.peace_after_blow_id integer not null default 0 pk=0
+column playthrough_npc_states.playthrough_id integer not null pk=0
+column playthrough_npc_states.updated_at datetime(6) not null pk=0
+column playthrough_overreaches.acted text not null pk=0
+column playthrough_overreaches.action varchar not null pk=0
+column playthrough_overreaches.command text not null pk=0
+column playthrough_overreaches.created_at datetime(6) not null pk=0
+column playthrough_overreaches.id integer not null pk=1
+column playthrough_overreaches.location_id integer pk=0
+column playthrough_overreaches.playthrough_id integer not null pk=0
+column playthrough_overreaches.scene_id integer pk=0
+column playthrough_overreaches.story_timestamp datetime(6) pk=0
+column playthrough_overreaches.unacted text not null pk=0
+column playthrough_overreaches.updated_at datetime(6) not null pk=0
+column playthrough_passages.created_at datetime(6) not null pk=0
+column playthrough_passages.id integer not null pk=1
+column playthrough_passages.location_connection_id integer not null pk=0
+column playthrough_passages.means varchar not null pk=0
+column playthrough_passages.opened_at datetime(6) not null pk=0
+column playthrough_passages.opened_by_item_id integer pk=0
+column playthrough_passages.playthrough_id integer not null pk=0
+column playthrough_passages.updated_at datetime(6) not null pk=0
+column playthrough_tolls.character_id integer not null pk=0
+column playthrough_tolls.created_at datetime(6) not null pk=0
+column playthrough_tolls.damage integer not null pk=0
+column playthrough_tolls.hazard varchar not null pk=0
+column playthrough_tolls.hp_after integer not null pk=0
+column playthrough_tolls.id integer not null pk=1
+column playthrough_tolls.location_connection_id integer pk=0
+column playthrough_tolls.location_id integer not null pk=0
+column playthrough_tolls.playthrough_id integer not null pk=0
+column playthrough_tolls.saved boolean not null default FALSE pk=0
+column playthrough_tolls.scene_id integer pk=0
+column playthrough_tolls.sequence integer not null pk=0
+column playthrough_tolls.story_timestamp datetime(6) not null pk=0
+column playthrough_tolls.updated_at datetime(6) not null pk=0
+column playthrough_turn_events.created_at datetime(6) not null pk=0
+column playthrough_turn_events.data json not null default '{}' pk=0
+column playthrough_turn_events.id integer not null pk=1
+column playthrough_turn_events.kind varchar not null pk=0
+column playthrough_turn_events.playthrough_command_id integer not null pk=0
+column playthrough_turn_events.sequence integer not null pk=0
+column playthrough_turn_events.updated_at datetime(6) not null pk=0
+column playthrough_vitals.character_id integer not null pk=0
+column playthrough_vitals.created_at datetime(6) not null pk=0
+column playthrough_vitals.hp_current integer not null pk=0
+column playthrough_vitals.id integer not null pk=1
+column playthrough_vitals.playthrough_id integer not null pk=0
+column playthrough_vitals.provoked_at datetime(6) pk=0
+column playthrough_vitals.updated_at datetime(6) not null pk=0
+column playthrough_volitions.character_id integer not null pk=0
+column playthrough_volitions.chosen varchar not null pk=0
+column playthrough_volitions.created_at datetime(6) not null pk=0
+column playthrough_volitions.decided_by varchar pk=0
+column playthrough_volitions.fact text not null pk=0
+column playthrough_volitions.id integer not null pk=1
+column playthrough_volitions.location_id integer not null pk=0
+column playthrough_volitions.playthrough_id integer not null pk=0
+column playthrough_volitions.round integer not null pk=0
+column playthrough_volitions.scene_id integer pk=0
+column playthrough_volitions.serves varchar not null pk=0
+column playthrough_volitions.status varchar not null pk=0
+column playthrough_volitions.system_one_error varchar pk=0
+column playthrough_volitions.updated_at datetime(6) not null pk=0
+column playthroughs.character_id integer pk=0
+column playthroughs.created_at datetime(6) not null pk=0
+column playthroughs.current_location_id integer pk=0
+column playthroughs.current_scene_id integer pk=0
+column playthroughs.ended_at datetime(6) pk=0
+column playthroughs.id integer not null pk=1
+column playthroughs.player_id integer pk=0
+column playthroughs.story_id integer not null pk=0
+column playthroughs.token varchar not null pk=0
+column playthroughs.updated_at datetime(6) not null pk=0
+column quest_outcomes.condition varchar pk=0
+column quest_outcomes.created_at datetime(6) not null pk=0
+column quest_outcomes.id integer not null pk=1
+column quest_outcomes.is_default boolean not null default FALSE pk=0
+column quest_outcomes.minutes integer pk=0
+column quest_outcomes.name varchar not null pk=0
+column quest_outcomes.quest_id integer not null pk=0
+column quest_outcomes.ramification_minutes integer pk=0
+column quest_outcomes.ramification_summary text pk=0
+column quest_outcomes.summary text not null pk=0
+column quest_outcomes.updated_at datetime(6) not null pk=0
+column quest_steps.bound_at datetime(6) pk=0
+column quest_steps.created_at datetime(6) not null pk=0
+column quest_steps.id integer not null pk=1
+column quest_steps.minutes integer pk=0
+column quest_steps.position integer not null pk=0
+column quest_steps.quest_id integer not null pk=0
+column quest_steps.summary text not null pk=0
+column quest_steps.target_id integer pk=0
+column quest_steps.target_name varchar pk=0
+column quest_steps.target_type varchar pk=0
+column quest_steps.teaser text pk=0
+column quest_steps.trigger_kind varchar not null pk=0
+column quest_steps.updated_at datetime(6) not null pk=0
+column quests.contributes boolean not null default TRUE pk=0
+column quests.created_at datetime(6) not null pk=0
+column quests.id integer not null pk=1
+column quests.origin varchar not null default 'seeded' pk=0
+column quests.parent_quest_id integer pk=0
+column quests.premise text not null pk=0
+column quests.status varchar not null default 'open' pk=0
+column quests.story_id integer not null pk=0
+column quests.title varchar not null pk=0
+column quests.updated_at datetime(6) not null pk=0
+column races.created_at datetime(6) not null pk=0
+column races.description text not null pk=0
+column races.id integer not null pk=1
+column races.monstrous boolean not null default FALSE pk=0
+column races.name varchar not null pk=0
+column races.universe_id integer not null pk=0
+column races.updated_at datetime(6) not null pk=0
+column ruby_llm_models.capabilities json default '[]' pk=0
+column ruby_llm_models.context_window integer pk=0
+column ruby_llm_models.created_at datetime(6) not null pk=0
+column ruby_llm_models.family varchar pk=0
+column ruby_llm_models.id integer not null pk=1
+column ruby_llm_models.knowledge_cutoff date pk=0
+column ruby_llm_models.max_output_tokens integer pk=0
+column ruby_llm_models.metadata json default '{}' pk=0
+column ruby_llm_models.modalities json default '{}' pk=0
+column ruby_llm_models.model_created_at datetime(6) pk=0
+column ruby_llm_models.model_id varchar not null pk=0
+column ruby_llm_models.name varchar not null pk=0
+column ruby_llm_models.pricing json default '{}' pk=0
+column ruby_llm_models.provider varchar not null pk=0
+column ruby_llm_models.unlisted_at datetime(6) pk=0
+column ruby_llm_models.updated_at datetime(6) not null pk=0
+column ruby_llm_usages.cache_read_cost decimal(16,10) pk=0
+column ruby_llm_usages.cache_read_tokens integer pk=0
+column ruby_llm_usages.cache_write_cost decimal(16,10) pk=0
+column ruby_llm_usages.cache_write_tokens integer pk=0
+column ruby_llm_usages.chat_id integer not null pk=0
+column ruby_llm_usages.chat_type varchar not null pk=0
+column ruby_llm_usages.created_at datetime(6) not null pk=0
+column ruby_llm_usages.id integer not null pk=1
+column ruby_llm_usages.input_cost decimal(16,10) pk=0
+column ruby_llm_usages.input_tokens integer pk=0
+column ruby_llm_usages.message_id integer pk=0
+column ruby_llm_usages.message_type varchar pk=0
+column ruby_llm_usages.model varchar not null pk=0
+column ruby_llm_usages.operation varchar not null pk=0
+column ruby_llm_usages.output_cost decimal(16,10) pk=0
+column ruby_llm_usages.output_tokens integer pk=0
+column ruby_llm_usages.provider varchar not null pk=0
+column ruby_llm_usages.status varchar not null pk=0
+column ruby_llm_usages.thinking_cost decimal(16,10) pk=0
+column ruby_llm_usages.thinking_tokens integer pk=0
+column ruby_llm_usages.total_cost decimal(16,10) pk=0
+column ruby_llm_usages.updated_at datetime(6) not null pk=0
+column scenes.acted_on_id integer pk=0
+column scenes.acted_on_type varchar pk=0
+column scenes.created_at datetime(6) not null pk=0
+column scenes.description text pk=0
+column scenes.engine_fact text pk=0
+column scenes.engine_fallback boolean not null default FALSE pk=0
+column scenes.id integer not null pk=1
+column scenes.is_opening boolean not null default FALSE pk=0
+column scenes.location_id integer not null pk=0
+column scenes.previous_scene_id integer pk=0
+column scenes.resolved_action varchar pk=0
+column scenes.resolved_by varchar pk=0
+column scenes.story_id integer not null pk=0
+column scenes.story_timestamp datetime(6) pk=0
+column scenes.summary text pk=0
+column scenes.typed text pk=0
+column scenes.updated_at datetime(6) not null pk=0
+column stories.created_at datetime(6) not null pk=0
+column stories.generation_snapshot text pk=0
+column stories.genre varchar pk=0
+column stories.id integer not null pk=1
+column stories.preface text pk=0
+column stories.start_time datetime(6) pk=0
+column stories.summary text pk=0
+column stories.title varchar pk=0
+column stories.universe_id integer not null pk=0
+column stories.updated_at datetime(6) not null pk=0
+column system_one_receipts.cost_usd decimal(12,6) not null pk=0
+column system_one_receipts.created_at datetime(6) not null pk=0
+column system_one_receipts.id integer not null pk=1
+column system_one_receipts.player_id integer pk=0
+column system_one_receipts.playthrough_id integer pk=0
+column system_one_receipts.purpose varchar pk=0
+column system_one_receipts.transport varchar pk=0
+column system_one_receipts.updated_at datetime(6) not null pk=0
+column universes.civilizations text pk=0
+column universes.created_at datetime(6) not null pk=0
+column universes.economics text pk=0
+column universes.geographies text pk=0
+column universes.history text pk=0
+column universes.id integer not null pk=1
+column universes.physics text pk=0
+column universes.politics text pk=0
+column universes.religion text pk=0
+column universes.technology text pk=0
+column universes.updated_at datetime(6) not null pk=0
+column universes.weapons text pk=0
+column world_events.created_at datetime(6) not null pk=0
+column world_events.fired_at datetime(6) pk=0
+column world_events.id integer not null pk=1
+column world_events.occurred_at datetime(6) not null pk=0
+column world_events.playthrough_id integer pk=0
+column world_events.scheduled_for datetime(6) pk=0
+column world_events.source varchar not null pk=0
+column world_events.story_id integer not null pk=0
+column world_events.summary text not null pk=0
+column world_events.updated_at datetime(6) not null pk=0
+column world_events.world_mechanic_id integer pk=0
+column world_mechanics.cadence varchar not null pk=0
+column world_mechanics.created_at datetime(6) not null pk=0
+column world_mechanics.description text pk=0
+column world_mechanics.id integer not null pk=1
+column world_mechanics.kind varchar not null pk=0
+column world_mechanics.last_run_at datetime(6) pk=0
+column world_mechanics.name varchar not null pk=0
+column world_mechanics.story_id integer not null pk=0
+column world_mechanics.updated_at datetime(6) not null pk=0
+foreign key characters.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key characters.race_id -> races.id on update NO ACTION on delete NO ACTION
+foreign key characters.story_id -> stories.id on update NO ACTION on delete NO ACTION
+foreign key chats.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key chats.player_id -> players.id on update NO ACTION on delete NO ACTION
+foreign key chats.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key chats.ruby_llm_model_id -> ruby_llm_models.id on update NO ACTION on delete NO ACTION
+foreign key interactions.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key interactions.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key interactions.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key items.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key items.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key items.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key location_connections.connected_location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key location_connections.key_template_id -> items.id on update NO ACTION on delete SET NULL
+foreign key location_connections.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key locations.parent_location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key locations.story_id -> stories.id on update NO ACTION on delete NO ACTION
+foreign key locations_world_events.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key locations_world_events.world_event_id -> world_events.id on update NO ACTION on delete NO ACTION
+foreign key messages.chat_id -> chats.id on update NO ACTION on delete NO ACTION
+foreign key messages.model_id -> ruby_llm_models.id on update NO ACTION on delete NO ACTION
+foreign key messages.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_beats.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_beats.quest_step_id -> quest_steps.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_blows.attacker_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_blows.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_blows.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_blows.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_blows.target_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_commands.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_commands.result_scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_drifts.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_drifts.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_drifts.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_endings.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_endings.quest_outcome_id -> quest_outcomes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_feedbacks.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_feedbacks.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_npc_states.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_npc_states.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_npc_states.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_overreaches.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_overreaches.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_overreaches.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_passages.location_connection_id -> location_connections.id on update NO ACTION on delete CASCADE
+foreign key playthrough_passages.opened_by_item_id -> items.id on update NO ACTION on delete SET NULL
+foreign key playthrough_passages.playthrough_id -> playthroughs.id on update NO ACTION on delete CASCADE
+foreign key playthrough_tolls.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_tolls.location_connection_id -> location_connections.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_tolls.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_tolls.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_tolls.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_turn_events.playthrough_command_id -> playthrough_commands.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_vitals.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_vitals.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_volitions.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_volitions.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_volitions.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_volitions.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthroughs.character_id -> characters.id on update NO ACTION on delete NO ACTION
+foreign key playthroughs.current_location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key playthroughs.current_scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthroughs.player_id -> players.id on update NO ACTION on delete NO ACTION
+foreign key playthroughs.story_id -> stories.id on update NO ACTION on delete NO ACTION
+foreign key quest_outcomes.quest_id -> quests.id on update NO ACTION on delete NO ACTION
+foreign key quest_steps.quest_id -> quests.id on update NO ACTION on delete NO ACTION
+foreign key quests.parent_quest_id -> quests.id on update NO ACTION on delete NO ACTION
+foreign key quests.story_id -> stories.id on update NO ACTION on delete NO ACTION
+foreign key races.universe_id -> universes.id on update NO ACTION on delete NO ACTION
+foreign key scenes.location_id -> locations.id on update NO ACTION on delete NO ACTION
+foreign key scenes.previous_scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key scenes.story_id -> stories.id on update NO ACTION on delete NO ACTION
+foreign key stories.universe_id -> universes.id on update NO ACTION on delete NO ACTION
+foreign key system_one_receipts.player_id -> players.id on update NO ACTION on delete NO ACTION
+foreign key system_one_receipts.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key world_events.story_id -> stories.id on update NO ACTION on delete NO ACTION
+foreign key world_events.world_mechanic_id -> world_mechanics.id on update NO ACTION on delete NO ACTION
+foreign key world_mechanics.story_id -> stories.id on update NO ACTION on delete NO ACTION
+index characters (location_id)
+index characters (location_id, hostile)
+index characters (location_id, id)
+index characters (race_id)
+index characters (story_id)
+index characters (story_id, (expression)) unique
+index characters (story_id, is_protagonist)
+index characters_scenes (character_id, scene_id)
+index characters_scenes (scene_id, character_id)
+index chats (character_id)
+index chats (player_id)
+index chats (playthrough_id)
+index chats (playthrough_id, character_id, purpose)
+index chats (ruby_llm_model_id)
+index interactions (character_id)
+index interactions (location_id)
+index interactions (scene_id)
+index items (character_id)
+index items (location_id)
+index items (location_id, character_id)
+index items (playthrough_id)
+index items (playthrough_id, id)
+index items (playthrough_id, template_id)
+index items (template_id)
+index location_connections (connected_location_id)
+index location_connections (key_template_id)
+index location_connections (location_id)
+index location_connections (location_id, connected_location_id) unique
+index locations (parent_location_id)
+index locations (story_id)
+index locations (story_id, detail_level)
+index locations_world_events (location_id)
+index locations_world_events (world_event_id)
+index locations_world_events (world_event_id, location_id) unique
+index messages (chat_id)
+index messages (model_id)
+index messages (scene_id)
+index messages (tool_call_id)
+index playthrough_beats (playthrough_id)
+index playthrough_beats (playthrough_id, quest_step_id) unique
+index playthrough_beats (quest_step_id)
+index playthrough_blows (attacker_id)
+index playthrough_blows (location_id)
+index playthrough_blows (playthrough_id)
+index playthrough_blows (playthrough_id, scene_id, id)
+index playthrough_blows (scene_id)
+index playthrough_blows (target_id)
+index playthrough_commands (playthrough_id)
+index playthrough_commands (playthrough_id, request_token, command) unique
+index playthrough_commands (result_scene_id)
+index playthrough_drifts (action)
+index playthrough_drifts (location_id)
+index playthrough_drifts (playthrough_id)
+index playthrough_drifts (playthrough_id, story_timestamp)
+index playthrough_drifts (scene_id)
+index playthrough_endings (playthrough_id)
+index playthrough_endings (playthrough_id, quest_outcome_id) unique
+index playthrough_endings (quest_outcome_id)
+index playthrough_npc_states (character_id)
+index playthrough_npc_states (location_id)
+index playthrough_npc_states (playthrough_id)
+index playthrough_npc_states (playthrough_id, character_id) unique
+index playthrough_overreaches (action)
+index playthrough_overreaches (location_id)
+index playthrough_overreaches (playthrough_id)
+index playthrough_overreaches (playthrough_id, story_timestamp)
+index playthrough_overreaches (scene_id)
+index playthrough_passages (location_connection_id)
+index playthrough_passages (opened_by_item_id)
+index playthrough_passages (playthrough_id)
+index playthrough_passages (playthrough_id, location_connection_id) unique
+index playthrough_tolls (character_id)
+index playthrough_tolls (location_connection_id)
+index playthrough_tolls (location_id)
+index playthrough_tolls (playthrough_id)
+index playthrough_tolls (playthrough_id, scene_id, id)
+index playthrough_tolls (scene_id)
+index playthrough_turn_events (playthrough_command_id)
+index playthrough_turn_events (playthrough_command_id, sequence) unique
+index playthrough_vitals (character_id)
+index playthrough_vitals (playthrough_id)
+index playthrough_vitals (playthrough_id, character_id) unique
+index playthrough_volitions (character_id)
+index playthrough_volitions (location_id)
+index playthrough_volitions (playthrough_id)
+index playthrough_volitions (playthrough_id, scene_id, id)
+index playthrough_volitions (scene_id)
+index playthroughs (character_id)
+index playthroughs (current_location_id)
+index playthroughs (current_scene_id)
+index playthroughs (player_id)
+index playthroughs (story_id)
+index playthroughs (token) unique
+index quest_outcomes (quest_id)
+index quest_outcomes (quest_id, name) unique
+index quest_steps (quest_id)
+index quest_steps (quest_id, position) unique
+index quest_steps (target_type, target_id)
+index quests (parent_quest_id)
+index quests (story_id)
+index quests (story_id, title) unique
+index races (universe_id)
+index races (universe_id, name) unique
+index ruby_llm_models (family)
+index ruby_llm_models (provider)
+index ruby_llm_models (provider, model_id) unique
+index ruby_llm_usages (chat_type, chat_id)
+index ruby_llm_usages (message_type, message_id)
+index ruby_llm_usages (status)
+index scenes (acted_on_type, acted_on_id)
+index scenes (location_id)
+index scenes (previous_scene_id)
+index scenes (story_id)
+index scenes (story_id, is_opening)
+index scenes (story_id, resolved_action)
+index scenes (story_id, story_timestamp)
+index stories (universe_id)
+index system_one_receipts (player_id)
+index system_one_receipts (player_id, created_at)
+index system_one_receipts (playthrough_id)
+index world_events (playthrough_id)
+index world_events (story_id)
+index world_events (story_id, occurred_at)
+index world_events (story_id, scheduled_for)
+index world_events (world_mechanic_id)
+index world_mechanics (story_id)
+index world_mechanics (story_id, name) unique

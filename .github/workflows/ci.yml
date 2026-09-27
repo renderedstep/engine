@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # The text-adventure commit parity/README.md names.
-      RUBY_ENGINE_COMMIT: b4c9921c008ac1e459486318324aec66672a9366
+      RUBY_ENGINE_COMMIT: b9407f4499c319748aab1ba2a5f118bf401f1901
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
