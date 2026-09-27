@@ -116,11 +116,12 @@ fn every_world_has_the_shape_the_engine_is_written_against() {
         let conn = rusqlite::Connection::open_in_memory().unwrap();
         conn.execute_batch(&std::fs::read_to_string(&path).unwrap())
             .unwrap();
-        let found = shape(&conn).unwrap().join("\n") + "\n";
+        let found = shape(&conn).unwrap();
         assert!(
-            found == SHAPE,
-            "{} does not have store::SHAPE; its shape is:\n{found}",
-            path.display()
+            found.iter().map(String::as_str).eq(SHAPE.lines()),
+            "{} does not have store::SHAPE; its shape is:\n{}\n",
+            path.display(),
+            found.join("\n")
         );
     }
 }
