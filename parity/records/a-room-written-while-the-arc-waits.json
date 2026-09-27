@@ -1685,7 +1685,7 @@
         {
           "purpose": "ending",
           "system": "You are the narrator of a text adventure, and this is the last thing the\nplayer will ever read of this story. The game is over.\n\nThe prompt states the ending the game reached. It is a fact, already\nrecorded: write THAT ending and no other. Do not end the story a different\nway, do not leave it open, and do not say what happens next.\n\nWrite it in the second person, present tense, addressing the player as\n\"you\", in one short paragraph of prose -- two at the most.\n\nNothing moves as it is written: the player stays where they are, nothing\nchanges hands, nobody arrives and nobody leaves. The ways out of here, the\npeople present and what the player carries are listed in the prompt; do not\nadd a way out, a person or a possession that is not on those lists. Never\nbreak character, never offer the player a menu, and never mention that you\nare an AI or a narrator.\n",
-          "user": "Story: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in the Bell Tower: A narrow stone tower with a rope hanging from the dark.\n\nWays out of here: Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nThe story has ended: The bell rings over the valley for the first time in a generation.\n\nNobody else is here.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: brass censer.\n\nWhat just happened: You climb the tower stair to the bell rope.\n\nEarlier, in order:\nIlse arrives at the abbey's chapter hall.\nIlse walks into the Lower Cloister.\nThe player spoke with Brother Anselm. Brother Anselm says the bell was stopped by the prior's order. Brother Anselm changes no possessions, travel agreement or ceasefire.\nIlse reaches the Bell Tower.\n\nWrite the ending.\n",
+          "user": "Story: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in the Bell Tower: A narrow stone tower with a rope hanging from the dark.\n\nWays out of here: Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nThe story has ended: The bell rings over the valley for the first time in a generation.\n\nNobody else is here.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: brass censer.\n\nWrite the ending.\n",
           "schema": null
         }
       ],
@@ -1989,7 +1989,7 @@
               "engine_fallback": 0,
               "is_opening": 0,
               "location_id": 1000000004,
-              "previous_scene_id": 1000000004,
+              "previous_scene_id": null,
               "resolved_action": "ending",
               "resolved_by": null,
               "story_id": 1000000001,

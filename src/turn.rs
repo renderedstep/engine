@@ -2710,9 +2710,14 @@ impl<'s> Mechanics<'s> {
             .find(|(column, _)| *column == "location_id")
             .and_then(|(_, value)| value.as_i64());
         values.push(("story_id", Value::from(self.story_id())));
+        let concluding = values
+            .iter()
+            .any(|(column, value)| *column == "resolved_action" && value == "conclude");
         values.push((
             "previous_scene_id",
-            previous.map_or(Value::Null, Value::from),
+            previous
+                .filter(|_| !concluding)
+                .map_or(Value::Null, Value::from),
         ));
         let scene = id(&self.insert("scenes", values)?);
         for who in cast {
