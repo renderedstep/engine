@@ -1,0 +1,118 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: first-opens-with-the-starting-kit
+  type: look
+  expect:
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+    changed: false
+    refused: false
+- id: second-opens-with-the-same-starting-kit
+  type: look
+  player: second
+  expect:
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+    changed: false
+    refused: false
+- id: first-takes-the-stamp
+  type: take the ward stamp
+  expect:
+    changed: true
+    understood: take -> ward stamp
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: second-is-not-holding-it
+  type: inventory
+  player: second
+  expect:
+    changed: false
+    refused: false
+    carrying:
+    - Ward Office 12 daybook
+- id: second-finds-the-office-as-it-was-generated
+  type: look
+  player: second
+  expect:
+    changed: false
+    refused: false
+    location: Ward Office 12 (realized)
+- id: second-takes-its-own-stamp
+  type: take the ward stamp
+  player: second
+  expect:
+    changed: true
+    understood: take -> ward stamp
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: first-still-holds-the-one-it-took
+  type: inventory
+  expect:
+    changed: false
+    refused: false
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: second-can-still-drop-its-own-copy
+  type: drop the daybook
+  player: second
+  expect:
+    changed: true
+    change: now lying in Ward Office 12
+    carrying:
+    - ward stamp
+- id: first-does-not-see-the-other-players-daybook
+  type: look
+  expect:
+    changed: false
+    refused: false
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: first-walks-off-with-the-stamp
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: first-takes-the-index
+  type: take the index
+  expect:
+    changed: true
+    carrying:
+    - Perrin's private index
+    - Ward Office 12 daybook
+    - ward stamp
+- id: second-walks-into-a-closet-that-still-has-its-index
+  type: go to the Supply Closet
+  player: second
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    carrying:
+    - ward stamp
+- id: first-is-still-in-the-closet-with-its-own-floor
+  type: look
+  expect:
+    changed: false
+    location: The Supply Closet (realized)
+    carrying:
+    - Perrin's private index
+    - Ward Office 12 daybook
+    - ward stamp

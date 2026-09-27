@@ -1,0 +1,100 @@
+---
+story: The Quay House
+steps:
+- id: the-quay-as-seeded
+  type: look
+  expect:
+    location: The Quay (realized)
+    exits:
+    - The Custom House room 1 (stub)
+    - The Bonded Cellar room 1 (stub)
+    changed: false
+    refused: false
+- id: in-through-the-door
+  type: go to The Custom House room 1
+  expect:
+    changed: true
+    location: The Custom House room 1 (stub)
+    exits:
+    - The Quay (realized)
+    - The Custom House room 2 (stub)
+    - The Custom House room 5 (stub)
+    here:
+    - seal ledger
+    refused: false
+- id: the-room-is-named-and-the-file-is-loaded-over-it
+  reseed:
+    locations:
+      The Custom House room 1: the counting room
+  expect:
+    changed: false
+    refused: false
+    location: the counting room (stub)
+    exits:
+    - The Quay (realized)
+    - The Custom House room 2 (stub)
+    - The Custom House room 5 (stub)
+    here:
+    - seal ledger
+    note: is "the counting room" in the file, so the row was renamed
+- id: and-the-quay-still-has-one-way-into-the-building
+  type: go to the quay
+  expect:
+    changed: true
+    location: The Quay (realized)
+    exits:
+    - the counting room (stub)
+    - The Bonded Cellar room 1 (stub)
+    refused: false
+- id: and-the-player-can-still-walk-in-by-the-name-they-are-shown
+  type: go to the counting room
+  expect:
+    changed: true
+    location: the counting room (stub)
+    exits:
+    - The Quay (realized)
+    - The Custom House room 2 (stub)
+    - The Custom House room 5 (stub)
+    here:
+    - seal ledger
+    refused: false
+- id: and-the-file-does-not-take-the-name-back-off-it
+  reseed: true
+  expect:
+    changed: false
+    refused: false
+    location: the counting room (stub)
+    exits:
+    - The Quay (realized)
+    - The Custom House room 2 (stub)
+    - The Custom House room 5 (stub)
+    here:
+    - seal ledger
+    note: provisional numbers, so the row kept the name it has
+- id: and-the-player-is-still-in-the-room-they-were-standing-in
+  type: look
+  expect:
+    changed: false
+    refused: false
+    location: the counting room (stub)
+    exits:
+    - The Quay (realized)
+    - The Custom House room 2 (stub)
+    - The Custom House room 5 (stub)
+    here:
+    - seal ledger
+- id: and-the-file-catches-up-with-the-name-the-room-has
+  reseed:
+    locations:
+      The Custom House room 1: the counting room
+  expect:
+    changed: false
+    refused: false
+    location: the counting room (stub)
+    exits:
+    - The Quay (realized)
+    - The Custom House room 2 (stub)
+    - The Custom House room 5 (stub)
+    here:
+    - seal ledger
+    note: re-seeded from the-quay-house.yml

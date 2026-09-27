@@ -1,0 +1,77 @@
+---
+story: The Quay House
+steps:
+- id: the-quay-as-seeded
+  type: look
+  expect:
+    location: The Quay (realized)
+    here: []
+    carrying: []
+    changed: false
+    refused: false
+- id: in-through-the-door
+  type: go to The Custom House room 1
+  expect:
+    changed: true
+    location: The Custom House room 1 (stub)
+    here:
+    - seal ledger
+    refused: false
+- id: off-the-floor-and-into-a-hand
+  type: take the seal ledger
+  expect:
+    changed: true
+    carrying:
+    - seal ledger
+    here: []
+    refused: false
+- id: up-the-stairs-with-it
+  type: go to The Custom House room 5
+  expect:
+    changed: true
+    location: The Custom House room 5 (stub)
+    carrying:
+    - seal ledger
+    here: []
+    refused: false
+- id: and-down-somewhere-in-this-room
+  type: drop the seal ledger
+  expect:
+    changed: true
+    here:
+    - seal ledger
+    carrying: []
+    refused: false
+- id: and-it-is-still-there-when-we-come-back
+  type: go to The Custom House room 1
+  expect:
+    changed: true
+    location: The Custom House room 1 (stub)
+    here: []
+    carrying: []
+    refused: false
+- id: picked-up-again-on-the-floor-above
+  type: go to The Custom House room 5
+  expect:
+    changed: true
+    location: The Custom House room 5 (stub)
+    here:
+    - seal ledger
+    refused: false
+- id: taken-a-second-time
+  type: take the seal ledger
+  expect:
+    changed: true
+    carrying:
+    - seal ledger
+    here: []
+    refused: false
+- id: and-put-down-once-more-so-the-records-end-with-it-placed
+  type: drop the seal ledger
+  expect:
+    changed: true
+    location: The Custom House room 5 (stub)
+    here:
+    - seal ledger
+    carrying: []
+    refused: false

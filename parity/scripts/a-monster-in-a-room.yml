@@ -1,0 +1,107 @@
+---
+story: The Lunar Cartographer
+steps:
+- id: nobody-here-means-you-harm
+  type: look
+  expect:
+    location: Grenn's Boarding House, Room 3 (realized)
+    present:
+    - Grenn Ollivar
+    foes: []
+    exits:
+    - Mournwell Lane (stub)
+    - Grenn's Boarding House hallway (stub)
+    - Larkspur Quarter rooftops (stub)
+    changed: false
+    refused: false
+- id: up-the-stairs
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+    present: []
+    foes: []
+    exits:
+    - Grenn's Boarding House, Room 3 (realized)
+    - The Bell of Saint Aravel (realized)
+- id: into-the-bell-chamber
+  type: go to The Bell of Saint Aravel
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    present:
+    - Marek Sollen
+    foes:
+    - Marek Sollen
+    blows: 0
+    hp: 18
+    exits:
+    - Grenn's Boarding House hallway (stub)
+    here:
+    - climbers' bearing book
+    carrying: []
+- id: a-monster-is-still-somebody-you-can-address
+  type: talk to Marek Sollen
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - Marek Sollen
+    location: The Bell of Saint Aravel (realized)
+    foes:
+    - Marek Sollen
+    drifts: 0
+    note: 'answered: Marek Sollen hit Isbet Marrow for'
+    blows: 1
+    dead: false
+- id: the-sheet-the-file-gave-him-is-the-players-own-sheet-unmoved
+  type: stats
+  expect:
+    abilities:
+      strength: 11
+      dexterity: 14
+      will: 13
+    blows: 0
+    foes:
+    - Marek Sollen
+    changed: false
+    refused: false
+- id: nothing-to-pick-up-off-his-floor
+  type: take the rope
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no thing lying here
+    foes:
+    - Marek Sollen
+    drifts: 0
+    blows: 0
+- id: patched-up-before-turning-her-back
+  type: mend 20
+  expect:
+    hp: 18
+    blows: 0
+    dead: false
+- id: back-down-the-stair
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+    foes: []
+    note: the fight is over
+    blows: 1
+    dead: false
+- id: and-the-tower-still-has-him-in-it
+  type: go to the bell
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    present:
+    - Marek Sollen
+    foes:
+    - Marek Sollen
+    blows: 0
+    dead: false
+    hp_of:
+      Marek Sollen: 10

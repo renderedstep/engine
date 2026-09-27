@@ -1,0 +1,41 @@
+---
+story: A Turn at the Gate
+steps:
+- id: a-later-job-cannot-overtake-an-earlier-line
+  type: "/move Courtyard"
+  browser:
+    token: crossing
+    accepted_first:
+    - token: pickup
+      type: "/take red coin"
+    replies:
+    - purpose: narration
+      content: You close your hand around the red coin.
+    - purpose: arrival
+      content:
+        description: The sheltered courtyard opens before you.
+        summary: The player crosses into the courtyard.
+  expect:
+    carrying:
+    - red coin
+    location: Courtyard (realized)
+    hazards: 1
+    changed: true
+    note:
+    - 'pickup: completed'
+    - 'crossing: completed'
+- id: the-overtaken-job-finds-its-line-already-played
+  type: "/take red coin"
+  browser:
+    token: pickup
+  expect:
+    carrying:
+    - red coin
+    location: Courtyard (realized)
+    here: []
+    blows: 0
+    hazards: 0
+    elapsed_minutes: 0
+    changed: false
+    note:
+    - 'pickup: completed'

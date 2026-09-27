@@ -1,0 +1,126 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: the-records-as-seeded
+  type: look
+  expect:
+    location: Ward Office 12 (realized)
+    exits:
+    - The Supply Closet (realized)
+    - The Long Hallway (stub)
+    carrying:
+    - Ward Office 12 daybook
+    changed: false
+    refused: false
+- id: the-second-player-starts-where-the-world-says
+  type: look
+  player: second
+  expect:
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: take-the-stamp
+  type: take the ward stamp
+  expect:
+    changed: true
+    understood: take -> ward stamp
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: carry-it-into-the-closet
+  type: go to the supply closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: drop-it-there
+  type: drop the ward stamp
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: re-seed-the-world-mid-game
+  reseed: true
+  expect:
+    changed: false
+    refused: false
+    location: The Supply Closet (realized)
+    exits:
+    - Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+    note: re-seeded from the-unrecorded-hour.yml
+- id: the-office-still-has-one-closet
+  type: go to ward office 12
+  expect:
+    changed: true
+    location: Ward Office 12 (realized)
+    exits:
+    - The Supply Closet (realized)
+    - The Long Hallway (stub)
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+- id: the-second-player-still-holds-its-own-daybook
+  type: look
+  player: second
+  expect:
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: and-a-second-re-seed-changes-nothing-at-all
+  reseed: true
+  expect:
+    changed: false
+    location: Ward Office 12 (realized)
+    exits:
+    - The Supply Closet (realized)
+    - The Long Hallway (stub)
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+- id: the-file-renames-the-closet
+  reseed:
+    locations:
+      The Supply Closet: Supply Closet
+    items:
+      ward stamp: Ward Stamp
+  expect:
+    changed: false
+    location: Ward Office 12 (realized)
+    exits:
+    - Supply Closet (realized)
+    - The Long Hallway (stub)
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    note: is "Supply Closet" in the file, so the row was renamed
+- id: and-the-closet-is-still-the-closet-that-was-played-in
+  type: go to supply closet
+  expect:
+    changed: true
+    location: Supply Closet (realized)
+    exits:
+    - Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: and-renaming-it-back-renames-the-same-row-again
+  reseed: true
+  expect:
+    changed: false
+    location: The Supply Closet (realized)
+    exits:
+    - Ward Office 12 (realized)
+    note: is "The Supply Closet" in the file, so the row was renamed

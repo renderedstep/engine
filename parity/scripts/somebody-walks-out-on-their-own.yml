@@ -1,0 +1,22 @@
+---
+story: A Clerk With Somewhere To Be
+steps:
+- type: stats
+  expect:
+    volitions: 0
+    acts: 0
+    present:
+    - Bell
+- type: take the moon
+  expect:
+    refused: true
+    volitions: 0
+    acts: 0
+- type: take the quarter receipt
+  expect:
+    volitions: 1
+    carrying:
+    - quarter receipt
+- type: go to The Landing
+  expect:
+    location: The Landing (realized)

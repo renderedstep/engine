@@ -1,0 +1,111 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: the-office-as-seeded
+  type: stats
+  expect:
+    location: Ward Office 12 (realized)
+    exits:
+    - The Supply Closet (realized)
+    - The Long Hallway (stub)
+    here:
+    - ward stamp
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    present:
+    - Halkett Rowe
+    volitions: 0
+    acts: 0
+- id: a-slashed-take
+  type: "/take the ward stamp"
+  expect:
+    changed: true
+    refused: false
+    understood: take -> ward stamp
+    resolved_by: grammar
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: a-slashed-drop-puts-it-back
+  type: "/drop the ward stamp"
+  expect:
+    changed: true
+    refused: false
+    understood: drop -> ward stamp
+    resolved_by: grammar
+    carrying:
+    - Ward Office 12 daybook
+- id: the-same-refusal-with-and-without-a-slash
+  type: "/take the filing press"
+  expect:
+    refused: true
+    changed: false
+    resolved_by: grammar
+    offers:
+    - does not move for anybody
+- id: the-same-refusal-without-a-slash
+  type: take the filing press
+  expect:
+    refused: true
+    changed: false
+    resolved_by: grammar
+    offers:
+    - does not move for anybody
+- id: a-slashed-move
+  type: "/go to the Supply Closet"
+  expect:
+    changed: true
+    refused: false
+    understood: move -> The Supply Closet
+    resolved_by: grammar
+    location: The Supply Closet (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: a-slashed-read-recites-the-record
+  type: "/read the daybook"
+  expect:
+    refused: false
+    changed: false
+    understood: examine -> Ward Office 12 daybook
+    resolved_by: grammar
+    note: 'reads: Ward Office 12 daybook'
+- id: a-slashed-inspect-is-the-same-verb
+  type: "/inspect the daybook"
+  expect:
+    refused: false
+    changed: false
+    understood: examine -> Ward Office 12 daybook
+    resolved_by: grammar
+    note: 'reads: Ward Office 12 daybook'
+- id: a-slashed-line-that-resolves-nothing
+  type: "/take the tide-slate"
+  expect:
+    refused: true
+    changed: false
+    drifts: 0
+    offers:
+    - there is no thing lying here called
+    carrying:
+    - Ward Office 12 daybook
+- id: a-slash-in-front-of-a-word-the-grammar-does-not-have
+  type: "/ponder the apron"
+  expect:
+    refused: true
+    changed: false
+    note: take <item>      pick up something lying here
+- id: an-engine-view-verb-says-so
+  type: stats
+  expect:
+    refused: false
+    changed: false
+    resolved_by: engine_view
+- id: a-slashed-engine-view-verb-is-still-the-engine-s
+  type: "/check strength 2"
+  expect:
+    changed: false
+    refused: false
+    understood: check -> strength (penalty 2)
+    resolved_by: engine_view
+    note: check strength

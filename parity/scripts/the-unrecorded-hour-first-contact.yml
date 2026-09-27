@@ -1,0 +1,73 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: the-opening-room-is-already-snapshotted
+  type: look
+  expect:
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+    changed: false
+    refused: false
+- id: take-the-stamp-off-this-games-floor
+  type: take the ward stamp
+  expect:
+    changed: true
+    understood: take -> ward stamp
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: the-office-stays-empty-on-the-next-turn
+  type: look
+  expect:
+    changed: false
+    refused: false
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: the-closet-is-copied-when-the-party-walks-in
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: put-the-stamp-down-somewhere-it-was-never-seeded
+  type: drop the ward stamp
+  expect:
+    changed: true
+    change: now lying in The Supply Closet
+    carrying:
+    - Ward Office 12 daybook
+- id: walk-back-to-an-office-that-is-still-empty
+  type: go to Ward Office 12
+  expect:
+    changed: true
+    location: Ward Office 12 (realized)
+    here:
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+- id: and-the-closet-still-holds-what-was-left-there
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: the-index-is-still-takeable-after-all-that
+  type: take the index
+  expect:
+    changed: true
+    understood: take -> Perrin's private index
+    carrying:
+    - Perrin's private index
+    - Ward Office 12 daybook

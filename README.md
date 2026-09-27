@@ -1,15 +1,20 @@
 # renderedstep-engine
 
-The text-adventure engine's pure rules in Rust: the dice, the geometry,
-reading a typed line against the room the player stands in, and building the
-requests the engine hands a model. Every function
-takes values and returns values. Nothing here touches a database, the
-network, the clock or an async runtime. Its two dependencies are
-`serde_json`, for the System One request and answers, and `yaml-rust2`, for
-the engine data it compiles in (`data/`, see its README).
+The text-adventure engine in Rust: the dice, the geometry, reading a typed
+line against the room the player stands in, building the requests the engine
+hands a model, and a turn loop that plays a line with no model at all over the
+game's own SQLite database. The rules take values and return values; only the
+turn loop (`store`, `turn`, `outcome`, `engine`) touches a database, and
+nothing touches the network or an async runtime. Its dependencies are
+`serde_json`, for the System One request and answers and the rows a rule
+reads, `yaml-rust2`, for the engine data it compiles in (`data/`, see its
+README), `sha2`, for request digests, and `rusqlite` with SQLite bundled, for
+the database.
 
 It reproduces the Ruby engine exactly, roll for roll, and is checked against
-the golden vectors that engine exports (`vectors/`, see its README).
+the golden vectors that engine exports (`vectors/`, see its README) and
+against the engine sweep, the Ruby engine's stored scripts of typed lines
+with the state it wrote after every step (`parity/`, see its README).
 
 | Module | Ruby original | What it answers |
 | --- | --- | --- |
@@ -45,6 +50,57 @@ the golden vectors that engine exports (`vectors/`, see its README).
 | `arrival` | `Scene::Generator`, `Scene::ArrivalContext` | the arrival writer's request for walking into a place |
 | `realization` | `Location::Generator`, `Character::Desires.instructions` | the room writer's detail and exits requests |
 | `dialogue` | `InteractionAgent`, `Character#interaction_instructions`, `Playthrough::NpcAction` | the character pass and narrator pass of one exchange |
+| `clock` | Rails' datetime columns | a stored time as whole seconds since the epoch, and back |
+| `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version checked, every table the loop reads loaded as records, a row inserted or updated |
+| `turn` | `Playthrough::Mechanics` with `model: false`, and the `Playthrough::Turn` writers it calls | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and the fight |
+| `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
+| `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
+| `parity` | `EngineSweep::Walk`, `EngineSweep::Dump`, `EngineSweep::Parity` | a sweep script played through this engine, dumped step by step and compared |
+
+## Playing a turn
+
+```rust
+use renderedstep_engine::engine::Engine;
+
+let mut engine = Engine::open(Path::new("storage/development.sqlite3"))?;
+let outcome = engine.play(playthrough_id, "take the ward stamp", &mut |chunk| {
+    print!("{chunk}");
+})?;
+println!("{:?} {:?}", outcome.report.change, outcome.state.carrying);
+```
+
+`Engine` is the whole surface a host calls, and it is shaped for the switch,
+where the Rails app hands each whole turn to this engine in-process:
+
+- **Its own connection.** `Engine::open` opens the database file on a new
+  SQLite connection and refuses it with `Error::SchemaMismatch` unless its
+  newest migration is `store::SCHEMA_VERSION`. The app keeps
+  `bin/rails generate migration`; a new migration needs this constant, and
+  whatever it changes, ported before the engine will open that database.
+- **One transaction per line.** `play` takes SQLite's write lock
+  (`BEGIN IMMEDIATE`), plays the line, and commits. The caller must hold no
+  transaction on the same database while it runs. Anything that fails rolls
+  the whole line back.
+- **A line and a chunk callback in, the structured outcome out.** The
+  `Outcome` is the report (`understood`, `change`, `refusal`, `note`,
+  `resolved_by`) and the records the line left (`outcome::State`: the room,
+  its exits, what lies here and is carried, who is present and fighting, hit
+  points, the arc, the ending, what the clock owes). `on_chunk` receives
+  narrated prose as it is written; this engine plays with no model, so it
+  narrates nothing and never calls it.
+- **Errors as values, never a panic across the boundary.** Every public call
+  returns `Result<_, engine::Error>`. A panic inside a call is caught there
+  (`catch_unwind`), the line's writes are rolled back, and it comes back as
+  `Error::Panicked`. A line that reaches a rule this engine does not play yet
+  comes back as `Error::Unsupported`, also rolled back.
+
+`Engine::start` begins a playthrough the way the browser does, and
+`Engine::read` returns the records with nothing played.
+
+A Ruby binding (magnus) is the next consumer and is not built yet. It is a
+thin layer over this surface: open an `Engine` on the app's database path,
+call `play` with a block that receives each chunk, turn the `Outcome` into a
+Hash, and raise one Ruby exception class per `Error` variant.
 
 ## Rules for changing it
 
@@ -64,6 +120,21 @@ cargo test -- --nocapture
 per portion. An answer is compared as written, so key order counts as well as
 values. It also checks each file's `constants` against this crate's
 tables, and refuses a file whose format version it does not know.
+
+`tests/parity.rs` plays every sweep script in `parity/scripts` and compares
+each step's dump with the Ruby engine's golden file, printing each other
+script's first divergence and a pass count. The binary does the same:
+
+```sh
+cargo run --release --bin parity -- --check parity
+```
+
+and plays one script for the Ruby engine's own runner, which diffs it against
+the goldens there:
+
+```sh
+ENGINE="target/release/parity --worlds $PWD/parity/worlds" bin/rails engine:parity_diff
+```
 
 ## Licence
 

@@ -1,0 +1,68 @@
+# The engine sweep
+
+The Ruby engine's stored scripts of typed lines, and what it wrote after
+every step of each, copied from
+[calebl/text-adventure](https://github.com/calebl/text-adventure) at commit
+`f15d07b1bfff79cda40cb59e0269c8b38c6592f1`. That repository's
+`docs/engine-parity.md` documents the dump and the command contract.
+
+| Directory | Source | What it is |
+| --- | --- | --- |
+| `scripts/` | `lib/engine_sweep/scripts/*.yml`, less their comments and `why:` notes | each walk: its world, the lines typed and what each step expects |
+| `goldens/` | `test/engine_parity/*.json` | the Ruby engine's dump after every step of each |
+| `worlds/` | produced from `lib/engine_sweep/worlds/` and `db/seeds/worlds/` (below) | each world as the Ruby engine loads it for a walk, as SQL text |
+| `PASSING` | this repository | the scripts this engine plays exactly as the Ruby engine does |
+
+Never edit the scripts or the goldens by hand. The scripts are re-emitted
+by Ruby's YAML library with the comments and the `why:` notes (which no
+engine reads) taken out:
+
+```sh
+ruby -ryaml -e 'd = YAML.safe_load_file(ARGV[0]); d.delete("why"); d["steps"].each { |s| s.delete("why") }; print YAML.dump(d)' <script>
+```
+
+## The worlds
+
+A walk plays its own copy of a world: the world file loaded by
+`WorldSeed::Loader` under the title with `EngineSweep::Walk::TITLE_SUFFIX`,
+with every table's id counter pinned at `EngineSweep::Walk::ID_BASE`, so the
+same script gets the same ids, and so the same dice, on any database. Each
+file here is that database as `sqlite3 <database> .dump` writes it: the whole
+schema at the version `store::SCHEMA_VERSION` names, and the world, before
+any playthrough exists. A script's world is the file named after its story's
+title (`WorldSeed.slug`).
+
+To produce one, in a scratch copy of the Ruby engine's repository (never a
+working checkout) with both provider keys unset, load the schema into an
+empty database (`RAILS_ENV=test bin/rails db:schema:load`), copy it once per
+world, and against each copy run, with `DATABASE_URL=sqlite3:<copy>`:
+
+```ruby
+# bin/rails runner load_world.rb <a script that walks the world>
+script = EngineSweep.scripts.find { |s| s.name == ARGV.fetch(0) }
+walk = EngineSweep::Walk.new(script)
+EngineSweep.without_a_model do
+  walk.send(:pin_ids!)
+  walk.send(:load_world!)
+end
+```
+
+then `sqlite3 <copy> .dump > worlds/<slug>.sql`. The `created_at` and
+`updated_at` columns carry the time it was run; nothing the engine plays
+reads them.
+
+## Refreshing
+
+Copy `scripts/` and `goldens/` from a newer commit, rebuild `worlds/` as
+above, update the commit at the top, and run `cargo test`. A script that
+stops agreeing is a rule the Ruby engine changed; port the change. A new
+migration changes the schema version, so the engine refuses every world
+until `store::SCHEMA_VERSION`, and whatever the migration changed, is ported.
+
+## What this engine cannot play yet
+
+A step with `browser:` plays a submission with fixed provider replies, which
+needs the model client; a step with `reseed:` reloads the world file, which
+needs the world loader. Both stop a script with `Error::Unsupported`, and
+`cargo run --release --bin parity -- --check parity` names every other
+script's first divergence.

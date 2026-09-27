@@ -1,0 +1,63 @@
+---
+story: A Written Mill Beside a Stub
+steps:
+- id: an-unusable-label-on-a-door-nobody-writes
+  type: "/move Workshop"
+  browser:
+    token: open-the-workshop
+    realizes: Workshop
+    replies:
+    - purpose: location
+      content:
+        description: A workbench stands under the shuttered window.
+        lore: The workshop served the market for years.
+        items: []
+        people: []
+    - purpose: location
+      content:
+        exits:
+        - name: Market
+          teaser: A quiet square.
+          distance: adjacent
+          travel_method: teleporting
+        - name: Old Mill
+          teaser: A shuttered mill.
+          distance: across the district
+          travel_method: teleporting
+        - name: The Workshop
+          teaser: The same workbench.
+          distance: adjacent
+          travel_method: teleporting
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: Workshop (realized)
+    exits:
+    - Market (realized)
+    exits_exclude:
+    - Old Mill
+    here: []
+    present: []
+    changed: true
+    note: completed
+- id: the-mill-is-still-reached-only-from-the-market
+  type: "/move Market"
+  browser:
+    token: back-to-the-market
+    fail: arrival
+  expect:
+    location: Market (realized)
+    exits:
+    - Workshop (realized)
+    - Old Mill (realized)
+- id: and-the-workshop-can-be-walked-into-again
+  type: "/move Workshop"
+  browser:
+    token: revisit
+    fail: arrival
+  expect:
+    location: Workshop (realized)
+    exits:
+    - Market (realized)
+    exits_exclude:
+    - Old Mill

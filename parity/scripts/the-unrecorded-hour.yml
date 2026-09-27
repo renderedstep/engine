@@ -1,0 +1,184 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: the-records-as-seeded
+  type: stats
+  expect:
+    location: Ward Office 12 (realized)
+    exits:
+    - The Supply Closet (realized)
+    - The Long Hallway (stub)
+    here:
+    - ward stamp
+    - filing press
+    - blank closure writ
+    carrying:
+    - Ward Office 12 daybook
+    present:
+    - Halkett Rowe
+    volitions: 0
+    acts: 0
+    changed: false
+    refused: false
+- id: take-with-an-article
+  type: take the ward stamp
+  expect:
+    changed: true
+    understood: take -> ward stamp
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+    drifts: 0
+- id: read-the-daybook-in-hand
+  type: read the daybook
+  expect:
+    changed: false
+    refused: false
+    understood: examine -> Ward Office 12 daybook
+    note:
+    - 'reads: Ward Office 12 daybook'
+    - Query 1188 (Marchmain acre 7) still open
+    inscription:
+      Ward Office 12 daybook: 3.40 — Levee boundary, Marchmain acre 7.
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: nothing-is-written-on-a-stamp
+  type: read the ward stamp
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is nothing written on the ward stamp
+    inscription:
+      ward stamp: false
+- id: carry-it-next-door
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    exits:
+    - Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: secure-the-apron
+  type: take the apron
+  expect:
+    changed: true
+    understood: take -> copy-room apron
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+    - copy-room apron
+- id: drop-it-somewhere-else
+  type: drop the ward stamp
+  expect:
+    changed: true
+    understood: drop -> ward stamp
+    carrying:
+    - Ward Office 12 daybook
+    - copy-room apron
+- id: take-something-by-a-fragment
+  type: take the apron
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no thing lying here
+    carrying:
+    - Ward Office 12 daybook
+    - copy-room apron
+- id: read-what-is-in-hand
+  type: read the daybook
+  expect:
+    changed: false
+    refused: false
+    understood: examine -> Ward Office 12 daybook
+    note:
+    - 'reads: Ward Office 12 daybook'
+    inscription:
+      Ward Office 12 daybook: 3.40 — Levee boundary, Marchmain acre 7.
+    carrying:
+    - Ward Office 12 daybook
+    - copy-room apron
+- id: read-it-again-and-it-says-the-same-thing
+  type: x the daybook
+  expect:
+    changed: false
+    refused: false
+    understood: examine -> Ward Office 12 daybook
+    inscription:
+      Ward Office 12 daybook: 3.40 — Levee boundary, Marchmain acre 7.
+- id: inventory
+  type: inventory
+  expect:
+    changed: false
+    refused: false
+    carrying:
+    - Ward Office 12 daybook
+    - copy-room apron
+- id: back-through-the-door-it-came-in-by
+  type: go to Ward Office 12
+  expect:
+    changed: true
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+    - copy-room apron
+- id: take-what-is-not-here
+  type: take the ward stamp
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no thing lying here
+    carrying:
+    - Ward Office 12 daybook
+    - copy-room apron
+    drifts: 0
+- id: drop-what-is-not-carried
+  type: drop the private index
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no thing you are carrying
+    - Ward Office 12 daybook
+    - copy-room apron
+- id: go-somewhere-that-does-not-exist
+  type: go to the lighthouse
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no way out
+    - The Supply Closet
+    - The Long Hallway
+    location: Ward Office 12 (realized)
+- id: leave-the-apron-in-the-office
+  type: drop the copy-room apron
+  expect:
+    changed: true
+    understood: drop -> copy-room apron
+    carrying:
+    - Ward Office 12 daybook
+- id: walk-into-the-unwritten-room
+  type: go to the Long Hallway
+  expect:
+    changed: true
+    change: a stub -- nobody has written this room
+    location: The Long Hallway (stub)
+    exits:
+    - Ward Office 12 (realized)
+    exits_exclude:
+    - The Supply Closet
+    here: []
+- id: nothing-to-pick-up-in-an-unwritten-room
+  type: take everything
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no thing lying here
+    here: []

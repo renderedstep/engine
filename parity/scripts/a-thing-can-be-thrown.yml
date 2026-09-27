@@ -1,0 +1,119 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: the-room-as-seeded
+  type: look
+  expect:
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+    foes: []
+    hp: 18
+    changed: false
+    refused: false
+- id: throw-with-no-argument-names-what-there-is-to-throw
+  type: throw
+  expect:
+    refused: true
+    offers:
+    - throw what at what?
+    - Ward Office 12 daybook
+    - ward stamp
+    changed: false
+    carrying:
+    - Ward Office 12 daybook
+- id: a-throw-with-no-aim-names-both-aim-sets
+  type: throw the daybook
+  expect:
+    refused: true
+    offers:
+    - at what?
+    - 'Here with you: Halkett Rowe'
+    - 'The ways out are: The Supply Closet, The Long Hallway'
+    changed: false
+    carrying:
+    - Ward Office 12 daybook
+- id: an-aim-that-lands-on-nothing-is-refused
+  type: throw the daybook at the moon
+  expect:
+    refused: true
+    offers:
+    - nothing called "the moon"
+    - 'Nothing was thrown: the Ward Office 12 daybook stays in your hands'
+    - Halkett Rowe
+    changed: false
+    carrying:
+    - Ward Office 12 daybook
+- id: scenery-is-not-a-target-and-the-thing-stays-on-the-floor
+  type: throw the ward stamp at the desk
+  expect:
+    refused: true
+    offers:
+    - nothing called "the desk"
+    - 'Nothing was thrown: the ward stamp stays where it is lying'
+    changed: false
+    carrying:
+    - Ward Office 12 daybook
+- id: a-thing-not-here-and-not-carried-is-refused
+  type: throw the private index at Halkett Rowe
+  expect:
+    refused: true
+    offers:
+    - no thing in your hands or lying here called "the private index"
+    changed: false
+- id: the-immovable-thing-is-refused-and-no-die-is-thrown
+  type: throw the filing press at Halkett Rowe
+  expect:
+    understood: throw -> filing press at Halkett Rowe
+    refused: true
+    offers:
+    - filing press is immovable and does not move for anybody
+    - no die was thrown for it
+    changed: false
+    carrying:
+    - Ward Office 12 daybook
+    hp: 18
+    blows: 0
+- id: the-immovable-thing-cannot-enter-inventory
+  type: take the filing press
+  expect:
+    understood: take -> filing press
+    refused: true
+    offers:
+    - filing press is immovable and does not move for anybody
+    - cannot be picked up
+    changed: false
+    carrying:
+    - Ward Office 12 daybook
+    hp: 18
+    blows: 0
+- id: and-it-is-the-thing-and-not-the-aim-that-refuses-it
+  type: throw the press at the long hallway
+  expect:
+    refused: true
+    offers: does not move for anybody
+    changed: false
+    hp: 18
+    blows: 0
+- id: a-throw-at-somebody-standing-here
+  type: throw the ward stamp at Halkett Rowe
+  expect:
+    understood: throw -> ward stamp at Halkett Rowe
+    resolved_by: grammar
+    refused: false
+    note:
+    - 'threw: ward stamp at Halkett Rowe'
+    - strength -> d20(
+    - "<= 9 "
+    carrying:
+    - Ward Office 12 daybook
+- id: and-one-through-a-doorway
+  type: throw the daybook at the supply closet
+  expect:
+    understood: throw -> Ward Office 12 daybook at The Supply Closet
+    resolved_by: grammar
+    refused: false
+    note:
+    - 'threw: Ward Office 12 daybook at The Supply Closet'
+    - strength -> d20(
+    - "<= 7 "

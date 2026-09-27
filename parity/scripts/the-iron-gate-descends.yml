@@ -1,0 +1,115 @@
+---
+story: The Iron Gate Descends
+steps:
+- id: the-gate-as-the-world-was-generated
+  type: look
+  expect:
+    location: Iron Gate Chamber (realized)
+    exits:
+    - tunnel upward (realized)
+    - obsidian maw (realized)
+    here:
+    - iron key
+    - prince's signet ring
+    carrying: []
+    present: []
+    changed: false
+    refused: false
+    quest:
+      1: bound
+      2: bound
+      3: bound
+- id: take-the-proof-he-passed-this-way
+  type: take the signet ring
+  expect:
+    changed: true
+    understood: take -> prince's signet ring
+    here:
+    - iron key
+    carrying:
+    - prince's signet ring
+    drifts: 0
+    quest:
+      1: reached
+      2: bound
+- id: down-into-the-maw
+  type: go to the obsidian maw
+  expect:
+    changed: true
+    location: obsidian maw (realized)
+    present: []
+- id: the-deepest-room-has-a-way-on-now
+  type: go to Blackfang Tunnel
+  expect:
+    changed: true
+    location: Blackfang Tunnel (realized)
+    exits:
+    - tunnel upward (realized)
+    - obsidian maw (realized)
+    - Blackfang Warren room 1 (stub)
+- id: in-through-the-spare-exit
+  type: go to Blackfang Warren room 1
+  expect:
+    changed: true
+    location: Blackfang Warren room 1 (stub)
+    exits:
+    - Blackfang Tunnel (realized)
+    - Blackfang Warren room 2 (stub)
+    - Blackfang Warren room 4 (stub)
+    present: []
+    quest:
+      2: reached
+      3: bound
+- id: the-other-door-out-of-the-entry-room
+  type: go to Blackfang Warren room 4
+  expect:
+    changed: true
+    location: Blackfang Warren room 4 (stub)
+    exits:
+    - Blackfang Warren room 1 (stub)
+    - the dry cell (realized)
+    present: []
+    quest:
+      3: bound
+- id: back-to-the-entry-room
+  type: go to Blackfang Warren room 1
+  expect:
+    changed: true
+    location: Blackfang Warren room 1 (stub)
+    refused: false
+- id: through-the-guards-room
+  type: go to Blackfang Warren room 2
+  expect:
+    changed: true
+    location: Blackfang Warren room 2 (stub)
+    exits:
+    - Blackfang Warren room 1 (stub)
+    - the dry cell (realized)
+    present: []
+- id: reach-the-prince-and-end-the-story
+  type: go to the dry cell
+  expect:
+    changed: true
+    location: the dry cell (realized)
+    exits:
+    - Blackfang Warren room 2 (stub)
+    - Blackfang Warren room 4 (stub)
+    present:
+    - Prince Aurel Durn
+    carrying:
+    - prince's signet ring
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    dead: true
+    note: 'the story is over: The prince is found alive in the dry cell'
+- id: and-the-story-stays-over
+  type: talk to the prince
+  expect:
+    refused: true
+    changed: false
+    dead: true
+    location: the dry cell (realized)
+    present:
+    - Prince Aurel Durn

@@ -1,0 +1,73 @@
+---
+story: The Salt Assizes
+steps:
+- id: the-seeded-cast-before-anybody-acts
+  type: stats
+  expect:
+    location: The Causeway Court (realized)
+    present:
+    - Ammon Brace
+    carrying:
+    - Assize tide-slate
+    volitions: 0
+    acts: 0
+- id: talk-to-somebody-who-is-not-here
+  type: talk to Neb
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no person here
+    - Ammon Brace
+- id: talk-to-somebody-who-is
+  type: talk to the Justicar
+  expect:
+    understood: talk -> Ammon Brace
+    refused: true
+    changed: false
+    offers:
+    - Ammon Brace is here and the classifier resolved them
+- id: out-to-the-post
+  type: go to the Tide Post
+  expect:
+    changed: true
+    location: The Tide Post (realized)
+- id: and-he-is-there-to-be-spoken-to
+  type: talk to Neb
+  expect:
+    understood: talk -> Neb Halloran
+    refused: true
+    changed: false
+    offers:
+    - Neb Halloran is here and the classifier resolved them
+- id: a-name-this-room-does-not-hold
+  type: talk to Perrin Lasco
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no person here
+- id: walking-back-to-the-court
+  type: go into the Causeway Court
+  expect:
+    changed: true
+    location: The Causeway Court (realized)
+- id: the-vestry-is-its-own-room
+  type: go to the Vestry Hulk
+  expect:
+    changed: true
+    location: The Vestry Hulk (stub)
+- id: talk-names-whoever-stands-here
+  type: talk
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - talk to whom
+- id: neb-is-not-reachable-from-here
+  type: talk to Neb
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no person here
