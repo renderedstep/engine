@@ -33,6 +33,14 @@ pub enum Error {
     Unsupported(String),
     /// A bug in the engine. Nothing the turn wrote is kept.
     Panicked(String),
+    /// A model call failed where the turn has no words of its own to put in
+    /// its place. What the turn committed before the call stands.
+    Model(crate::model::Failure),
+    /// A submission whose last worker stopped before the journal existed,
+    /// which cannot be replayed safely (`Playthrough::Command::InterruptedError`).
+    Interrupted,
+    /// A submission that already failed (`PreviouslyFailedError`).
+    PreviouslyFailed,
 }
 
 impl std::fmt::Display for Error {
@@ -48,11 +56,21 @@ impl std::fmt::Display for Error {
             Error::Database(message) => write!(f, "database: {message}"),
             Error::Unsupported(what) => write!(f, "this engine does not play {what} yet"),
             Error::Panicked(message) => write!(f, "the engine failed: {message}"),
+            Error::Model(failure) => write!(f, "the model call failed: {failure}"),
+            Error::Interrupted => f.write_str("a previous worker stopped during this turn"),
+            Error::PreviouslyFailed => f.write_str("this submission has already failed"),
         }
     }
 }
 
 impl std::error::Error for Error {}
+
+/// How a submitted line ended, and the records it left.
+#[derive(Clone, Debug)]
+pub struct Submitted {
+    pub turned: crate::turn::Turned,
+    pub state: State,
+}
 
 /// One database, open for play.
 pub struct Engine {
@@ -118,6 +136,49 @@ impl Engine {
                 report,
                 state: State::read(mechanics.records(), playthrough),
             })
+        })
+    }
+
+    /// Plays one submitted line the way every front end plays it
+    /// (`Playthrough::Session#play` with a request token): through the
+    /// models, told in prose, and kept in the submission queue, so a second
+    /// delivery of the same token and line plays nothing again.
+    ///
+    /// There is no transaction around the line. Each effect is committed
+    /// with its journal receipt as the turn reaches it, and no transaction
+    /// is open while a model is asked, so a failure keeps what was committed
+    /// before it, as the Ruby engine does. `on_chunk` receives prose as it
+    /// streams.
+    pub fn submit(
+        &mut self,
+        playthrough: i64,
+        line: &str,
+        token: &str,
+        models: &mut dyn crate::model::Models,
+        on_chunk: &mut dyn FnMut(&str),
+    ) -> Result<Submitted, Error> {
+        let store = &self.store;
+        let result = guarded(|| {
+            let mut turn = crate::turn::Turn::new(store, playthrough, models, on_chunk)?;
+            let turned = turn.play(line, token)?;
+            Ok(Submitted {
+                turned,
+                state: State::read(turn.records(), playthrough),
+            })
+        });
+        if matches!(result, Err(Error::Panicked(_))) {
+            store.rollback();
+        }
+        result
+    }
+
+    /// Accepts a line into a game's submission queue without playing it,
+    /// as a browser does for a line typed while a turn is still running.
+    pub fn accept(&mut self, playthrough: i64, line: &str, token: &str) -> Result<(), Error> {
+        let store = &self.store;
+        guarded(|| {
+            let mut records = store.load()?;
+            crate::command::accept(store, &mut records, playthrough, line, token).map(|_| ())
         })
     }
 

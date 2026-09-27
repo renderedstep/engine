@@ -30,6 +30,7 @@ pub mod boxes;
 pub mod cascade;
 pub mod cast;
 pub mod clock;
+pub mod command;
 pub mod danger;
 mod data;
 pub mod deadline;
