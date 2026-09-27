@@ -246,7 +246,152 @@ fn play_step(
     play_typed(engine, step, playthrough)
 }
 
-/// Plays one step of a script on a database the caller prepared and keeps:
+/// The tables a walk's writes are compared on, as the Ruby engine's records
+/// file for a script lists them.
+pub const WRITTEN_TABLES: [&str; 12] = [
+    "locations",
+    "location_connections",
+    "characters",
+    "items",
+    "quest_steps",
+    "scenes",
+    "characters_scenes",
+    "interactions",
+    "playthrough_endings",
+    "playthrough_beats",
+    "playthrough_npc_states",
+    "world_events",
+];
+
+/// One step, with what it asked the providers and what the world held
+/// after it.
+#[derive(Clone, Debug)]
+pub struct Recorded {
+    pub dump: Value,
+    /// Every request the step's replay answered (`Replay::sent`).
+    pub requests: Vec<Value>,
+    /// Per table, the rows that are not in the loaded world as it was
+    /// loaded, and the ids of its rows that are gone (`written`).
+    pub written: Value,
+}
+
+/// Every row of the tables in [`WRITTEN_TABLES`], in id order, each row an
+/// object of its columns less the two timestamps Rails writes.
+pub fn rows(engine: &Engine) -> Result<Map<String, Value>, Error> {
+    let conn = engine.store().connection();
+    let mut tables = Map::new();
+    for table in WRITTEN_TABLES {
+        let order = if table == "characters_scenes" {
+            "scene_id, character_id"
+        } else {
+            "id"
+        };
+        let mut statement = conn.prepare(&format!("SELECT * FROM {table} ORDER BY {order}"))?;
+        let columns: Vec<String> = statement
+            .column_names()
+            .iter()
+            .map(|name| name.to_string())
+            .collect();
+        let found = statement.query_map([], |row| {
+            let mut object = Map::new();
+            for (index, column) in columns.iter().enumerate() {
+                if column == "created_at" || column == "updated_at" {
+                    continue;
+                }
+                let value = match row.get_ref(index)? {
+                    rusqlite::types::ValueRef::Null => Value::Null,
+                    rusqlite::types::ValueRef::Integer(n) => Value::from(n),
+                    rusqlite::types::ValueRef::Real(x) => Value::from(x),
+                    rusqlite::types::ValueRef::Text(text) => {
+                        Value::from(String::from_utf8_lossy(text).into_owned())
+                    }
+                    rusqlite::types::ValueRef::Blob(bytes) => {
+                        Value::from(String::from_utf8_lossy(bytes).into_owned())
+                    }
+                };
+                object.insert(column.clone(), value);
+            }
+            Ok(Value::Object(object))
+        })?;
+        tables.insert(
+            table.to_string(),
+            Value::Array(found.collect::<Result<_, _>>()?),
+        );
+    }
+    Ok(tables)
+}
+
+/// What a walk wrote, as the records file keeps it: per table, the rows
+/// that are not among the loaded ones, and the ids of the loaded rows that
+/// are no longer there (a row only changed is listed under its id there
+/// too, and not counted as removed).
+pub fn written(loaded: &Map<String, Value>, now: &Map<String, Value>) -> Value {
+    let mut tables = Map::new();
+    for (table, rows) in now {
+        let now = rows.as_array().cloned().unwrap_or_default();
+        let before = loaded
+            .get(table)
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default();
+        let added: Vec<Value> = now
+            .iter()
+            .filter(|row| !before.contains(row))
+            .cloned()
+            .collect();
+        let added_ids: Vec<&Value> = added.iter().filter_map(|row| row.get("id")).collect();
+        let removed: Vec<Value> = before
+            .iter()
+            .filter(|row| !now.contains(row))
+            .map(|row| row.get("id").cloned().unwrap_or_else(|| (*row).clone()))
+            .filter(|id| !added_ids.contains(&id))
+            .collect();
+        tables.insert(table.clone(), json!({ "rows": added, "removed": removed }));
+    }
+    Value::Object(tables)
+}
+
+/// Plays every step of a script as [`play`] does, keeping for each what it
+/// asked the providers and what it wrote. When a step stops the script,
+/// the steps before it come back with its label and the error.
+pub fn play_recording(
+    engine: &mut Engine,
+    script: &Script,
+) -> Result<Vec<Recorded>, (Vec<Recorded>, String, Error)> {
+    let loaded = match rows(engine) {
+        Ok(rows) => rows,
+        Err(error) => return Err((Vec::new(), String::new(), error)),
+    };
+    let mut recorded = Vec::new();
+    let mut games: HashMap<String, i64> = HashMap::new();
+    for step in &script.steps {
+        let played = (|| {
+            let story = engine.story_titled(&format!("{}{TITLE_SUFFIX}", script.story))?;
+            let playthrough = match games.get(&step.player) {
+                Some(game) => *game,
+                None => {
+                    let game = engine.start(story)?;
+                    games.insert(step.player.clone(), game);
+                    game
+                }
+            };
+            let (dump, requests) = play_step_recording(engine, step, playthrough)?;
+            let written = written(&loaded, &rows(engine)?);
+            Ok(Recorded {
+                dump,
+                requests,
+                written,
+            })
+        })();
+        match played {
+            Ok(step) => recorded.push(step),
+            Err(error) => return Err((recorded, step.label(), error)),
+        }
+    }
+    Ok(recorded)
+}
+
+/// Plays one step on a database the caller prepared and keeps:
 /// the shared-database mode, where the Ruby engine's runner owns the world,
 /// plays every `reseed:` step itself and asks this engine for one typed
 /// step at a time. `index` counts from 1.
@@ -305,6 +450,14 @@ pub fn play_one(
 }
 
 fn play_typed(engine: &mut Engine, step: &Step, playthrough: i64) -> Result<Value, Error> {
+    play_step_recording(engine, step, playthrough).map(|(dump, _)| dump)
+}
+
+fn play_step_recording(
+    engine: &mut Engine,
+    step: &Step,
+    playthrough: i64,
+) -> Result<(Value, Vec<Value>), Error> {
     if step.reseed {
         return Err(Error::Unsupported("reloading the world file".into()));
     }
@@ -318,7 +471,7 @@ fn play_typed(engine: &mut Engine, step: &Step, playthrough: i64) -> Result<Valu
         None => engine.play(playthrough, typed, &mut |_| {})?,
     };
     let after = Counts::of(engine, playthrough)?;
-    Ok(dump(&outcome, &before, &after))
+    Ok((dump(&outcome, &before, &after), Vec::new()))
 }
 
 /// A browser step (`EngineSweep::BrowserTurn#run`): the lines typed while
@@ -330,7 +483,7 @@ fn play_browser(
     step: &Step,
     browser: &Value,
     playthrough: i64,
-) -> Result<Value, Error> {
+) -> Result<(Value, Vec<Value>), Error> {
     let broken = |message: String| Error::Model(Failure::Unexpected(message));
     let token = browser["token"]
         .as_str()
@@ -433,7 +586,7 @@ fn play_browser(
         state: crate::outcome::State::read(&records, playthrough),
     };
     let after = Counts::of(engine, playthrough)?;
-    Ok(dump(&outcome, &before, &after))
+    Ok((dump(&outcome, &before, &after), replay.sent().to_vec()))
 }
 
 fn current_scene(engine: &Engine, playthrough: i64) -> Result<Option<i64>, Error> {
@@ -638,6 +791,117 @@ pub fn first_divergence(script: &Script, expected: &[Value], actual: &[Value]) -
     None
 }
 
+/// A column's value compared as the Ruby engine's records file holds it:
+/// a text column holding JSON (a checkpoint, a journal) by what it parses
+/// to, since the two engines write the same object with different spacing.
+fn same_column(a: &Value, b: &Value) -> bool {
+    if same(a, b) {
+        return true;
+    }
+    match (a.as_str(), b.as_str()) {
+        (Some(x), Some(y)) => match (
+            serde_json::from_str::<Value>(x),
+            serde_json::from_str::<Value>(y),
+        ) {
+            (Ok(x), Ok(y)) if x.is_object() || x.is_array() => same(&x, &y),
+            _ => false,
+        },
+        _ => false,
+    }
+}
+
+fn same_rows(a: &Value, b: &Value) -> bool {
+    match (a, b) {
+        (Value::Array(x), Value::Array(y)) => {
+            x.len() == y.len() && x.iter().zip(y).all(|(x, y)| same_rows(x, y))
+        }
+        (Value::Object(x), Value::Object(y)) => {
+            x.len() == y.len()
+                && x.iter().all(|(key, value)| {
+                    y.get(key).is_some_and(|other| {
+                        if value.is_array() || value.is_object() {
+                            same_rows(value, other)
+                        } else {
+                            same_column(value, other)
+                        }
+                    })
+                })
+        }
+        _ => same_column(a, b),
+    }
+}
+
+/// The first step at which what this engine asked or wrote differs from
+/// the Ruby engine's records file for the script; none when they agree.
+pub fn first_record_divergence(
+    script: &Script,
+    records: &Value,
+    recorded: &[Recorded],
+) -> Option<String> {
+    let expected = records["steps"].as_array().cloned().unwrap_or_default();
+    for (index, step) in script.steps.iter().enumerate() {
+        let (Some(want), Some(got)) = (expected.get(index), recorded.get(index)) else {
+            return None;
+        };
+        let asked = want["requests"].as_array().cloned().unwrap_or_default();
+        if asked.len() != got.requests.len() {
+            return Some(format!(
+                "{}: {} asked {} request(s), and the Ruby engine asked {}",
+                script.name,
+                step.label(),
+                got.requests.len(),
+                asked.len()
+            ));
+        }
+        for (call, (want, got)) in asked.iter().zip(&got.requests).enumerate() {
+            for key in ["purpose", "system", "user", "schema", "state", "questions"] {
+                let null = Value::Null;
+                let (want, got) = (
+                    want.get(key).unwrap_or(&null),
+                    got.get(key).unwrap_or(&null),
+                );
+                if !same(want, got) {
+                    return Some(format!(
+                        "{}: {} request {} ({}) differs in {key}\n  ruby:  {}\n  this:  {}",
+                        script.name,
+                        step.label(),
+                        call + 1,
+                        got_purpose(want, got),
+                        render(want),
+                        render(got)
+                    ));
+                }
+            }
+        }
+        for table in WRITTEN_TABLES {
+            let (want, got) = (&want["written"][table], &got.written[table]);
+            if !same_rows(want, got) {
+                return Some(format!(
+                    "{}: {} wrote {table} differently\n  ruby:  {want}\n  this:  {got}",
+                    script.name,
+                    step.label()
+                ));
+            }
+        }
+    }
+    None
+}
+
+fn got_purpose(want: &Value, got: &Value) -> String {
+    want.get("purpose")
+        .or_else(|| got.get("purpose"))
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string()
+}
+
+fn render(value: &Value) -> String {
+    match value {
+        Value::String(text) => format!("{text:?}"),
+        other => other.to_string(),
+    }
+}
+
 /// What checking a directory of scripts against their goldens found.
 #[derive(Debug, Default)]
 pub struct Checked {
@@ -699,9 +963,35 @@ pub fn check(dir: &Path) -> Result<Checked, String> {
         )?)
         .map_err(|error| format!("{}: {error}", script.name))?;
         let expected = golden_dumps(&golden);
+        let records_path = dir.join("records").join(format!("{}.json", script.name));
+        let records: Option<Value> = if records_path.exists() {
+            Some(
+                serde_json::from_str(&read(&records_path)?)
+                    .map_err(|error| format!("{}: {error}", records_path.display()))?,
+            )
+        } else {
+            None
+        };
         let mut engine = open_world_for(&dir.join("worlds"), &script)?;
-        let divergence = match play(&mut engine, &script) {
-            Ok(dumps) => first_divergence(&script, &expected, &dumps),
+        let played = match &records {
+            Some(records) => match play_recording(&mut engine, &script) {
+                Ok(recorded) => Ok((
+                    recorded
+                        .iter()
+                        .map(|step| step.dump.clone())
+                        .collect::<Vec<_>>(),
+                    first_record_divergence(&script, records, &recorded),
+                )),
+                Err((recorded, step, error)) => Err(Stopped {
+                    dumps: recorded.iter().map(|step| step.dump.clone()).collect(),
+                    step,
+                    error,
+                }),
+            },
+            None => play(&mut engine, &script).map(|dumps| (dumps, None)),
+        };
+        let divergence = match played {
+            Ok((dumps, written)) => first_divergence(&script, &expected, &dumps).or(written),
             Err(stopped) => {
                 let played = stopped.dumps.len().min(expected.len());
                 let so_far = Script {

@@ -1,0 +1,3368 @@
+{
+  "script": "an-ending-kept-when-the-narrator-fails",
+  "steps": [
+    {
+      "step": "step 1 first-the-ring",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 first-down-into-the-maw",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 first-on-down-the-tunnel",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 4 first-in-through-the-low-door",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 5 first-past-the-guards",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 6 first-the-cell-and-the-end",
+      "requests": [
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Gravity is consistent at 9.8 m/s², but the world is veined with ley lines—thin, invisible rivers of latent magic that pulse at a frequency of 0.3 Hz, detectable only by iron-forged compasses. These lines can be tapped by blood rituals, but each use drains the caster’s lifespan by exactly one day per minute of magic. The ley lines are finite; overuse in a region causes them to fade for a century. No magic can resurrect the dead or heal mortal wounds, only delay them.\ntechnology: The world is locked in a late medieval stasis, with iron and steel as the primary metals. Clockwork mechanisms exist but are rare, limited to devices no larger than a loaf of bread due to the scarcity of precision gears. Gunpowder is known but unstable, often exploding prematurely in 1 out of 5 attempts. Most advancements are suppressed by the Church of the Eternal Pyre, which burns any invention deemed heretical.\n\n## Story Details\ntitle: The Iron Gate Descends (engine sweep)\ngenre: dark fantasy\nsummary: A Durnish knight, clad in heavy blackened plate, stands at the threshold of the goblin caves beneath the Ashen Spire, having just forced open an iron gate. The prince’s signet ring, discovered in the mud, confirms his passage into the tunnels. The air is thick with the scent of damp earth and the faint glow of fungi, while the distant sound of movement hints at unseen dangers ahead. The Church’s decree to retrieve the prince or die trying weighs heavily, but the immediate threat is the darkness itself.\n\n## The Place\nname: the dry cell\ndescription: The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.\nlore: This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.\nways out: Blackfang Warren room 2, Blackfang Warren room 4\n\n## Who Is Here\nVeythra the Silent (The River’s Shadow), Trollkin -- the player, the one arriving\nPrince Aurel Durn (Aurel), Durnish\n\n## Just Before This\nThe player has come from Blackfang Warren room 2. The player steps into the Iron Gate Chamber, encountering the sensory overload of the cavern’s atmosphere and the immediate presence of the tunnel ahead.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them first on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "ending",
+          "system": "You are the narrator of a text adventure, and this is the last thing the\nplayer will ever read of this story. The game is over.\n\nThe prompt states the ending the game reached. It is a fact, already\nrecorded: write THAT ending and no other. Do not end the story a different\nway, do not leave it open, and do not say what happens next.\n\nWrite it in the second person, present tense, addressing the player as\n\"you\", in one short paragraph of prose -- two at the most.\n\nNothing moves as it is written: the player stays where they are, nothing\nchanges hands, nobody arrives and nobody leaves. The ways out of here, the\npeople present and what the player carries are listed in the prompt; do not\nadd a way out, a person or a possession that is not on those lists. Never\nbreak character, never offer the player a menu, and never mention that you\nare an AI or a narrator.\n",
+          "user": "Story: The Iron Gate Descends (engine sweep) (dark fantasy)\n\nPremise: A Durnish knight, clad in heavy blackened plate, stands at the threshold of the goblin caves beneath the Ashen Spire, having just forced open an iron gate. The prince’s signet ring, discovered in the mud, confirms his passage into the tunnels. The air is thick with the scent of damp earth and the faint glow of fungi, while the distant sound of movement hints at unseen dangers ahead. The Church’s decree to retrieve the prince or die trying weighs heavily, but the immediate threat is the darkness itself.\n\nThe player is in the dry cell: The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.\n\nWays out of here: Blackfang Warren room 2, Blackfang Warren room 4. There are no others.\n\nThis room is 6 by 4 paces -- about 9 by 6 metres. It is on storey 0 of Blackfang Warren, which is 12 by 9 paces across; storey 0 is the ground floor. Its ways out: a door in the north wall, to Blackfang Warren room 4; a door in the west wall, to Blackfang Warren room 2. Those are every way out of this room, and no other wall of it holds a door.\n\nThe player is Veythra the Silent.\n\nVeythra the Silent is unhurt.\n\nThe story has ended: The prince is found alive in the dry cell, and the iron gate opens outward at last.\n\nAlso here: Prince Aurel Durn (Aurel). Nobody else is present.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: prince's signet ring.\n\nWhat just happened: You push open the dry cell and find the prince alive.\n\nEarlier, in order:\nThe player steps into the Iron Gate Chamber, encountering the sensory overload of the cavern’s atmosphere and the immediate presence of the tunnel ahead.\nThe dry cell is opened.\n\nWrite the ending.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000014,
+              "danger": "uneasy",
+              "depth": 4,
+              "description": "The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-05 20:18:00",
+              "lore": "This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.",
+              "mobile": 0,
+              "name": "the dry cell",
+              "parent_location_id": 1000000011,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A room inside Blackfang Warren, 6 by 4 paces on storey 0.",
+              "width": 6,
+              "x": 6,
+              "y": 5,
+              "z": 0
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 7 second-the-ring (second)",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000014,
+              "danger": "uneasy",
+              "depth": 4,
+              "description": "The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-05 20:18:00",
+              "lore": "This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.",
+              "mobile": 0,
+              "name": "the dry cell",
+              "parent_location_id": 1000000011,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A room inside Blackfang Warren, 6 by 4 paces on storey 0.",
+              "width": 6,
+              "x": 6,
+              "y": 5,
+              "z": 0
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000019,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000020,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            },
+            {
+              "id": 1000000004,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 8 second-down-into-the-maw (second)",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000014,
+              "danger": "uneasy",
+              "depth": 4,
+              "description": "The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-05 20:18:00",
+              "lore": "This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.",
+              "mobile": 0,
+              "name": "the dry cell",
+              "parent_location_id": 1000000011,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A room inside Blackfang Warren, 6 by 4 paces on storey 0.",
+              "width": 6,
+              "x": 6,
+              "y": 5,
+              "z": 0
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000019,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000020,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000021,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000022,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            },
+            {
+              "id": 1000000004,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 9 second-on-down-the-tunnel (second)",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000014,
+              "danger": "uneasy",
+              "depth": 4,
+              "description": "The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-05 20:18:00",
+              "lore": "This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.",
+              "mobile": 0,
+              "name": "the dry cell",
+              "parent_location_id": 1000000011,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A room inside Blackfang Warren, 6 by 4 paces on storey 0.",
+              "width": 6,
+              "x": 6,
+              "y": 5,
+              "z": 0
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000019,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000020,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000021,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000022,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000023,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000024,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            },
+            {
+              "id": 1000000004,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 10 second-in-through-the-low-door (second)",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000014,
+              "danger": "uneasy",
+              "depth": 4,
+              "description": "The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-05 20:18:00",
+              "lore": "This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.",
+              "mobile": 0,
+              "name": "the dry cell",
+              "parent_location_id": 1000000011,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A room inside Blackfang Warren, 6 by 4 paces on storey 0.",
+              "width": 6,
+              "x": 6,
+              "y": 5,
+              "z": 0
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000019,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000020,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000021,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000022,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000023,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000024,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            },
+            {
+              "id": 1000000004,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000005,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 11 second-past-the-guards (second)",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000014,
+              "danger": "uneasy",
+              "depth": 4,
+              "description": "The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-05 20:18:00",
+              "lore": "This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.",
+              "mobile": 0,
+              "name": "the dry cell",
+              "parent_location_id": 1000000011,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A room inside Blackfang Warren, 6 by 4 paces on storey 0.",
+              "width": 6,
+              "x": 6,
+              "y": 5,
+              "z": 0
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000019,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000020,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000021,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000022,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000023,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000024,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            },
+            {
+              "id": 1000000004,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000005,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 12 second-the-cell-and-the-end (second)",
+      "requests": [
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Gravity is consistent at 9.8 m/s², but the world is veined with ley lines—thin, invisible rivers of latent magic that pulse at a frequency of 0.3 Hz, detectable only by iron-forged compasses. These lines can be tapped by blood rituals, but each use drains the caster’s lifespan by exactly one day per minute of magic. The ley lines are finite; overuse in a region causes them to fade for a century. No magic can resurrect the dead or heal mortal wounds, only delay them.\ntechnology: The world is locked in a late medieval stasis, with iron and steel as the primary metals. Clockwork mechanisms exist but are rare, limited to devices no larger than a loaf of bread due to the scarcity of precision gears. Gunpowder is known but unstable, often exploding prematurely in 1 out of 5 attempts. Most advancements are suppressed by the Church of the Eternal Pyre, which burns any invention deemed heretical.\n\n## Story Details\ntitle: The Iron Gate Descends (engine sweep)\ngenre: dark fantasy\nsummary: A Durnish knight, clad in heavy blackened plate, stands at the threshold of the goblin caves beneath the Ashen Spire, having just forced open an iron gate. The prince’s signet ring, discovered in the mud, confirms his passage into the tunnels. The air is thick with the scent of damp earth and the faint glow of fungi, while the distant sound of movement hints at unseen dangers ahead. The Church’s decree to retrieve the prince or die trying weighs heavily, but the immediate threat is the darkness itself.\n\n## The Place\nname: the dry cell\ndescription: The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.\nlore: This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.\nways out: Blackfang Warren room 2, Blackfang Warren room 4\n\n## Who Is Here\nVeythra the Silent (The River’s Shadow), Trollkin -- the player, the one arriving\nPrince Aurel Durn (Aurel), Durnish\n\n## Just Before This\nThe player has come from Blackfang Warren room 2. The player steps into the Iron Gate Chamber, encountering the sensory overload of the cavern’s atmosphere and the immediate presence of the tunnel ahead.\n\n## Instructions\n- The player has stood here before. They were last here less than a minute ago\n- Narrate coming back, not finding. They already know what this place\n  is, so write recognition: what has changed while they were gone, or\n  what pointedly has not. Do not introduce it to them again\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "ending",
+          "system": "You are the narrator of a text adventure, and this is the last thing the\nplayer will ever read of this story. The game is over.\n\nThe prompt states the ending the game reached. It is a fact, already\nrecorded: write THAT ending and no other. Do not end the story a different\nway, do not leave it open, and do not say what happens next.\n\nWrite it in the second person, present tense, addressing the player as\n\"you\", in one short paragraph of prose -- two at the most.\n\nNothing moves as it is written: the player stays where they are, nothing\nchanges hands, nobody arrives and nobody leaves. The ways out of here, the\npeople present and what the player carries are listed in the prompt; do not\nadd a way out, a person or a possession that is not on those lists. Never\nbreak character, never offer the player a menu, and never mention that you\nare an AI or a narrator.\n",
+          "user": "Story: The Iron Gate Descends (engine sweep) (dark fantasy)\n\nPremise: A Durnish knight, clad in heavy blackened plate, stands at the threshold of the goblin caves beneath the Ashen Spire, having just forced open an iron gate. The prince’s signet ring, discovered in the mud, confirms his passage into the tunnels. The air is thick with the scent of damp earth and the faint glow of fungi, while the distant sound of movement hints at unseen dangers ahead. The Church’s decree to retrieve the prince or die trying weighs heavily, but the immediate threat is the darkness itself.\n\nThe player is in the dry cell: The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.\n\nWays out of here: Blackfang Warren room 2, Blackfang Warren room 4. There are no others.\n\nThis room is 6 by 4 paces -- about 9 by 6 metres. It is on storey 0 of Blackfang Warren, which is 12 by 9 paces across; storey 0 is the ground floor. Its ways out: a door in the north wall, to Blackfang Warren room 4; a door in the west wall, to Blackfang Warren room 2. Those are every way out of this room, and no other wall of it holds a door.\n\nThe player is Veythra the Silent.\n\nVeythra the Silent is unhurt.\n\nThe story has ended: The prince is found alive in the dry cell, and the iron gate opens outward at last.\n\nAlso here: Prince Aurel Durn (Aurel). Nobody else is present.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: prince's signet ring.\n\nWhat just happened: You push open the dry cell and find the prince alive.\n\nEarlier, in order:\nThe player steps into the Iron Gate Chamber, encountering the sensory overload of the cavern’s atmosphere and the immediate presence of the tunnel ahead.\nThe dry cell is opened.\n\nWrite the ending.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000014,
+              "danger": "uneasy",
+              "depth": 4,
+              "description": "The warren's far corner, 6 by 4 paces of dry obsidian on storey 0, and the only room down here whose walls have been scraped clear of the fungi — grey patches of bare stone, and just enough of a glow left to see by. A door in the north wall goes back through to the room the guards keep, and the one in the west wall is the way you came; nothing else opens anywhere. The stone is scored with rows of short marks cut by something blunter than a blade, and a chain runs from a ring hammered into the east wall to a shackle lying open on the floor. The floor is dry, which nothing else beneath the Spire is. Against the far wall, where the light gives out, a young man in the rags of Council blue sits with his back to the stone and his hands loose in his lap, watching the doorway as though he has watched it every hour he has been awake.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-05 20:18:00",
+              "lore": "This is where the Blackfang keep what they intend to trade. The clan learned in the War of the Spire that a hostage held in the wet tunnels dies of the damp before any Durnish answer arrives, so this corner of the warren was cut above the seep and floored dry, and the ring in its wall is Durnish iron taken off the gate above. The marks scratched in the stone are days. The shackle is left open because the Silent Maw's priests hold that a thing which has been given a choice and stays has been offered properly, and because nobody has walked this far in uninvited in a hundred years. The Iron Council has been told the price twice — the sacred obsidian, weighed out and returned — and has answered neither time.",
+              "mobile": 0,
+              "name": "the dry cell",
+              "parent_location_id": 1000000011,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A room inside Blackfang Warren, 6 by 4 paces on storey 0.",
+              "width": 6,
+              "x": 6,
+              "y": 5,
+              "z": 0
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000013,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000014,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000015,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000016,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000017,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000018,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000019,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, rusted key lying near the gate’s hinge, its bow shaped like a serpent’s head. It looks too delicate to have opened this gate.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "iron key",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000020,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A heavy gold ring, its surface etched with the royal crest of Durnhold, still caked with mud. The metal is cold and slightly bent, as if wrenched from a finger.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "prince's signet ring",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000021,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A rolled parchment, its edges frayed and its surface stained with moisture. The ink is smudged but still legible in places.",
+              "disposition": "intact",
+              "inscription": "Beware the teeth of the dark. They hunger.",
+              "location_id": 1000000003,
+              "name": "damp scroll",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 1,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000022,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A jagged fragment of blackened metal, its edges sharp and its surface pitted with age. It looks like it was broken from something larger, perhaps a blade or a tool.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "iron shard",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000023,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small, pitted blade of cheap iron, its edge dulled by time and neglect. The hilt is wrapped in frayed leather, still damp to the touch.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "rusted dagger",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000024,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A strip of coarse, once-red fabric, now faded and stained with something dark. It smells faintly of sweat and iron.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000004,
+              "name": "tattered cloth",
+              "playthrough_id": 1000000002,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000006,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            },
+            {
+              "id": 1000000004,
+              "acted_on_id": 1000000014,
+              "acted_on_type": "Location",
+              "description": "You push open the dry cell and find the prince alive.",
+              "engine_fact": "You are unhurt.\nAlso here: Prince Aurel Durn. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: prince's signet ring.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The dry cell is opened.",
+              "typed": "move the dry cell"
+            },
+            {
+              "id": 1000000005,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fact": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000014,
+              "previous_scene_id": 1000000004,
+              "resolved_action": "conclude",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-05 20:18:00",
+              "summary": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000004
+            },
+            {
+              "character_id": 1000000004,
+              "scene_id": 1000000004
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000002,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            },
+            {
+              "id": 1000000004,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000005,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-05 20:17:00"
+            },
+            {
+              "id": 1000000006,
+              "playthrough_id": 1000000002,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-05 20:18:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            },
+            {
+              "id": 1000000002,
+              "fired_at": null,
+              "occurred_at": "2026-09-05 20:18:00",
+              "playthrough_id": 1000000002,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Church's Decree was finished (rescued): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    }
+  ]
+}

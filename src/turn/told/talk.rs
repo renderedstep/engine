@@ -231,6 +231,7 @@ impl Turn<'_, '_> {
                 ("location_id", here.map_or(Value::Null, Value::from)),
                 ("user_input", Value::from(command)),
             ]);
+            values.push(("summary", interaction_summary(&values)));
             turn.m.insert("interactions", values)?;
             turn.m.update(
                 "playthroughs",
@@ -331,4 +332,31 @@ fn bare_name(item: &Row) -> String {
         .strip_prefix("the ")
         .unwrap_or(&definite)
         .to_string()
+}
+
+/// `Interaction#compose_summary`: what the player said, what the person did
+/// and resolved, and the engine's receipt, as the row's one line.
+fn interaction_summary(values: &[(&str, Value)]) -> Value {
+    let field = |name: &str| {
+        values
+            .iter()
+            .find(|(column, _)| *column == name)
+            .and_then(|(_, value)| value.as_str())
+            .filter(|text| !crate::text::is_blank(text))
+    };
+    let said = field("user_input")
+        .map(|line| format!("the player said \"{}\"", crate::text::truncate(line, 80)));
+    let parts: Vec<String> = said
+        .into_iter()
+        .chain(
+            ["action", "inner_resolution", "action_fact"]
+                .iter()
+                .filter_map(|name| field(name).map(str::to_string)),
+        )
+        .collect();
+    if parts.is_empty() {
+        Value::Null
+    } else {
+        Value::from(parts.join(" -- "))
+    }
 }

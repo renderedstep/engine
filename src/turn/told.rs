@@ -11,7 +11,7 @@
 //! engine's own words in its place and still finishes: the world answers and
 //! the clock moves, and nobody gets a free turn out of a failed paragraph.
 
-use super::Mechanics;
+use super::{Concluded, Mechanics};
 use crate::arrival::Arrival;
 use crate::command::{self, Journal, Produced};
 use crate::data;
@@ -26,7 +26,7 @@ use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::room::{Choice, Record};
 use crate::store::Store;
-use crate::text::{is_blank, presence, upcase_first};
+use crate::text::{is_blank, presence, ruby_strip, upcase_first};
 use kept::Kept;
 use serde_json::{json, Value};
 
@@ -34,6 +34,30 @@ mod classify;
 mod kept;
 mod realize;
 mod talk;
+
+/// `Scene::Ending::PURPOSE`.
+const ENDING: &str = "ending";
+
+/// `Scene::NARRATED_ENDING`: the label a closing scene carries once the
+/// narrator's words have replaced the engine's.
+const NARRATED_ENDING: &str = "ending";
+
+/// `Story::Audit::Prose::CLOSING_MARKS`.
+const CLOSING_MARKS: [char; 10] = ['"', '\'', '”', '’', '*', '_', ')', ']', '»', '›'];
+
+/// `Story::Audit::Prose.truncated?`: a passage whose last character, after
+/// trailing whitespace and closing marks, is not a full stop, a `!`, a `?`
+/// or an ellipsis. A dash is judged neither way.
+fn truncated(text: &str) -> bool {
+    let trimmed = text
+        .trim_end_matches(|c: char| crate::text::is_ruby_strip(c))
+        .trim_end_matches(|c: char| CLOSING_MARKS.contains(&c) || crate::text::is_ruby_space(c));
+    match trimmed.chars().next_back() {
+        None => false,
+        Some('-' | '—' | '–') => false,
+        Some(last) => !matches!(last, '.' | '!' | '?' | '…'),
+    }
+}
 
 /// `Scene::TURN_MINUTES["action"]`, in seconds.
 const ACTION_SECONDS: i64 = 5 * 60;
@@ -385,13 +409,15 @@ impl<'s, 'm> Turn<'s, 'm> {
             Some(room) => turn.m.standing(room, "every_turn"),
             None => Ok(()),
         })?;
-        let endings_before = self.m.game().own("playthrough_endings").len();
-        self.commit("arc", |turn| turn.m.run_arc().map(|_| ()))?;
-        if self.m.game().own("playthrough_endings").len() > endings_before {
-            return Err(Error::Unsupported(
-                "telling an ending through the models".into(),
-            ));
-        }
+        let conclusion = self.commit("arc", |turn| {
+            turn.m.concluded = None;
+            turn.m.run_arc()?;
+            Ok(turn.m.concluded)
+        })?;
+        let ending = self.remember("ending", |turn| match conclusion {
+            Some(concluded) => turn.tell_ending(concluded).map(Some),
+            None => Ok(None),
+        })?;
         let closing = self.commit("fight_closed", |turn| {
             Ok(turn
                 .m
@@ -409,10 +435,10 @@ impl<'s, 'm> Turn<'s, 'm> {
                 self.models.attribute(&mut book, agent, told.id)?;
             }
         }
-        let outcome = match (scene, closing) {
-            (Some(told), _) => Played::Scene(told),
-            (None, Some(closed)) => Played::Scene(closed),
-            (None, None) => Played::Nothing,
+        let outcome = match (ending, scene, closing) {
+            (Some(told), _, _) | (None, Some(told), _) => Played::Scene(told),
+            (None, None, Some(closed)) => Played::Scene(closed),
+            (None, None, None) => Played::Nothing,
         };
         Ok(match outcome {
             Played::Scene(mut told) => {
@@ -923,6 +949,66 @@ impl<'s, 'm> Turn<'s, 'm> {
         };
         self.models.attribute(&mut book, &agent, told.id)?;
         Ok(Some(told))
+    }
+
+    /// `Scene::Ending#narrate!`: the last paragraph of the game, written by
+    /// the narrator over the closing scene the arc already wrote. Every way
+    /// the call can fail, and a paragraph that stops mid-sentence, leaves
+    /// the engine's own sentence standing on the scene.
+    fn tell_ending(&mut self, concluded: Concluded) -> Result<Told, Error> {
+        if let Some(told) = self.saved::<Told>("ending_scene")? {
+            return Ok(told);
+        }
+        let prompt = {
+            let outcome = self.m.row("quest_outcomes", concluded.outcome)?;
+            let moment = Moment {
+                game: self.m.game(),
+                handled: None,
+                ending: Some(&outcome),
+            };
+            format!(
+                "{}\n\nWrite the ending.\n",
+                moment.narration_context(true, true)
+            )
+        };
+        let call = Call {
+            system: Some(data::ending_instructions().to_string()),
+            ..Call::prompt(prompt)
+        };
+        let mut agent = Agent::new(self.filed(ENDING));
+        let asked = {
+            let on_chunk = &mut *self.on_chunk;
+            let mut book = Book {
+                store: self.m.store,
+                records: &mut self.m.records,
+            };
+            self.models
+                .ask(&mut book, &mut agent, &call, None, Some(on_chunk))
+        };
+        let prose = asked
+            .ok()
+            .map(|answer| ruby_strip(answer.text()).to_string())
+            .filter(|text| !is_blank(text) && !truncated(text));
+        let Some(prose) = prose else {
+            return Ok(Told::plain(concluded.scene));
+        };
+        let told = self.commit("ending_scene", |turn| {
+            turn.m.update(
+                "scenes",
+                concluded.scene,
+                vec![
+                    ("description", Value::from(prose.as_str())),
+                    ("resolved_action", Value::from(NARRATED_ENDING)),
+                ],
+            )?;
+            Ok(Told::plain(concluded.scene))
+        })?;
+        let mut book = Book {
+            store: self.m.store,
+            records: &mut self.m.records,
+        };
+        self.models.attribute(&mut book, &agent, told.id)?;
+        Ok(told)
     }
 
     /// `Scene::Narrator#prompt_for`.
