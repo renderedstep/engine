@@ -263,6 +263,27 @@ pub fn message(
     Ok(id)
 }
 
+/// Writes a message whose content is a structured answer, kept as JSON
+/// (`BaseAgent#add_message` with a Hash).
+pub fn structured_message(
+    book: &mut Book,
+    chat: i64,
+    role: &str,
+    content: &Value,
+) -> Result<i64, Error> {
+    let row = book.store.insert(
+        "messages",
+        &[
+            ("chat_id", Value::from(chat)),
+            ("role", Value::from(role)),
+            ("content_raw", content.clone()),
+        ],
+    )?;
+    let id = int(&row, "id").expect("a message has an id");
+    book.records.push("messages", row);
+    Ok(id)
+}
+
 fn price(pricing: &Value, key: &str) -> Option<f64> {
     pricing["text_tokens"]["standard"][key].as_f64()
 }

@@ -29,6 +29,8 @@ use crate::store::Store;
 use crate::text::{is_blank, presence, upcase_first};
 use serde_json::{json, Value};
 
+mod realize;
+
 /// `Scene::TURN_MINUTES["action"]`, in seconds.
 const ACTION_SECONDS: i64 = 5 * 60;
 
@@ -682,11 +684,20 @@ impl<'s, 'm> Turn<'s, 'm> {
     /// `#move_to`: the room realized, walked into at its way in, paid for,
     /// and the arrival told.
     fn move_to(&mut self, destination: i64) -> Result<Told, Error> {
-        let place = self.m.row("locations", destination)?;
-        unwritten(&place)?;
-        let destination = self.m.way_in(destination);
+        let mut realizers = Vec::new();
+        realizers.extend(self.realize(destination)?);
+        let entry = self.m.way_in(destination);
+        if entry != destination {
+            realizers.extend(self.realize(entry)?);
+        }
+        let destination = entry;
         let room = self.m.row("locations", destination)?;
-        unwritten(&room)?;
+        if text(&room, "detail_level") != Some("realized") {
+            return Err(Error::Database(format!(
+                "{} was not written out, so there is nowhere to stand",
+                string(&room, "name")
+            )));
+        }
 
         self.commit(
             "destination_snapshot",
@@ -716,6 +727,13 @@ impl<'s, 'm> Turn<'s, 'm> {
             )?;
             Ok(told.clone())
         })?;
+        for agent in &realizers {
+            let mut book = Book {
+                store: self.m.store,
+                records: &mut self.m.records,
+            };
+            self.models.attribute(&mut book, agent, told.id)?;
+        }
         let description = string(&self.m.row("scenes", told.id)?, "description").to_string();
         (self.on_chunk)(&description);
         Ok(told)
@@ -971,17 +989,6 @@ impl<'s, 'm> Turn<'s, 'm> {
             "{context}\n{fact}\n{doing}\nThe player types: {command}\n\nNarrate what happens.\n"
         )
     }
-}
-
-/// A room nobody has written yet cannot be walked into by this engine: its
-/// writer is still the Ruby engine's.
-fn unwritten(room: &Row) -> Result<(), Error> {
-    if text(room, "detail_level") == Some("stub")
-        || !room.get("generation_checkpoint").is_none_or(Value::is_null)
-    {
-        return Err(Error::Unsupported("realizing a room".into()));
-    }
-    Ok(())
 }
 
 fn turned(produced: Produced, crisis: bool) -> Turned {

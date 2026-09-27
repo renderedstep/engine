@@ -324,6 +324,28 @@ impl<T: Transport> Models for Live<T> {
         }
     }
 
+    fn restore(
+        &mut self,
+        book: &mut Book,
+        agent: &mut Agent,
+        system: Option<&str>,
+        user: &str,
+        answer: &Value,
+    ) -> Result<Option<i64>, crate::engine::Error> {
+        let Some(model) = self
+            .models
+            .get(agent.model % self.models.len().max(1))
+            .cloned()
+        else {
+            return Ok(None);
+        };
+        let chat = receipts::conversation(book, agent.chat, &agent.filed, &model, system)?;
+        agent.chat = Some(chat);
+        receipts::message(book, chat, "user", user, None)?;
+        receipts::structured_message(book, chat, "assistant", answer)?;
+        Ok(Some(chat))
+    }
+
     fn system_one(&self) -> bool {
         self.system_one.configured(&self.route)
     }
