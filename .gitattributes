@@ -1,2 +1,3 @@
 vectors/*.json -text
 data/**/*.yml -text
+tests/fixtures/*.json -text

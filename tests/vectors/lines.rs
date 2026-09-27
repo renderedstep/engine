@@ -407,3 +407,19 @@ fn refusal() {
         refusal_json(refusal.as_ref())
     });
 }
+
+#[test]
+fn classifier_request() {
+    let tables = json!({
+        "nothing": NOTHING,
+        "examine_edit": [
+            "without moving or taking it.",
+            "without moving or taking it, or looking around the place in general."
+        ],
+    });
+    check_rooms("classifier_request", tables, |worlds, input| {
+        let built = build(worlds, &input["world"]);
+        let state = State::new(&built.room, &text(&input["typed"]));
+        json!({ "state": state.to_json(), "questions": cascade::request(&state) })
+    });
+}

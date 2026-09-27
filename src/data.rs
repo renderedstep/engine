@@ -99,3 +99,32 @@ pub fn request_texts() -> &'static RequestTexts {
         }
     })
 }
+
+const SCENE_GENERATOR: &str = include_str!("../data/scene/generator.yml");
+const LOCATION_GENERATOR: &str = include_str!("../data/location/generator.yml");
+const DESIRES: &str = include_str!("../data/character/desires.yml");
+
+/// One string of a vendored file, by key.
+fn text_of(file: &'static OnceLock<Yaml>, name: &str, source: &str, key: &str) -> &'static str {
+    file.get_or_init(|| load(name, source))[key]
+        .as_str()
+        .unwrap_or_else(|| panic!("{name}: {key} is not a string"))
+}
+
+/// `config/engine/scene/generator.yml`: the arrival writer's words.
+pub fn scene_generator(key: &str) -> &'static str {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    text_of(&FILE, "scene/generator.yml", SCENE_GENERATOR, key)
+}
+
+/// `config/engine/location/generator.yml`: the room writer's words.
+pub fn location_generator(key: &str) -> &'static str {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    text_of(&FILE, "location/generator.yml", LOCATION_GENERATOR, key)
+}
+
+/// `config/engine/character/desires.yml`: the desire writer's words.
+pub fn desires(key: &str) -> &'static str {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    text_of(&FILE, "character/desires.yml", DESIRES, key)
+}

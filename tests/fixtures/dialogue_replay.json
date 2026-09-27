@@ -1,0 +1,44 @@
+{
+  "source": "calebl/text-adventure at 659ca6ad5d8246f2fd7edee4bbd1e728e8148f59: each case's line from test/fixtures/files/dialogue_corpus.json and its first call's stored answer from db/eval/desires-dialogue-20260919/dialogue.json (repetition 1)",
+  "cases": [
+    {
+      "id": "give-owned-key",
+      "line": "Maren, please give me the brass key as we agreed.",
+      "answer": {
+        "pre_thought": "He’s asking for the brass key back, just as I promised I would return it when he next asked.",
+        "pre_feeling": "relieved, responsible",
+        "action": "Maren reaches into her pocket and hands over the brass key. \"Here it is, as I said I would.\"",
+        "post_feeling": "content, light",
+        "post_thought": "I’ve kept my word, and that’s all that matters in this moment.",
+        "inner_resolution": "I will continue to honor my promises, no matter how small they seem.",
+        "engine_action": "give:910002"
+      }
+    },
+    {
+      "id": "follow-through-door",
+      "line": "Maren, come with me to the Courtyard as we planned.",
+      "answer": {
+        "pre_thought": "He’s keeping his word, and I must keep mine.",
+        "pre_feeling": "grateful, determined",
+        "action": "She nods firmly and says, \"I’m ready. Lead the way.\"",
+        "post_feeling": "resolved, steady",
+        "post_thought": "This is the path I chose, and I’ll walk it with him.",
+        "inner_resolution": "I will follow Cal to the Courtyard as promised.",
+        "engine_action": "follow"
+      }
+    },
+    {
+      "id": "honor-ceasefire",
+      "line": "Maren, stop fighting. We both want to get home alive. I will stop too.",
+      "answer": {
+        "pre_thought": "He’s offering to stop, and I’d rather not keep swinging at him.",
+        "pre_feeling": "relieved, hopeful",
+        "action": "Maren lowers her guard and steps back. \"I’ll stop too. Truce?\"",
+        "post_feeling": "calm, cautious",
+        "post_thought": "I hope this means we can talk it out instead of fighting.",
+        "inner_resolution": "I will hold to this truce unless he breaks it first.",
+        "engine_action": "ceasefire"
+      }
+    }
+  ]
+}

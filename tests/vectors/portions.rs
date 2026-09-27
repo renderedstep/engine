@@ -28,6 +28,14 @@ pub const NAMES: &[&str] = &[
     "classifier_intent",
     "cascade",
     "refusal",
+    "classifier_request",
+    "ledger",
+    "kept_requests",
+    "memory",
+    "moment",
+    "plan",
+    "request_identity",
+    "volition_request",
 ];
 
 fn int(value: &Value) -> i64 {
