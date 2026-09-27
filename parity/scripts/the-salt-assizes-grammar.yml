@@ -1,0 +1,66 @@
+---
+story: The Salt Assizes
+steps:
+- id: the-slate-is-in-the-hand
+  type: stats
+  expect:
+    location: The Causeway Court (realized)
+    exits:
+    - The Tide Post (realized)
+    - The Vestry Hulk (stub)
+    here:
+    - Assize hand-bell
+    carrying:
+    - Assize tide-slate
+    volitions: 0
+    acts: 0
+- id: drop-the-tide-slate
+  type: drop the tide-slate
+  expect:
+    changed: true
+    refused: false
+    understood: drop -> Assize tide-slate
+    carrying: []
+- id: go-to-the-tide-post
+  type: go to the Tide Post
+  expect:
+    changed: true
+    refused: false
+    understood: move -> The Tide Post
+    location: The Tide Post (realized)
+    exits:
+    - The Causeway Court (realized)
+- id: back-to-the-court
+  type: go into the Causeway Court
+  expect:
+    changed: true
+    location: The Causeway Court (realized)
+- id: into-the-vestry-with-a-preposition
+  type: go into the Vestry Hulk
+  expect:
+    changed: true
+    refused: false
+    understood: move -> The Vestry Hulk
+    location: The Vestry Hulk (stub)
+- id: back-from-the-vestry
+  type: go into the Causeway Court
+  expect:
+    changed: true
+    location: The Causeway Court (realized)
+- id: an-article-on-its-own-still-names-nothing
+  type: go the
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - matches more than one
+    - The Tide Post
+    - The Vestry Hulk
+    location: The Causeway Court (realized)
+- id: a-name-this-world-does-not-have
+  type: drop the ledger
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no thing you are carrying

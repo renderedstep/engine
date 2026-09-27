@@ -128,3 +128,40 @@ pub fn desires(key: &str) -> &'static str {
     static FILE: OnceLock<Yaml> = OnceLock::new();
     text_of(&FILE, "character/desires.yml", DESIRES, key)
 }
+
+const WEIGHTS: &str = include_str!("../data/playthrough/volition/weights.yml");
+
+/// `Playthrough::Volition::Weights`: the weight every act starts from, and
+/// each pursuit's extra weight per act shape, in file order.
+pub struct Weights {
+    pub base: i64,
+    pub table: Vec<(String, Vec<(String, i64)>)>,
+}
+
+pub fn weights() -> &'static Weights {
+    static WEIGHTS_TABLE: OnceLock<Weights> = OnceLock::new();
+    WEIGHTS_TABLE.get_or_init(|| {
+        let file = load("weights.yml", WEIGHTS);
+        let base = file["base"].as_i64().expect("a base weight");
+        let table = file["table"]
+            .as_hash()
+            .expect("a table of pursuits")
+            .iter()
+            .map(|(pursuit, row)| {
+                let row = row
+                    .as_hash()
+                    .expect("a pursuit's weights")
+                    .iter()
+                    .map(|(shape, weight)| {
+                        (
+                            string(shape, "a shape"),
+                            weight.as_i64().expect("a whole weight"),
+                        )
+                    })
+                    .collect();
+                (string(pursuit, "a pursuit"), row)
+            })
+            .collect();
+        Weights { base, table }
+    })
+}

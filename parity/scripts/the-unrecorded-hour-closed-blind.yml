@@ -1,0 +1,31 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: the-writ-first
+  type: take the writ
+  expect:
+    changed: true
+    quest:
+      1: bound
+      2: bound
+      3: reached
+    ending: none
+- id: then-the-closet
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    quest:
+      1: reached
+    ending: none
+- id: and-the-index-last
+  type: take the index
+  expect:
+    changed: true
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    ending: closed-blind
+    ending_words:
+    - Query 1188 was closed on your own report
+    dead: true

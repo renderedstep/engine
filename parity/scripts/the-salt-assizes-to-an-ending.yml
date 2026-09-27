@@ -1,0 +1,54 @@
+---
+story: The Salt Assizes
+steps:
+- id: a-court-not-yet-rung
+  type: look
+  expect:
+    location: The Causeway Court (realized)
+    here:
+    - Assize hand-bell
+    ending: none
+    ending_words: []
+    dead: false
+- id: out-to-the-water
+  type: go to the Tide Post
+  expect:
+    changed: true
+    location: The Tide Post (realized)
+    present:
+    - Neb Halloran
+    quest:
+      1: reached
+    ending: none
+    dead: false
+- id: the-waters-own-count
+  type: talk to Neb
+  npc_action: give:Neb's knotted cord
+  expect:
+    changed: true
+    carrying:
+    - Assize tide-slate
+    - Neb's knotted cord
+    quest:
+      2: reached
+    ending: none
+- id: back-to-the-bench
+  type: go to the Causeway Court
+  expect:
+    changed: true
+    location: The Causeway Court (realized)
+    ending: none
+    dead: false
+- id: the-court-rung-on-the-true-figure
+  type: take the hand-bell
+  expect:
+    changed: true
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    ending: the-court-rises-true
+    ending_words:
+    - You ring the court up on the water's own figure
+    - somebody's hand, and not the sea's
+    dead: true

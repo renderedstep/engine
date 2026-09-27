@@ -1,0 +1,92 @@
+---
+story: The Iron Gate Descends
+steps:
+- id: both-open-on-the-same-arc
+  type: look
+  expect:
+    location: Iron Gate Chamber (realized)
+    quest:
+      1: bound
+      2: bound
+      3: bound
+    changed: false
+    refused: false
+- id: and-the-second-game-reads-the-same-three-beats
+  type: look
+  player: second
+  expect:
+    location: Iron Gate Chamber (realized)
+    quest:
+      1: bound
+      2: bound
+      3: bound
+    changed: false
+    refused: false
+- id: the-first-game-takes-the-ring
+  type: take the signet ring
+  expect:
+    changed: true
+    carrying:
+    - prince's signet ring
+    quest:
+      1: reached
+- id: the-second-game-has-not
+  type: look
+  player: second
+  expect:
+    location: Iron Gate Chamber (realized)
+    here:
+    - iron key
+    - prince's signet ring
+    carrying: []
+    quest:
+      1: bound
+      2: bound
+      3: bound
+- id: down-into-the-maw
+  type: go to the obsidian maw
+  expect:
+    changed: true
+    location: obsidian maw (realized)
+- id: and-on-into-the-tunnel
+  type: go to Blackfang Tunnel
+  expect:
+    changed: true
+    location: Blackfang Tunnel (realized)
+- id: in-through-the-way-in
+  type: go to Blackfang Warren room 1
+  expect:
+    changed: true
+    location: Blackfang Warren room 1 (stub)
+    quest:
+      2: reached
+      3: bound
+- id: through-the-guards-room
+  type: go to Blackfang Warren room 2
+  expect:
+    changed: true
+    location: Blackfang Warren room 2 (stub)
+- id: the-first-game-finishes-the-story
+  type: go to the dry cell
+  expect:
+    changed: true
+    location: the dry cell (realized)
+    present:
+    - Prince Aurel Durn
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    dead: true
+- id: and-the-second-game-is-still-being-played
+  type: go to the obsidian maw
+  player: second
+  expect:
+    changed: true
+    refused: false
+    location: obsidian maw (realized)
+    dead: false
+    quest:
+      1: bound
+      2: bound
+      3: bound

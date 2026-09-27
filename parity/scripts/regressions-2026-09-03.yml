@@ -1,0 +1,64 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: three-things-on-the-floor
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+- id: put-the-daybook-down-too
+  type: drop the daybook
+  expect:
+    changed: true
+    carrying: []
+- id: collective-words
+  type: take everything
+  expect:
+    refused: true
+    changed: false
+    drifts: 0
+    offers:
+    - Perrin's private index
+    - copy-room apron
+    - Ward Office 12 daybook
+- id: collective-words-against-the-hands
+  type: drop everything
+  expect:
+    refused: true
+    changed: false
+    drifts: 0
+    offers:
+    - there is no thing you are carrying
+- id: two-nouns
+  type: take the index and the apron
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - Perrin's private index
+    - copy-room apron
+    carrying: []
+- id: one-noun-at-a-time
+  type: take the index
+  expect:
+    changed: true
+    understood: take -> Perrin's private index
+    carrying:
+    - Perrin's private index
+- id: look-at-the-closet
+  type: look
+  expect:
+    location: The Supply Closet (realized)
+    exits:
+    - Ward Office 12 (realized)
+    exits_exclude:
+    - The Long Hallway
+- id: and-the-hallway-is-still-a-stub
+  type: go to the Long Hallway
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no way out
+    - Ward Office 12
+    location: The Supply Closet (realized)

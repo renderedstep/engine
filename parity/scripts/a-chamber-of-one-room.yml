@@ -1,0 +1,82 @@
+---
+story: A Chamber of One Room
+steps:
+- id: up-into-the-shaft
+  type: "/move Maintenance Shaft"
+  browser:
+    token: into-the-shaft
+    realizes: Maintenance Shaft
+    replies:
+    - purpose: location
+      content:
+        description: A ladder climbs through ribbed conduit toward the core.
+        lore: Engineers use it when the lift is down.
+        items: []
+        people: []
+    - purpose: location
+      content:
+        exits:
+        - name: Cargo Deck
+          teaser: Crates in rows.
+          distance: adjacent
+          travel_method: climbing
+        - name: Core Access Chamber
+          teaser: A hatch at the top of the ladder.
+          distance: adjacent
+          travel_method: climbing
+          inside: one room
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: Maintenance Shaft (realized)
+    exits:
+    - Cargo Deck (realized)
+    - Core Access Chamber (stub)
+- id: up-into-the-chamber
+  type: "/move Core Access Chamber"
+  browser:
+    token: into-the-chamber
+    realizes: Core Access Chamber
+    replies:
+    - purpose: location
+      content:
+        description: Frost on the rails and a hum in the floor.
+        lore: The core was sealed after the second breach.
+        items: []
+        people: []
+    - purpose: location
+      content:
+        exits:
+        - name: Maintenance Shaft
+          teaser: The ladder back down.
+          distance: adjacent
+          travel_method: climbing
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: Core Access Chamber (realized)
+    exits:
+    - Maintenance Shaft (realized)
+    exits_exclude:
+    - Core Access Chamber room 1
+- id: back-down-the-ladder
+  type: "/move Maintenance Shaft"
+  browser:
+    token: back-down
+    fail: arrival
+  expect:
+    location: Maintenance Shaft (realized)
+    exits:
+    - Cargo Deck (realized)
+    - Core Access Chamber (realized)
+    exits_exclude:
+    - Core Access Chamber room 1
+- id: and-up-again
+  type: "/move Core Access Chamber"
+  browser:
+    token: up-again
+    fail: arrival
+  expect:
+    location: Core Access Chamber (realized)
+    exits:
+    - Maintenance Shaft (realized)

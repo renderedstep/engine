@@ -1,0 +1,80 @@
+---
+story: The Landing Stair
+steps:
+- id: on-the-quay
+  type: look
+  expect:
+    location: The Quay (realized)
+    exits:
+    - The Landing Stair House room 1 (stub)
+    present: []
+    changed: false
+    refused: false
+- id: in-through-the-door
+  type: go to The Landing Stair House room 1
+  expect:
+    changed: true
+    location: The Landing Stair House room 1 (stub)
+    exits:
+    - The Landing Stair House room 2 (stub)
+    - The Quay (realized)
+    refused: false
+- id: along-the-ground-floor
+  type: go to The Landing Stair House room 2
+  expect:
+    changed: true
+    location: The Landing Stair House room 2 (stub)
+    exits:
+    - The Landing Stair House room 1 (stub)
+    - The Landing Stair House room 4 (stub)
+    refused: false
+- id: up-the-stairs
+  type: go to The Landing Stair House room 4
+  expect:
+    changed: true
+    location: The Landing Stair House room 4 (stub)
+    exits:
+    - The Landing Stair House room 2 (stub)
+    - The Landing Stair House room 3 (stub)
+    - The Landing Stair House room 5 (stub)
+    refused: false
+- id: along-the-floor-above
+  type: go to The Landing Stair House room 5
+  expect:
+    changed: true
+    location: The Landing Stair House room 5 (stub)
+    exits:
+    - The Landing Stair House room 4 (stub)
+    refused: false
+- id: back-to-the-stairwell
+  type: go to The Landing Stair House room 4
+  expect:
+    changed: true
+    location: The Landing Stair House room 4 (stub)
+    refused: false
+- id: down-the-stairs
+  type: go to The Landing Stair House room 2
+  expect:
+    changed: true
+    location: The Landing Stair House room 2 (stub)
+    refused: false
+- id: back-to-the-entry-room
+  type: go to The Landing Stair House room 1
+  expect:
+    changed: true
+    location: The Landing Stair House room 1 (stub)
+    refused: false
+- id: back-out-onto-the-quay
+  type: go to The Quay
+  expect:
+    changed: true
+    location: The Quay (realized)
+    exits:
+    - The Landing Stair House room 1 (stub)
+    refused: false
+- id: asking-for-the-building-lands-in-a-room-of-it
+  type: go to The Landing Stair House
+  expect:
+    refused: false
+    changed: true
+    location: The Landing Stair House room 1 (stub)

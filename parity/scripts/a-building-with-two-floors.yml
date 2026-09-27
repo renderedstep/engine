@@ -1,0 +1,109 @@
+---
+story: The Quay House
+steps:
+- id: the-quay-as-seeded
+  type: look
+  expect:
+    location: The Quay (realized)
+    exits:
+    - The Custom House room 1 (stub)
+    - The Bonded Cellar room 1 (stub)
+    present: []
+    changed: false
+    refused: false
+- id: in-through-the-door
+  type: go to The Custom House room 1
+  expect:
+    changed: true
+    location: The Custom House room 1 (stub)
+    exits:
+    - The Quay (realized)
+    - The Custom House room 2 (stub)
+    - The Custom House room 5 (stub)
+    refused: false
+- id: along-the-ground-floor
+  type: go to The Custom House room 2
+  expect:
+    changed: true
+    location: The Custom House room 2 (stub)
+    exits:
+    - The Custom House room 1 (stub)
+    - The Custom House room 3 (realized)
+    refused: false
+- id: into-a-room-somebody-has-written
+  type: go to The Custom House room 3
+  expect:
+    changed: true
+    location: The Custom House room 3 (realized)
+    exits:
+    - The Custom House room 2 (stub)
+    - The Custom House room 4 (realized)
+    refused: false
+- id: on-to-the-dead-end
+  type: go to The Custom House room 4
+  expect:
+    changed: true
+    location: The Custom House room 4 (realized)
+    exits:
+    - The Custom House room 3 (realized)
+    refused: false
+- id: back-out-of-the-dead-end
+  type: go to The Custom House room 3
+  expect:
+    changed: true
+    location: The Custom House room 3 (realized)
+    refused: false
+- id: back-along-the-ground-floor
+  type: go to The Custom House room 2
+  expect:
+    changed: true
+    location: The Custom House room 2 (stub)
+    refused: false
+- id: and-back-the-way-we-came
+  type: go to The Custom House room 1
+  expect:
+    changed: true
+    location: The Custom House room 1 (stub)
+    refused: false
+- id: up-the-stairs
+  type: go to The Custom House room 5
+  expect:
+    changed: true
+    location: The Custom House room 5 (stub)
+    exits:
+    - The Custom House room 1 (stub)
+    - The Custom House room 6 (stub)
+    refused: false
+- id: along-the-floor-above
+  type: go to The Custom House room 6
+  expect:
+    changed: true
+    location: The Custom House room 6 (stub)
+    exits:
+    - The Custom House room 5 (stub)
+    - The Custom House room 7 (stub)
+    refused: false
+- id: down-the-stairs-again
+  type: go to The Custom House room 5
+  expect:
+    changed: true
+    location: The Custom House room 5 (stub)
+    refused: false
+- id: and-down-to-the-ground-floor
+  type: go to The Custom House room 1
+  expect:
+    changed: true
+    location: The Custom House room 1 (stub)
+    refused: false
+- id: the-building-is-not-somewhere-you-stand
+  type: go to The Custom House
+  expect:
+    refused: true
+    changed: false
+    location: The Custom House room 1 (stub)
+- id: a-room-you-cannot-get-to-from-here
+  type: go to The Custom House room 3
+  expect:
+    refused: true
+    changed: false
+    location: The Custom House room 1 (stub)

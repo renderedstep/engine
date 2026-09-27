@@ -1,0 +1,94 @@
+---
+story: The Salt Assizes
+steps:
+- id: the-court-is-free-and-says-what-leaving-it-costs
+  type: look
+  expect:
+    location: The Causeway Court (realized)
+    exits:
+    - The Tide Post (realized)
+    - The Vestry Hulk (stub)
+    hp: 18
+    hazards: 0
+    blows: 0
+    changed: false
+    refused: false
+- id: down-through-the-hatch
+  type: go to the Vestry Hulk
+  expect:
+    changed: true
+    location: The Vestry Hulk (stub)
+    hazards: 1
+    blows: 0
+    dead: false
+    exits:
+    - The Causeway Court (realized)
+- id: and-climbing-back-out-is-free
+  type: go to the Causeway Court
+  expect:
+    changed: true
+    location: The Causeway Court (realized)
+    hazards: 0
+    blows: 0
+    dead: false
+- id: and-in-again-costs-again
+  type: go into the Vestry Hulk
+  expect:
+    changed: true
+    location: The Vestry Hulk (stub)
+    hazards: 1
+    blows: 0
+- id: standing-in-it-costs-nothing
+  type: look
+  expect:
+    location: The Vestry Hulk (stub)
+    hazards: 0
+    blows: 0
+- id: back-onto-the-rock
+  type: go to the Causeway Court
+  expect:
+    changed: true
+    location: The Causeway Court (realized)
+    hazards: 0
+- id: patched-up-before-the-water
+  type: mend 20
+  expect:
+    hp: 18
+    hazards: 0
+    blows: 0
+    dead: false
+- id: out-across-the-wet-side-of-the-rock
+  type: go to the Tide Post
+  expect:
+    changed: true
+    location: The Tide Post (realized)
+    hazards: 1
+    foes: []
+    blows: 0
+    dead: false
+- id: and-standing-at-the-post-is-free
+  type: talk to Neb Halloran
+  expect:
+    refused: true
+    offers:
+    - Neb Halloran
+    location: The Tide Post (realized)
+    hazards: 0
+    blows: 0
+    drifts: 0
+    dead: false
+- id: a-refused-line-pays-nothing
+  type: take the mayor's chain
+  expect:
+    refused: true
+    changed: false
+    hazards: 0
+    blows: 0
+    drifts: 0
+- id: and-back-in-is-paid-again
+  type: go to the Causeway Court
+  expect:
+    changed: true
+    location: The Causeway Court (realized)
+    hazards: 0
+    blows: 0

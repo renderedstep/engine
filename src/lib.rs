@@ -1,10 +1,13 @@
-//! The text-adventure engine's pure rules: the dice, the geometry, reading a
-//! typed line against the room the player stands in, and building the
-//! requests the engine hands a model.
+//! The text-adventure engine: the dice, the geometry, reading a typed line
+//! against the room the player stands in, building the requests the engine
+//! hands a model, and a turn loop that plays a line with no model over the
+//! game's own database.
 //!
-//! Every function here takes values and returns values. Nothing reads a
-//! database, the network or the clock, so each rule can be checked against
-//! the golden vectors the Ruby engine writes (see `vectors/README.md`).
+//! The rules take values and return values. Nothing but the turn loop
+//! ([`store`], [`turn`], [`outcome`], [`engine`]) reads a database, and
+//! nothing reads the network, so each rule can be checked against the
+//! golden vectors the Ruby engine writes (see `vectors/README.md`) and the
+//! loop against the engine sweep (see `parity/README.md`).
 //!
 //! Reading a line (`grammar`, `intent`, `refusal`, `slash_menu`, `cascade`)
 //! works over a [`room::Room`] of plain records. The System One cascade
@@ -23,10 +26,12 @@ pub mod arrival;
 pub mod boxes;
 pub mod cascade;
 pub mod cast;
+pub mod clock;
 pub mod danger;
 mod data;
 pub mod deadline;
 pub mod dialogue;
+pub mod engine;
 pub mod grammar;
 pub mod identity;
 pub mod intent;
@@ -34,7 +39,9 @@ pub mod interior;
 pub mod ledger;
 pub mod memory;
 pub mod moment;
+pub mod outcome;
 pub mod parameters;
+pub mod parity;
 pub mod plan;
 pub mod playthrough;
 pub mod population;
@@ -49,6 +56,8 @@ pub mod shuffle_connections;
 pub mod slash_menu;
 pub mod spot;
 pub mod stat_block;
+pub mod store;
 pub mod text;
+pub mod turn;
 pub mod volition;
 pub mod world_mechanic;

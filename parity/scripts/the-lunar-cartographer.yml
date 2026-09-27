@@ -1,0 +1,86 @@
+---
+story: The Lunar Cartographer
+steps:
+- id: the-one-written-room
+  type: stats
+  expect:
+    location: Grenn's Boarding House, Room 3 (realized)
+    present:
+    - Grenn Ollivar
+    volitions: 0
+    acts: 0
+    exits:
+    - Mournwell Lane (stub)
+    - Grenn's Boarding House hallway (stub)
+    - Larkspur Quarter rooftops (stub)
+    here: []
+    carrying: []
+- id: into-the-lane
+  type: go to Mournwell Lane
+  expect:
+    changed: true
+    change: a stub -- nobody has written this room
+    location: Mournwell Lane (stub)
+    exits:
+    - Grenn's Boarding House, Room 3 (realized)
+    - Sovereign's Circle (stub)
+- id: two-rooms-deep
+  type: go to Sovereign's Circle
+  expect:
+    changed: true
+    location: Sovereign's Circle (stub)
+    exits:
+    - Mournwell Lane (stub)
+    exits_exclude:
+    - Grenn's Boarding House, Room 3
+    - The Celestial Spire
+- id: the-rooftops-are-not-reachable-from-here
+  type: go to the Larkspur Quarter rooftops
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no way out
+    - Mournwell Lane
+    location: Sovereign's Circle (stub)
+- id: nothing-to-carry-in-this-world
+  type: take the sextant
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - there is no thing lying here
+    drifts: 0
+- id: nothing-in-the-hands-either
+  type: drop
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - drop what?
+- id: back-out
+  type: go to Mournwell Lane
+  expect:
+    changed: true
+    location: Mournwell Lane (stub)
+- id: back-to-the-room-that-is-written
+  type: go to Room 3
+  expect:
+    changed: true
+    location: Grenn's Boarding House, Room 3 (realized)
+    exits:
+    - Mournwell Lane (stub)
+    - Grenn's Boarding House hallway (stub)
+    - Larkspur Quarter rooftops (stub)
+- id: the-rooftops-still-lead-two-ways
+  type: go to the rooftops
+  expect:
+    changed: true
+    location: Larkspur Quarter rooftops (stub)
+    exits:
+    - Grenn's Boarding House, Room 3 (realized)
+    - The Celestial Spire (stub)
+    exits_exclude:
+    - Mournwell Lane
+    - Sovereign's Circle
+    - The Bell of Saint Aravel

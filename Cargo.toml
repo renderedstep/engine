@@ -7,12 +7,13 @@ name = "renderedstep-engine"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.88"
-description = "The text-adventure engine's pure rules: the dice, the geometry, reading a typed line and building model requests"
+description = "The text-adventure engine: the dice, the geometry, reading a typed line, building model requests, and an offline turn loop over the game's SQLite database"
 repository = "https://github.com/renderedstep/engine"
 license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
+rusqlite = { version = "0.40.2", features = ["bundled"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 sha2 = "0.10"
 yaml-rust2 = "0.13"

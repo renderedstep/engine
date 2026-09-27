@@ -1,0 +1,132 @@
+---
+story: The Lunar Cartographer
+steps:
+- id: nothing-reached-yet
+  type: look
+  expect:
+    location: Grenn's Boarding House, Room 3 (realized)
+    ending: none
+    ending_words: []
+- id: up-the-stairs
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+- id: the-one-fixed-point
+  type: go to the bell
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    foes:
+    - Marek Sollen
+    here:
+    - climbers' bearing book
+    quest:
+      1: reached
+    ending: none
+- id: round-1
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-1
+  type: mend 20
+  expect:
+    dead: false
+- id: round-2
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-2
+  type: mend 20
+  expect:
+    dead: false
+- id: round-3
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-3
+  type: mend 20
+  expect:
+    dead: false
+- id: round-4
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-4
+  type: mend 20
+  expect:
+    dead: false
+- id: round-5
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-5
+  type: mend 20
+  expect:
+    dead: false
+- id: round-6
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-6
+  type: mend 20
+  expect:
+    dead: false
+- id: round-7
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-7
+  type: mend 20
+  expect:
+    dead: false
+- id: round-8
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-8
+  type: mend 20
+  expect:
+    dead: false
+- id: round-9
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-9
+  type: mend 20
+  expect:
+    dead: false
+- id: round-10
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-10
+  type: mend 20
+  expect:
+    dead: false
+- id: the-tally-off-the-floor
+  type: take the tally
+  expect:
+    changed: true
+    carrying:
+    - bell-rope tally
+    quest:
+      1: reached
+      2: reached
+    ending: none
+- id: the-bearing-carried-home
+  type: take the bearing book
+  expect:
+    changed: true
+    carrying:
+    - bell-rope tally
+    - climbers' bearing book
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    ending: the-bearing-holds
+    ending_words:
+    - the survey has its fixed point at last
+    - and then no more counting at all
+    dead: true

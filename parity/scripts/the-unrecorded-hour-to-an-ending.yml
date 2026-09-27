@@ -1,0 +1,62 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: a-story-still-open
+  type: look
+  expect:
+    location: Ward Office 12 (realized)
+    ending: none
+    ending_words: []
+    dead: false
+- id: the-door-nobody-audits
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    here:
+    - Perrin's private index
+    - copy-room apron
+    quest:
+      1: reached
+    ending: none
+- id: the-hand-behind-the-amendments
+  type: take the index
+  expect:
+    changed: true
+    carrying:
+    - Ward Office 12 daybook
+    - Perrin's private index
+    quest:
+      1: reached
+      2: reached
+    ending: none
+    ending_words: []
+- id: back-to-the-desk
+  type: go to Ward Office 12
+  expect:
+    changed: true
+    location: Ward Office 12 (realized)
+    ending: none
+- id: the-writ-before-anybody-names-it
+  type: take the writ
+  expect:
+    changed: true
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    ending: query-answered
+    ending_words:
+    - the missing hour has a source at last
+    - Query 1188 stays open in your name
+    dead: true
+- id: a-finished-game-plays-no-more-lines
+  type: take the ward stamp
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - story is over
+    ending: query-answered
+    ending_words:
+    - the missing hour has a source at last

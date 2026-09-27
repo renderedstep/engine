@@ -1,0 +1,101 @@
+---
+story: The Iron Gate Descends
+steps:
+- id: nothing-has-ended-yet
+  type: look
+  expect:
+    location: Iron Gate Chamber (realized)
+    here:
+    - iron key
+    - prince's signet ring
+    quest:
+      1: bound
+      2: bound
+      3: bound
+    ending: none
+    scheduled: 0
+    fired: 0
+    changed: false
+    refused: false
+- id: past-the-ring-and-down
+  type: go to the obsidian maw
+  expect:
+    changed: true
+    location: obsidian maw (realized)
+    quest:
+      1: bound
+- id: and-on-into-the-tunnel
+  type: go to Blackfang Tunnel
+  expect:
+    changed: true
+    location: Blackfang Tunnel (realized)
+- id: in-through-the-way-in
+  type: go to Blackfang Warren room 1
+  expect:
+    changed: true
+    location: Blackfang Warren room 1 (stub)
+    quest:
+      1: bound
+      2: reached
+      3: bound
+- id: through-the-guards-room
+  type: go to Blackfang Warren room 2
+  expect:
+    changed: true
+    location: Blackfang Warren room 2 (stub)
+- id: the-cell-with-nothing-to-show-for-it
+  type: go to the dry cell
+  expect:
+    changed: true
+    location: the dry cell (realized)
+    present:
+    - Prince Aurel Durn
+    quest:
+      1: bound
+      2: reached
+      3: reached
+    ending: none
+    dead: false
+- id: back-through-the-warren
+  type: go to Blackfang Warren room 2
+  expect:
+    changed: true
+    location: Blackfang Warren room 2 (stub)
+- id: and-out-of-it
+  type: go to Blackfang Warren room 1
+  expect:
+    changed: true
+    location: Blackfang Warren room 1 (stub)
+- id: up-the-tunnel
+  type: go to Blackfang Tunnel
+  expect:
+    changed: true
+    location: Blackfang Tunnel (realized)
+- id: and-up-through-the-maw
+  type: go to the obsidian maw
+  expect:
+    changed: true
+    location: obsidian maw (realized)
+- id: back-where-it-started
+  type: go to Iron Gate Chamber
+  expect:
+    changed: true
+    location: Iron Gate Chamber (realized)
+    here:
+    - iron key
+    - prince's signet ring
+    ending: none
+- id: the-last-beat-is-the-first-one
+  type: take the signet ring
+  expect:
+    changed: true
+    carrying:
+    - prince's signet ring
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    ending: too-late
+    scheduled: 1
+    fired: 0
+    dead: true

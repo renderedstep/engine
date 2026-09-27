@@ -1,0 +1,109 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: she-starts-unhurt
+  type: look
+  expect:
+    location: Ward Office 12 (realized)
+    hp: 18
+    dead: false
+    changed: false
+    refused: false
+- id: vitals-is-a-read-and-changes-nothing
+  type: vitals
+  expect:
+    hp: 18
+    dead: false
+    changed: false
+    refused: false
+- id: a-mend-at-full-health-does-nothing-but-is-not-refused
+  type: mend 3
+  expect:
+    understood: mend -> 3 hit points
+    hp: 18
+    dead: false
+    changed: true
+- id: harm-takes-hit-points-off
+  type: harm 2
+  expect:
+    understood: harm -> 2 hit points
+    change: Odile Vance unhurt -> hurt (16 of 18)
+    hp: 16
+    dead: false
+    changed: true
+- id: mend-puts-one-back
+  type: mend 1
+  expect:
+    change: Odile Vance hurt (16 of 18) -> hurt (17 of 18)
+    hp: 17
+    dead: false
+    changed: true
+- id: half-gone-reads-as-badly-hurt
+  type: harm 8
+  expect:
+    change: badly hurt (9 of 18)
+    hp: 9
+    dead: false
+    changed: true
+- id: a-harm-that-would-overshoot-stops-at-zero
+  type: harm 99
+  expect:
+    change: Odile Vance badly hurt (9 of 18) -> dead
+    hp: 0
+    dead: true
+    changed: true
+- id: and-the-change-line-says-the-game-is-over
+  type: look
+  expect:
+    hp: 0
+    dead: true
+    refused: true
+    offers: is dead, and this playthrough is over
+- id: a-move-is-refused
+  type: go to the Supply Closet
+  expect:
+    location: Ward Office 12 (realized)
+    refused: true
+    changed: false
+    offers: Nothing you type can change it
+    drifts: 0
+- id: a-take-is-refused-and-the-floor-is-untouched
+  type: take the ward stamp
+  expect:
+    carrying:
+    - Ward Office 12 daybook
+    refused: true
+    changed: false
+- id: a-drop-is-refused-and-the-hands-are-untouched
+  type: drop the daybook
+  expect:
+    carrying:
+    - Ward Office 12 daybook
+    refused: true
+    changed: false
+- id: a-read-is-refused
+  type: read the daybook
+  expect:
+    refused: true
+    changed: false
+    offers: Start a new playthrough
+- id: a-talk-is-refused-with-the-death-and-not-with-the-prose-note
+  type: talk to Sub-Inspector Rowe
+  expect:
+    refused: true
+    changed: false
+    offers: is dead, and this playthrough is over
+- id: a-mend-cannot-raise-the-dead
+  type: mend 6
+  expect:
+    hp: 0
+    dead: true
+    refused: true
+    changed: false
+- id: even-a-look-is-refused
+  type: look
+  expect:
+    hp: 0
+    dead: true
+    refused: true
+    changed: false

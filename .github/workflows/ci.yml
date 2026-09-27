@@ -28,3 +28,5 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo test --workspace --locked
+      - name: the engine sweep against the Ruby engine's goldens
+        run: cargo run --release --locked --bin parity -- --check parity

@@ -1,0 +1,146 @@
+---
+story: A Turn at the Gate
+steps:
+- id: no-key-is-the-one-call-it-always-made
+  type: pick up that red coin
+  browser:
+    token: keyless
+    replies:
+    - purpose: classifier
+      prompt_includes:
+      - red coin
+      - Maren
+      content:
+        intent: take
+        target: red coin
+        also_named: nothing
+    - purpose: narration
+      content: You stoop and close your hand around the coin.
+  expect:
+    carrying:
+    - red coin
+    here: []
+    resolved_by: model
+    changed: true
+    refused: false
+- id: the-cascade-composes-and-the-model-call-never-happens
+  type: put the coin back down
+  browser:
+    token: composed
+    replies:
+    - purpose: system_one
+      prompt_includes:
+      - red coin
+      - put the coin back down
+      content:
+        intent: drop
+        target_drop: player_item_1
+        named_more_than_one: 0.02
+        target_present: 0.95
+    - purpose: narration
+      content: You set the coin back on the flagstones.
+  expect:
+    carrying: []
+    here:
+    - red coin
+    resolved_by: typed_model
+    changed: true
+    refused: false
+- id: a-flagged-line-goes-on-to-the-model-call
+  type: take the coin and have a word with Maren
+  browser:
+    token: escalated
+    replies:
+    - purpose: system_one
+      content:
+        intent: take
+        target_take: available_item_1
+        also_named: person_1
+        named_more_than_one: 0.91
+        target_present: 0.88
+    - purpose: classifier
+      content:
+        intent: take
+        target: red coin
+        also_named: nothing
+    - purpose: narration
+      content: You take the coin without looking away from her.
+  expect:
+    carrying:
+    - red coin
+    here: []
+    resolved_by: typed_model_escalated
+    changed: true
+    refused: false
+- id: a-provider-that-fails-never-costs-the-turn
+  type: leave the coin on the stones
+  browser:
+    token: unavailable
+    replies:
+    - purpose: system_one
+      unavailable: true
+    - purpose: classifier
+      content:
+        intent: drop
+        target: red coin
+        also_named: nothing
+    - purpose: narration
+      content: You let it fall back where you found it.
+  expect:
+    carrying: []
+    here:
+    - red coin
+    resolved_by: typed_model_unavailable
+    changed: true
+    refused: false
+- id: the-presence-flag-escalates-on-its-own
+  type: pick up whatever the gatekeeper left on the stones
+  browser:
+    token: presence
+    replies:
+    - purpose: system_one
+      content:
+        intent: take
+        target_take: available_item_1
+        named_more_than_one: 0.02
+        target_present: 0.04
+    - purpose: classifier
+      content:
+        intent: take
+        target: red coin
+        also_named: nothing
+    - purpose: narration
+      content: You lift the coin off the flagstones again.
+  expect:
+    carrying:
+    - red coin
+    here: []
+    resolved_by: typed_model_escalated
+    changed: true
+    refused: false
+- id: the-two-name-flag-escalates-with-no-second-record
+  type: put down the coin and the key
+  browser:
+    token: two-name-alone
+    replies:
+    - purpose: system_one
+      content:
+        intent: drop
+        target_drop: player_item_1
+        also_named: nothing
+        named_more_than_one: 0.91
+        target_present: 0.9
+    - purpose: classifier
+      content:
+        intent: drop
+        target: red coin
+        also_named: nothing
+    - purpose: narration
+      content: You set the coin down and keep your hands to yourself.
+  expect:
+    carrying: []
+    here:
+    - red coin
+    resolved_by: typed_model_escalated
+    changed: true
+    refused: false

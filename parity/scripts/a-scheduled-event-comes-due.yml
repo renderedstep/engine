@@ -1,0 +1,58 @@
+---
+story: The Lunar Cartographer
+steps:
+- id: two-things-are-going-to-happen-and-neither-has
+  type: look
+  expect:
+    location: Grenn's Boarding House, Room 3 (realized)
+    present:
+    - Grenn Ollivar
+    scheduled: 2
+    fired: 0
+    changed: false
+    refused: false
+- id: a-turn-is-not-an-hour
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+    scheduled: 2
+    fired: 0
+- id: into-the-tower
+  type: go to the bell
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    foes:
+    - Marek Sollen
+    scheduled: 2
+    fired: 0
+- id: one-round
+  type: attack Marek Sollen
+  expect:
+    understood: attack -> Marek Sollen
+    changed: true
+    dead: false
+- id: patched-up
+  type: mend 20
+  expect:
+    dead: false
+- id: back-down-the-stair
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+    dead: false
+- id: and-the-hour-came
+  type: look
+  expect:
+    scheduled: 1
+    fired: 1
+    changed: false
+    refused: false
+- id: and-it-does-not-fire-twice
+  type: look
+  expect:
+    scheduled: 1
+    fired: 1
+    changed: false

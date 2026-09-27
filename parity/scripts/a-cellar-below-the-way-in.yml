@@ -1,0 +1,103 @@
+---
+story: The Quay House
+steps:
+- id: the-quay-as-seeded
+  type: look
+  expect:
+    location: The Quay (realized)
+    storey:
+    exits:
+    - The Custom House room 1 (stub)
+    - The Bonded Cellar room 1 (stub)
+    changed: false
+    refused: false
+- id: in-through-the-sealed-door
+  type: go to The Bonded Cellar room 1
+  expect:
+    changed: true
+    location: The Bonded Cellar room 1 (stub)
+    storey: 0
+    exits:
+    - The Quay (realized)
+    - The Bonded Cellar room 2 (stub)
+    - The Bonded Cellar room 3 (stub)
+    refused: false
+- id: across-the-ground-floor
+  type: go to The Bonded Cellar room 2
+  expect:
+    changed: true
+    location: The Bonded Cellar room 2 (stub)
+    storey: 0
+    exits:
+    - The Bonded Cellar room 1 (stub)
+    - The Bonded Cellar room 4 (stub)
+    - The Bonded Cellar room 5 (stub)
+    - The Bonded Cellar room 6 (stub)
+    refused: false
+- id: down-the-stair
+  type: go to The Bonded Cellar room 5
+  expect:
+    changed: true
+    location: The Bonded Cellar room 5 (stub)
+    storey: -1
+    exits:
+    - The Bonded Cellar room 2 (stub)
+    - The Bonded Cellar room 6 (stub)
+    refused: false
+- id: along-the-cellar
+  type: go to The Bonded Cellar room 6
+  expect:
+    changed: true
+    location: The Bonded Cellar room 6 (stub)
+    storey: -1
+    exits:
+    - The Bonded Cellar room 2 (stub)
+    - The Bonded Cellar room 5 (stub)
+    refused: false
+- id: up-out-of-the-cellar
+  type: go to The Bonded Cellar room 2
+  expect:
+    changed: true
+    location: The Bonded Cellar room 2 (stub)
+    storey: 0
+    refused: false
+- id: on-up-past-the-entry
+  type: go to The Bonded Cellar room 4
+  expect:
+    changed: true
+    location: The Bonded Cellar room 4 (stub)
+    storey: 1
+    exits:
+    - The Bonded Cellar room 2 (stub)
+    - The Bonded Cellar room 3 (stub)
+    refused: false
+- id: along-the-floor-above
+  type: go to The Bonded Cellar room 3
+  expect:
+    changed: true
+    location: The Bonded Cellar room 3 (stub)
+    storey: 1
+    exits:
+    - The Bonded Cellar room 1 (stub)
+    - The Bonded Cellar room 4 (stub)
+    refused: false
+- id: down-to-the-entry-again
+  type: go to The Bonded Cellar room 1
+  expect:
+    changed: true
+    location: The Bonded Cellar room 1 (stub)
+    storey: 0
+    refused: false
+- id: no-shortcut-into-the-cellar
+  type: go to The Bonded Cellar room 5
+  expect:
+    refused: true
+    changed: false
+    location: The Bonded Cellar room 1 (stub)
+    storey: 0
+- id: the-cellar-is-not-somewhere-you-stand
+  type: go to The Bonded Cellar
+  expect:
+    refused: true
+    changed: false
+    location: The Bonded Cellar room 1 (stub)

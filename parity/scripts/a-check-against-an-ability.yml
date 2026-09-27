@@ -1,0 +1,131 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: the-sheet-as-seeded
+  type: stats
+  expect:
+    location: Ward Office 12 (realized)
+    abilities:
+      strength: 9
+      dexterity: 11
+      will: 15
+    hp: 18
+    changed: false
+    refused: false
+- id: a-check-throws-one-die-at-the-score
+  type: check strength
+  expect:
+    understood: check -> strength
+    note:
+    - check strength -> d20(
+    - "<= 9 "
+    changed: false
+    refused: false
+    abilities:
+      strength: 9
+    hp: 18
+- id: the-penalty-comes-off-the-target
+  type: check will 5
+  expect:
+    understood: check -> will (penalty 5)
+    note:
+    - check will -> d20(
+    - "<= 10 "
+    changed: false
+    refused: false
+- id: a-penalty-of-zero-is-the-plain-check
+  type: check dexterity 0
+  expect:
+    understood: check -> dexterity
+    note: "<= 11 "
+    changed: false
+    refused: false
+- id: an-ability-by-an-unambiguous-prefix
+  type: check dex
+  expect:
+    understood: check -> dexterity
+    changed: false
+    refused: false
+- id: and-not-by-a-fragment
+  type: check ill
+  expect:
+    refused: true
+    offers: not one of the three abilities
+    changed: false
+- id: a-check-it-cannot-win-is-refused-and-not-rolled
+  type: check strength 9
+  expect:
+    understood: check -> strength (penalty 9)
+    refused: true
+    offers:
+    - cannot do it at all
+    - strength 9 less a penalty of 9 is 0
+    - No die was thrown
+    changed: false
+    abilities:
+      strength: 9
+- id: past-impossible-is-still-impossible
+  type: check strength 12
+  expect:
+    refused: true
+    offers: is -3
+    changed: false
+- id: no-ability-at-all-is-refused-with-the-three-there-are
+  type: check
+  expect:
+    refused: true
+    offers: strength, dexterity, will
+    changed: false
+- id: a-penalty-that-is-not-a-number-is-refused
+  type: check will lots
+  expect:
+    refused: true
+    offers: a penalty is a whole number
+    changed: false
+- id: a-take-does-not-touch-the-sheet
+  type: take the ward stamp
+  expect:
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+    changed: true
+    abilities:
+      strength: 9
+      dexterity: 11
+      will: 15
+- id: a-move-does-not-touch-the-sheet
+  type: go the supply closet
+  expect:
+    location: The Supply Closet (realized)
+    changed: true
+    abilities:
+      strength: 9
+      dexterity: 11
+      will: 15
+- id: harm-moves-the-condition-and-not-the-sheet
+  type: harm 2
+  expect:
+    hp: 16
+    changed: true
+    abilities:
+      strength: 9
+      dexterity: 11
+      will: 15
+- id: and-a-check-still-reads-the-world-after-being-hurt
+  type: check will
+  expect:
+    note: "<= 15 "
+    hp: 16
+    changed: false
+    refused: false
+    abilities:
+      will: 15
+- id: mend-is-the-mirror-and-the-sheet-is-still-the-file's
+  type: mend 2
+  expect:
+    hp: 18
+    changed: true
+    abilities:
+      strength: 9
+      dexterity: 11
+      will: 15

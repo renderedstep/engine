@@ -1,0 +1,188 @@
+---
+story: The Lunar Cartographer
+steps:
+- id: nobody-to-fight-in-the-room-the-game-opens-in
+  type: look
+  expect:
+    location: Grenn's Boarding House, Room 3 (realized)
+    present:
+    - Grenn Ollivar
+    foes: []
+    hp: 18
+    dead: false
+- id: up-the-stairs
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+    foes: []
+    hp: 18
+- id: into-the-tower
+  type: go to the bell
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    present:
+    - Marek Sollen
+    foes:
+    - Marek Sollen
+    hp: 18
+    hp_of:
+      Marek Sollen: 10
+    here:
+    - climbers' bearing book
+- id: the-first-round
+  type: attack Marek Sollen
+  expect:
+    understood: attack -> Marek Sollen
+    resolved_by: grammar
+    changed: true
+    change: 'struck: Isbet Marrow hit Marek Sollen for'
+    note: 'answered: Marek Sollen hit Isbet Marrow for'
+    blows: 2
+    foes:
+    - Marek Sollen
+    present:
+    - Marek Sollen
+    dead: false
+- id: patched-up-1
+  type: mend 20
+  expect:
+    hp: 18
+    blows: 0
+    dead: false
+- id: round-2
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-2
+  type: mend 20
+  expect:
+    hp: 18
+    blows: 0
+- id: round-3
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-3
+  type: mend 20
+  expect:
+    hp: 18
+    dead: false
+- id: round-4
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-4
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-5
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-5
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-6
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-6
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-7
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-7
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-8
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-8
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-9
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-9
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-10-is-the-last-one-the-arithmetic-allows
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: the-fight-is-over-and-the-body-let-go-of-what-it-held
+  type: look
+  expect:
+    present: []
+    foes: []
+    here:
+    - climbers' bearing book
+    - bell-rope tally
+    carrying: []
+    dead: false
+    changed: false
+    blows: 0
+- id: and-it-can-be-picked-up
+  type: take the tally
+  expect:
+    changed: true
+    here:
+    - climbers' bearing book
+    carrying:
+    - bell-rope tally
+    blows: 0
+- id: what-is-written-on-it-came-with-the-copy
+  type: read the tally
+  expect:
+    note: XI. XI.
+    inscription:
+      bell-rope tally: XI. XI.
+    changed: false
+    blows: 0
+- id: a-corpse-cannot-be-hit-again
+  type: attack Marek Sollen
+  expect:
+    refused: true
+    changed: false
+    offers: there is no person here called
+    drifts: 0
+    blows: 0
+- id: and-cannot-be-talked-to-either
+  type: talk to Marek Sollen
+  expect:
+    refused: true
+    changed: false
+    offers: there is no person here called
+    drifts: 0
+    blows: 0
+- id: leave-the-body-and-the-empty-floor-behind
+  type: go to the hallway
+  expect:
+    location: Grenn's Boarding House hallway (stub)
+    carrying:
+    - bell-rope tally
+    present: []
+    changed: true
+- id: returning-does-not-revive-the-bell-keeper-or-restore-his-tally
+  type: go to the bell
+  expect:
+    location: The Bell of Saint Aravel (realized)
+    present: []
+    foes: []
+    here:
+    - climbers' bearing book
+    carrying:
+    - bell-rope tally
+    changed: true
+    blows: 0

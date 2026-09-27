@@ -63,6 +63,28 @@ impl Records {
     pub fn find(&self, name: &str, id: i64) -> Option<&Row> {
         self.first(name, |row| int(row, "id") == Some(id))
     }
+
+    /// Replaces a table's rows, which must be in id order.
+    pub fn set_table(&mut self, name: &str, rows: Vec<Row>) {
+        self.tables.insert(name.to_string(), rows);
+    }
+
+    /// Adds a row at the end of its table: a new row has the highest id.
+    pub fn push(&mut self, name: &str, row: Row) {
+        self.tables.entry(name.to_string()).or_default().push(row);
+    }
+
+    /// Writes one column of the row with this id; nothing where there is no
+    /// such row.
+    pub fn set(&mut self, name: &str, id: i64, column: &str, value: Value) {
+        if let Some(row) = self
+            .tables
+            .get_mut(name)
+            .and_then(|rows| rows.iter_mut().find(|row| int(row, "id") == Some(id)))
+        {
+            row.insert(column.to_string(), value);
+        }
+    }
 }
 
 /// An integer column, or none where it is null.

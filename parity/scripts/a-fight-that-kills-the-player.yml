@@ -1,0 +1,117 @@
+---
+story: The Salt Assizes
+steps:
+- id: the-court-has-a-justicar-in-it-and-no-foes
+  type: look
+  expect:
+    location: The Causeway Court (realized)
+    foes: []
+    hp: 18
+    dead: false
+    blows: 0
+- id: out-to-the-post
+  type: go to the Tide Post
+  expect:
+    changed: true
+    location: The Tide Post (realized)
+    foes: []
+    blows: 0
+    hp_of:
+      Neb Halloran: 10
+- id: and-he-is-somebody-the-grammar-offers-to-attack
+  type: attack Neb Halloran
+  expect:
+    understood: attack -> Neb Halloran
+    resolved_by: grammar
+    changed: true
+    change: 'struck: Coraith Vell hit Neb Halloran for'
+    note: 'answered: Neb Halloran hit Coraith Vell for'
+    blows: 2
+    foes:
+    - Neb Halloran
+    dead: false
+- id: a-refused-line-buys-him-no-round
+  type: take the mayor's chain
+  expect:
+    refused: true
+    changed: false
+    blows: 0
+    drifts: 0
+    foes:
+    - Neb Halloran
+- id: nor-does-an-engine-instrument
+  type: vitals
+  expect:
+    refused: false
+    changed: false
+    blows: 0
+    foes:
+    - Neb Halloran
+- id: back-to-a-known-number
+  type: mend 20
+  expect:
+    hp: 18
+    blows: 0
+    dead: false
+- id: down-to-one-hit-point
+  type: harm 17
+  expect:
+    change: Coraith Vell unhurt -> badly hurt (1 of 18)
+    hp: 1
+    dead: false
+    blows: 0
+    changed: true
+- id: reading-a-slate-is-a-turn-and-he-takes-it
+  type: read the tide-slate
+  expect:
+    understood: examine -> Assize tide-slate
+    blows: 1
+    hp: 0
+    dead: true
+    note: 'the fight is over: The fight in The Tide Post is over after'
+- id: and-every-line-after-it-is-refused
+  type: look
+  expect:
+    refused: true
+    changed: false
+    blows: 0
+    hp: 0
+    dead: true
+    offers: is dead, and this playthrough is over
+- id: including-another-attack
+  type: attack Neb Halloran
+  expect:
+    refused: true
+    changed: false
+    blows: 0
+    offers: is dead, and this playthrough is over
+- id: and-a-move
+  type: go to the Causeway Court
+  expect:
+    location: The Tide Post (realized)
+    refused: true
+    changed: false
+    blows: 0
+    drifts: 0
+- id: and-a-drop
+  type: drop the tide-slate
+  expect:
+    carrying:
+    - Assize tide-slate
+    refused: true
+    changed: false
+    blows: 0
+- id: and-a-mend-cannot-raise-the-dead
+  type: mend 18
+  expect:
+    hp: 0
+    dead: true
+    refused: true
+    changed: false
+    blows: 0
+- id: the-man-who-killed-her-is-still-standing-and-still-not-hostile
+  type: look
+  expect:
+    foes:
+    - Neb Halloran
+    refused: true
