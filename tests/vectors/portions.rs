@@ -22,6 +22,12 @@ pub const NAMES: &[&str] = &[
     "world_mechanic",
     "deadline",
     "cast",
+    "grammar",
+    "grammar_corpus",
+    "slash_menu",
+    "classifier_intent",
+    "cascade",
+    "refusal",
 ];
 
 fn int(value: &Value) -> i64 {

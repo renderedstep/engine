@@ -1,9 +1,11 @@
 # renderedstep-engine
 
-The text-adventure engine's pure rules in Rust: the dice and the geometry.
-Every function takes values and returns values. Nothing here touches a
-database, the network, the clock or an async runtime, and the crate has no
-runtime dependencies.
+The text-adventure engine's pure rules in Rust: the dice, the geometry, and
+reading a typed line against the room the player stands in. Every function
+takes values and returns values. Nothing here touches a database, the
+network, the clock or an async runtime. Its two dependencies are
+`serde_json`, for the System One request and answers, and `yaml-rust2`, for
+the engine data it compiles in (`data/`, see its README).
 
 It reproduces the Ruby engine exactly, roll for roll, and is checked against
 the golden vectors that engine exports (`vectors/`, see its README).
@@ -15,7 +17,7 @@ the golden vectors that engine exports (`vectors/`, see its README).
 | `stat_block` | `Character::StatBlock` | a body's level, hit die and abilities |
 | `spot` | `Location::Spot`, `Location::Placement` | where in a room a thing or a person stands |
 | `population` | `Location::Population`, `WorldSeed.natural_key` | how many people a room holds, seeded from a CRC32 of its name |
-| `text` | Ruby string behaviour | `downcase` without the final-sigma rule, ASCII `strip` and `\s`, CRC32 |
+| `text` | Ruby string behaviour | `downcase` without the final-sigma rule, ASCII `strip` and `\s`, `inspect`, CRC32 |
 | `danger` | `Location::Danger` (the pure half) | a new room's danger, monstrous throws, a building's danger and hazards |
 | `parameters` | `Location::Parameters` | a building's picks resolved against its tables, kept in key order |
 | `boxes` | `Location::Box` | walls, shared ground, bearings and distances between rooms |
@@ -24,6 +26,12 @@ the golden vectors that engine exports (`vectors/`, see its README).
 | `world_mechanic` | `WorldMechanic` | the cadence boundaries a mechanic has to run for |
 | `deadline` | `Quest::Deadline` | the hops walk and the anchor room an overdue step is placed from |
 | `cast` | `Character::Registry`, `Character::Generator` | the seeded race, age, sex and background of new people |
+| `room` | `Playthrough::Classifier`'s closed sets, `Playthrough::PhysicalAction#choices` | the ways out, the cast, the floor, the hands and the physical attempts of one room |
+| `grammar` | `Playthrough::Grammar` | a typed line read without a model: a slashed line claimed, names resolved, refusals written |
+| `intent` | `Playthrough::Classifier::Intent`, `Playthrough::Classifier#build_intent` | what a line was read as, whether it is refused, and a model's answer resolved to records |
+| `refusal` | `Playthrough::Refusal` (with `DeathNotice` and `StoryOverNotice` sentences) | what the engine says when it will not play a line |
+| `slash_menu` | `Playthrough::SlashMenu` | the words offered after a slash and what each completes to |
+| `cascade` | `Playthrough::Classifier::Cascade`, `::State`, `::Request`, `SystemOneAgent::Answers` | the System One request for a line, and recorded answers composed into an intent or escalated. It sends nothing |
 
 ## Rules for changing it
 
