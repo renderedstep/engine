@@ -117,9 +117,23 @@ turn reaches it, and no transaction is open while a model is asked, so a
 failure keeps what was committed before it, as the Ruby engine does. A call
 for prose that fails after an effect was written is answered with the
 engine's own words, and the turn still finishes. `Engine::accept` queues a
-line without playing it. What `submit` does not play yet (an offer of a thing to somebody; an
-ending; resuming a journal; writing a room in a story whose arc is still
-binding its steps) comes back as `Error::Unsupported`.
+line without playing it.
+
+The journal is also how an interrupted turn is finished. Each step's
+receipt holds the value the step answered, written as the Ruby engine
+writes it (`Playthrough::Command::Journal#encode`), and a step the journal
+already holds answers that value again without running: a take committed
+before a worker died is not taken twice, a crossing already paid for is not
+paid again, and a narration already written is not asked for again. A
+submission left running is finished by the next delivery of any later
+line, before that line plays. `Engine::submit_stopping` stops a turn right
+after a named step commits, as a killed worker stops, and comes back as
+`Error::Stopped` with the submission still running; the engine sweep plays
+its interrupted workers this way.
+
+What `submit` does not play yet (an offer of a thing to somebody; an
+ending; writing a room in a story whose arc is still binding its steps)
+comes back as `Error::Unsupported`.
 
 A line with no slash, and a slashed line the grammar cannot place, is read
 by System One first where it is on (`cascade`), and by the classifier model

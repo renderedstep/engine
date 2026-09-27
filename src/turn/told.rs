@@ -13,7 +13,7 @@
 
 use super::Mechanics;
 use crate::arrival::Arrival;
-use crate::command::{self, encode, Journal, Produced};
+use crate::command::{self, Journal, Produced};
 use crate::data;
 use crate::dialogue::sanitize;
 use crate::engine::Error;
@@ -27,9 +27,11 @@ use crate::refusal::Refusal;
 use crate::room::{Choice, Record};
 use crate::store::Store;
 use crate::text::{is_blank, presence, upcase_first};
+use kept::Kept;
 use serde_json::{json, Value};
 
 mod classify;
+mod kept;
 mod realize;
 mod talk;
 
@@ -74,10 +76,6 @@ impl Told {
             setup: false,
         }
     }
-
-    fn encoded(&self) -> Value {
-        encode::scene(self.id, self.tolls.as_deref(), self.safety, self.setup)
-    }
 }
 
 enum Played {
@@ -95,15 +93,12 @@ pub struct Turn<'s, 'm> {
     safety: bool,
     /// The classifier's conversation, when the line was read by a model.
     classifier: Option<Agent>,
+    /// The journal step a stopped worker stops after, for the engine sweep.
+    stop_after: Option<String>,
 }
 
 fn model(failure: Failure) -> Error {
     Error::Model(failure)
-}
-
-/// A value the journal keeps, and the scalar it came from.
-fn nil() -> Value {
-    Value::Null
 }
 
 impl<'s, 'm> Turn<'s, 'm> {
@@ -120,7 +115,13 @@ impl<'s, 'm> Turn<'s, 'm> {
             journal: None,
             safety: false,
             classifier: None,
+            stop_after: None,
         })
+    }
+
+    /// Stops the turn right after this journal step commits.
+    pub fn stop_after(&mut self, step: Option<&str>) {
+        self.stop_after = step.map(str::to_string);
     }
 
     pub fn records(&self) -> &Records {
@@ -139,62 +140,73 @@ impl<'s, 'm> Turn<'s, 'm> {
     // --- the journal -------------------------------------------------------
 
     /// `Journal.commit`: `body`'s writes and the receipt saying they happened,
-    /// in one transaction, or neither.
-    fn commit<T>(
+    /// in one transaction, or neither. A step the journal already holds is
+    /// not run again: it answers what it saved.
+    fn commit<T: Kept>(
         &mut self,
         key: &str,
-        encoded: impl FnOnce(&T) -> Value,
         body: impl FnOnce(&mut Self) -> Result<T, Error>,
     ) -> Result<T, Error> {
-        self.refuse_to_resume(key)?;
-        self.m.store.savepoint()?;
-        let result = body(self).and_then(|value| {
-            let receipt = encoded(&value);
-            if let Some(journal) = self.journal.as_mut() {
-                journal.save(self.m.store, &mut self.m.records, key, receipt)?;
+        let value = match self.saved(key)? {
+            Some(value) => value,
+            None => {
+                self.m.store.savepoint()?;
+                let result = body(self).and_then(|value| {
+                    let receipt = value.encode();
+                    if let Some(journal) = self.journal.as_mut() {
+                        journal.save(self.m.store, &mut self.m.records, key, receipt)?;
+                    }
+                    Ok(value)
+                });
+                match result {
+                    Ok(value) => {
+                        self.m.store.release()?;
+                        value
+                    }
+                    Err(error) => {
+                        self.m.store.rollback_to();
+                        return Err(error);
+                    }
+                }
             }
-            Ok(value)
-        });
-        match result {
-            Ok(value) => {
-                self.m.store.release()?;
-                Ok(value)
-            }
-            Err(error) => {
-                self.m.store.rollback_to();
-                Err(error)
-            }
+        };
+        if self.journal.is_some() && self.stop_after.as_deref() == Some(key) {
+            return Err(Error::Stopped(key.to_string()));
         }
+        Ok(value)
     }
 
     /// `Journal.remember`: `body` runs with no transaction open, and what it
-    /// answered is kept afterwards.
-    fn remember<T>(
+    /// answered is kept afterwards; a remembered answer is not asked again.
+    fn remember<T: Kept>(
         &mut self,
         key: &str,
-        encoded: impl FnOnce(&T) -> Value,
         body: impl FnOnce(&mut Self) -> Result<T, Error>,
     ) -> Result<T, Error> {
-        self.refuse_to_resume(key)?;
+        if let Some(value) = self.saved(key)? {
+            return Ok(value);
+        }
         let value = body(self)?;
-        let receipt = encoded(&value);
+        let receipt = value.encode();
         if let Some(journal) = self.journal.as_mut() {
             journal.save(self.m.store, &mut self.m.records, key, receipt)?;
         }
         Ok(value)
     }
 
-    fn refuse_to_resume(&self, key: &str) -> Result<(), Error> {
-        if self
-            .journal
+    /// What the journal saved for `key`, read back.
+    fn saved<T: Kept>(&self, key: &str) -> Result<Option<T>, Error> {
+        match self.journal.as_ref().and_then(|journal| journal.read(key)) {
+            Some(value) => T::decode(self, value).map(Some),
+            None => Ok(None),
+        }
+    }
+
+    /// Whether the journal holds `key` already.
+    fn done(&self, key: &str) -> bool {
+        self.journal
             .as_ref()
             .is_some_and(|journal| journal.saved(key))
-        {
-            return Err(Error::Unsupported(format!(
-                "resuming a turn from its journal (the {key} step)"
-            )));
-        }
-        Ok(())
     }
 
     // --- the submission ----------------------------------------------------
@@ -252,7 +264,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             &self.m.row("playthrough_commands", submission)?,
         ));
         let line = string(&row, "command").to_string();
-        let result = self.remember("outcome", played_encoded, |turn| turn.play_serially(&line));
+        let result = self.remember("outcome", |turn| turn.play_serially(&line));
         self.journal = None;
         match result {
             Ok(played) => {
@@ -281,6 +293,7 @@ impl<'s, 'm> Turn<'s, 'm> {
                 let row = self.m.row("playthrough_commands", submission)?;
                 Ok(turned(command::produced(&row), crisis))
             }
+            Err(Error::Stopped(step)) => Err(Error::Stopped(step)),
             Err(error) => {
                 let crisis = matches!(&error, Error::Model(failure) if failure.crisis());
                 self.m.update(
@@ -303,53 +316,31 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// `#play_serially`.
     fn play_serially(&mut self, command: &str) -> Result<Played, Error> {
-        let ended = self.commit(
-            "already_over",
-            |r: &Option<Refusal>| r.as_ref().map_or(nil(), encode::refusal),
-            |turn| Ok(turn.m.over().then(|| turn.m.over_refusal(command))),
-        )?;
+        let ended = self.commit("already_over", |turn| {
+            Ok(turn.m.over().then(|| turn.m.over_refusal(command)))
+        })?;
         if let Some(refusal) = ended {
             return Ok(Played::Refused(refusal));
         }
-        self.commit("world_clock", |_| nil(), |turn| turn.m.catch_up_world())?;
-        self.commit(
-            "starting_room",
-            |_| nil(),
-            |turn| {
-                let here = turn.m.here();
-                turn.m.snapshot_room(here.as_ref())
-            },
-        )?;
+        self.commit("world_clock", |turn| turn.m.catch_up_world())?;
+        self.commit("starting_room", |turn| {
+            let here = turn.m.here();
+            turn.m.snapshot_room(here.as_ref())
+        })?;
 
         let typed = grammar::unslashed(command);
-        let (intent, resolved_by) =
-            self.remember("intent", intent_encoded, |turn| turn.read_line(command))?;
+        let (intent, resolved_by) = self.remember("intent", |turn| turn.read_line(command))?;
 
-        let refusal = self.commit(
-            "refusal",
-            |r: &Option<Refusal>| r.as_ref().map_or(nil(), encode::refusal),
-            |turn| {
-                let room = turn.m.room();
-                Ok(turn.m.refusal_for(&intent, &typed, &room))
-            },
-        )?;
+        let refusal = self.commit("refusal", |turn| {
+            let room = turn.m.room();
+            Ok(turn.m.refusal_for(&intent, &typed, &room))
+        })?;
         if let Some(refusal) = refusal {
             return Ok(Played::Refused(refusal));
         }
 
-        let from = self.commit(
-            "origin",
-            |here: &Option<Row>| {
-                here.as_ref()
-                    .map_or(nil(), |room| encode::record("locations", id(room)))
-            },
-            |turn| Ok(turn.m.here()),
-        )?;
-        let round = self.commit(
-            "round",
-            |round: &i64| Value::from(*round),
-            |turn| Ok(turn.m.next_round()),
-        )?;
+        let from = self.commit("origin", |turn| Ok(turn.m.here()))?;
+        let round = self.commit("round", |turn| Ok(turn.m.next_round()))?;
         self.m.round = round;
 
         let scene = if let Some(choice) = &intent.physical {
@@ -359,11 +350,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         } else if let Some(Record::Person(person)) = &intent.speaker {
             if intent.action == "attack" {
                 let target = person.id;
-                self.commit(
-                    "attack",
-                    |_| nil(),
-                    |turn| turn.m.attack(target, None).map(|_| ()),
-                )?;
+                self.commit("attack", |turn| turn.m.attack(target, None).map(|_| ()))?;
                 None
             } else {
                 self.talk_to(person.id, &typed, None)?
@@ -379,62 +366,39 @@ impl<'s, 'm> Turn<'s, 'm> {
             self.narrate(&typed, None, Some(intent.action.as_str()), None, None)?
         };
 
-        self.commit(
-            "scene_facts",
-            |_| nil(),
-            |turn| {
-                if let Some(told) = &scene {
-                    turn.scene_facts(told.id, &typed, &resolved_by, &intent)?;
-                }
-                Ok(())
-            },
-        )?;
+        self.commit("scene_facts", |turn| {
+            if let Some(told) = &scene {
+                turn.scene_facts(told.id, &typed, &resolved_by, &intent)?;
+            }
+            Ok(())
+        })?;
         self.safety = self.safety || scene.as_ref().is_some_and(|told| told.safety);
-        self.commit(
-            "told_tolls",
-            |n: &i64| Value::from(*n),
-            |turn| turn.claim_tolls(scene.as_ref()),
-        )?;
-        self.commit(
-            "told_volitions",
-            |n: &i64| Value::from(*n),
-            |turn| turn.claim_volitions(scene.as_ref()),
-        )?;
-        self.commit(
-            "riposte",
-            |_| nil(),
-            |turn| turn.m.riposte(from.as_ref()).map(|_| ()),
-        )?;
-        self.commit(
-            "volition",
-            |_| nil(),
-            |turn| turn.m.volitions(from.as_ref()).map(|_| ()),
-        )?;
-        self.commit(
-            "room_hazard",
-            |_| nil(),
-            |turn| match &from {
-                Some(room) => turn.m.standing(room, "every_turn"),
-                None => Ok(()),
-            },
-        )?;
+        self.commit("told_tolls", |turn| turn.claim_tolls(scene.as_ref()))?;
+        self.commit("told_volitions", |turn| {
+            turn.claim_volitions(scene.as_ref())
+        })?;
+        self.commit("riposte", |turn| turn.m.riposte(from.as_ref()).map(|_| ()))?;
+        self.commit("volition", |turn| {
+            turn.m.volitions(from.as_ref()).map(|_| ())
+        })?;
+        self.commit("room_hazard", |turn| match &from {
+            Some(room) => turn.m.standing(room, "every_turn"),
+            None => Ok(()),
+        })?;
         let endings_before = self.m.game().own("playthrough_endings").len();
-        self.commit("arc", |_| nil(), |turn| turn.m.run_arc().map(|_| ()))?;
+        self.commit("arc", |turn| turn.m.run_arc().map(|_| ()))?;
         if self.m.game().own("playthrough_endings").len() > endings_before {
             return Err(Error::Unsupported(
                 "telling an ending through the models".into(),
             ));
         }
-        let closing = self.commit(
-            "fight_closed",
-            |closed: &Option<i64>| closed.map_or(nil(), |scene| encode::record("scenes", scene)),
-            |turn| {
-                Ok(turn
-                    .m
-                    .close_fight()?
-                    .and_then(|_| int(turn.m.game().row, "current_scene_id")))
-            },
-        )?;
+        let closing = self.commit("fight_closed", |turn| {
+            Ok(turn
+                .m
+                .close_fight()?
+                .and_then(|_| int(turn.m.game().row, "current_scene_id"))
+                .map(Told::plain))
+        })?;
 
         if let (Some(told), Some(agent)) = (&scene, &self.classifier) {
             if classify::MODEL_PATHS.contains(&resolved_by.as_str()) {
@@ -447,7 +411,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         }
         let outcome = match (scene, closing) {
             (Some(told), _) => Played::Scene(told),
-            (None, Some(closed)) => Played::Scene(Told::plain(closed)),
+            (None, Some(closed)) => Played::Scene(closed),
             (None, None) => Played::Nothing,
         };
         Ok(match outcome {
@@ -607,19 +571,13 @@ impl<'s, 'm> Turn<'s, 'm> {
             let item = choice.item.as_ref().map(|thing| thing.id);
             return self.talk_to(recipient, command, item);
         }
-        let (_, fact) = self.commit(
-            "physical_effect",
-            |(status, fact): &(&'static str, String)| {
-                encode::data(
-                    "Playthrough::PhysicalAction::Result",
-                    vec![
-                        ("status", Value::from(*status)),
-                        ("fact", Value::from(fact.as_str())),
-                    ],
-                )
-            },
-            |turn| turn.m.apply_physical(choice),
-        )?;
+        let kept::Effect { fact, .. } = self.commit("physical_effect", |turn| {
+            let (status, fact) = turn.m.apply_physical(choice)?;
+            Ok(kept::Effect {
+                status: status.to_string(),
+                fact,
+            })
+        })?;
         self.narrate(command, Some(fact.clone()), Some("use"), None, Some(fact))
     }
 
@@ -627,11 +585,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         let row = self.m.row("items", item)?;
         let from = self.m.here();
         let taker = self.m.player();
-        self.commit(
-            "take",
-            |_| Value::Bool(true),
-            |turn| turn.m.take(item, None).map(|_| ()),
-        )?;
+        self.commit("take", |turn| turn.m.take(item, None).map(|_| ()))?;
         let fact = taken_fact(&row, taker.as_ref(), from.as_ref());
         self.narrate(
             command,
@@ -652,11 +606,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             .here()
             .ok_or_else(|| Error::Database("a drop with nowhere to stand".into()))?;
         let dropper = self.m.player();
-        self.commit(
-            "drop",
-            |_| Value::Bool(true),
-            |turn| turn.m.drop(item, None).map(|_| ()),
-        )?;
+        self.commit("drop", |turn| turn.m.drop(item, None).map(|_| ()))?;
         let fact = dropped_fact(&row, &here, dropper.as_ref());
         self.narrate(
             command,
@@ -697,6 +647,9 @@ impl<'s, 'm> Turn<'s, 'm> {
     /// `#move_to`: the room realized, walked into at its way in, paid for,
     /// and the arrival told.
     fn move_to(&mut self, destination: i64) -> Result<Told, Error> {
+        if self.done("moved") {
+            return self.saved("moved").map(|told| told.expect("a saved step"));
+        }
         let mut realizers = Vec::new();
         realizers.extend(self.realize(destination)?);
         let entry = self.m.way_in(destination);
@@ -712,26 +665,20 @@ impl<'s, 'm> Turn<'s, 'm> {
             )));
         }
 
-        self.commit(
-            "destination_snapshot",
-            |_| nil(),
-            |turn| turn.m.snapshot_room(Some(&room)),
-        )?;
-        self.commit(
-            "arrival_cost",
-            |_| nil(),
-            |turn| {
-                let from = turn.m.here();
-                turn.m.on_arrival(&room, from.as_ref())
-            },
-        )?;
+        self.commit("destination_snapshot", |turn| {
+            turn.m.snapshot_room(Some(&room))
+        })?;
+        self.commit("arrival_cost", |turn| {
+            let from = turn.m.here();
+            turn.m.on_arrival(&room, from.as_ref())
+        })?;
 
         let told = match self.arrive(destination) {
             Ok(told) => told,
             Err(Error::Model(failure)) => self.arrive_without_prose(destination, Some(failure))?,
             Err(other) => return Err(other),
         };
-        self.commit("moved", Told::encoded, |turn| {
+        self.commit("moved", |turn| {
             turn.m.stand_the_party_in(destination)?;
             turn.m.update(
                 "playthroughs",
@@ -790,6 +737,11 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// `Scene::Generator#generate!`.
     fn arrive(&mut self, destination: i64) -> Result<Told, Error> {
+        if self.done("arrival") {
+            return self
+                .saved("arrival")
+                .map(|told| told.expect("a saved step"));
+        }
         let (request, at, cast, facts, tolls) = self.arrival(destination)?;
         let mut agent = Agent::new(self.filed("arrival"));
         let call = Call::from_request(&request);
@@ -803,7 +755,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             .map_err(model)?;
         let field = |key: &str| sanitize(answer.content[key].as_str().unwrap_or_default());
         let (description, summary) = (field("description"), field("summary"));
-        let told = self.commit("arrival", Told::encoded, |turn| {
+        let told = self.commit("arrival", |turn| {
             let scene = turn.persist_arrival(
                 destination,
                 &description,
@@ -840,7 +792,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             .join(" ");
         let safety = failure.as_ref().is_some_and(Failure::crisis);
         let setup = failure == Some(Failure::NoModel);
-        self.commit("arrival", Told::encoded, |turn| {
+        self.commit("arrival", |turn| {
             let scene = turn.persist_arrival(
                 destination,
                 &description,
@@ -901,6 +853,9 @@ impl<'s, 'm> Turn<'s, 'm> {
         handled: Option<Handled>,
         fallback: Option<String>,
     ) -> Result<Option<Told>, Error> {
+        if self.done("narrated") {
+            return self.saved("narrated").map(Option::flatten);
+        }
         let prompt = self.narration_prompt(command, fact.as_deref(), doing, handled);
         let call = Call {
             system: Some(data::narrator_instructions().to_string()),
@@ -935,37 +890,33 @@ impl<'s, 'm> Turn<'s, 'm> {
         let used_fallback = failed.is_some();
         let safety = failed.as_ref().is_some_and(Failure::crisis);
         let setup = failed == Some(Failure::NoModel);
-        let told = self.commit(
-            "narrated",
-            |told: &Told| told.encoded(),
-            |turn| {
-                let here = turn.m.here().map(|room| id(&room));
-                let at = turn.m.story_now() + ACTION_SECONDS;
-                let mut values = vec![
-                    ("location_id", here.map_or(Value::Null, Value::from)),
-                    ("description", Value::from(text.as_str())),
-                    (
-                        "engine_fact",
-                        fact.as_deref().map_or(Value::Null, Value::from),
-                    ),
-                    ("engine_fallback", Value::Bool(used_fallback)),
-                    ("story_timestamp", Value::from(at)),
-                ];
-                values.retain(|(column, value)| !(*column == "location_id" && value.is_null()));
-                let scene = turn.m.write_scene(values, &[])?;
-                turn.m.update(
-                    "playthroughs",
-                    turn.m.playthrough,
-                    vec![("current_scene_id", Value::from(scene))],
-                )?;
-                Ok(Told {
-                    id: scene,
-                    tolls: used_fallback.then(Vec::new),
-                    safety,
-                    setup,
-                })
-            },
-        )?;
+        let told = self.commit("narrated", |turn| {
+            let here = turn.m.here().map(|room| id(&room));
+            let at = turn.m.story_now() + ACTION_SECONDS;
+            let mut values = vec![
+                ("location_id", here.map_or(Value::Null, Value::from)),
+                ("description", Value::from(text.as_str())),
+                (
+                    "engine_fact",
+                    fact.as_deref().map_or(Value::Null, Value::from),
+                ),
+                ("engine_fallback", Value::Bool(used_fallback)),
+                ("story_timestamp", Value::from(at)),
+            ];
+            values.retain(|(column, value)| !(*column == "location_id" && value.is_null()));
+            let scene = turn.m.write_scene(values, &[])?;
+            turn.m.update(
+                "playthroughs",
+                turn.m.playthrough,
+                vec![("current_scene_id", Value::from(scene))],
+            )?;
+            Ok(Told {
+                id: scene,
+                tolls: used_fallback.then(Vec::new),
+                safety,
+                setup,
+            })
+        })?;
         let mut book = Book {
             store: self.m.store,
             records: &mut self.m.records,
@@ -1022,82 +973,6 @@ fn turned(produced: Produced, crisis: bool) -> Turned {
         },
         Produced::Nothing => Turned::default(),
     }
-}
-
-fn played_encoded(played: &Played) -> Value {
-    match played {
-        Played::Scene(told) => told.encoded(),
-        Played::Refused(refusal) => encode::refusal(refusal),
-        Played::Nothing => Value::Null,
-    }
-}
-
-fn record_encoded(record: &Option<Record>) -> Value {
-    match record {
-        None => Value::Null,
-        Some(Record::Place(place)) => encode::record("locations", place.id),
-        Some(Record::Person(person)) => encode::record("characters", person.id),
-        Some(Record::Thing(thing)) => encode::record("items", thing.id),
-        Some(Record::Attempt(choice)) => choice_encoded(choice),
-    }
-}
-
-fn choice_encoded(choice: &Choice) -> Value {
-    let thing = |thing: &Option<crate::room::Thing>| {
-        thing
-            .as_ref()
-            .map_or(Value::Null, |t| encode::record("items", t.id))
-    };
-    encode::data(
-        "Playthrough::PhysicalAction::Choice",
-        vec![
-            ("kind", Value::from(choice.kind.as_str())),
-            ("item", thing(&choice.item)),
-            (
-                "recipient",
-                choice
-                    .recipient
-                    .as_ref()
-                    .map_or(Value::Null, |p| encode::record("characters", p.id)),
-            ),
-            (
-                "connection",
-                choice.connection.as_ref().map_or(Value::Null, |exit| {
-                    encode::record("location_connections", exit.edge)
-                }),
-            ),
-            ("tool", thing(&choice.tool)),
-        ],
-    )
-}
-
-/// The reading, as `Playthrough::Classifier::Intent` and the reader's name.
-fn intent_encoded((intent, resolved_by): &(Intent, String)) -> Value {
-    encode::array(vec![
-        encode::data(
-            "Playthrough::Classifier::Intent",
-            vec![
-                ("action", encode::symbol(&intent.action)),
-                ("destination", record_encoded(&intent.destination)),
-                ("speaker", record_encoded(&intent.speaker)),
-                ("item", record_encoded(&intent.item)),
-                ("at", record_encoded(&intent.at)),
-                ("also_named", record_encoded(&intent.also_named)),
-                (
-                    "unknown_action",
-                    intent
-                        .unknown_action
-                        .as_deref()
-                        .map_or(Value::Null, Value::from),
-                ),
-                (
-                    "physical",
-                    intent.physical.as_ref().map_or(Value::Null, choice_encoded),
-                ),
-            ],
-        ),
-        Value::from(resolved_by.as_str()),
-    ])
 }
 
 /// `Item#bare_name` and `#definite_name`: "the" in front of the name, with

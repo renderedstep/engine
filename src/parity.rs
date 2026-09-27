@@ -335,14 +335,7 @@ fn play_browser(
     let token = browser["token"]
         .as_str()
         .ok_or_else(|| broken(format!("{} has no token", step.label())))?;
-    if browser
-        .get("interrupt_after")
-        .is_some_and(|at| !at.is_null())
-    {
-        return Err(Error::Unsupported(
-            "stopping a worker part way through a turn".into(),
-        ));
-    }
+    let stop_after = browser["interrupt_after"].as_str();
     let before = Counts::of(engine, playthrough)?;
     let scene_before = current_scene(engine, playthrough)?;
     let mut earlier = Vec::new();
@@ -370,12 +363,20 @@ fn play_browser(
     let mut replay = Replay::new(replies);
     let raises = browser["raises"].as_bool().unwrap_or(false);
     let typed = step.typed.as_deref().unwrap_or_default();
-    let turned = match engine.submit(playthrough, typed, token, &mut replay, &mut |_| {}) {
+    let turned = match engine.submit_stopping(
+        playthrough,
+        typed,
+        token,
+        &mut replay,
+        &mut |_| {},
+        stop_after,
+    ) {
         Ok(submitted) => Some(submitted.turned),
         Err(Error::Model(Failure::Unavailable(_))) if raises => None,
+        Err(Error::Stopped(_)) if stop_after.is_some() => None,
         Err(error) => return Err(error),
     };
-    if raises && turned.is_some() {
+    if (raises || stop_after.is_some()) && turned.is_some() {
         return Err(broken(
             "browser step expected an unavailable provider to interrupt submission".into(),
         ));
