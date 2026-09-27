@@ -1119,7 +1119,9 @@ impl<'s> Mechanics<'s> {
     }
 
     /// `Playthrough::NpcAction#choices`: token => sentence, in order.
-    fn npc_choices(&self, character: &Row) -> Vec<(String, String)> {
+    /// `Playthrough::NpcAction#choices`, with accepting a thing the player is offering first
+    /// among them when the offer still stands.
+    fn npc_choices_offering(&self, character: &Row, offered: Option<i64>) -> Vec<(String, String)> {
         let mut available = vec![(
             "none".to_string(),
             "Speak without transferring anything or changing an agreement.".to_string(),
@@ -1140,6 +1142,18 @@ impl<'s> Mechanics<'s> {
             .player()
             .map(|who| string(&who, "fullname").to_string());
         let party = player.clone().unwrap_or_else(|| "the player".to_string());
+        if let Some(item) =
+            offered.and_then(|item| game.carried().into_iter().find(|row| id(row) == item))
+        {
+            available.push((
+                format!("accept:{}", id(item)),
+                format!(
+                    "Accept the offered {} from {}; it becomes yours.",
+                    string(item, "name"),
+                    player.clone().unwrap_or_default()
+                ),
+            ));
+        }
         if let Some(player) = &player {
             for item in game.items_held_by(character) {
                 available.push((
@@ -1190,7 +1204,6 @@ impl<'s> Mechanics<'s> {
         decision: &str,
         understood: Option<String>,
     ) -> Result<Report, Error> {
-        let who = string(character, "fullname").to_string();
         let mut choice = decision.to_string();
         if let Some(name) = decision.strip_prefix("give:") {
             if let Some(item) = self
@@ -1202,24 +1215,42 @@ impl<'s> Mechanics<'s> {
                 choice = format!("give:{}", id(item));
             }
         }
+        let (_, status, fact) = self.apply_npc(character, &choice, None)?;
+        Ok(match status {
+            "none" => Report::read(vec![fact], understood),
+            "rejected" => Report::refuse(fact, understood),
+            _ => Report::change(fact, understood),
+        })
+    }
+
+    /// `Playthrough::NpcAction#apply!`: the one choice a person made, if it
+    /// is still one of theirs, as its token, status and receipt.
+    pub(crate) fn apply_npc(
+        &mut self,
+        character: &Row,
+        choice: &str,
+        offered: Option<i64>,
+    ) -> Result<(String, &'static str, String), Error> {
+        let who = string(character, "fullname").to_string();
+        let choice = choice.to_string();
         if choice == "none" {
-            return Ok(Report::read(
-                vec![format!(
-                    "{who} changes no possessions, travel agreement or ceasefire."
-                )],
-                understood,
+            return Ok((
+                choice,
+                "none",
+                format!("{who} changes no possessions, travel agreement or ceasefire."),
             ));
         }
         if !self
-            .npc_choices(character)
+            .npc_choices_offering(character, offered)
             .iter()
             .any(|(token, _)| *token == choice)
         {
-            return Ok(Report::refuse(
+            return Ok((
+                choice,
+                "rejected",
                 "The proposed action was rejected: it is unavailable. No possessions, travel \
                  agreement or ceasefire changed."
                     .into(),
-                understood,
             ));
         }
         let party = self.player().map_or("the player".to_string(), |row| {
@@ -1231,6 +1262,23 @@ impl<'s> Mechanics<'s> {
             .as_ref()
             .map_or(String::new(), |room| string(room, "name").to_string());
         let fact = match choice.split_once(':') {
+            Some(("accept", item)) => {
+                let item = item.parse::<i64>().unwrap_or_default();
+                let name = string(&self.row("items", item)?, "name").to_string();
+                self.update(
+                    "items",
+                    item,
+                    vec![
+                        ("character_id", Value::from(id(character))),
+                        ("location_id", Value::Null),
+                        ("x", Value::Null),
+                        ("y", Value::Null),
+                    ],
+                )?;
+                format!(
+                    "{who} accepted {name}; the player no longer carries it and {who} now holds it."
+                )
+            }
             Some(("give", item)) => {
                 let item = item.parse::<i64>().unwrap_or_default();
                 let name = string(&self.row("items", item)?, "name").to_string();
@@ -1303,7 +1351,7 @@ impl<'s> Mechanics<'s> {
                 }
             }
         };
-        Ok(Report::change(fact, understood))
+        Ok((choice, "applied", fact))
     }
 
     /// Hurting or mending the player, through the engine's own writers.

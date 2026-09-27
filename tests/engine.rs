@@ -219,10 +219,14 @@ fn with_no_model_access_an_effect_is_told_in_the_engines_own_words() {
         ),
         1
     );
-    let refused = engine
+    let unread = engine
         .submit(playthrough, "look around", "u", &mut live, &mut |_| {})
         .unwrap_err();
-    assert!(matches!(refused, Error::Unsupported(_)), "{refused:?}");
+    assert_eq!(
+        unread,
+        Error::Model(renderedstep_engine::model::Failure::NoModel),
+        "a line with no slash needs the classifier, and there is no model to ask"
+    );
 }
 
 /// Answers each post with the next body, and keeps what was sent.
@@ -348,6 +352,68 @@ fn a_room_whose_ways_out_failed_is_picked_up_where_it_stopped_on_the_live_path()
     );
     assert_eq!(
         count(&engine, "SELECT COUNT(*) FROM locations WHERE name = 'Workshop' AND detail_level = 'realized' AND generation_checkpoint IS NULL"),
+        1
+    );
+}
+
+#[test]
+fn a_conversation_is_picked_up_again_on_the_next_talk_on_the_live_path() {
+    use renderedstep_engine::model::{Live, Route, Secret};
+    use serde_json::json;
+    let (mut engine, playthrough) = gate();
+    let reaction = json!({
+        "pre_thought": "I will listen.", "pre_feeling": "attentive", "action": "Maren nods.",
+        "post_thought": "That was fair.", "post_feeling": "calm",
+        "inner_resolution": "I will sweep the market.", "engine_action": "none",
+    });
+    let transport = Scripted {
+        answers: vec![
+            answered(reaction.clone()),
+            answered(json!("Maren nods to you.")),
+            answered(reaction),
+            answered(json!("Maren nods again.")),
+        ],
+        sent: Vec::new(),
+    };
+    let route = Route::Direct {
+        key: Secret::new("own"),
+    };
+    let mut live = Live::with_transport(route, transport);
+    for token in ["one", "two"] {
+        engine
+            .submit(playthrough, "/talk Maren", token, &mut live, &mut |_| {})
+            .unwrap();
+    }
+    let sent = &live.transport().sent;
+    let roles = |body: &serde_json::Value| -> Vec<String> {
+        body["messages"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|m| m["role"].as_str().unwrap().to_string())
+            .collect()
+    };
+    assert_eq!(roles(&sent[0]), ["developer", "user"]);
+    assert_eq!(
+        roles(&sent[2]),
+        ["developer", "user", "assistant", "user"],
+        "the second talk replays the first exchange"
+    );
+    assert_eq!(
+        roles(&sent[1]),
+        ["user"],
+        "the narrator pass has no history"
+    );
+    assert_eq!(
+        count(&engine, "SELECT COUNT(*) FROM interactions"),
+        2,
+        "each exchange keeps the person's side of it"
+    );
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM chats WHERE purpose = 'character'"
+        ),
         1
     );
 }

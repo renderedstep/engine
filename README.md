@@ -57,7 +57,7 @@ with the state it wrote after every step (`parity/`, see its README).
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
-| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
+| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
 | `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
 | `parity` | `EngineSweep::Walk`, `EngineSweep::Dump`, `EngineSweep::Parity` | a sweep script played through this engine, dumped step by step and compared |
 | `model` | `BaseAgent`, `BaseAgent::Refusal`, `SystemOneAgent`, RubyLLM's OpenRouter provider and its `chats`/`messages` receipts, `EngineSweep::BrowserTurn`'s fixed replies | where a model call goes, the body it sends, whether an answer is kept, the model rotation, and what a call leaves in the database |
@@ -117,10 +117,19 @@ turn reaches it, and no transaction is open while a model is asked, so a
 failure keeps what was committed before it, as the Ruby engine does. A call
 for prose that fails after an effect was written is answered with the
 engine's own words, and the turn still finishes. `Engine::accept` queues a
-line without playing it. What `submit` does not play yet (a line with no
-slash, which the classifier reads; a conversation; a throw; an ending;
-resuming a journal; writing a room in a story whose arc is still binding its
-steps) comes back as `Error::Unsupported`.
+line without playing it. What `submit` does not play yet (an offer of a thing to somebody; an
+ending; resuming a journal; writing a room in a story whose arc is still
+binding its steps) comes back as `Error::Unsupported`.
+
+A line with no slash, and a slashed line the grammar cannot place, is read
+by System One first where it is on (`cascade`), and by the classifier model
+when System One is off, escalates or is unavailable
+(`Playthrough::Classifier#classify`); a reach that found nothing and a line
+that named two things are counted as the Ruby engine counts them. Talking
+to somebody is `InteractionAgent`'s two calls: the person answers in their
+own conversation with this game, picked up again on the next talk, and
+picks one action the engine offered; the engine applies it, and the
+narrator writes the exchange from the reaction and the engine's receipt.
 
 Walking into a room nobody has written writes it first
 (`Location::Generator#realize!`): one call for its description, lore,

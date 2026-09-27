@@ -104,6 +104,19 @@ const SCENE_GENERATOR: &str = include_str!("../data/scene/generator.yml");
 const LOCATION_GENERATOR: &str = include_str!("../data/location/generator.yml");
 const DESIRES: &str = include_str!("../data/character/desires.yml");
 const NARRATOR: &str = include_str!("../data/scene/narrator.yml");
+const CLASSIFIER: &str = include_str!("../data/playthrough/classifier.yml");
+
+/// `config/engine/playthrough/classifier.yml`: the classifier's
+/// instructions.
+pub fn classifier_instructions() -> &'static str {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    text_of(
+        &FILE,
+        "playthrough/classifier.yml",
+        CLASSIFIER,
+        "instructions",
+    )
+}
 
 /// One string of a vendored file, by key.
 fn text_of(file: &'static OnceLock<Yaml>, name: &str, source: &str, key: &str) -> &'static str {

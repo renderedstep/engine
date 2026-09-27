@@ -12,6 +12,7 @@ in and reads them, and no string in them is retyped anywhere else.
 | `playthrough/grammar.yml` | `config/engine/playthrough/grammar.yml` | `grammar`: the fixed grammar's verb table |
 | `playthrough/classifier/request.yml` | `config/engine/playthrough/classifier/request.yml` | `cascade`: the wording of a System One request |
 | `scene/generator.yml` | `config/engine/scene/generator.yml` | `arrival`: the arrival writer's instructions |
+| `playthrough/classifier.yml` | `config/engine/playthrough/classifier.yml` (at `b4c9921c008ac1e459486318324aec66672a9366`) | `turn`: the classifier's instructions |
 | `scene/narrator.yml` | `config/engine/scene/narrator.yml` (at `b4c9921c008ac1e459486318324aec66672a9366`) | `turn`: the narrator's instructions and what each kind of turn is |
 | `location/generator.yml` | `config/engine/location/generator.yml` | `realization`: the room writer's instructions |
 | `character/desires.yml` | `config/engine/character/desires.yml` | `realization`: the desire block's extra lines for a roomful |
