@@ -31,7 +31,10 @@ use crate::room::USE_KINDS;
 use crate::spot;
 use crate::stat_block;
 use crate::text::{is_blank, natural_key, ruby_downcase};
+use arc::Bound;
 use serde_json::{json, Map, Value};
+
+mod arc;
 
 const DETAIL_PENDING: &str = "detail_pending";
 const EXITS_PENDING: &str = "exits_pending";
@@ -200,32 +203,6 @@ impl Turn<'_, '_> {
             .is_some()
     }
 
-    /// An arc whose steps are still waiting for a record binds to whatever
-    /// a room's writing admits (`Quest::Binder`), and an overdue one places
-    /// its target on the way (`Quest::Deadline`). Neither is written here.
-    fn refuse_open_arcs(&self) -> Result<(), Error> {
-        let story = self.m.story_id();
-        let waiting = self
-            .m
-            .records
-            .select("quests", |quest| int(quest, "story_id") == Some(story))
-            .into_iter()
-            .any(|quest| {
-                self.m
-                    .records
-                    .first("quest_steps", |step| {
-                        int(step, "quest_id") == Some(id(quest)) && int(step, "bound_at").is_none()
-                    })
-                    .is_some()
-            });
-        if waiting {
-            return Err(Error::Unsupported(
-                "writing a room in a story whose arc is still binding its steps".into(),
-            ));
-        }
-        Ok(())
-    }
-
     fn set_checkpoint(
         &mut self,
         location: i64,
@@ -355,7 +332,6 @@ impl Turn<'_, '_> {
         if text(&row, "detail_level") == Some("realized") && !pending {
             return Ok(None);
         }
-        self.refuse_open_arcs()?;
         let filed = Filed {
             purpose: "location".into(),
             ..self.filed("location")
@@ -470,10 +446,14 @@ impl Turn<'_, '_> {
                 ),
                 ("lore", Value::from(sanitize(str_of(&detail, "lore")))),
             ];
-            if let Some(name) = self.room_name(&row, detail.get("name")) {
-                values.push(("name", Value::from(name)));
+            let named = self.room_name(&row, detail.get("name"));
+            if let Some(name) = &named {
+                values.push(("name", Value::from(name.as_str())));
             }
             self.m.update("locations", location, values)?;
+            if named.is_some() {
+                self.bind(Bound::Place, location)?;
+            }
             if Self::is_place(&row) {
                 self.lay_out_interior(location, detail.get("parameters"))?;
             }
@@ -518,7 +498,8 @@ impl Turn<'_, '_> {
                 ("detail_level", Value::from("realized")),
                 ("generation_checkpoint", Value::Null),
             ],
-        )
+        )?;
+        self.after_realizing()
     }
 
     /// `#write_exits_serially!`.
@@ -755,6 +736,7 @@ impl Turn<'_, '_> {
             if !placed.is_empty() {
                 self.m.update("items", id(&row), placed)?;
             }
+            self.bind(Bound::Thing, id(&row))?;
             created.push(name);
         }
         Ok(())
@@ -773,10 +755,13 @@ impl Turn<'_, '_> {
             .flatten()
             .enumerate()
         {
-            match candidate {
+            let admitted = match candidate {
                 Value::String(name) => self.admit_known(location, name)?,
                 Value::Object(_) => self.admit_new(location, candidate, slot, slots)?,
-                _ => {}
+                _ => None,
+            };
+            if let Some(person) = admitted {
+                self.bind(Bound::Person, person)?;
             }
         }
         Ok(())
@@ -793,9 +778,9 @@ impl Turn<'_, '_> {
 
     /// A proposal naming somebody the story already has: they may be here
     /// already, or brought here from nowhere, and nobody is moved.
-    fn admit_known(&mut self, location: i64, name: &str) -> Result<(), Error> {
+    fn admit_known(&mut self, location: i64, name: &str) -> Result<Option<i64>, Error> {
         if is_blank(name) {
-            return Ok(());
+            return Ok(None);
         }
         let story = Some(self.m.story_id());
         let lowered = ruby_downcase(name);
@@ -809,23 +794,24 @@ impl Turn<'_, '_> {
             })
             .cloned()
         else {
-            return Ok(());
+            return Ok(None);
         };
         if flag(&person, "deliberately_absent") || int(&person, "location_id").is_some() {
-            return Ok(());
+            return Ok(None);
         }
         if flag(&person, "is_protagonist") || flag(&person, "is_companion") {
-            return Ok(());
+            return Ok(None);
         }
         if self.present_here(location) >= cast::MAX_PER_ROOM {
-            return Ok(());
+            return Ok(None);
         }
         let mut values = vec![
             ("location_id", Value::from(location)),
             ("deliberately_absent", Value::Bool(false)),
         ];
         values.extend(self.placement(location, spot::Record::Character(id(&person))));
-        self.m.update("characters", id(&person), values)
+        self.m.update("characters", id(&person), values)?;
+        Ok(Some(id(&person)))
     }
 
     fn admit_new(
@@ -834,7 +820,7 @@ impl Turn<'_, '_> {
         candidate: &Value,
         slot: usize,
         slots: &[(i64, i64, String)],
-    ) -> Result<(), Error> {
+    ) -> Result<Option<i64>, Error> {
         let mut fields: Vec<(&str, Option<String>)> = Vec::new();
         for (name, cap) in PERSON_LIMITS {
             let raw = value_text(&candidate[name]);
@@ -844,10 +830,10 @@ impl Turn<'_, '_> {
                 Err(Truncated) if SENTENCE_FIELDS.contains(&name) => {
                     match complete_sentence_prefix(&raw) {
                         Some(prefix) => Some(prefix),
-                        None => return Ok(()),
+                        None => return Ok(None),
                     }
                 }
-                Err(Truncated) => return Ok(()),
+                Err(Truncated) => return Ok(None),
             };
             fields.push((name, kept));
         }
@@ -884,10 +870,10 @@ impl Turn<'_, '_> {
                 .iter()
                 .any(|item| ruby_downcase(string(item, "name")) == lowered);
         if refused {
-            return Ok(());
+            return Ok(None);
         }
         let Some((race, age, sex)) = slots.get(slot) else {
-            return Ok(());
+            return Ok(None);
         };
         let monstrous = self
             .m
@@ -909,6 +895,8 @@ impl Turn<'_, '_> {
             ("age", Value::from(*age)),
             ("sex", Value::from(sex.as_str())),
             ("hostile", Value::Bool(monstrous)),
+            // `Character`'s own attribute default: nobody is born a companion.
+            ("is_companion", Value::Bool(false)),
             ("level", Value::from(block.level)),
             ("hit_die", Value::from(block.hit_die)),
             ("strength", Value::from(block.strength)),
@@ -941,7 +929,7 @@ impl Turn<'_, '_> {
         if !placed.is_empty() {
             self.m.update("characters", id(&person), placed)?;
         }
-        Ok(())
+        Ok(Some(id(&person)))
     }
 
     /// `Location::Generator.create_stub!`: a room with a name and a teaser
@@ -991,6 +979,7 @@ impl Turn<'_, '_> {
                 vec![("width", Value::from(width)), ("depth", Value::from(depth))],
             )?;
         }
+        self.bind(Bound::Place, room)?;
         Ok(room)
     }
 
@@ -1114,15 +1103,13 @@ impl Turn<'_, '_> {
         if !Self::is_place(&row) || self.laid_out(&row) {
             return Ok(());
         }
-        let pick = |key: &str| picks.and_then(|p| p[key].as_str()).map(str::to_string);
-        let parameters = picks.filter(|p| p.is_object()).map(|_| Parameters {
-            inside: pick("inside"),
-            storeys_above: pick("storeys_above"),
-            storeys_below: pick("storeys_below"),
-            danger: pick("danger"),
-            gradient: pick("gradient"),
-            hazard: pick("hazard"),
-        });
+        self.lay_out(location, parameters_from(picks).as_ref())
+    }
+
+    /// `Location::Interior.lay_out!` and `#open_the_way_in!`: a place's
+    /// rooms and doorways, its footprint rolled first when it has none.
+    fn lay_out(&mut self, location: i64, parameters: Option<&Parameters>) -> Result<(), Error> {
+        let row = self.location(location)?;
         let story = self.m.story_id();
         let existing = self
             .m
@@ -1140,7 +1127,7 @@ impl Turn<'_, '_> {
                 footprint: int(&row, "width").zip(int(&row, "depth")),
             },
             None,
-            parameters.as_ref(),
+            parameters,
         );
         self.m.update(
             "locations",
@@ -1174,7 +1161,9 @@ impl Turn<'_, '_> {
                 values.push(("hazard", Value::from(hazard.hazard)));
                 values.push(("hazard_die", Value::from(hazard.hazard_die)));
             }
-            rooms.push(id(&self.m.insert("locations", values)?));
+            let room = id(&self.m.insert("locations", values)?);
+            self.bind(Bound::Place, room)?;
+            rooms.push(room);
         }
         for edge in &layout.edges {
             let mut values = vec![
@@ -1288,4 +1277,18 @@ fn contains_word(text: &str, word: &str) -> bool {
         from = start + word.chars().next().map_or(1, char::len_utf8);
     }
     false
+}
+
+/// `Location::Parameters.from`: a building's picks as its answer named
+/// them, or none when there was no answer to read.
+fn parameters_from(picks: Option<&Value>) -> Option<Parameters> {
+    let pick = |key: &str| picks.and_then(|p| p[key].as_str()).map(str::to_string);
+    picks.filter(|p| p.is_object()).map(|_| Parameters {
+        inside: pick("inside"),
+        storeys_above: pick("storeys_above"),
+        storeys_below: pick("storeys_below"),
+        danger: pick("danger"),
+        gradient: pick("gradient"),
+        hazard: pick("hazard"),
+    })
 }

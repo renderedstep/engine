@@ -86,6 +86,7 @@ pub struct Replay {
     calls: Vec<String>,
     misses: Vec<String>,
     keyed: bool,
+    sent: Vec<Value>,
 }
 
 impl Replay {
@@ -96,7 +97,15 @@ impl Replay {
             replies: replies.into(),
             calls: Vec::new(),
             misses: Vec::new(),
+            sent: Vec::new(),
         }
+    }
+
+    /// Every request answered so far, in order: a chat call as its purpose,
+    /// instructions, line and schema, a System One call as its state and
+    /// questions.
+    pub fn sent(&self) -> &[Value] {
+        &self.sent
     }
 
     /// The purposes asked so far, in order.
@@ -193,6 +202,12 @@ impl Models for Replay {
         verify: Option<Verify>,
         _on_chunk: Option<&mut (dyn FnMut(&str) + '_)>,
     ) -> Result<Answer, Failure> {
+        self.sent.push(json!({
+            "purpose": agent.purpose(),
+            "system": call.system,
+            "user": call.user,
+            "schema": call.schema,
+        }));
         let reply = self.next(agent.purpose()).map_err(Failure::Unexpected)?;
         self.check(&reply, &call.user, "prompt");
         if reply.unavailable {
@@ -223,6 +238,8 @@ impl Models for Replay {
         state: &Value,
         questions: &Value,
     ) -> Result<Value, Unavailable> {
+        self.sent
+            .push(json!({ "purpose": SYSTEM_ONE, "state": state, "questions": questions }));
         let reply = self.next(SYSTEM_ONE).map_err(Unavailable)?;
         let sent = serde_json::to_string(state).unwrap_or_default();
         self.check(&reply, &sent, "state");

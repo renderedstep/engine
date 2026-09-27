@@ -9,6 +9,7 @@ use crate::intent::Intent;
 use crate::records::{id, int, string, text, Row};
 use crate::refusal::Refusal;
 use crate::room::{Choice, Exit, Place, Record};
+use crate::turn::Concluded;
 use crate::turn::{person_of, thing_of, Report};
 use serde_json::{json, Map, Value};
 
@@ -155,6 +156,44 @@ impl Kept for Option<Told> {
             return Ok(None);
         }
         Told::decode(turn, value).map(Some)
+    }
+}
+
+/// `Playthrough::Arc::Concluded`, or nothing on a line that ended no arc.
+impl Kept for Option<Concluded> {
+    fn encode(&self) -> Value {
+        self.map_or(Value::Null, |concluded| {
+            encode::data(
+                "Playthrough::Arc::Concluded",
+                vec![
+                    (
+                        "ending",
+                        encode::record("playthrough_endings", concluded.ending),
+                    ),
+                    (
+                        "outcome",
+                        encode::record("quest_outcomes", concluded.outcome),
+                    ),
+                    ("scene", encode::record("scenes", concluded.scene)),
+                ],
+            )
+        })
+    }
+    fn decode(_: &Turn, value: &Value) -> Result<Option<Concluded>, Error> {
+        if value.is_null() {
+            return Ok(None);
+        }
+        let map = fields(value)?;
+        let id_of = |key: &str| {
+            map.get(key)
+                .and_then(|record| record["id"].as_i64())
+                .ok_or_else(|| unreadable("an ending", value))
+        };
+        Ok(Some(Concluded {
+            ending: id_of("ending")?,
+            outcome: id_of("outcome")?,
+            scene: id_of("scene")?,
+        }))
     }
 }
 

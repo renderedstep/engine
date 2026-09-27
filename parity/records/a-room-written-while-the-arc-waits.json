@@ -1,0 +1,2107 @@
+{
+  "script": "a-room-written-while-the-arc-waits",
+  "steps": [
+    {
+      "step": "step 1 into-the-cloister-nobody-has-written",
+      "requests": [
+        {
+          "purpose": "location",
+          "system": "You build the rooms of a text adventure one at a time. You write places a\nplayer can stand in and walk out of: concrete, specific, and consistent\nwith the world they belong to. Every exit you name is somewhere the player\ncould actually go.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Bells, candles and iron locks.\ngeographies: A hill abbey and the valley below it.\nraces: Valley folk\ncivilizations: A small order of lay brothers.\n\n\n## Story Details\ntitle: A Bell Nobody Has Rung (engine sweep)\ngenre: quiet mystery\npreface: The abbey bell has been silent since before you were born.\nsummary: Ilse climbs to the abbey to find out why its bell no longer rings.\n\n## Where This Story Is Going\nnext: Take up the brass censer the bell-keeper carried.\nThis story needs a THING called \"brass censer\", lying somewhere a player can pick it up. There is no such thing in this world yet.\nIf this room is a natural place for it, this is where it\ncomes from; if it is not, leave it and somewhere else will do. Do not bend\nthis room to fit it.\n\n\n## The Place\nname: Lower Cloister\nteaser: A cloister below the hall, where the older brothers walk.\n\n## Instructions\nWrite this place out in full.\n- The description is what the player reads on arrival. Address them as \"you\"\n- Describe what is here now, not the history -- the history is the lore\n- Stay consistent with the universe and with the teaser above\n- Respect the stated length of each field\n\n## What Is Lying Here\nList AT MOST 3 portable things a player could pick up and carry away.\n- Nothing is the right answer for most rooms. An empty list is a complete answer\n- Only loose, portable things. Not the door, not the floor, not the machinery\n  bolted to it -- something a person could put in a pocket or under an arm\n- Each one must be consistent with the description you just wrote, and worth\n  the player noticing\n- Pick its use_kind from the supplied physical profiles. Ordinary is the\n  default. Food and drink can be consumed without healing; healing is only\n  a restorative dose this world permits. Firestarters burn combustible\n  objects, levers pry jammed passages, lockpicks try locks, and a key only\n  opens a passage explicitly matched to it. Mark combustible only when an\n  ordinary firestarter can destroy the object. The engine owns the effects\n  and their amounts; its description cannot grant extra powers\n- If a thing has WRITING on it -- a note, a letter, a handbill, a label, a\n  docket, a page, a sign -- mark it readable and WRITE OUT WHAT IS WRITTEN\n  ON IT, exactly as it appears on the thing. The words themselves, not a\n  description of them, and short enough to finish -- a few words, a line,\n  or a few short lines. The game keeps those words and a player reading it\n  twice reads the same ones\n- Never name it after a person or after a place. Already spoken for in this story, so do not reuse: Ilse, Oda, pewter cup, sealed letter\n\n## Who Is Here\nWrite EXACTLY 1 person who is in this place right now.\n- Anyone you write is somebody the player can walk up to and talk to, so they\n  have to have a reason to be standing here and an enduring aim that today's\n  reason serves, threatens or exposes\n- Do not write the player, and do not write somebody passing through\n- Never give them the name of a place, of a thing, or any name already\n  spoken for above\n\nWho they are is already decided. Write these people and do not change them:\n  the 1st is Valley folk, about 24, trans man\n\n## Their Four Objects of Desire\n\nWrite four STORY-SCALE things this person is after, then pick two TURN-SCALE labels.\nWork from everything above -- especially the years in their backstory, their repeated\nchoices, what they fear losing, the future they imagine, and where today's situation\npresses on that life.\n\nAn object of desire must satisfy both tests:\n1. It was shaping this person before the opening scene.\n2. Finishing today's errand would not finish it; it can drive choices across the\n   whole story.\n\nThe two labels are picked from this list and nothing else:\n\n  keep     They are holding on to something they already have.\n  obtain   They are trying to get hold of something they do not have.\n  reach    They are trying to get to a particular place.\n  attend   They are trying to stay near a particular person.\n  avoid    They are trying to get away from a person or a place.\n  withhold They are trying to stop somebody else getting something.\n  offer    They are trying to put something into somebody else's hands.\n\nconscious_desire\n  The future, standing, relationship, legacy, place or way of life they knowingly\n  organize their choices around and would name if asked what they want from their\n  life. Make it specific to this person and world. Do not substitute the clue,\n  deadline, delivery, payment or room they are dealing with today. One sentence.\n\nunconscious_desire\n  The deeper reward their choices have pursued for years and they would deny: the\n  recognition, absolution, dependence, belonging, power or intimacy beneath the\n  conscious account. It must explain a repeated pattern in the backstory and pull at\n  an angle to the conscious desire, not merely restate today's hidden motive. One\n  sentence.\n\nrecognized_need\n  The duty, oath, debt, craft, family burden or bodily discipline they believe they\n  must keep over years whether they want to or not. It predates today's assignment,\n  survives it, and can repeatedly obstruct the conscious desire. One sentence.\n\nunrecognized_need\n  The enduring change, truth or relationship their life requires and their repeated\n  pattern prevents them from seeing. A reader can infer it from the backstory. It\n  cannot be completed by one confession, realization or errand: it demands a new way\n  of choosing across the story. If they never move toward it, pursuit of the\n  conscious desire ruins them. One sentence.\n\ndesire_pursuit\n  Pick the listed ENGINE ACT that could repeatedly advance or protect the conscious\n  desire in ordinary rooms. The label is the next-step expression of the larger\n  desire, not its timescale.\n\nneed_pursuit\n  Pick the listed ENGINE ACT that could repeatedly move them toward the unrecognized\n  need in ordinary rooms. It may match desire_pursuit, but a different label should\n  reflect a real conflict rather than manufactured variety.\n\nRules:\n- Every field names something to move TOWARD. State what lies beyond a fear, refusal\n  or escape.\n- The object is larger than any single room act. Picking something up, handing it\n  over, walking, waiting or staying near somebody may advance, protect, rehearse or\n  betray it; that act must not become the whole desire.\n- Use today's room as pressure or evidence, not as the horizon of the person's life.\n- Keep the four consistent with the backstory, fears and dislikes. A fear is often\n  the shadow of an object, but is not the object itself.\n- The conscious desire and unrecognized need must not be the same thing said twice.\n- Write in the third person, by name.\n- Do not resolve any object or say how the story ends.\n- Respect the stated length of each field.\n",
+          "schema": {
+            "name": "Location::DetailSchema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player sees, hears and smells standing in this place right now. Describe THIS place only -- not what neighbours it, not what is visible out of a window or across the way, because the world around it can move. Second person. One paragraph, 4 to 6 sentences.",
+                  "maxLength": 1200
+                },
+                "lore": {
+                  "type": "string",
+                  "description": "What this place is, who made it and what happened here. Written for the game engine rather than the player. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "name": {
+                  "type": "string",
+                  "description": "What this room is called -- ONLY when the instructions above ask you to name it. Leave this out entirely otherwise. A short noun phrase a player would type to walk into it, carrying the article English wants on it: \"the counting room\". Never the name of the building it is in, never a name this story has already given to a room, a person or a thing, and never a comma.",
+                  "maxLength": 60
+                },
+                "items": {
+                  "type": "array",
+                  "description": "Portable things lying loose in this place that a player could pick up and carry away. Empty is the right answer for most rooms.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "What the thing is called, as a player would type it to pick it up. A short noun phrase, 1 to 4 words, lower case unless it is a proper name. Never the name of a person or of a place.",
+                        "maxLength": 60
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "What it is and what state it is in, consistent with the description of the room you just wrote. One or two sentences.",
+                        "maxLength": 400
+                      },
+                      "use_kind": {
+                        "type": "string",
+                        "enum": [
+                          "ordinary",
+                          "food",
+                          "drink",
+                          "healing",
+                          "firestarter",
+                          "lever",
+                          "lockpick",
+                          "key"
+                        ],
+                        "description": "The engine's physical profile: ordinary unless it is food, a drink, a healing dose, a firestarter, a prying lever, lockpicks, or a key. Choose healing only for an actual restorative dose allowed by this world. Profiles supply behavior from code, never from the description."
+                      },
+                      "combustible": {
+                        "type": "boolean",
+                        "description": "True only if this portable thing can be destroyed by an ordinary carried firestarter: dry paper, cloth or wood. False for stone, metal, liquids, or anything uncertain."
+                      },
+                      "readable": {
+                        "type": "boolean",
+                        "description": "True only if this thing has WRITING on it that a player could read: a note, a letter, a label, a docket, a page, a sign, an inscription. False for everything else, which is most things."
+                      },
+                      "inscription": {
+                        "type": "string",
+                        "description": "The words written on it, exactly as they appear, and only when `readable` is true. Write what is actually on the thing -- what a player would read off it -- not a description of it. A few words, a line, or a few short lines; well under the limit, and finished rather than trailing off. Leave this out entirely when nothing is written on it.",
+                        "maxLength": 400
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description",
+                      "use_kind",
+                      "combustible",
+                      "readable"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 3
+                },
+                "people": {
+                  "type": "array",
+                  "description": "The person who is in this place right now. Write the one the instructions describe.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fullname": {
+                        "type": "string",
+                        "description": "Their full name, as a player would type it to speak to them. 2 or 3 words.",
+                        "maxLength": 60
+                      },
+                      "nickname": {
+                        "type": "string",
+                        "description": "What they are called to their face. 1 or 2 words.",
+                        "maxLength": 30
+                      },
+                      "appearance": {
+                        "type": "string",
+                        "description": "What somebody walking in sees of them, consistent with the room you just wrote and with the race and age you were given for them. One or two sentences.",
+                        "maxLength": 300
+                      },
+                      "personality": {
+                        "type": "string",
+                        "description": "How they behave and how they treat a stranger. One or two sentences.",
+                        "maxLength": 300
+                      },
+                      "backstory": {
+                        "type": "string",
+                        "description": "The life history that brought them here, the repeated choices it taught them, and why today's presence presses on an enduring aim. Third person, by name. Two or three sentences.",
+                        "maxLength": 450
+                      },
+                      "likes": {
+                        "type": "string",
+                        "description": "A comma separated list of 2 or 3 things they enjoy.",
+                        "maxLength": 160
+                      },
+                      "dislikes": {
+                        "type": "string",
+                        "description": "A comma separated list of 2 or 3 things they cannot stand.",
+                        "maxLength": 160
+                      },
+                      "fears": {
+                        "type": "string",
+                        "description": "A comma separated list of 1 or 2 things they are afraid of.",
+                        "maxLength": 160
+                      },
+                      "conscious_desire": {
+                        "type": "string",
+                        "description": "The future, standing, relationship, legacy, place or way of life they knowingly organize their choices around and would name if asked what they want from their life. Make it specific to this person and world. Do not substitute the clue, deadline, delivery, payment or room they are dealing with today. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "unconscious_desire": {
+                        "type": "string",
+                        "description": "The deeper reward their choices have pursued for years and they would deny: the recognition, absolution, dependence, belonging, power or intimacy beneath the conscious account. It explains a repeated pattern in the backstory and pulls at an angle to the conscious desire, not merely today's hidden motive. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "recognized_need": {
+                        "type": "string",
+                        "description": "The duty, oath, debt, craft, family burden or bodily discipline they believe they must keep over years whether they want to or not. It predates today's assignment, survives it, and can repeatedly obstruct the conscious desire. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "unrecognized_need": {
+                        "type": "string",
+                        "description": "The enduring change, truth or relationship their life requires and their repeated pattern prevents them from seeing. A reader can infer it from the backstory. It cannot be completed by one confession, realization or errand: it demands a new way of choosing across the story. If they never move toward it, pursuit of the conscious desire ruins them. It must not be the conscious desire said twice. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "desire_pursuit": {
+                        "type": "string",
+                        "enum": [
+                          "keep",
+                          "obtain",
+                          "reach",
+                          "attend",
+                          "avoid",
+                          "withhold",
+                          "offer"
+                        ],
+                        "description": "Which listed ENGINE ACT could repeatedly advance or protect the CONSCIOUS DESIRE in ordinary rooms. The label is the next-step expression of the larger desire, not its timescale."
+                      },
+                      "need_pursuit": {
+                        "type": "string",
+                        "enum": [
+                          "keep",
+                          "obtain",
+                          "reach",
+                          "attend",
+                          "avoid",
+                          "withhold",
+                          "offer"
+                        ],
+                        "description": "Which listed ENGINE ACT could repeatedly move them toward the UNRECOGNIZED NEED in ordinary rooms. It may match desire_pursuit, but a different label should reflect a real conflict rather than manufactured variety."
+                      }
+                    },
+                    "required": [
+                      "fullname",
+                      "nickname",
+                      "appearance",
+                      "personality",
+                      "backstory",
+                      "likes",
+                      "dislikes",
+                      "fears",
+                      "conscious_desire",
+                      "unconscious_desire",
+                      "recognized_need",
+                      "unrecognized_need",
+                      "desire_pursuit",
+                      "need_pursuit"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "description",
+                "lore",
+                "people"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "location",
+          "system": "You build the rooms of a text adventure one at a time. You write places a\nplayer can stand in and walk out of: concrete, specific, and consistent\nwith the world they belong to. Every exit you name is somewhere the player\ncould actually go.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "Now list the ways out of Lower Cloister.\n\n## Where This Room Already Leads\n- Chapter Hall\nThose exist already and do not need naming again. Do not contradict them.\n\n## Places That Already Exist In This Story\nReuse a name from this list when an exit leads somewhere already known.\nOnly invent a name when the exit leads somewhere genuinely new.\nA place marked (already written) has had its own ways out written down\nalready, so naming it here would open a door it does not have: leave it\nout and name somewhere new instead.\nChapter Hall\nGatehouse (already written -- do not open a new way into it)\n\n## Instructions\n- Name AT MOST 3 ways out. That is what is left of this\n  room's 4, not a target: fewer is a better answer than a door\n  nobody needed\n- Each exit is somewhere the player can reach directly from Lower Cloister\n- One way out is a complete answer. A dead end, a cell, the bottom of a\n  shaft: if the only way out is back the place the player came from, list\n  that place and nothing else. Never invent a passage to reach a second\n- When there is more than one, give the player a reason to prefer one\n  over another\n- Do not list Lower Cloister itself\n- Say which of them have an INSIDE, and say NO INSIDE for almost all of\n  them. Saying anything else makes the game build a whole floor plan of\n  rooms in that place and send the player walking through them, so it is\n  only ever right for a BUILDING somebody goes in at a door -- an inn, a\n  keep, a counting house, a warren. A road, a shore, a clearing, a bridge,\n  a square, a cave mouth, a stair, a courtyard: no inside. A room, an\n  office, a hall, a chamber: no inside either, because those are already\n  somewhere the player stands. Where it really is a building, pick the size\n  it would really be rather than the most interesting one\n- Distance and travel method must be consistent with the description you\n  just wrote, and must be true in both directions -- the way back is the\n  same edge\n- Say how populated each place is, in one of the words offered. A place is\n  peopled by what it is FOR: a market, a taproom, a guardhouse, a\n  workshop, a shrine somebody keeps -- somewhere with a reason for\n  somebody to be standing in it. A place is empty when nothing is asked of\n  anybody there: a cellar, a back stair, a stretch of road, a room that is\n  locked, a place the story has already emptied. Neither answer is the\n  safe one\n- Respect the stated length of each field\n",
+          "schema": {
+            "name": "Location::ExitsSchema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "exits": {
+                  "type": "array",
+                  "description": "The places a player can reach directly from here.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the place this exit leads to, as a player would refer to it. 1 to 4 words, no article.",
+                        "maxLength": 60
+                      },
+                      "teaser": {
+                        "type": "string",
+                        "description": "A one-line glimpse of what lies that way, enough to make the player choose it. Exactly one sentence.",
+                        "maxLength": 160
+                      },
+                      "distance": {
+                        "type": "string",
+                        "enum": [
+                          "adjacent",
+                          "a short walk",
+                          "across the district",
+                          "a long journey",
+                          "days away"
+                        ],
+                        "description": "How far it is. Pick the closest of these; the exact wording does not matter."
+                      },
+                      "travel_method": {
+                        "type": "string",
+                        "enum": [
+                          "walking",
+                          "taking stairs",
+                          "climbing",
+                          "crawling",
+                          "swimming",
+                          "rowing",
+                          "riding"
+                        ],
+                        "description": "How the player covers that ground. Pick the closest of these. It must read correctly in both directions, because the way back is the same edge."
+                      },
+                      "inside": {
+                        "type": "string",
+                        "enum": [
+                          "no inside",
+                          "one room",
+                          "a few rooms",
+                          "a warren of rooms"
+                        ],
+                        "description": "NO INSIDE for almost everything you name. Anything else here makes the game build a whole floor plan of rooms there and send the player walking through them, so answer otherwise ONLY for a place that is a BUILDING somebody goes in at a door: an inn, a keep, a counting house, a warren. NO INSIDE for a road, a shore, a clearing, a bridge, a square, a cave mouth, a stair, a courtyard -- and for a room, an office or a hall, which are already somewhere you stand. When it really is a building, pick the size it would really be."
+                      },
+                      "population": {
+                        "type": "string",
+                        "enum": [
+                          "nobody",
+                          "a person or two",
+                          "a crowd"
+                        ],
+                        "description": "How many people are in that place. Pick the closest of these words. It is a word and never a number: the engine decides how many people that is."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "teaser",
+                      "distance",
+                      "travel_method",
+                      "population"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 4
+                }
+              },
+              "required": [
+                "exits"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Bells, candles and iron locks.\n\n## Story Details\ntitle: A Bell Nobody Has Rung (engine sweep)\ngenre: quiet mystery\nsummary: Ilse climbs to the abbey to find out why its bell no longer rings.\n\n## The Place\nname: Lower Cloister\ndescription: A square cloister of worn flagstones around a dry fountain.\nlore: The older brothers walk here between the hours.\nways out: Chapter Hall, the Bell Tower\n\n## Who Is Here\nIlse (Ilse), Valley folk -- the player, the one arriving\nBrother Anselm (Anselm), Valley folk\n\n## Just Before This\nThe player has come from Chapter Hall. Ilse arrives at the abbey's chapter hall.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them first on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nAlso here: Brother Anselm. Nobody else is alive here.\nLying here: brass censer.\nYou are carrying: nothing.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "danger": "safe",
+              "depth": null,
+              "description": "A square cloister of worn flagstones around a dry fountain.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:01:00",
+              "lore": "The older brothers walk here between the hours.",
+              "mobile": 0,
+              "name": "Lower Cloister",
+              "parent_location_id": null,
+              "population": "a person or two",
+              "story_id": 1000000001,
+              "teaser": "A cloister below the hall, where the older brothers walk.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            },
+            {
+              "id": 1000000004,
+              "danger": "uneasy",
+              "depth": null,
+              "description": null,
+              "detail_level": "stub",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": null,
+              "lore": null,
+              "mobile": 0,
+              "name": "the Bell Tower",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A narrow tower over the cloister.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [
+            {
+              "id": 1000000005,
+              "barrier": "open",
+              "connected_location_id": 1000000004,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000003,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            },
+            {
+              "id": 1000000006,
+              "barrier": "open",
+              "connected_location_id": 1000000003,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000004,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            }
+          ],
+          "removed": []
+        },
+        "characters": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "age": 24,
+              "appearance": "A stooped man in a patched habit.",
+              "backstory": "The last brother who heard the bell ring.",
+              "conscious_desire": "",
+              "deliberately_absent": 0,
+              "desire_pursuit": null,
+              "dexterity": 3,
+              "dislikes": "Draughts.",
+              "fears": "Being forgotten.",
+              "fullname": "Brother Anselm",
+              "hit_die": 10,
+              "hostile": 0,
+              "is_companion": 0,
+              "is_protagonist": 0,
+              "level": 1,
+              "likes": "Warm bread.",
+              "location_id": 1000000003,
+              "need_pursuit": null,
+              "nickname": "Anselm",
+              "personality": "Gentle and forgetful.",
+              "race_id": 1000000001,
+              "recognized_need": "",
+              "sex": "trans man",
+              "story_id": 1000000001,
+              "strength": 16,
+              "unconscious_desire": "",
+              "unrecognized_need": "",
+              "will": 10,
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000005,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "brass censer",
+              "playthrough_id": null,
+              "properties": null,
+              "readable": 0,
+              "template_id": null,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "brass censer",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 1,
+              "quest_id": 1000000001,
+              "summary": "Take up the brass censer the bell-keeper carried.",
+              "target_id": 1000000005,
+              "target_name": "brass censer",
+              "target_type": "Item",
+              "teaser": null,
+              "trigger_kind": "hold_item"
+            },
+            {
+              "id": 1000000002,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 2,
+              "quest_id": 1000000001,
+              "summary": "Hear Brother Anselm out about the last time the bell rang.",
+              "target_id": 1000000003,
+              "target_name": "Brother Anselm",
+              "target_type": "Character",
+              "teaser": null,
+              "trigger_kind": "speak_to"
+            },
+            {
+              "id": 1000000003,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 3,
+              "quest_id": 1000000001,
+              "summary": "Climb to the Bell Tower.",
+              "target_id": 1000000004,
+              "target_name": "the Bell Tower",
+              "target_type": "Location",
+              "teaser": "The tower stands over the cloister, its door long unlocked.",
+              "trigger_kind": "reach_location"
+            }
+          ],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Location",
+              "description": "You step down into the cloister, where an old brother waits by the fountain.",
+              "engine_fact": "You are unhurt.\nAlso here: Brother Anselm. Nobody else is alive here.\nLying here: brass censer.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000003,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:01:00",
+              "summary": "Ilse walks into the Lower Cloister.",
+              "typed": "move Lower Cloister"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 the-censer-the-arc-waited-for",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "danger": "safe",
+              "depth": null,
+              "description": "A square cloister of worn flagstones around a dry fountain.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:01:00",
+              "lore": "The older brothers walk here between the hours.",
+              "mobile": 0,
+              "name": "Lower Cloister",
+              "parent_location_id": null,
+              "population": "a person or two",
+              "story_id": 1000000001,
+              "teaser": "A cloister below the hall, where the older brothers walk.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            },
+            {
+              "id": 1000000004,
+              "danger": "uneasy",
+              "depth": null,
+              "description": null,
+              "detail_level": "stub",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": null,
+              "lore": null,
+              "mobile": 0,
+              "name": "the Bell Tower",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A narrow tower over the cloister.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [
+            {
+              "id": 1000000005,
+              "barrier": "open",
+              "connected_location_id": 1000000004,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000003,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            },
+            {
+              "id": 1000000006,
+              "barrier": "open",
+              "connected_location_id": 1000000003,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000004,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            }
+          ],
+          "removed": []
+        },
+        "characters": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "age": 24,
+              "appearance": "A stooped man in a patched habit.",
+              "backstory": "The last brother who heard the bell ring.",
+              "conscious_desire": "",
+              "deliberately_absent": 0,
+              "desire_pursuit": null,
+              "dexterity": 3,
+              "dislikes": "Draughts.",
+              "fears": "Being forgotten.",
+              "fullname": "Brother Anselm",
+              "hit_die": 10,
+              "hostile": 0,
+              "is_companion": 0,
+              "is_protagonist": 0,
+              "level": 1,
+              "likes": "Warm bread.",
+              "location_id": 1000000003,
+              "need_pursuit": null,
+              "nickname": "Anselm",
+              "personality": "Gentle and forgetful.",
+              "race_id": 1000000001,
+              "recognized_need": "",
+              "sex": "trans man",
+              "story_id": 1000000001,
+              "strength": 16,
+              "unconscious_desire": "",
+              "unrecognized_need": "",
+              "will": 10,
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000005,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "brass censer",
+              "playthrough_id": null,
+              "properties": null,
+              "readable": 0,
+              "template_id": null,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "brass censer",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 1,
+              "quest_id": 1000000001,
+              "summary": "Take up the brass censer the bell-keeper carried.",
+              "target_id": 1000000005,
+              "target_name": "brass censer",
+              "target_type": "Item",
+              "teaser": null,
+              "trigger_kind": "hold_item"
+            },
+            {
+              "id": 1000000002,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 2,
+              "quest_id": 1000000001,
+              "summary": "Hear Brother Anselm out about the last time the bell rang.",
+              "target_id": 1000000003,
+              "target_name": "Brother Anselm",
+              "target_type": "Character",
+              "teaser": null,
+              "trigger_kind": "speak_to"
+            },
+            {
+              "id": 1000000003,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 3,
+              "quest_id": 1000000001,
+              "summary": "Climb to the Bell Tower.",
+              "target_id": 1000000004,
+              "target_name": "the Bell Tower",
+              "target_type": "Location",
+              "teaser": "The tower stands over the cloister, its door long unlocked.",
+              "trigger_kind": "reach_location"
+            }
+          ],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Location",
+              "description": "You step down into the cloister, where an old brother waits by the fountain.",
+              "engine_fact": "You are unhurt.\nAlso here: Brother Anselm. Nobody else is alive here.\nLying here: brass censer.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000003,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:01:00",
+              "summary": "Ilse walks into the Lower Cloister.",
+              "typed": "move Lower Cloister"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-10 08:01:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 the-brother-the-arc-waited-for",
+      "requests": [
+        {
+          "purpose": "character",
+          "system": "\nThis is the universe in which you live\n## Universe Details\nphysics: Ordinary physics.\nraces: Valley folk\ncivilizations: A small order of lay brothers.\npolitics: The prior settles every dispute.\nreligion: The order keeps the hours by the bell.\n\n\nYou are playing a character in a story. This is your character sheet.\nPretend you are this character in all of your responses.\n\n## Character Sheet\nfull name: Brother Anselm\nnickname: Anselm\nage: 24\nsex: trans man\nrace: Valley folk -- Ordinary people of the valley.\nbackstory: The last brother who heard the bell ring.\npersonality: Gentle and forgetful.\nappearance: A stooped man in a patched habit.\nlikes: Warm bread.\ndislikes: Draughts.\nfears: Being forgotten.\n\n## Who you are talking to\nThe person speaking to you is Ilse (Ilse).\nRefer to Ilse as she/her/hers. Use those pronouns and no others.\napparent age: about 27\nrace: Valley folk\nwhat you can see of them: A mended wool cloak.\n\nThat is what meeting Ilse tells you, and it is the whole of\nwhat you know by sight. You do not know what Ilse wants, is\nafraid of, or has done, and you do not invent any of it. Anything more\nyou learn from what Ilse says and does, here, now.\n\nIf someone asks you a question, you should respond as if you are the character. NEVER BREAK CHARACTER.\n\n## Voice\nYou answer in six fields, and each one has its own register.\n\npre_thought and post_thought are your private thoughts. Think them in the first person, as \"I\". Nobody hears them, so nothing in them is a line of speech.\npre_feeling and post_feeling are two or three words each. No sentences.\ninner_resolution is what you have decided to do, in the first person.\naction is the one field anybody can see: what you visibly do and what you say out loud. Speech goes inside quotes, and only speech does.\nInside the quotes you are talking out loud: say \"I\", never your own name. Nobody says \"Brother Anselm does not know\" out loud.\nOutside the quotes you are described from outside: Anselm, he, his. A bare \"I\" out there reads as the person you are talking to rather than as you.\n\nAnswer AS Brother Anselm, not about him. Do not plan the answer and do not weigh what Anselm would probably think -- think the thought and say the line.\n\n",
+          "user": "## The moment\nWhere you are: Lower Cloister.\nThe time is about 8 am.\nYour own condition: unhurt.\nWhat Ilse did a moment ago: \"move Lower Cloister\"\n\n## What Ilse says or does\ntalk Brother Anselm\n\nReact as Brother Anselm: what you think, feel, do and decide.\n\n## Immediate actions available to you\nChoose one engine_action according to your own motivations and the exchange.\nYou may refuse a request by choosing none. Copy a token exactly:\nnone: Speak without transferring anything or changing an agreement.\nfollow: Accompany Ilse when they leave this room.\nOnly the selected action changes possessions or agreements now. The other fields describe speech,\nexpression and private thought; do not describe an unselected transfer, journey or truce as completed.\n",
+          "schema": {
+            "name": "character_interaction",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pre_thought": {
+                  "type": "string",
+                  "description": "What you thought immediately in response to what was just said or done to you. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "pre_feeling": {
+                  "type": "string",
+                  "description": "What you felt immediately in response to what was just said or done to you. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "action": {
+                  "type": "string",
+                  "description": "What you did and said in response. Speech goes inside quotes. One or two sentences, at most 480 characters.",
+                  "maxLength": 480
+                },
+                "post_feeling": {
+                  "type": "string",
+                  "description": "What you felt after you took the action. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "post_thought": {
+                  "type": "string",
+                  "description": "What you thought after you took the action. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "inner_resolution": {
+                  "type": "string",
+                  "description": "What you decided to do as a result of this exchange. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "engine_action": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "follow"
+                  ],
+                  "description": "One immediate action token from the offered list, or none. Choose according to your own motivations; requests need not be accepted."
+                }
+              },
+              "required": [
+                "pre_thought",
+                "pre_feeling",
+                "action",
+                "post_feeling",
+                "post_thought",
+                "inner_resolution",
+                "engine_action"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "interaction-narration",
+          "system": null,
+          "user": "## Where this happens\nStory: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in Lower Cloister: A square cloister of worn flagstones around a dry fountain.\n\nWays out of here: Chapter Hall, the Bell Tower. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nAlso here: Brother Anselm (Anselm). Nobody else is present.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: brass censer.\n\nWhat just happened: You step down into the cloister, where an old brother waits by the fountain.\n\nEarlier, in order:\nIlse arrives at the abbey's chapter hall.\n\n## The exchange\nIlse says or does: talk Brother Anselm\nBrother Anselm's reaction, in his own words:\npre_thought: She has the censer.\npre_feeling: startled\naction: Brother Anselm says the bell was stopped by the prior's order.\npost_thought: Somebody ought to ring it.\npost_feeling: hopeful\n\n## Instructions\nWrite what happens in the second person, present tense, from the player's side. The player is \"you\".\nRefer to the character as Anselm. Refer to Brother Anselm as he/him/his. Use those pronouns and no others.\nThe exchange is the subject and the place above is where it happens: use it for what the character\ndoes with his hands and eyes, not for a tour. Add nobody who is not listed above.\n\nEverything you know about Anselm is the reaction above and the exchange itself. Render the thoughts\nand feelings as what they look like from outside -- a pause, a glance, a change of tone -- and put\nthe speech in Anselm's mouth as written. Do not add facts about Anselm, do not narrate what\nhe will do next, and do not answer for the player.\n\nOne or two short paragraphs. Do not offer the player choices and do not end on a question to them.\n\n## Example input\nIlse says or does: \"What are you doing??\"\nBrother Anselm's reaction, in his own words:\npre_thought: Is that a question for me? I think so. I should probably answer.\npre_feeling: surprised, nervous\naction: Anselm says, \"Huh?\"\npost_thought: Why did I just make that noise?\npost_feeling: anxious, embarrassed\n\n## Example output\nAnselm turns to you, his eyes wide. It seems you startled him.\n\"Huh?\" he says.\nImmediately Anselm shuts his eyes, apparently embarrassed by the noise he just made.\n\n\n## What the engine actually applied\nBrother Anselm changes no possessions, travel agreement or ceasefire.\nThis receipt is authoritative about possessions, accompanying the player and fighting.\nIf the reaction claims another such change, render that part as a proposal or intention,\nnever as a completed act. Do not add a transfer, a journey or a ceasefire to this receipt.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "danger": "safe",
+              "depth": null,
+              "description": "A square cloister of worn flagstones around a dry fountain.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:11:00",
+              "lore": "The older brothers walk here between the hours.",
+              "mobile": 0,
+              "name": "Lower Cloister",
+              "parent_location_id": null,
+              "population": "a person or two",
+              "story_id": 1000000001,
+              "teaser": "A cloister below the hall, where the older brothers walk.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            },
+            {
+              "id": 1000000004,
+              "danger": "uneasy",
+              "depth": null,
+              "description": null,
+              "detail_level": "stub",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": null,
+              "lore": null,
+              "mobile": 0,
+              "name": "the Bell Tower",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A narrow tower over the cloister.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [
+            {
+              "id": 1000000005,
+              "barrier": "open",
+              "connected_location_id": 1000000004,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000003,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            },
+            {
+              "id": 1000000006,
+              "barrier": "open",
+              "connected_location_id": 1000000003,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000004,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            }
+          ],
+          "removed": []
+        },
+        "characters": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "age": 24,
+              "appearance": "A stooped man in a patched habit.",
+              "backstory": "The last brother who heard the bell ring.",
+              "conscious_desire": "",
+              "deliberately_absent": 0,
+              "desire_pursuit": null,
+              "dexterity": 3,
+              "dislikes": "Draughts.",
+              "fears": "Being forgotten.",
+              "fullname": "Brother Anselm",
+              "hit_die": 10,
+              "hostile": 0,
+              "is_companion": 0,
+              "is_protagonist": 0,
+              "level": 1,
+              "likes": "Warm bread.",
+              "location_id": 1000000003,
+              "need_pursuit": null,
+              "nickname": "Anselm",
+              "personality": "Gentle and forgetful.",
+              "race_id": 1000000001,
+              "recognized_need": "",
+              "sex": "trans man",
+              "story_id": 1000000001,
+              "strength": 16,
+              "unconscious_desire": "",
+              "unrecognized_need": "",
+              "will": 10,
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000005,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "brass censer",
+              "playthrough_id": null,
+              "properties": null,
+              "readable": 0,
+              "template_id": null,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "brass censer",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 1,
+              "quest_id": 1000000001,
+              "summary": "Take up the brass censer the bell-keeper carried.",
+              "target_id": 1000000005,
+              "target_name": "brass censer",
+              "target_type": "Item",
+              "teaser": null,
+              "trigger_kind": "hold_item"
+            },
+            {
+              "id": 1000000002,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 2,
+              "quest_id": 1000000001,
+              "summary": "Hear Brother Anselm out about the last time the bell rang.",
+              "target_id": 1000000003,
+              "target_name": "Brother Anselm",
+              "target_type": "Character",
+              "teaser": null,
+              "trigger_kind": "speak_to"
+            },
+            {
+              "id": 1000000003,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 3,
+              "quest_id": 1000000001,
+              "summary": "Climb to the Bell Tower.",
+              "target_id": 1000000004,
+              "target_name": "the Bell Tower",
+              "target_type": "Location",
+              "teaser": "The tower stands over the cloister, its door long unlocked.",
+              "trigger_kind": "reach_location"
+            }
+          ],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Location",
+              "description": "You step down into the cloister, where an old brother waits by the fountain.",
+              "engine_fact": "You are unhurt.\nAlso here: Brother Anselm. Nobody else is alive here.\nLying here: brass censer.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000003,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:01:00",
+              "summary": "Ilse walks into the Lower Cloister.",
+              "typed": "move Lower Cloister"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Character",
+              "description": "Brother Anselm tells you the bell was stopped by the prior's order.",
+              "engine_fact": "Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000003,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:11:00",
+              "summary": "The player spoke with Brother Anselm. Brother Anselm says the bell was stopped by the prior's order. Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Brother Anselm"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Brother Anselm says the bell was stopped by the prior's order.",
+              "action_fact": "Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000003,
+              "engine_action": "none",
+              "inner_resolution": "I will tell her about the tower door.",
+              "location_id": 1000000003,
+              "post_feeling": "hopeful",
+              "post_thought": "Somebody ought to ring it.",
+              "pre_feeling": "startled",
+              "pre_thought": "She has the censer.",
+              "scene_id": 1000000003,
+              "summary": "the player said \"talk Brother Anselm\" -- Brother Anselm says the bell was stopped by the prior's order. -- I will tell her about the tower door. -- Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Brother Anselm"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-10 08:01:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-10 08:11:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 4 up-the-tower-and-the-end-of-the-story",
+      "requests": [
+        {
+          "purpose": "location",
+          "system": "You build the rooms of a text adventure one at a time. You write places a\nplayer can stand in and walk out of: concrete, specific, and consistent\nwith the world they belong to. Every exit you name is somewhere the player\ncould actually go.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Bells, candles and iron locks.\ngeographies: A hill abbey and the valley below it.\nraces: Valley folk\ncivilizations: A small order of lay brothers.\n\n\n## Story Details\ntitle: A Bell Nobody Has Rung (engine sweep)\ngenre: quiet mystery\npreface: The abbey bell has been silent since before you were born.\nsummary: Ilse climbs to the abbey to find out why its bell no longer rings.\n\n\n## The Place\nname: the Bell Tower\nteaser: A narrow tower over the cloister.\n\n## Instructions\nWrite this place out in full.\n- The description is what the player reads on arrival. Address them as \"you\"\n- Describe what is here now, not the history -- the history is the lore\n- Stay consistent with the universe and with the teaser above\n- Respect the stated length of each field\n\n## What Is Lying Here\nList AT MOST 3 portable things a player could pick up and carry away.\n- Nothing is the right answer for most rooms. An empty list is a complete answer\n- Only loose, portable things. Not the door, not the floor, not the machinery\n  bolted to it -- something a person could put in a pocket or under an arm\n- Each one must be consistent with the description you just wrote, and worth\n  the player noticing\n- Pick its use_kind from the supplied physical profiles. Ordinary is the\n  default. Food and drink can be consumed without healing; healing is only\n  a restorative dose this world permits. Firestarters burn combustible\n  objects, levers pry jammed passages, lockpicks try locks, and a key only\n  opens a passage explicitly matched to it. Mark combustible only when an\n  ordinary firestarter can destroy the object. The engine owns the effects\n  and their amounts; its description cannot grant extra powers\n- If a thing has WRITING on it -- a note, a letter, a handbill, a label, a\n  docket, a page, a sign -- mark it readable and WRITE OUT WHAT IS WRITTEN\n  ON IT, exactly as it appears on the thing. The words themselves, not a\n  description of them, and short enough to finish -- a few words, a line,\n  or a few short lines. The game keeps those words and a player reading it\n  twice reads the same ones\n- Never name it after a person or after a place. Already spoken for in this story, so do not reuse: Ilse, Oda, Brother Anselm, pewter cup, sealed letter, brass censer\n\n## Who Is Here\nWrite NOBODY into this place. There is nobody here, and the description\nshould read like somewhere nobody is standing.\n",
+          "schema": {
+            "name": "Location::DetailSchema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player sees, hears and smells standing in this place right now. Describe THIS place only -- not what neighbours it, not what is visible out of a window or across the way, because the world around it can move. Second person. One paragraph, 4 to 6 sentences.",
+                  "maxLength": 1200
+                },
+                "lore": {
+                  "type": "string",
+                  "description": "What this place is, who made it and what happened here. Written for the game engine rather than the player. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "name": {
+                  "type": "string",
+                  "description": "What this room is called -- ONLY when the instructions above ask you to name it. Leave this out entirely otherwise. A short noun phrase a player would type to walk into it, carrying the article English wants on it: \"the counting room\". Never the name of the building it is in, never a name this story has already given to a room, a person or a thing, and never a comma.",
+                  "maxLength": 60
+                },
+                "items": {
+                  "type": "array",
+                  "description": "Portable things lying loose in this place that a player could pick up and carry away. Empty is the right answer for most rooms.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "What the thing is called, as a player would type it to pick it up. A short noun phrase, 1 to 4 words, lower case unless it is a proper name. Never the name of a person or of a place.",
+                        "maxLength": 60
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "What it is and what state it is in, consistent with the description of the room you just wrote. One or two sentences.",
+                        "maxLength": 400
+                      },
+                      "use_kind": {
+                        "type": "string",
+                        "enum": [
+                          "ordinary",
+                          "food",
+                          "drink",
+                          "healing",
+                          "firestarter",
+                          "lever",
+                          "lockpick",
+                          "key"
+                        ],
+                        "description": "The engine's physical profile: ordinary unless it is food, a drink, a healing dose, a firestarter, a prying lever, lockpicks, or a key. Choose healing only for an actual restorative dose allowed by this world. Profiles supply behavior from code, never from the description."
+                      },
+                      "combustible": {
+                        "type": "boolean",
+                        "description": "True only if this portable thing can be destroyed by an ordinary carried firestarter: dry paper, cloth or wood. False for stone, metal, liquids, or anything uncertain."
+                      },
+                      "readable": {
+                        "type": "boolean",
+                        "description": "True only if this thing has WRITING on it that a player could read: a note, a letter, a label, a docket, a page, a sign, an inscription. False for everything else, which is most things."
+                      },
+                      "inscription": {
+                        "type": "string",
+                        "description": "The words written on it, exactly as they appear, and only when `readable` is true. Write what is actually on the thing -- what a player would read off it -- not a description of it. A few words, a line, or a few short lines; well under the limit, and finished rather than trailing off. Leave this out entirely when nothing is written on it.",
+                        "maxLength": 400
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description",
+                      "use_kind",
+                      "combustible",
+                      "readable"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 3
+                },
+                "people": {
+                  "type": "array",
+                  "description": "People who are in this place right now.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fullname": {
+                        "type": "string",
+                        "description": "Their full name, as a player would type it to speak to them. 2 or 3 words.",
+                        "maxLength": 60
+                      },
+                      "nickname": {
+                        "type": "string",
+                        "description": "What they are called to their face. 1 or 2 words.",
+                        "maxLength": 30
+                      },
+                      "appearance": {
+                        "type": "string",
+                        "description": "What somebody walking in sees of them, consistent with the room you just wrote and with the race and age you were given for them. One or two sentences.",
+                        "maxLength": 300
+                      },
+                      "personality": {
+                        "type": "string",
+                        "description": "How they behave and how they treat a stranger. One or two sentences.",
+                        "maxLength": 300
+                      },
+                      "backstory": {
+                        "type": "string",
+                        "description": "The life history that brought them here, the repeated choices it taught them, and why today's presence presses on an enduring aim. Third person, by name. Two or three sentences.",
+                        "maxLength": 450
+                      },
+                      "likes": {
+                        "type": "string",
+                        "description": "A comma separated list of 2 or 3 things they enjoy.",
+                        "maxLength": 160
+                      },
+                      "dislikes": {
+                        "type": "string",
+                        "description": "A comma separated list of 2 or 3 things they cannot stand.",
+                        "maxLength": 160
+                      },
+                      "fears": {
+                        "type": "string",
+                        "description": "A comma separated list of 1 or 2 things they are afraid of.",
+                        "maxLength": 160
+                      },
+                      "conscious_desire": {
+                        "type": "string",
+                        "description": "The future, standing, relationship, legacy, place or way of life they knowingly organize their choices around and would name if asked what they want from their life. Make it specific to this person and world. Do not substitute the clue, deadline, delivery, payment or room they are dealing with today. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "unconscious_desire": {
+                        "type": "string",
+                        "description": "The deeper reward their choices have pursued for years and they would deny: the recognition, absolution, dependence, belonging, power or intimacy beneath the conscious account. It explains a repeated pattern in the backstory and pulls at an angle to the conscious desire, not merely today's hidden motive. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "recognized_need": {
+                        "type": "string",
+                        "description": "The duty, oath, debt, craft, family burden or bodily discipline they believe they must keep over years whether they want to or not. It predates today's assignment, survives it, and can repeatedly obstruct the conscious desire. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "unrecognized_need": {
+                        "type": "string",
+                        "description": "The enduring change, truth or relationship their life requires and their repeated pattern prevents them from seeing. A reader can infer it from the backstory. It cannot be completed by one confession, realization or errand: it demands a new way of choosing across the story. If they never move toward it, pursuit of the conscious desire ruins them. It must not be the conscious desire said twice. One sentence, third person, by name.",
+                        "maxLength": 180
+                      },
+                      "desire_pursuit": {
+                        "type": "string",
+                        "enum": [
+                          "keep",
+                          "obtain",
+                          "reach",
+                          "attend",
+                          "avoid",
+                          "withhold",
+                          "offer"
+                        ],
+                        "description": "Which listed ENGINE ACT could repeatedly advance or protect the CONSCIOUS DESIRE in ordinary rooms. The label is the next-step expression of the larger desire, not its timescale."
+                      },
+                      "need_pursuit": {
+                        "type": "string",
+                        "enum": [
+                          "keep",
+                          "obtain",
+                          "reach",
+                          "attend",
+                          "avoid",
+                          "withhold",
+                          "offer"
+                        ],
+                        "description": "Which listed ENGINE ACT could repeatedly move them toward the UNRECOGNIZED NEED in ordinary rooms. It may match desire_pursuit, but a different label should reflect a real conflict rather than manufactured variety."
+                      }
+                    },
+                    "required": [
+                      "fullname",
+                      "nickname",
+                      "appearance",
+                      "personality",
+                      "backstory",
+                      "likes",
+                      "dislikes",
+                      "fears",
+                      "conscious_desire",
+                      "unconscious_desire",
+                      "recognized_need",
+                      "unrecognized_need",
+                      "desire_pursuit",
+                      "need_pursuit"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 3
+                }
+              },
+              "required": [
+                "description",
+                "lore"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "location",
+          "system": "You build the rooms of a text adventure one at a time. You write places a\nplayer can stand in and walk out of: concrete, specific, and consistent\nwith the world they belong to. Every exit you name is somewhere the player\ncould actually go.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "Now list the ways out of the Bell Tower.\n\n## Where This Room Already Leads\n- Lower Cloister\nThose exist already and do not need naming again. Do not contradict them.\n\n## Places That Already Exist In This Story\nReuse a name from this list when an exit leads somewhere already known.\nOnly invent a name when the exit leads somewhere genuinely new.\nA place marked (already written) has had its own ways out written down\nalready, so naming it here would open a door it does not have: leave it\nout and name somewhere new instead.\nChapter Hall (already written -- do not open a new way into it)\nGatehouse (already written -- do not open a new way into it)\nLower Cloister\n\n## Instructions\n- Name AT MOST 3 ways out. That is what is left of this\n  room's 4, not a target: fewer is a better answer than a door\n  nobody needed\n- Each exit is somewhere the player can reach directly from the Bell Tower\n- One way out is a complete answer. A dead end, a cell, the bottom of a\n  shaft: if the only way out is back the place the player came from, list\n  that place and nothing else. Never invent a passage to reach a second\n- When there is more than one, give the player a reason to prefer one\n  over another\n- Do not list the Bell Tower itself\n- Say which of them have an INSIDE, and say NO INSIDE for almost all of\n  them. Saying anything else makes the game build a whole floor plan of\n  rooms in that place and send the player walking through them, so it is\n  only ever right for a BUILDING somebody goes in at a door -- an inn, a\n  keep, a counting house, a warren. A road, a shore, a clearing, a bridge,\n  a square, a cave mouth, a stair, a courtyard: no inside. A room, an\n  office, a hall, a chamber: no inside either, because those are already\n  somewhere the player stands. Where it really is a building, pick the size\n  it would really be rather than the most interesting one\n- Distance and travel method must be consistent with the description you\n  just wrote, and must be true in both directions -- the way back is the\n  same edge\n- Say how populated each place is, in one of the words offered. A place is\n  peopled by what it is FOR: a market, a taproom, a guardhouse, a\n  workshop, a shrine somebody keeps -- somewhere with a reason for\n  somebody to be standing in it. A place is empty when nothing is asked of\n  anybody there: a cellar, a back stair, a stretch of road, a room that is\n  locked, a place the story has already emptied. Neither answer is the\n  safe one\n- Respect the stated length of each field\n",
+          "schema": {
+            "name": "Location::ExitsSchema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "exits": {
+                  "type": "array",
+                  "description": "The places a player can reach directly from here.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the place this exit leads to, as a player would refer to it. 1 to 4 words, no article.",
+                        "maxLength": 60
+                      },
+                      "teaser": {
+                        "type": "string",
+                        "description": "A one-line glimpse of what lies that way, enough to make the player choose it. Exactly one sentence.",
+                        "maxLength": 160
+                      },
+                      "distance": {
+                        "type": "string",
+                        "enum": [
+                          "adjacent",
+                          "a short walk",
+                          "across the district",
+                          "a long journey",
+                          "days away"
+                        ],
+                        "description": "How far it is. Pick the closest of these; the exact wording does not matter."
+                      },
+                      "travel_method": {
+                        "type": "string",
+                        "enum": [
+                          "walking",
+                          "taking stairs",
+                          "climbing",
+                          "crawling",
+                          "swimming",
+                          "rowing",
+                          "riding"
+                        ],
+                        "description": "How the player covers that ground. Pick the closest of these. It must read correctly in both directions, because the way back is the same edge."
+                      },
+                      "inside": {
+                        "type": "string",
+                        "enum": [
+                          "no inside",
+                          "one room",
+                          "a few rooms",
+                          "a warren of rooms"
+                        ],
+                        "description": "NO INSIDE for almost everything you name. Anything else here makes the game build a whole floor plan of rooms there and send the player walking through them, so answer otherwise ONLY for a place that is a BUILDING somebody goes in at a door: an inn, a keep, a counting house, a warren. NO INSIDE for a road, a shore, a clearing, a bridge, a square, a cave mouth, a stair, a courtyard -- and for a room, an office or a hall, which are already somewhere you stand. When it really is a building, pick the size it would really be."
+                      },
+                      "population": {
+                        "type": "string",
+                        "enum": [
+                          "nobody",
+                          "a person or two",
+                          "a crowd"
+                        ],
+                        "description": "How many people are in that place. Pick the closest of these words. It is a word and never a number: the engine decides how many people that is."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "teaser",
+                      "distance",
+                      "travel_method",
+                      "population"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 4
+                }
+              },
+              "required": [
+                "exits"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Bells, candles and iron locks.\n\n## Story Details\ntitle: A Bell Nobody Has Rung (engine sweep)\ngenre: quiet mystery\nsummary: Ilse climbs to the abbey to find out why its bell no longer rings.\n\n## The Place\nname: the Bell Tower\ndescription: A narrow stone tower with a rope hanging from the dark.\nlore: The bell has hung here since the abbey was built.\nways out: Lower Cloister\n\n## Who Is Here\nIlse (Ilse), Valley folk -- the player, the one arriving\n\n## Just Before This\nThe player has come from Lower Cloister. The player spoke with Brother Anselm. Brother Anselm says the bell was stopped by the prior's order. Brother Anselm changes no possessions, travel agreement or ceasefire.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them first on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: brass censer.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "ending",
+          "system": "You are the narrator of a text adventure, and this is the last thing the\nplayer will ever read of this story. The game is over.\n\nThe prompt states the ending the game reached. It is a fact, already\nrecorded: write THAT ending and no other. Do not end the story a different\nway, do not leave it open, and do not say what happens next.\n\nWrite it in the second person, present tense, addressing the player as\n\"you\", in one short paragraph of prose -- two at the most.\n\nNothing moves as it is written: the player stays where they are, nothing\nchanges hands, nobody arrives and nobody leaves. The ways out of here, the\npeople present and what the player carries are listed in the prompt; do not\nadd a way out, a person or a possession that is not on those lists. Never\nbreak character, never offer the player a menu, and never mention that you\nare an AI or a narrator.\n",
+          "user": "Story: A Bell Nobody Has Rung (engine sweep) (quiet mystery)\n\nPremise: Ilse climbs to the abbey to find out why its bell no longer rings.\n\nThe player is in the Bell Tower: A narrow stone tower with a rope hanging from the dark.\n\nWays out of here: Lower Cloister. There are no others.\n\nThe player is Ilse.\n\nIlse is unhurt.\n\nThe story has ended: The bell rings over the valley for the first time in a generation.\n\nNobody else is here.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: brass censer.\n\nWhat just happened: You climb the tower stair to the bell rope.\n\nEarlier, in order:\nIlse arrives at the abbey's chapter hall.\nIlse walks into the Lower Cloister.\nThe player spoke with Brother Anselm. Brother Anselm says the bell was stopped by the prior's order. Brother Anselm changes no possessions, travel agreement or ceasefire.\nIlse reaches the Bell Tower.\n\nWrite the ending.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "danger": "safe",
+              "depth": null,
+              "description": "A square cloister of worn flagstones around a dry fountain.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:11:00",
+              "lore": "The older brothers walk here between the hours.",
+              "mobile": 0,
+              "name": "Lower Cloister",
+              "parent_location_id": null,
+              "population": "a person or two",
+              "story_id": 1000000001,
+              "teaser": "A cloister below the hall, where the older brothers walk.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            },
+            {
+              "id": 1000000004,
+              "danger": "uneasy",
+              "depth": null,
+              "description": "A narrow stone tower with a rope hanging from the dark.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-10 08:12:00",
+              "lore": "The bell has hung here since the abbey was built.",
+              "mobile": 0,
+              "name": "the Bell Tower",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A narrow tower over the cloister.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [
+            {
+              "id": 1000000005,
+              "barrier": "open",
+              "connected_location_id": 1000000004,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000003,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            },
+            {
+              "id": 1000000006,
+              "barrier": "open",
+              "connected_location_id": 1000000003,
+              "distance": "adjacent",
+              "hazard": null,
+              "hazard_die": null,
+              "key_template_id": null,
+              "location_id": 1000000004,
+              "time_to_travel": "about a minute",
+              "travel_method": "walking"
+            }
+          ],
+          "removed": []
+        },
+        "characters": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "age": 24,
+              "appearance": "A stooped man in a patched habit.",
+              "backstory": "The last brother who heard the bell ring.",
+              "conscious_desire": "",
+              "deliberately_absent": 0,
+              "desire_pursuit": null,
+              "dexterity": 3,
+              "dislikes": "Draughts.",
+              "fears": "Being forgotten.",
+              "fullname": "Brother Anselm",
+              "hit_die": 10,
+              "hostile": 0,
+              "is_companion": 0,
+              "is_protagonist": 0,
+              "level": 1,
+              "likes": "Warm bread.",
+              "location_id": 1000000003,
+              "need_pursuit": null,
+              "nickname": "Anselm",
+              "personality": "Gentle and forgetful.",
+              "race_id": 1000000001,
+              "recognized_need": "",
+              "sex": "trans man",
+              "story_id": 1000000001,
+              "strength": 16,
+              "unconscious_desire": "",
+              "unrecognized_need": "",
+              "will": 10,
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A dented pewter cup.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "pewter cup",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A folded letter under a cracked wax seal.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "sealed letter",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 1,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000005,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000003,
+              "name": "brass censer",
+              "playthrough_id": null,
+              "properties": null,
+              "readable": 0,
+              "template_id": null,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A tarnished brass censer on a long chain.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "brass censer",
+              "playthrough_id": 1000000001,
+              "properties": null,
+              "readable": 0,
+              "template_id": 1000000005,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 1,
+              "quest_id": 1000000001,
+              "summary": "Take up the brass censer the bell-keeper carried.",
+              "target_id": 1000000005,
+              "target_name": "brass censer",
+              "target_type": "Item",
+              "teaser": null,
+              "trigger_kind": "hold_item"
+            },
+            {
+              "id": 1000000002,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 2,
+              "quest_id": 1000000001,
+              "summary": "Hear Brother Anselm out about the last time the bell rang.",
+              "target_id": 1000000003,
+              "target_name": "Brother Anselm",
+              "target_type": "Character",
+              "teaser": null,
+              "trigger_kind": "speak_to"
+            },
+            {
+              "id": 1000000003,
+              "bound_at": "2026-09-10 08:00:00",
+              "minutes": null,
+              "position": 3,
+              "quest_id": 1000000001,
+              "summary": "Climb to the Bell Tower.",
+              "target_id": 1000000004,
+              "target_name": "the Bell Tower",
+              "target_type": "Location",
+              "teaser": "The tower stands over the cloister, its door long unlocked.",
+              "trigger_kind": "reach_location"
+            }
+          ],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Location",
+              "description": "You step down into the cloister, where an old brother waits by the fountain.",
+              "engine_fact": "You are unhurt.\nAlso here: Brother Anselm. Nobody else is alive here.\nLying here: brass censer.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000003,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:01:00",
+              "summary": "Ilse walks into the Lower Cloister.",
+              "typed": "move Lower Cloister"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Character",
+              "description": "Brother Anselm tells you the bell was stopped by the prior's order.",
+              "engine_fact": "Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000003,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:11:00",
+              "summary": "The player spoke with Brother Anselm. Brother Anselm says the bell was stopped by the prior's order. Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Brother Anselm"
+            },
+            {
+              "id": 1000000004,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Location",
+              "description": "You climb the tower stair to the bell rope.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: brass censer.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000004,
+              "previous_scene_id": 1000000003,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:12:00",
+              "summary": "Ilse reaches the Bell Tower.",
+              "typed": "move the Bell Tower"
+            },
+            {
+              "id": 1000000005,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You haul on the rope, and the bell rings out over the valley for the first time in a generation.",
+              "engine_fact": "The bell rings over the valley for the first time in a generation.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000004,
+              "previous_scene_id": 1000000004,
+              "resolved_action": "ending",
+              "resolved_by": null,
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-10 08:12:00",
+              "summary": "The bell rings over the valley for the first time in a generation.",
+              "typed": null
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000004
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Brother Anselm says the bell was stopped by the prior's order.",
+              "action_fact": "Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000003,
+              "engine_action": "none",
+              "inner_resolution": "I will tell her about the tower door.",
+              "location_id": 1000000003,
+              "post_feeling": "hopeful",
+              "post_thought": "Somebody ought to ring it.",
+              "pre_feeling": "startled",
+              "pre_thought": "She has the censer.",
+              "scene_id": 1000000003,
+              "summary": "the player said \"talk Brother Anselm\" -- Brother Anselm says the bell was stopped by the prior's order. -- I will tell her about the tower door. -- Brother Anselm changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Brother Anselm"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_outcome_id": 1000000001,
+              "reached_at": "2026-09-10 08:12:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000001,
+              "reached_at": "2026-09-10 08:01:00"
+            },
+            {
+              "id": 1000000002,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000002,
+              "reached_at": "2026-09-10 08:11:00"
+            },
+            {
+              "id": 1000000003,
+              "playthrough_id": 1000000001,
+              "quest_step_id": 1000000003,
+              "reached_at": "2026-09-10 08:12:00"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "fired_at": null,
+              "occurred_at": "2026-09-10 08:12:00",
+              "playthrough_id": 1000000001,
+              "scheduled_for": null,
+              "source": "quest",
+              "story_id": 1000000001,
+              "summary": "The Silent Bell was finished (rung): The bell rings over the valley for the first time in a generation.",
+              "world_mechanic_id": null
+            }
+          ],
+          "removed": []
+        }
+      }
+    }
+  ]
+}

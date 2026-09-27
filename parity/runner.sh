@@ -20,8 +20,15 @@ export RAILS_ENV=test ENGINE_DATABASE=1 ENGINE="$binary"
 scripts=$(grep -hv '^#' "$here/PASSING" "$here/PASSING_WITH_RUNNER" | grep -v '^$')
 agreed=0
 failed=()
+absent=()
 cd "$ruby_engine"
 for script in $scripts; do
+  # A script this repository has ahead of the checkout (see parity/README.md)
+  # has nothing to be diffed against there yet.
+  if [ ! -f "lib/engine_sweep/scripts/$script.yml" ]; then
+    absent+=("$script")
+    continue
+  fi
   if SCRIPT="$script" bin/rails engine:parity_diff; then
     agreed=$((agreed + 1))
   else
@@ -30,6 +37,9 @@ for script in $scripts; do
 done
 
 echo "through the runner: $agreed of $(echo "$scripts" | wc -w) listed script(s) agree"
+if [ ${#absent[@]} -gt 0 ]; then
+  printf 'not in the checkout yet: %s\n' "${absent[@]}"
+fi
 if [ ${#failed[@]} -gt 0 ]; then
   printf 'diverged: %s\n' "${failed[@]}"
   exit 1

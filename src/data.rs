@@ -105,6 +105,14 @@ const LOCATION_GENERATOR: &str = include_str!("../data/location/generator.yml");
 const DESIRES: &str = include_str!("../data/character/desires.yml");
 const NARRATOR: &str = include_str!("../data/scene/narrator.yml");
 const CLASSIFIER: &str = include_str!("../data/playthrough/classifier.yml");
+const ENDING: &str = include_str!("../data/scene/ending.yml");
+
+/// `config/engine/scene/ending.yml`: the instructions the last paragraph of
+/// a game is written under (`Scene::Ending::INSTRUCTIONS`).
+pub fn ending_instructions() -> &'static str {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    text_of(&FILE, "scene/ending.yml", ENDING, "instructions")
+}
 
 /// `config/engine/playthrough/classifier.yml`: the classifier's
 /// instructions.

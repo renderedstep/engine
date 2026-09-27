@@ -73,7 +73,8 @@ pub fn prompt_details(records: &Records, universe: &Row, fields: &[&str]) -> Str
     lines.join("\n") + "\n"
 }
 
-/// Rails' `distance_of_time_in_words` for a span of seconds, up to a year.
+/// Rails' `distance_of_time_in_words` for a span of seconds, as the arrival
+/// writer calls it: the span taken as a time after the epoch, in UTC.
 pub fn distance_of_time_in_words(seconds: f64) -> String {
     let minutes = (seconds.abs() / 60.0).round() as i64;
     match minutes {
@@ -96,8 +97,64 @@ pub fn distance_of_time_in_words(seconds: f64) -> String {
             }
         ),
         86400..=525599 => format!("{} months", (minutes as f64 / 43200.0).round() as i64),
-        _ => unimplemented!("a span of a year or more"),
+        _ => years_in_words(seconds, minutes),
     }
+}
+
+/// `MINUTES_IN_YEAR`, `MINUTES_IN_QUARTER_YEAR` and
+/// `MINUTES_IN_THREE_QUARTERS_YEAR` of Rails' date helper.
+const MINUTES_IN_YEAR: i64 = 525_600;
+const MINUTES_IN_QUARTER_YEAR: i64 = 131_400;
+const MINUTES_IN_THREE_QUARTERS_YEAR: i64 = 394_200;
+
+/// The year and month of a moment, as whole seconds since the epoch in UTC.
+fn year_and_month(seconds: i64) -> (i64, i64) {
+    let days = seconds.div_euclid(86_400);
+    // Howard Hinnant's civil-from-days.
+    let z = days + 719_468;
+    let era = z.div_euclid(146_097);
+    let doe = z - era * 146_097;
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let month = if mp < 10 { mp + 3 } else { mp - 9 };
+    let year = yoe + era * 400 + i64::from(month <= 2);
+    (year, month)
+}
+
+/// The branch of `distance_of_time_in_words` past a year: whole years,
+/// counted once the leap days between the two moments are taken off.
+fn years_in_words(seconds: f64, minutes: i64) -> String {
+    let (from, to) = if seconds < 0.0 {
+        (seconds.floor() as i64, 0)
+    } else {
+        (0, seconds.floor() as i64)
+    };
+    let (mut from_year, from_month) = year_and_month(from);
+    if from_month >= 3 {
+        from_year += 1;
+    }
+    let (mut to_year, to_month) = year_and_month(to);
+    if to_month < 3 {
+        to_year -= 1;
+    }
+    let leaps = |year: i64| year.div_euclid(4) - year.div_euclid(100) + year.div_euclid(400);
+    let leap_years = if from_year > to_year {
+        0
+    } else {
+        leaps(to_year) - leaps(from_year - 1)
+    };
+    let offset = minutes - leap_years * 1440;
+    let remainder = offset.rem_euclid(MINUTES_IN_YEAR);
+    let years = offset.div_euclid(MINUTES_IN_YEAR);
+    let (words, count) = if remainder < MINUTES_IN_QUARTER_YEAR {
+        ("about", years)
+    } else if remainder < MINUTES_IN_THREE_QUARTERS_YEAR {
+        ("over", years)
+    } else {
+        ("almost", years + 1)
+    };
+    format!("{words} {count} year{}", if count == 1 { "" } else { "s" })
 }
 
 /// The arrival being written: which room, from which scene, in which game.
@@ -390,5 +447,32 @@ impl<'a> Arrival<'a> {
             "schema": schemas::scene(),
             "history": [],
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::distance_of_time_in_words;
+
+    /// What Rails' helper says for the same spans, handed seconds, in UTC.
+    #[test]
+    fn words_a_span_of_years_as_rails_does() {
+        for (seconds, words) in [
+            (31_536_000_i64, "about 1 year"),
+            (31_536_001, "about 1 year"),
+            (36_000_000, "about 1 year"),
+            (42_000_000, "over 1 year"),
+            (60_000_000, "almost 2 years"),
+            (157_939_200, "about 5 years"),
+            (94_608_000, "almost 3 years"),
+            (316_224_000, "about 10 years"),
+            (2_160_000_000, "over 68 years"),
+        ] {
+            assert_eq!(
+                distance_of_time_in_words(seconds as f64),
+                words,
+                "{seconds}"
+            );
+        }
     }
 }

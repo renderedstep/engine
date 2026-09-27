@@ -13,9 +13,23 @@ are built from. That repository's
 | `scripts/` | `lib/engine_sweep/scripts/*.yml`, less their comments and `why:` notes | each walk: its world, the lines typed and what each step expects |
 | `goldens/` | `test/engine_parity/*.json` | the Ruby engine's dump after every step of each |
 | `worlds/` | produced from `lib/engine_sweep/worlds/` and `db/seeds/worlds/` (below) | each world as the Ruby engine loads it for a walk, as SQL text |
+| `records/` | produced from the Ruby engine by `records.rb` (below) | for some scripts, every request each step handed a provider and every row the walk wrote |
+| `records.rb` | this repository | the runner script that produces `records/` |
 | `PASSING` | this repository | the scripts this engine plays exactly as the Ruby engine does |
 | `PASSING_WITH_RUNNER` | this repository | the scripts that agree only when the Ruby engine's runner plays them: those with `reseed:` steps, and those whose browser steps assert `shown` |
 | `runner.sh` | this repository | plays both lists through the Ruby engine's runner in its shared-database mode |
+
+Three scripts are ahead of that commit: `a-room-written-while-the-arc-waits`,
+`an-ending-kept-when-the-narrator-fails` and
+`a-deadline-places-what-the-arc-waits-for`, with the worlds
+`a-bell-nobody-has-rung` and `a-yard-before-the-winter` they walk. They
+were written in this repository and played by the Ruby engine at the
+commit above, with two changes to its sweep that they need: a browser
+reply may answer the `ending` and `inscription` passes, and the people a
+declared realization brings into the story join the walk's reference
+wherever they stand, not only in the room it wrote. Both are proposed to
+the game repository with the scripts; once it has them, a refresh copies
+them from there like the rest.
 
 Never edit the scripts or the goldens by hand. The scripts are re-emitted
 by Ruby's YAML library with the comments and the `why:` notes (which no
@@ -54,6 +68,29 @@ end
 then `sqlite3 <copy> .dump > worlds/<slug>.sql`. The `created_at` and
 `updated_at` columns carry the time it was run; nothing the engine plays
 reads them.
+
+## The records
+
+A dump says where the player stands and what they hold; it does not say
+what the models were asked, or every row a step wrote. For a script with a
+file in `records/`, the check also holds each step to the Ruby engine's
+requests (every provider call a browser step made, with its instructions,
+its line and its schema, and every System One state and question set) and
+to its rows: for each table `parity::WRITTEN_TABLES` names, every row that
+is not in the world as it was loaded, and every loaded row that is gone,
+compared column for column less `created_at` and `updated_at`. A script
+agrees only when its dumps, its requests and its rows all do.
+
+To produce one, in the same scratch copy with its test database's schema
+loaded and both provider keys unset:
+
+```sh
+RAILS_ENV=test bin/rails runner <this repository>/parity/records.rb <output directory> <script>...
+```
+
+and copy `records/<script>.json` from the output directory. It also writes
+the script's golden file, which is the one `bin/rails engine:parity`
+writes.
 
 ## Refreshing
 

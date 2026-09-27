@@ -57,7 +57,7 @@ with the state it wrote after every step (`parity/`, see its README).
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
-| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
+| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!`, `Quest::Binder`, `Quest::Deadline`, `Scene::Ending` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
 | `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
 | `parity` | `EngineSweep::Walk`, `EngineSweep::Dump`, `EngineSweep::Parity` | a sweep script played through this engine, dumped step by step and compared |
 | `model` | `BaseAgent`, `BaseAgent::Refusal`, `SystemOneAgent`, RubyLLM's OpenRouter provider and its `chats`/`messages` receipts, `EngineSweep::BrowserTurn`'s fixed replies | where a model call goes, the body it sends, whether an answer is kept, the model rotation, and what a call leaves in the database |
@@ -136,9 +136,9 @@ after a named step commits, as a killed worker stops, and comes back as
 `Error::Stopped` with the submission still running; the engine sweep plays
 its interrupted workers this way.
 
-What `submit` does not play yet (an offer of a thing to somebody; an
-ending; writing a room in a story whose arc is still binding its steps)
-comes back as `Error::Unsupported`.
+What `submit` does not play yet (an offer of a thing to somebody; reading
+a readable thing whose words nobody has written yet) comes back as
+`Error::Unsupported`.
 
 A line with no slash, and a slashed line the grammar cannot place, is read
 by System One first where it is on (`cascade`), and by the classifier model
@@ -157,7 +157,18 @@ out, with the first answer kept on the room as a checkpoint so a room whose
 second call failed is picked up there, never paid for twice. What the
 answers propose is admitted, not obeyed (`Item::Registry`,
 `Character::Registry`, the exit rules), and a building is laid out into
-rooms as it is written and walked into at its entry.
+rooms as it is written and walked into at its entry. A place, a person or a
+thing a room's writing admits is taken by any step of the story's arc that
+was waiting for its name (`Quest::Binder`). Once the story has written more
+rooms than its grace, a room finishing its writing places the arc's first
+waiting step itself (`Quest::Deadline`): a place laid out two levels down
+off the deepest room the party can reach, a person in the deepest room of
+a place they can reach, or a thing on that room's floor.
+
+On the line that concludes the story's arc, the narrator writes the last
+paragraph over the closing scene the arc already wrote (`Scene::Ending`).
+A failed call, and a paragraph that stops mid-sentence, leave the engine's
+own sentence standing on that scene.
 
 A Ruby binding (magnus) is the next consumer and is not built yet. It is a
 thin layer over this surface: open an `Engine` on the app's database path,
@@ -225,8 +236,10 @@ values. It also checks each file's `constants` against this crate's
 tables, and refuses a file whose format version it does not know.
 
 `tests/parity.rs` plays every sweep script in `parity/scripts` and compares
-each step's dump with the Ruby engine's golden file, printing each other
-script's first divergence and a pass count. The binary does the same:
+each step's dump with the Ruby engine's golden file, and, for a script with
+a file in `parity/records`, every request it made and every row it wrote
+with the Ruby engine's, printing each other script's first divergence and a
+pass count. The binary does the same:
 
 ```sh
 cargo run --release --bin parity -- --check parity

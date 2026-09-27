@@ -16,6 +16,7 @@ in and reads them, and no string in them is retyped anywhere else.
 | `scene/narrator.yml` | `config/engine/scene/narrator.yml` (at `b4c9921c008ac1e459486318324aec66672a9366`) | `turn`: the narrator's instructions and what each kind of turn is |
 | `location/generator.yml` | `config/engine/location/generator.yml` | `realization`: the room writer's instructions |
 | `character/desires.yml` | `config/engine/character/desires.yml` | `realization`: the desire block's extra lines for a roomful |
+| `scene/ending.yml` | `config/engine/scene/ending.yml` (at `b9407f4499c319748aab1ba2a5f118bf401f1901`) | `turn`: the instructions the last paragraph of a game is written under |
 | `playthrough/volition/weights.yml` | `config/engine/playthrough/volition/weights.yml` | `turn`: how heavily each person's pursuit weighs each act on volition's die |
 
 Their comments name files in the Ruby repository, where the reasons for each

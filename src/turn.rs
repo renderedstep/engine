@@ -185,6 +185,18 @@ pub struct Mechanics<'s> {
     tolls_before: i64,
     decision: Option<String>,
     decided: bool,
+    /// What the arc concluded with on this line, if it did
+    /// (`Playthrough::Arc#conclusion`).
+    concluded: Option<Concluded>,
+}
+
+/// `Playthrough::Arc::Concluded`: the ending a game reached, the outcome it
+/// is, and the closing scene its sentence is written on.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct Concluded {
+    pub ending: i64,
+    pub outcome: i64,
+    pub scene: i64,
 }
 
 impl<'s> Mechanics<'s> {
@@ -203,6 +215,7 @@ impl<'s> Mechanics<'s> {
             tolls_before: 0,
             decision: None,
             decided: false,
+            concluded: None,
         })
     }
 
@@ -1629,16 +1642,28 @@ impl<'s> Mechanics<'s> {
             .cloned()
             .collect();
         for mechanic in mechanics {
-            let Some(cadence) = text(&mechanic, "cadence").and_then(world_mechanic::cadence) else {
-                continue;
-            };
             let Some(from) = int(&mechanic, "last_run_at").or(start) else {
                 continue;
             };
+            if now <= from {
+                continue;
+            }
+            // `WorldMechanic::CADENCES` and `::KINDS` are the whole catalogue,
+            // and the model refuses a row naming anything else, so a row that
+            // does is not a world this engine can move: the turn fails, as
+            // the Ruby engine's `fetch` on either table fails it.
+            let Some(cadence) = text(&mechanic, "cadence").and_then(world_mechanic::cadence) else {
+                return Err(Error::Database(format!(
+                    "the world mechanic {} runs {:?}, which is not a cadence a world mechanic has",
+                    string(&mechanic, "name"),
+                    string(&mechanic, "cadence")
+                )));
+            };
             for at in cadence.pending_boundaries(from, now) {
                 if text(&mechanic, "kind") != Some("shuffle_connections") {
-                    return Err(Error::Unsupported(format!(
-                        "the world mechanic {}",
+                    return Err(Error::Database(format!(
+                        "the world mechanic {} is of kind {:?}, which is not a kind a world mechanic has",
+                        string(&mechanic, "name"),
                         string(&mechanic, "kind")
                     )));
                 }
@@ -2538,7 +2563,7 @@ impl<'s> Mechanics<'s> {
         };
         let at = self.story_now();
         let story = self.story_id();
-        self.insert(
+        let ending = self.insert(
             "playthrough_endings",
             vec![
                 ("playthrough_id", Value::from(self.playthrough)),
@@ -2600,6 +2625,11 @@ impl<'s> Mechanics<'s> {
             self.playthrough,
             vec![("current_scene_id", Value::from(scene))],
         )?;
+        self.concluded = Some(Concluded {
+            ending: id(&ending),
+            outcome: id(&reached),
+            scene,
+        });
         self.end_game(at)
     }
 

@@ -585,3 +585,45 @@ fn a_turn_stopped_after_its_take_is_finished_by_the_next_delivery_and_takes_once
         1
     );
 }
+
+/// `WorldMechanic::KINDS` and `::CADENCES` are the whole catalogue, and the
+/// Ruby engine refuses to store a mechanic naming anything else. A row that
+/// names another all the same is a world no engine can move, and the turn
+/// fails on it, as the Ruby engine's `fetch` on either table fails it,
+/// without a word of it kept.
+#[test]
+fn a_world_mechanic_of_a_kind_there_is_not_fails_the_line_and_keeps_nothing() {
+    for (column, value, named) in [
+        ("kind", "tide", "of kind \"tide\""),
+        ("cadence", "fortnightly", "runs \"fortnightly\""),
+    ] {
+        let mut engine = open_world(&world("a-lock-in-the-moving-city")).unwrap();
+        engine
+            .store()
+            .connection()
+            .execute(
+                &format!(
+                    "UPDATE world_mechanics SET {column} = ?1, last_run_at = '2000-01-01 00:00:00'"
+                ),
+                [value],
+            )
+            .unwrap();
+        let story = engine
+            .story_titled(&format!("A Lock in the Moving City{TITLE_SUFFIX}"))
+            .unwrap();
+        let playthrough = engine.start(story).unwrap();
+        let scenes = count(&engine, "SELECT COUNT(*) FROM scenes");
+        match engine.play(playthrough, "look", &mut |_| {}) {
+            Err(Error::Database(message)) => assert!(message.contains(named), "{message}"),
+            other => panic!("{column} {value}: {other:?}"),
+        }
+        assert_eq!(count(&engine, "SELECT COUNT(*) FROM scenes"), scenes);
+        assert_eq!(
+            count(
+                &engine,
+                "SELECT COUNT(*) FROM world_mechanics WHERE last_run_at = '2000-01-01 00:00:00'"
+            ),
+            1
+        );
+    }
+}
