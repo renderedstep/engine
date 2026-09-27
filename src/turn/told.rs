@@ -29,7 +29,9 @@ use crate::store::Store;
 use crate::text::{is_blank, presence, upcase_first};
 use serde_json::{json, Value};
 
+mod classify;
 mod realize;
+mod talk;
 
 /// `Scene::TURN_MINUTES["action"]`, in seconds.
 const ACTION_SECONDS: i64 = 5 * 60;
@@ -91,6 +93,8 @@ pub struct Turn<'s, 'm> {
     on_chunk: &'m mut dyn FnMut(&str),
     journal: Option<Journal>,
     safety: bool,
+    /// The classifier's conversation, when the line was read by a model.
+    classifier: Option<Agent>,
 }
 
 fn model(failure: Failure) -> Error {
@@ -115,6 +119,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             on_chunk,
             journal: None,
             safety: false,
+            classifier: None,
         })
     }
 
@@ -217,6 +222,7 @@ impl<'s, 'm> Turn<'s, 'm> {
     /// `#take_turn` through `Playthrough::Command#execute!`.
     fn take_turn(&mut self, submission: i64) -> Result<Turned, Error> {
         self.safety = false;
+        self.classifier = None;
         let row = self.m.row("playthrough_commands", submission)?;
         let status = text(&row, "status").unwrap_or("pending").to_string();
         if status == "completed" {
@@ -360,13 +366,11 @@ impl<'s, 'm> Turn<'s, 'm> {
                 )?;
                 None
             } else {
-                return Err(Error::Unsupported(
-                    "a conversation through the models".into(),
-                ));
+                self.talk_to(person.id, &typed, None)?
             }
         } else if let Some(Record::Thing(thing)) = &intent.item {
             match intent.action.as_str() {
-                "throw" => return Err(Error::Unsupported("a throw through the models".into())),
+                "throw" => self.throw_at(thing.id, intent.at.as_ref(), &typed)?,
                 "examine" => self.read_item(thing.id, &typed)?,
                 "drop" => self.drop_item(thing.id, &typed)?,
                 _ => self.take_item(thing.id, &typed)?,
@@ -432,6 +436,15 @@ impl<'s, 'm> Turn<'s, 'm> {
             },
         )?;
 
+        if let (Some(told), Some(agent)) = (&scene, &self.classifier) {
+            if classify::MODEL_PATHS.contains(&resolved_by.as_str()) {
+                let mut book = Book {
+                    store: self.m.store,
+                    records: &mut self.m.records,
+                };
+                self.models.attribute(&mut book, agent, told.id)?;
+            }
+        }
         let outcome = match (scene, closing) {
             (Some(told), _) => Played::Scene(told),
             (None, Some(closed)) => Played::Scene(Told::plain(closed)),
@@ -459,9 +472,7 @@ impl<'s, 'm> Turn<'s, 'm> {
                 ));
             }
         }
-        Err(Error::Unsupported(
-            "reading a line through the classifier".into(),
-        ))
+        self.classify(&grammar::unslashed(command))
     }
 
     /// The columns only this place has on every branch: the line, who was
@@ -592,7 +603,9 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     fn use_physical(&mut self, choice: &Choice, command: &str) -> Result<Option<Told>, Error> {
         if choice.kind == "offer" {
-            return Err(Error::Unsupported("an offer through the models".into()));
+            let recipient = choice.recipient.as_ref().map_or(0, |person| person.id);
+            let item = choice.item.as_ref().map(|thing| thing.id);
+            return self.talk_to(recipient, command, item);
         }
         let (_, fact) = self.commit(
             "physical_effect",
