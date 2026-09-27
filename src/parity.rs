@@ -220,6 +220,68 @@ fn play_step(
             game
         }
     };
+    play_typed(engine, step, playthrough)
+}
+
+/// Plays one step of a script on a database the caller prepared and keeps:
+/// the shared-database mode, where the Ruby engine's runner owns the world,
+/// plays every `reseed:` step itself and asks this engine for one typed
+/// step at a time. `index` counts from 1.
+///
+/// Each player's playthrough is found by the order players first appear in
+/// the script: the story's playthroughs, lowest id first, belong to them in
+/// that order, and a player who has none yet gets a new one.
+pub fn play_one(
+    engine: &mut Engine,
+    script: &Script,
+    index: usize,
+    player: &str,
+) -> Result<Value, Error> {
+    let step = script
+        .steps
+        .get(index.wrapping_sub(1))
+        .ok_or_else(|| Error::Database(format!("{} has no step {index}", script.name)))?;
+    if step.player != player {
+        return Err(Error::Database(format!(
+            "{} is typed by {}, not {player}",
+            step.label(),
+            step.player
+        )));
+    }
+    let mut players: Vec<&str> = Vec::new();
+    for step in &script.steps {
+        if !players.contains(&step.player.as_str()) {
+            players.push(&step.player);
+        }
+    }
+    let order = players
+        .iter()
+        .position(|name| *name == player)
+        .expect("the step's own player appears in the script");
+    let story = engine.story_titled(&format!("{}{TITLE_SUFFIX}", script.story))?;
+    let games: Vec<i64> = {
+        let mut statement = engine
+            .store()
+            .connection()
+            .prepare("SELECT id FROM playthroughs WHERE story_id = ?1 ORDER BY id")?;
+        let rows = statement.query_map([story], |row| row.get(0))?;
+        rows.collect::<Result<_, _>>()?
+    };
+    let playthrough = match games.get(order) {
+        Some(game) => *game,
+        None if order == games.len() => engine.start(story)?,
+        None => {
+            return Err(Error::Database(format!(
+                "{player} is the story's player {} and it has {} playthrough(s)",
+                order + 1,
+                games.len()
+            )))
+        }
+    };
+    play_typed(engine, step, playthrough)
+}
+
+fn play_typed(engine: &mut Engine, step: &Step, playthrough: i64) -> Result<Value, Error> {
     if step.reseed {
         return Err(Error::Unsupported("reloading the world file".into()));
     }
