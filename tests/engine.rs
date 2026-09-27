@@ -224,3 +224,130 @@ fn with_no_model_access_an_effect_is_told_in_the_engines_own_words() {
         .unwrap_err();
     assert!(matches!(refused, Error::Unsupported(_)), "{refused:?}");
 }
+
+/// Answers each post with the next body, and keeps what was sent.
+struct Scripted {
+    answers: Vec<(u16, serde_json::Value)>,
+    sent: Vec<serde_json::Value>,
+}
+
+impl renderedstep_engine::model::http::Transport for Scripted {
+    fn post(
+        &mut self,
+        _endpoint: &renderedstep_engine::model::route::Endpoint,
+        body: &serde_json::Value,
+        _options: &renderedstep_engine::model::http::Options,
+        _on_line: Option<&mut (dyn FnMut(&str) + '_)>,
+    ) -> Result<renderedstep_engine::model::http::Posted, renderedstep_engine::model::http::Unreached>
+    {
+        self.sent.push(body.clone());
+        let (status, answer) = self.answers.remove(0);
+        Ok(renderedstep_engine::model::http::Posted {
+            status,
+            body: answer.to_string(),
+        })
+    }
+}
+
+fn answered(content: serde_json::Value) -> (u16, serde_json::Value) {
+    let content = match content {
+        serde_json::Value::String(text) => text,
+        other => other.to_string(),
+    };
+    (
+        200,
+        serde_json::json!({"choices": [{"message": {"content": content}, "finish_reason": "stop"}]}),
+    )
+}
+
+#[test]
+fn a_room_whose_ways_out_failed_is_picked_up_where_it_stopped_on_the_live_path() {
+    use renderedstep_engine::model::{Live, Route, Secret};
+    use serde_json::json;
+    let mut engine = open_world(&world("the-unfinished-workshop")).unwrap();
+    let story = engine
+        .story_titled(&format!("The Unfinished Workshop{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let detail = json!({
+        "description": "A bench, a vice and a brass token.",
+        "lore": "The town's oldest workshop.",
+        "items": [{"name": "brass token", "description": "A small brass disc.", "use_kind": "ordinary", "combustible": false, "readable": false}],
+        "people": [{
+            "fullname": "Sella Reed", "nickname": "Sella", "appearance": "A patched apron.",
+            "personality": "Patient and careful.", "backstory": "A lifelong maker of keys.",
+            "likes": "Honest work.", "dislikes": "Waste.", "fears": "Fire.",
+        }],
+    });
+    let failed = (500, json!({"error": {"message": "upstream"}}));
+    let transport = Scripted {
+        answers: vec![answered(detail.clone()), failed.clone(), failed],
+        sent: Vec::new(),
+    };
+    let route = Route::Direct {
+        key: Secret::new("own"),
+    };
+    let mut live = Live::with_transport(route.clone(), transport);
+    let first = engine.submit(playthrough, "/move Workshop", "a", &mut live, &mut |_| {});
+    assert!(matches!(first, Err(Error::Model(_))), "{first:?}");
+    let pending: Option<String> = engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT generation_checkpoint FROM locations WHERE name = 'Workshop'",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap();
+    assert!(pending.unwrap().contains("exits_pending"));
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM items WHERE name = 'brass token' AND playthrough_id IS NULL"
+        ),
+        1
+    );
+
+    let exits = json!({"exits": [{"name": "Market", "teaser": "Back out.", "distance": "adjacent", "travel_method": "walking", "population": "nobody"}]});
+    let arrival = json!({"description": "You step in.", "summary": "Into the workshop."});
+    let transport = Scripted {
+        answers: vec![answered(exits), answered(arrival)],
+        sent: Vec::new(),
+    };
+    let mut live = Live::with_transport(route, transport);
+    let submitted = engine
+        .submit(playthrough, "/move Workshop", "b", &mut live, &mut |_| {})
+        .unwrap();
+    assert_eq!(submitted.state.location.as_ref().unwrap().name, "Workshop");
+    let asked = &live.transport().sent[0]["messages"];
+    let roles: Vec<&str> = asked
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|m| m["role"].as_str().unwrap())
+        .collect();
+    assert_eq!(
+        roles,
+        ["developer", "user", "assistant", "user"],
+        "the ways out are asked after the kept detail"
+    );
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM characters WHERE fullname = 'Sella Reed'"
+        ),
+        1
+    );
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM items WHERE name = 'brass token' AND playthrough_id IS NULL"
+        ),
+        1,
+        "the room's things are admitted once"
+    );
+    assert_eq!(
+        count(&engine, "SELECT COUNT(*) FROM locations WHERE name = 'Workshop' AND detail_level = 'realized' AND generation_checkpoint IS NULL"),
+        1
+    );
+}

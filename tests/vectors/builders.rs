@@ -545,3 +545,35 @@ fn kept_requests_on_the_live_path() {
         "kept_requests on the live path: {checked} of {checked} sends carry the stored request"
     );
 }
+
+/// `rake eval:realization_digest`'s branch requests, built here: every
+/// staged case of the realization bench, digested as the bench names them.
+/// The Ruby engine prints `4536c9cd93c39e2a` at the commit `parity/README.md`
+/// names, and the stored baseline carries the same identity.
+#[test]
+fn realization_branch_requests_digest_as_the_bench_names_them() {
+    let vectors = crate::load("kept_requests");
+    let mut requests = serde_json::Map::new();
+    for case in &vectors.cases {
+        let input = crate::with_shared_records(&case["input"], &vectors.cases);
+        if !input["set"]
+            .as_str()
+            .unwrap_or_default()
+            .starts_with("realization-")
+        {
+            continue;
+        }
+        let records = records(&input);
+        let id = input["id"].as_str().expect("a case id").to_string();
+        requests.insert(id, realization(&records, &input["id"]));
+    }
+    let identity = identity::of(&Value::Object(requests.clone()));
+    println!(
+        "realization branch requests: {} cases, identity {identity}",
+        requests.len()
+    );
+    assert_eq!(
+        identity,
+        json!({ "version": 1, "digest": "4536c9cd93c39e2a" })
+    );
+}

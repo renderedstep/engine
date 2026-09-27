@@ -198,6 +198,22 @@ pub trait Models {
         questions: &Value,
     ) -> Result<Value, Unavailable>;
 
+    /// Puts an exchange a conversation lost back into it before it is
+    /// continued (`BaseAgent#add_message`, twice): the line asked and the
+    /// answer given, under `system`'s instructions. Returns the
+    /// conversation it wrote, if it keeps one.
+    fn restore(
+        &mut self,
+        book: &mut Book,
+        agent: &mut Agent,
+        system: Option<&str>,
+        user: &str,
+        answer: &Value,
+    ) -> Result<Option<i64>, Error> {
+        let _ = (book, agent, system, user, answer);
+        Ok(None)
+    }
+
     /// Stamps an agent's messages with the scene its turn wrote
     /// (`BaseAgent#attribute_to!`).
     fn attribute(&mut self, book: &mut Book, agent: &Agent, scene: i64) -> Result<(), Error> {

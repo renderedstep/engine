@@ -3,6 +3,7 @@
 # diverges, and when a script agrees and is not listed here.
 a-building-with-two-floors
 a-cellar-below-the-way-in
+a-chamber-of-one-room
 a-check-against-an-ability
 a-fight-that-kills-the-player
 a-fight-the-player-wins
@@ -15,6 +16,7 @@ a-one-way-hazard-on-a-door
 a-scheduled-event-comes-due
 a-slash-in-front-of-the-line
 a-thing-can-be-thrown
+a-written-neighbour-only-loses-its-own-door
 death-ends-a-playthrough
 failed-rendering-still-completes-a-turn
 fleeing-then-a-longer-journey
@@ -37,5 +39,7 @@ the-unrecorded-hour-to-an-ending
 the-unrecorded-hour-two-bodies
 the-unrecorded-hour-two-players
 things-land-somewhere-in-a-room
+truncated-character-prose-keeps-the-person
 two-players-of-one-arc
+unfinished-realization-resumes-on-entry
 walking-in-off-the-quay
