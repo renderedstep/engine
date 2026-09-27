@@ -52,7 +52,7 @@ with the state it wrote after every step (`parity/`, see its README).
 | `dialogue` | `InteractionAgent`, `Character#interaction_instructions`, `Playthrough::NpcAction` | the character pass and narrator pass of one exchange |
 | `clock` | Rails' datetime columns | a stored time as whole seconds since the epoch, and back |
 | `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version checked, every table the loop reads loaded as records, a row inserted or updated |
-| `turn` | `Playthrough::Mechanics` with `model: false`, and the `Playthrough::Turn` writers it calls | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and the fight |
+| `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
 | `parity` | `EngineSweep::Walk`, `EngineSweep::Dump`, `EngineSweep::Parity` | a sweep script played through this engine, dumped step by step and compared |
@@ -94,8 +94,11 @@ where the Rails app hands each whole turn to this engine in-process:
   `Error::Panicked`. A line that reaches a rule this engine does not play yet
   comes back as `Error::Unsupported`, also rolled back.
 
-`Engine::start` begins a playthrough the way the browser does, and
-`Engine::read` returns the records with nothing played.
+`Engine::start` begins a playthrough the way the browser does,
+`Engine::read` returns the records with nothing played, and
+`Engine::play_deciding` plays a line that talks to somebody with a fixed
+decision standing in for the answer a model would give, which is how the
+engine sweep plays its conversations.
 
 A Ruby binding (magnus) is the next consumer and is not built yet. It is a
 thin layer over this surface: open an `Engine` on the app's database path,

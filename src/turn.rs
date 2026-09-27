@@ -18,10 +18,10 @@ use crate::playthrough::{max_hp, stat_block, Condition, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::roll::{self, Seed};
-use crate::room::{Exit, Person, Place, Record, Room, Thing};
+use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing};
 use crate::spot;
 use crate::store::Store;
-use crate::{data, plan, volition};
+use crate::{data, outcome, plan, volition};
 use serde_json::Value;
 
 /// `Character::ABILITIES`, in order: a check's sequence is its place here.
@@ -29,6 +29,9 @@ pub const ABILITIES: [&str; 3] = ["strength", "dexterity", "will"];
 
 /// `Character::CHECK_DIE`.
 pub const CHECK_DIE: i64 = 20;
+
+/// `Scene::TURN_MINUTES["action"]`: one beat in a room, in story minutes.
+const ACTION_MINUTES: i64 = 5;
 
 /// `Playthrough::Turn::SEQUENCE_OFFSET`: a blow's sequence starts past every
 /// ability check's.
@@ -45,6 +48,9 @@ const ROOM_HAZARDS: [(&str, Option<&str>, &str); 4] = [
 
 /// `LocationConnection::HAZARDS`: a doorway's hazard and its save.
 const DOORWAY_HAZARDS: [(&str, &str); 2] = [("drop", "dexterity"), ("undertow", "strength")];
+
+/// `Item::HEALING_POINTS`: what a healing thing mends when it is consumed.
+const HEALING_POINTS: i64 = 8;
 
 /// What a refused line left behind, said only in this mode
 /// (`Playthrough::Mechanics::ROW_WRITTEN`).
@@ -174,6 +180,8 @@ pub struct Mechanics<'s> {
     engine_refused: bool,
     round: i64,
     tolls_before: i64,
+    decision: Option<String>,
+    decided: bool,
 }
 
 impl<'s> Mechanics<'s> {
@@ -190,6 +198,8 @@ impl<'s> Mechanics<'s> {
             engine_refused: false,
             round: 1,
             tolls_before: 0,
+            decision: None,
+            decided: false,
         })
     }
 
@@ -275,6 +285,24 @@ impl<'s> Mechanics<'s> {
 
     // --- the line --------------------------------------------------------
 
+    /// Plays one typed line with a fixed decision standing in for the
+    /// model's answer on a conversation: one of the person's own choices
+    /// (`none`, `give:<name or id>`, `follow`, `stop_following`,
+    /// `ceasefire`), applied by the same effect writer a model's answer
+    /// goes through. A line that is not a conversation is an error.
+    pub fn run_deciding(&mut self, command: &str, decision: &str) -> Result<Report, Error> {
+        self.decision = Some(decision.to_string());
+        self.decided = false;
+        let report = self.run(command);
+        self.decision = None;
+        match report {
+            Ok(_) if !self.decided => Err(Error::Database(
+                "a character decision needs a line that talks to somebody".into(),
+            )),
+            other => other,
+        }
+    }
+
     /// Plays one typed line.
     pub fn run(&mut self, command: &str) -> Result<Report, Error> {
         self.engine_refused = false;
@@ -358,6 +386,8 @@ impl<'s> Mechanics<'s> {
                     } else {
                         string(&edge, "barrier").to_string()
                     },
+                    edge: id(&edge),
+                    key: int(&edge, "key_template_id"),
                 })
                 .collect(),
         };
@@ -472,22 +502,22 @@ impl<'s> Mechanics<'s> {
             return Ok(Report::refuse(reason, understood));
         }
 
-        if intent.physical.is_some() {
-            return Err(Error::Unsupported("a physical attempt".into()));
+        if let Some(choice) = &intent.physical {
+            return self.physical(choice, understood);
         }
         if let Some(Record::Place(destination)) = &intent.destination {
             return self.stand_in(destination.id, understood);
         }
         if let Some(Record::Person(person)) = &intent.speaker {
             if intent.action == "attack" {
-                return Err(Error::Unsupported("an attack".into()));
+                return self.attack(person.id, understood);
             }
-            return Ok(self.talk(&person.fullname, understood));
+            return self.talk(person.id, understood);
         }
         if let Some(Record::Thing(thing)) = &intent.item {
             return match intent.action.as_str() {
                 "examine" => self.recite(thing.id, understood),
-                "throw" => Err(Error::Unsupported("a throw".into())),
+                "throw" => self.throw_it(thing.id, intent.at.as_ref(), understood),
                 "drop" => self.drop(thing.id, understood),
                 _ => self.take(thing.id, understood),
             };
@@ -720,15 +750,548 @@ impl<'s> Mechanics<'s> {
         ))
     }
 
-    fn talk(&self, fullname: &str, understood: Option<String>) -> Report {
-        Report::refuse(
+    /// Swinging at somebody, through the engine's own writer. A body with
+    /// no stat block is refused here, and the world still answers.
+    fn attack(&mut self, target: i64, understood: Option<String>) -> Result<Report, Error> {
+        let Some(who) = self.player() else {
+            return Ok(Report::refuse(
+                "this playthrough has no protagonist, so there is nobody to swing".into(),
+                understood,
+            ));
+        };
+        if !stat_block(&who) {
+            return Ok(Report::refuse(
+                format!(
+                    "{} has no stat block, so there is no hit die to hit with. \
+                     `rake game:backfill_stat_blocks` rolls one, offline",
+                    string(&who, "fullname")
+                ),
+                understood,
+            ));
+        }
+        let target = self.row("characters", target)?;
+        let here = self
+            .here()
+            .ok_or_else(|| Error::Database("a blow with nowhere to stand".into()))?;
+        match self.strike(&who, &target, &here, None)? {
+            Some(blow) => Ok(Report::change(format!("struck: {blow}"), understood)),
+            None => Ok(Report::refuse(
+                format!(
+                    "{} has no stat block, so there is no body to hurt. \
+                     `rake game:backfill_stat_blocks` rolls one, offline",
+                    string(&target, "fullname")
+                ),
+                understood,
+            )),
+        }
+    }
+
+    /// Throwing something, through `Playthrough::Turn#throw_item!`: a
+    /// strength check less the thing's bulk, and where it lands. A failed
+    /// lift is a played turn with nothing moved, not a refusal.
+    fn throw_it(
+        &mut self,
+        item: i64,
+        at: Option<&Record>,
+        understood: Option<String>,
+    ) -> Result<Report, Error> {
+        let (Some(thrower), Some(at)) = (self.player(), at) else {
+            return Err(Error::Database("a throw with no thrower or no aim".into()));
+        };
+        let row = self.row("items", item)?;
+        let name = string(&row, "name").to_string();
+        let target = at.label();
+        let thrown_die = match text(&row, "bulk") {
+            Some("light") => Some((0, 4)),
+            Some("handy") => Some((2, 6)),
+            Some("heavy") => Some((5, 8)),
+            _ => None,
+        };
+        let Some((penalty, die)) = thrown_die else {
+            let attempt = format!("threw: {name} at {target}");
+            return Ok(Report::read(
+                vec![
+                    attempt,
+                    "it does not move for anybody, so no die was thrown".into(),
+                ],
+                understood,
+            ));
+        };
+        let mut rng = self.generator(self.story_now(), item, roll::THROW);
+        let Some(check) = check_ability(&thrower, "strength", penalty, &mut rng) else {
+            return Ok(Report::refuse(
+                format!(
+                    "{} has no abilities, so there is no strength to throw with. \
+                     `rake game:backfill_stat_blocks` rolls them, offline",
+                    string(&thrower, "fullname")
+                ),
+                understood,
+            ));
+        };
+        let attempt = format!("threw: {name} at {target} -- {check}");
+        if !check.passed() {
+            return Ok(Report::read(
+                vec![
+                    attempt,
+                    "the lift failed: nothing was thrown and no row moved".into(),
+                ],
+                understood,
+            ));
+        }
+        let landed = match at {
+            Record::Person(person) => {
+                let here = self
+                    .here()
+                    .ok_or_else(|| Error::Database("a throw with nowhere to stand".into()))?;
+                self.put_down(item, &here)?;
+                let damage = roll::die(die, &mut rng);
+                let target_row = self.row("characters", person.id)?;
+                let blow = self.strike(&thrower, &target_row, &here, Some(damage))?;
+                let game = self.playthrough;
+                let struck = blow.and_then(|_| {
+                    self.records
+                        .table("playthrough_blows")
+                        .iter()
+                        .rev()
+                        .find(|row| int(row, "playthrough_id") == Some(game))
+                        .cloned()
+                });
+                match struck {
+                    Some(blow) => {
+                        let condition = Condition {
+                            hp: int(&blow, "hp_after").unwrap_or_default(),
+                            max: max_hp(&target_row).unwrap_or_default(),
+                        };
+                        format!(
+                            "it hit {who} for {} and is lying at their feet; {who} is {}",
+                            int(&blow, "damage").unwrap_or_default(),
+                            condition.in_words(),
+                            who = person.fullname
+                        )
+                    }
+                    None => format!(
+                        "it hit {} and is lying at their feet; there is no stat block to hurt",
+                        person.fullname
+                    ),
+                }
+            }
+            Record::Place(place) => {
+                let room = self.row("locations", place.id)?;
+                self.put_down(item, &room)?;
+                format!("it went through and is lying in {}", place.name)
+            }
+            _ => {
+                return Err(Error::Database(
+                    "a throw at something that is not an aim".into(),
+                ))
+            }
+        };
+        Ok(Report {
+            understood,
+            change: Some(landed),
+            note: vec![attempt],
+            ..Report::default()
+        })
+    }
+
+    /// A physical attempt through `Playthrough::PhysicalAction#apply!`. A
+    /// failed check is a played turn with nothing changed; an attempt the
+    /// room no longer offers is refused, and the world does not answer.
+    fn physical(&mut self, choice: &Choice, understood: Option<String>) -> Result<Report, Error> {
+        if choice.kind == "offer" {
+            let recipient = choice.recipient.as_ref().map_or(0, |person| person.id);
+            return self.talk(recipient, understood);
+        }
+        let offered = self.room().physical_actions();
+        let Some(choice) = offered.into_iter().find(|offer| offer == choice) else {
+            self.engine_refused = true;
+            return Ok(Report::refuse(
+                "That physical action is unavailable. No item or passage changed.".into(),
+                understood,
+            ));
+        };
+        let item = choice.item.as_ref().map(|thing| thing.id);
+        match choice.kind.as_str() {
+            "consume" => {
+                let item = item.unwrap_or_default();
+                let row = self.row("items", item)?;
+                let healing = if text(&row, "use_kind") == Some("healing") {
+                    HEALING_POINTS
+                } else {
+                    0
+                };
+                let player = self.player();
+                let before = player
+                    .as_ref()
+                    .and_then(|who| self.condition_of(who))
+                    .map(|c| c.hp);
+                if before.is_none() && healing > 0 {
+                    self.engine_refused = true;
+                    return Ok(Report::refuse(
+                        "Your condition is unavailable, so the healing item was not consumed."
+                            .into(),
+                        understood,
+                    ));
+                }
+                if let Some(who) = &player {
+                    self.mend(who, healing)?;
+                }
+                let gained = match (
+                    before,
+                    player.as_ref().and_then(|who| self.condition_of(who)),
+                ) {
+                    (Some(before), Some(after)) => after.hp - before,
+                    _ => 0,
+                };
+                self.spend(item, "consumed")?;
+                Ok(Report::change(
+                    format!(
+                        "You consumed {}. It is gone from your possessions. You recovered \
+                         {gained} hit points.",
+                        string(&row, "name")
+                    ),
+                    understood,
+                ))
+            }
+            "burn" => {
+                let item = item.unwrap_or_default();
+                let name = string(&self.row("items", item)?, "name").to_string();
+                self.spend(item, "burned")?;
+                let tool = choice
+                    .tool
+                    .as_ref()
+                    .map(|t| t.name.clone())
+                    .unwrap_or_default();
+                Ok(Report::change(
+                    format!(
+                        "You burned {name} using {tool}. The burned item is gone; you still \
+                         carry {tool}."
+                    ),
+                    understood,
+                ))
+            }
+            "unlock" | "pick" | "pry" | "force" => self.open_passage(&choice, understood),
+            _ => {
+                self.engine_refused = true;
+                Ok(Report::refuse(
+                    "The item remains in your hands until its recipient accepts it.".into(),
+                    understood,
+                ))
+            }
+        }
+    }
+
+    /// `PhysicalAction#spend!`: a thing used up leaves every place.
+    fn spend(&mut self, item: i64, disposition: &str) -> Result<(), Error> {
+        self.update(
+            "items",
+            item,
+            vec![
+                ("disposition", Value::from(disposition)),
+                ("character_id", Value::Null),
+                ("location_id", Value::Null),
+                ("x", Value::Null),
+                ("y", Value::Null),
+            ],
+        )
+    }
+
+    /// `PhysicalAction#open_passage!`: a key opens a lock outright; picking,
+    /// prising and forcing each take a check. The way opens both ways, for
+    /// this game only, and nobody crosses it.
+    fn open_passage(
+        &mut self,
+        choice: &Choice,
+        understood: Option<String>,
+    ) -> Result<Report, Error> {
+        let Some(edge) = &choice.connection else {
+            return Err(Error::Database("a passage with no doorway".into()));
+        };
+        let check = if choice.kind == "unlock" {
+            None
+        } else {
+            let ability = if choice.kind == "pick" {
+                "dexterity"
+            } else {
+                "strength"
+            };
+            let penalty = if choice.kind == "force" { 4 } else { 0 };
+            match self.player() {
+                Some(who) => self.check(&who, ability, penalty),
+                None => None,
+            }
+        };
+        if choice.kind != "unlock" && !check.as_ref().is_some_and(Check::passed) {
+            let told = check.as_ref().map_or(String::new(), ToString::to_string);
+            return Ok(Report::read(
+                vec![format!(
+                    "You tried to {}. {told}. The way remains closed; you stay here.",
+                    crate::text::ruby_downcase(&choice.name())
+                )],
+                understood,
+            ));
+        }
+        let means = match choice.kind.as_str() {
+            "unlock" => "key",
+            "pick" => "lockpick",
+            "pry" => "lever",
+            _ => "force",
+        };
+        let forward = self.row("location_connections", edge.edge)?;
+        let reverse = self
+            .records
+            .first("location_connections", |row| {
+                int(row, "location_id") == int(&forward, "connected_location_id")
+                    && int(row, "connected_location_id") == int(&forward, "location_id")
+            })
+            .cloned();
+        let game = self.playthrough;
+        for doorway in [Some(forward), reverse].into_iter().flatten() {
+            let opened = self
+                .records
+                .first("playthrough_passages", |row| {
+                    int(row, "playthrough_id") == Some(game)
+                        && int(row, "location_connection_id") == Some(id(&doorway))
+                })
+                .is_some();
+            if opened {
+                continue;
+            }
+            self.insert(
+                "playthrough_passages",
+                vec![
+                    ("playthrough_id", Value::from(game)),
+                    ("location_connection_id", Value::from(id(&doorway))),
+                    ("opened_at", Value::from(self.story_now())),
+                    ("means", Value::from(means)),
+                    (
+                        "opened_by_item_id",
+                        choice
+                            .tool
+                            .as_ref()
+                            .map_or(Value::Null, |tool| Value::from(tool.id)),
+                    ),
+                ],
+            )?;
+        }
+        let here = self
+            .here()
+            .map_or(String::new(), |room| string(&room, "name").to_string());
+        Ok(Report::change(
             format!(
-                "{fullname} is here and the classifier resolved them, but talking is prose and \
-                 this mode writes none. Nothing changed. Play the browser game to speak to \
-                 somebody."
+                "You opened the way to {}.{} You have not crossed it; you remain in {here}.",
+                edge.place.name,
+                check.map_or(String::new(), |check| format!(" {check}."))
             ),
             understood,
-        )
+        ))
+    }
+
+    /// Talking is prose, and this mode writes none, unless a fixed decision
+    /// stands in for the person's answer.
+    fn talk(&mut self, character: i64, understood: Option<String>) -> Result<Report, Error> {
+        let person = self.row("characters", character)?;
+        if let Some(decision) = self.decision.clone() {
+            self.decided = true;
+            return self.decide_for(&person, &decision, understood);
+        }
+        Ok(Report::refuse(
+            format!(
+                "{} is here and the classifier resolved them, but talking is prose and \
+                 this mode writes none. Nothing changed. Play the browser game to speak to \
+                 somebody.",
+                string(&person, "fullname")
+            ),
+            understood,
+        ))
+    }
+
+    /// `Playthrough::NpcAction#choices`: token => sentence, in order.
+    fn npc_choices(&self, character: &Row) -> Vec<(String, String)> {
+        let mut available = vec![(
+            "none".to_string(),
+            "Speak without transferring anything or changing an agreement.".to_string(),
+        )];
+        let game = self.game();
+        let here = game.current_location();
+        let present = !self.over()
+            && Some(id(character)) != self.player_id()
+            && int(character, "story_id") == Some(self.story_id())
+            && game
+                .cast_in(here)
+                .iter()
+                .any(|who| id(who) == id(character));
+        if !present {
+            return available;
+        }
+        let player = self
+            .player()
+            .map(|who| string(&who, "fullname").to_string());
+        let party = player.clone().unwrap_or_else(|| "the player".to_string());
+        if let Some(player) = &player {
+            for item in game.items_held_by(character) {
+                available.push((
+                    format!("give:{}", id(item)),
+                    format!("Give {} to {player}.", string(item, "name")),
+                ));
+            }
+        }
+        let foe = game
+            .foes_in(here)
+            .iter()
+            .any(|who| id(who) == id(character));
+        let state = game
+            .own("playthrough_npc_states")
+            .into_iter()
+            .find(|row| int(row, "character_id") == Some(id(character)));
+        let following = match state {
+            Some(row) => flag(row, "following"),
+            None => flag(character, "is_companion"),
+        };
+        if foe {
+            available.push((
+                "ceasefire".into(),
+                format!("Stop fighting {party}; another attack can break the truce."),
+            ));
+        } else if following {
+            available.push((
+                "stop_following".into(),
+                format!(
+                    "Stay in {} when the player leaves.",
+                    here.map_or("", |room| string(room, "name"))
+                ),
+            ));
+        } else {
+            available.push((
+                "follow".into(),
+                format!("Accompany {party} when they leave this room."),
+            ));
+        }
+        available
+    }
+
+    /// `EngineSweep::Conversation#talk` and `Playthrough::NpcAction#apply!`:
+    /// the decision applied, then reported as a change, a refusal or a note.
+    fn decide_for(
+        &mut self,
+        character: &Row,
+        decision: &str,
+        understood: Option<String>,
+    ) -> Result<Report, Error> {
+        let who = string(character, "fullname").to_string();
+        let mut choice = decision.to_string();
+        if let Some(name) = decision.strip_prefix("give:") {
+            if let Some(item) = self
+                .game()
+                .items_held_by(character)
+                .into_iter()
+                .find(|item| string(item, "name") == name)
+            {
+                choice = format!("give:{}", id(item));
+            }
+        }
+        if choice == "none" {
+            return Ok(Report::read(
+                vec![format!(
+                    "{who} changes no possessions, travel agreement or ceasefire."
+                )],
+                understood,
+            ));
+        }
+        if !self
+            .npc_choices(character)
+            .iter()
+            .any(|(token, _)| *token == choice)
+        {
+            return Ok(Report::refuse(
+                "The proposed action was rejected: it is unavailable. No possessions, travel \
+                 agreement or ceasefire changed."
+                    .into(),
+                understood,
+            ));
+        }
+        let party = self.player().map_or("the player".to_string(), |row| {
+            string(&row, "fullname").to_string()
+        });
+        let here = self.here();
+        let here_id = here.as_ref().map(id);
+        let here_name = here
+            .as_ref()
+            .map_or(String::new(), |room| string(room, "name").to_string());
+        let fact = match choice.split_once(':') {
+            Some(("give", item)) => {
+                let item = item.parse::<i64>().unwrap_or_default();
+                let name = string(&self.row("items", item)?, "name").to_string();
+                self.update(
+                    "items",
+                    item,
+                    vec![
+                        ("character_id", Value::Null),
+                        ("location_id", Value::Null),
+                        ("x", Value::Null),
+                        ("y", Value::Null),
+                    ],
+                )?;
+                format!("{who} gave {name} to {party}; the player now carries it.")
+            }
+            _ => {
+                let at = self.location_of(character).or(here_id);
+                let state = self.npc_state(character, at)?;
+                match choice.as_str() {
+                    "follow" => {
+                        self.update(
+                            "playthrough_npc_states",
+                            id(&state),
+                            vec![
+                                ("following", Value::Bool(true)),
+                                ("location_id", here_id.map_or(Value::Null, Value::from)),
+                            ],
+                        )?;
+                        format!("{who} is now accompanying {party} and will travel with them.")
+                    }
+                    "stop_following" => {
+                        self.update(
+                            "playthrough_npc_states",
+                            id(&state),
+                            vec![
+                                ("following", Value::Bool(false)),
+                                ("location_id", here_id.map_or(Value::Null, Value::from)),
+                            ],
+                        )?;
+                        format!("{who} stopped accompanying the player and remains in {here_name}.")
+                    }
+                    _ => {
+                        let player = self.player_id();
+                        let target = id(character);
+                        let last = self
+                            .game()
+                            .own("playthrough_blows")
+                            .into_iter()
+                            .filter(|blow| {
+                                int(blow, "attacker_id") == player
+                                    && player.is_some()
+                                    && int(blow, "target_id") == Some(target)
+                            })
+                            .map(id)
+                            .max()
+                            .unwrap_or(0);
+                        self.update(
+                            "playthrough_npc_states",
+                            id(&state),
+                            vec![
+                                ("ceasefire", Value::Bool(true)),
+                                ("peace_after_blow_id", Value::from(last)),
+                            ],
+                        )?;
+                        format!(
+                            "{who} stopped fighting the player. The ceasefire holds unless the \
+                             player attacks again."
+                        )
+                    }
+                }
+            }
+        };
+        Ok(Report::change(fact, understood))
     }
 
     /// Hurting or mending the player, through the engine's own writers.
@@ -1078,7 +1641,7 @@ impl<'s> Mechanics<'s> {
                 .collect()
         };
         let ended = if self.over() {
-            self.ending_words_of_the_arc()
+            self.ending_of_the_arc()
         } else {
             None
         };
@@ -1130,7 +1693,7 @@ impl<'s> Mechanics<'s> {
             if self.over() {
                 break;
             }
-            if let Some(blow) = self.strike(&foe, &target, location)? {
+            if let Some(blow) = self.strike(&foe, &target, location, None)? {
                 blows.push(blow);
             }
         }
@@ -1145,13 +1708,16 @@ impl<'s> Mechanics<'s> {
         attacker: &Row,
         target: &Row,
         room: &Row,
+        damage: Option<i64>,
     ) -> Result<Option<String>, Error> {
         if !stat_block(attacker) {
             return Ok(None);
         }
         let sequence = SEQUENCE_OFFSET + self.game().own("playthrough_blows").len() as i64;
-        let mut rng = self.generator(self.story_now(), sequence, 0);
-        let damage = roll::die(int(attacker, "hit_die").unwrap_or_default(), &mut rng);
+        let damage = damage.unwrap_or_else(|| {
+            let mut rng = self.generator(self.story_now(), sequence, 0);
+            roll::die(int(attacker, "hit_die").unwrap_or_default(), &mut rng)
+        });
         let Some(after) = self.harm(target, damage)? else {
             return Ok(None);
         };
@@ -1478,38 +2044,508 @@ impl<'s> Mechanics<'s> {
         Ok(())
     }
 
-    /// `Playthrough::Arc#run!`: the beats this line reached, by summary.
-    fn run_arc(&mut self) -> Result<Vec<String>, Error> {
+    /// The story's open arcs, lowest id first (`Playthrough::Arc#quests`).
+    fn open_arcs(&self) -> Vec<Row> {
         let story = self.story_id();
-        if self
-            .records
-            .first("quests", |row| {
+        self.records
+            .select("quests", |row| {
                 int(row, "story_id") == Some(story) && text(row, "status") == Some("open")
             })
-            .is_some()
-        {
-            return Err(Error::Unsupported("a story arc".into()));
-        }
-        Ok(Vec::new())
+            .into_iter()
+            .cloned()
+            .collect()
     }
 
-    /// `Playthrough::Fight#close!`: the scene that closes a fight that has
-    /// ended, by its description.
+    /// `Playthrough::Arc#main_arc`: the open arc with no parent.
+    fn open_main_arc(&self) -> Option<Row> {
+        self.open_arcs()
+            .into_iter()
+            .find(|quest| int(quest, "parent_quest_id").is_none())
+    }
+
+    fn reached_steps(&self) -> Vec<i64> {
+        self.game()
+            .own("playthrough_beats")
+            .iter()
+            .filter_map(|beat| int(beat, "quest_step_id"))
+            .collect()
+    }
+
+    /// `Quest#next_step_for`: the lowest beat this game has not reached.
+    fn next_step(&self, quest: &Row) -> Option<Row> {
+        let reached = self.reached_steps();
+        outcome::steps(&self.records, quest)
+            .into_iter()
+            .filter(|step| !reached.contains(&id(step)))
+            .min_by_key(|step| int(step, "position"))
+            .cloned()
+    }
+
+    fn start_time(&self) -> Option<i64> {
+        int(self.game().story(), "start_time")
+    }
+
+    /// `Playthrough::Arc#reached?`.
+    fn beat_reached(&self, step: &Row) -> bool {
+        if text(step, "trigger_kind") == Some("time_passed") {
+            return match (self.start_time(), int(step, "minutes")) {
+                (Some(start), Some(minutes)) => self.story_now() >= start + minutes * 60,
+                _ => false,
+            };
+        }
+        let Some(target) = int(step, "target_id") else {
+            return false;
+        };
+        match text(step, "trigger_kind") {
+            Some("reach_location") => {
+                text(step, "target_type") == Some("Location")
+                    && self.records.find("locations", target).is_some()
+                    && int(self.game().row, "current_location_id") == Some(self.way_in(target))
+            }
+            Some("speak_to") => {
+                let Some(scene) = int(self.game().row, "current_scene_id") else {
+                    return false;
+                };
+                self.records
+                    .first("interactions", |row| {
+                        int(row, "scene_id") == Some(scene)
+                            && int(row, "character_id") == Some(target)
+                    })
+                    .is_some()
+            }
+            Some("hold_item") => self
+                .game()
+                .carried()
+                .iter()
+                .any(|item| int(item, "template_id") == Some(target)),
+            _ => false,
+        }
+    }
+
+    /// `Playthrough::Arc#run!`: the beats this line reached, by summary,
+    /// and the ending if the main arc is finished.
+    fn run_arc(&mut self) -> Result<Vec<String>, Error> {
+        let quests = self.open_arcs();
+        if quests.is_empty() {
+            return Ok(Vec::new());
+        }
+        if self.over() {
+            self.record_failure()?;
+            return Ok(Vec::new());
+        }
+        let mut reached = self.reached_steps();
+        let mut beats = Vec::new();
+        for quest in &quests {
+            let steps: Vec<Row> = outcome::steps(&self.records, quest)
+                .into_iter()
+                .cloned()
+                .collect();
+            for step in steps {
+                if reached.contains(&id(&step)) || !self.beat_reached(&step) {
+                    continue;
+                }
+                self.insert(
+                    "playthrough_beats",
+                    vec![
+                        ("playthrough_id", Value::from(self.playthrough)),
+                        ("quest_step_id", Value::from(id(&step))),
+                        ("reached_at", Value::from(self.story_now())),
+                    ],
+                )?;
+                reached.push(id(&step));
+                beats.push(string(&step, "summary").to_string());
+            }
+        }
+        self.conclude()?;
+        Ok(beats)
+    }
+
+    /// `Playthrough::Arc#satisfies?`.
+    fn satisfies(&self, outcome: &Row) -> bool {
+        match text(outcome, "condition") {
+            Some("slower_than") => match (self.start_time(), int(outcome, "minutes")) {
+                (Some(start), Some(minutes)) => self.story_now() > start + minutes * 60,
+                _ => false,
+            },
+            Some("out_of_order") => {
+                let Some(quest) =
+                    int(outcome, "quest_id").and_then(|quest| self.records.find("quests", quest))
+                else {
+                    return false;
+                };
+                let steps = outcome::steps(&self.records, quest);
+                let mut beats: Vec<(i64, i64, i64)> = self
+                    .game()
+                    .own("playthrough_beats")
+                    .into_iter()
+                    .filter_map(|beat| {
+                        let step = steps
+                            .iter()
+                            .find(|step| Some(id(step)) == int(beat, "quest_step_id"))?;
+                        Some((
+                            int(beat, "reached_at").unwrap_or_default(),
+                            id(beat),
+                            int(step, "position").unwrap_or_default(),
+                        ))
+                    })
+                    .collect();
+                beats.sort();
+                let positions: Vec<i64> = beats.iter().map(|(_, _, position)| *position).collect();
+                let mut sorted = positions.clone();
+                sorted.sort();
+                positions != sorted
+            }
+            _ => false,
+        }
+    }
+
+    /// `Playthrough::Arc#conclude!`: the main arc finished, its ending
+    /// recorded, the closing scene written and the game ended.
+    fn conclude(&mut self) -> Result<(), Error> {
+        let Some(arc) = self.open_main_arc() else {
+            return Ok(());
+        };
+        if self.over()
+            || outcome::steps(&self.records, &arc).is_empty()
+            || self.next_step(&arc).is_some()
+        {
+            return Ok(());
+        }
+        let quest = id(&arc);
+        let outcomes: Vec<Row> = self
+            .records
+            .select("quest_outcomes", |row| int(row, "quest_id") == Some(quest))
+            .into_iter()
+            .cloned()
+            .collect();
+        let reached = outcomes
+            .iter()
+            .filter(|outcome| text(outcome, "condition").is_some_and(|c| !c.is_empty()))
+            .find(|outcome| self.satisfies(outcome))
+            .or_else(|| outcomes.iter().find(|outcome| flag(outcome, "is_default")))
+            .or_else(|| outcomes.first())
+            .cloned();
+        let Some(reached) = reached else {
+            return Ok(());
+        };
+        let at = self.story_now();
+        let story = self.story_id();
+        self.insert(
+            "playthrough_endings",
+            vec![
+                ("playthrough_id", Value::from(self.playthrough)),
+                ("quest_outcome_id", Value::from(id(&reached))),
+                ("reached_at", Value::from(at)),
+            ],
+        )?;
+        if !self.quest_event_recorded() {
+            self.insert(
+                "world_events",
+                vec![
+                    ("story_id", Value::from(story)),
+                    ("playthrough_id", Value::from(self.playthrough)),
+                    ("source", Value::from("quest")),
+                    ("occurred_at", Value::from(at)),
+                    (
+                        "summary",
+                        Value::from(format!(
+                            "{} was finished ({}): {}",
+                            string(&arc, "title"),
+                            string(&reached, "name"),
+                            string(&reached, "summary")
+                        )),
+                    ),
+                ],
+            )?;
+        }
+        let ramification = (
+            int(&reached, "ramification_minutes"),
+            text(&reached, "ramification_summary").filter(|words| !crate::text::is_blank(words)),
+        );
+        if let (Some(minutes), Some(summary)) = ramification {
+            self.insert(
+                "world_events",
+                vec![
+                    ("story_id", Value::from(story)),
+                    ("source", Value::from("quest")),
+                    ("occurred_at", Value::from(at)),
+                    ("scheduled_for", Value::from(at + minutes * 60)),
+                    ("summary", Value::from(summary)),
+                ],
+            )?;
+        }
+        let summary = string(&reached, "summary").to_string();
+        let here = int(self.game().row, "current_location_id");
+        let scene = self.write_scene(
+            vec![
+                ("location_id", here.map_or(Value::Null, Value::from)),
+                ("description", Value::from(summary.clone())),
+                ("summary", Value::from(summary.clone())),
+                ("engine_fact", Value::from(summary)),
+                ("story_timestamp", Value::from(at)),
+                ("resolved_action", Value::from("conclude")),
+            ],
+            &[],
+        )?;
+        self.update(
+            "playthroughs",
+            self.playthrough,
+            vec![("current_scene_id", Value::from(scene))],
+        )?;
+        self.end_game(at)
+    }
+
+    fn quest_event_recorded(&self) -> bool {
+        let story = self.story_id();
+        let game = self.playthrough;
+        self.records
+            .first("world_events", |row| {
+                int(row, "story_id") == Some(story)
+                    && int(row, "playthrough_id") == Some(game)
+                    && text(row, "source") == Some("quest")
+            })
+            .is_some()
+    }
+
+    /// `Playthrough::Arc#record_failure!`: a game that ended short of its
+    /// arc's ending says where it stopped, once.
+    fn record_failure(&mut self) -> Result<(), Error> {
+        let Some(arc) = self.open_main_arc() else {
+            return Ok(());
+        };
+        if outcome::steps(&self.records, &arc).is_empty()
+            || self.ending_of_the_arc().is_some()
+            || self.quest_event_recorded()
+        {
+            return Ok(());
+        }
+        let progress = match self.next_step(&arc) {
+            None => "every beat was reached and the ending was never written".to_string(),
+            Some(step) => format!("it stopped at {}", string(&step, "summary")),
+        };
+        let at = int(self.game().row, "ended_at").unwrap_or_else(|| self.story_now());
+        self.insert(
+            "world_events",
+            vec![
+                ("story_id", Value::from(self.story_id())),
+                ("playthrough_id", Value::from(self.playthrough)),
+                ("source", Value::from("quest")),
+                ("occurred_at", Value::from(at)),
+                (
+                    "summary",
+                    Value::from(format!(
+                        "{} was left unfinished: {progress}.",
+                        string(&arc, "title")
+                    )),
+                ),
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// `Playthrough::Arc#ending`: this game's ending of the open main arc,
+    /// as its outcome's own words (`Playthrough::Ending#to_s`).
+    fn ending_of_the_arc(&self) -> Option<String> {
+        let quest = id(&self.open_main_arc()?);
+        self.game()
+            .own("playthrough_endings")
+            .into_iter()
+            .find_map(|ending| {
+                let outcome = self
+                    .records
+                    .find("quest_outcomes", int(ending, "quest_outcome_id")?)?;
+                (int(outcome, "quest_id") == Some(quest))
+                    .then(|| string(outcome, "summary").to_string())
+            })
+    }
+
+    /// Writes a scene after the current one, with the people in it, and
+    /// stamps the room's visit (`Scene#mark_location_visit`). Returns its id.
+    fn write_scene(&mut self, mut values: Vec<(&str, Value)>, cast: &[i64]) -> Result<i64, Error> {
+        let previous = int(self.game().row, "current_scene_id");
+        let at = values
+            .iter()
+            .find(|(column, _)| *column == "story_timestamp")
+            .and_then(|(_, value)| value.as_i64());
+        let room = values
+            .iter()
+            .find(|(column, _)| *column == "location_id")
+            .and_then(|(_, value)| value.as_i64());
+        values.push(("story_id", Value::from(self.story_id())));
+        values.push((
+            "previous_scene_id",
+            previous.map_or(Value::Null, Value::from),
+        ));
+        let scene = id(&self.insert("scenes", values)?);
+        for who in cast {
+            self.insert(
+                "characters_scenes",
+                vec![
+                    ("character_id", Value::from(*who)),
+                    ("scene_id", Value::from(scene)),
+                ],
+            )?;
+        }
+        if let (Some(room), Some(at)) = (room, at) {
+            self.update(
+                "locations",
+                room,
+                vec![("last_protagonist_visit", Value::from(at))],
+            )?;
+        }
+        Ok(scene)
+    }
+
+    /// `Playthrough::Fight#close!`: a fight that has ended is closed with
+    /// one scene carrying what it cost. Returns the scene's description.
     fn close_fight(&mut self) -> Result<Option<String>, Error> {
-        let open = self
+        let blows: Vec<Row> = self
             .game()
             .own("playthrough_blows")
             .into_iter()
-            .any(|blow| int(blow, "scene_id").is_none());
-        if open {
-            return Err(Error::Unsupported("closing a fight".into()));
+            .filter(|blow| int(blow, "scene_id").is_none())
+            .cloned()
+            .collect();
+        let Some(first) = blows.first() else {
+            return Ok(None);
+        };
+        let here = self.row("locations", int(first, "location_id").unwrap_or_default())?;
+        let party_here = int(self.game().row, "current_location_id") == Some(id(&here));
+        let over = self.over() || !party_here || self.game().foes_in(Some(&here)).is_empty();
+        if !over {
+            return Ok(None);
         }
-        Ok(None)
+        let now = self.here().unwrap_or_else(|| here.clone());
+        let mut rounds: Vec<i64> = Vec::new();
+        for round in blows.iter().filter_map(|blow| int(blow, "round")) {
+            if !rounds.contains(&round) {
+                rounds.push(round);
+            }
+        }
+        let rounds = rounds.len() as i64;
+        let party = self.player_id();
+        let opponent = blows
+            .iter()
+            .rev()
+            .find(|blow| int(blow, "attacker_id") == party && party.is_some())
+            .and_then(|blow| int(blow, "target_id"))
+            .or_else(|| blows.last().and_then(|blow| int(blow, "attacker_id")));
+        let ending = self.fight_ending(&blows, party_here);
+        let told: Vec<String> = blows
+            .iter()
+            .map(|blow| {
+                let attacker = self
+                    .records
+                    .find("characters", int(blow, "attacker_id").unwrap_or_default())
+                    .map_or("", |row| string(row, "fullname"))
+                    .to_string();
+                let target = self
+                    .records
+                    .find("characters", int(blow, "target_id").unwrap_or_default())
+                    .cloned()
+                    .unwrap_or_default();
+                blow_to_s(
+                    &attacker,
+                    &target,
+                    int(blow, "damage").unwrap_or_default(),
+                    int(blow, "hp_after").unwrap_or_default(),
+                    int(blow, "round").unwrap_or_default(),
+                )
+            })
+            .collect();
+        let name = string(&here, "name").to_string();
+        let description = [
+            Some(format!(
+                "The fight in {name} is over after {}.",
+                count(rounds, "round")
+            )),
+            ending.clone(),
+            Some(format!(
+                "{} landed: {}.",
+                count(blows.len() as i64, "blow"),
+                told.join("; ")
+            )),
+        ]
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>()
+        .join(" ");
+        let summary = format!(
+            "A fight in {name}: {} over {}. {}",
+            count(blows.len() as i64, "blow"),
+            count(rounds, "round"),
+            ending.unwrap_or_default()
+        );
+        let cast: Vec<i64> = self
+            .game()
+            .cast_in(Some(&now))
+            .iter()
+            .map(|who| id(who))
+            .collect();
+        let at = self.story_now() + ACTION_MINUTES * 60 * rounds;
+        let scene = self.write_scene(
+            vec![
+                ("location_id", Value::from(id(&now))),
+                ("description", Value::from(description.clone())),
+                ("summary", Value::from(summary)),
+                ("story_timestamp", Value::from(at)),
+                ("resolved_action", Value::from("attack")),
+                (
+                    "acted_on_type",
+                    opponent.map_or(Value::Null, |_| Value::from("Character")),
+                ),
+                ("acted_on_id", opponent.map_or(Value::Null, Value::from)),
+            ],
+            &cast,
+        )?;
+        for blow in &blows {
+            self.update(
+                "playthrough_blows",
+                id(blow),
+                vec![("scene_id", Value::from(scene))],
+            )?;
+        }
+        self.update(
+            "playthroughs",
+            self.playthrough,
+            vec![("current_scene_id", Value::from(scene))],
+        )?;
+        Ok(Some(description))
     }
 
-    /// The reached ending's own words (`Playthrough::Ending#to_s`).
-    fn ending_words_of_the_arc(&self) -> Option<String> {
-        None
+    /// `Playthrough::Fight#ending`: who died, or why nobody did.
+    fn fight_ending(&self, blows: &[Row], party_here: bool) -> Option<String> {
+        let party = self.player();
+        let mut people: Vec<i64> = party.iter().map(id).collect();
+        for blow in blows {
+            for column in ["attacker_id", "target_id"] {
+                if let Some(who) = int(blow, column) {
+                    if !people.contains(&who) {
+                        people.push(who);
+                    }
+                }
+            }
+        }
+        let dead: Vec<Row> = people
+            .into_iter()
+            .filter_map(|who| self.records.find("characters", who).cloned())
+            .filter(|who| self.condition_of(who).is_some_and(|c| c.dead()))
+            .collect();
+        if let Some(party) = &party {
+            if dead.iter().any(|who| id(who) == id(party)) {
+                return Some(format!("{} is dead.", string(party, "fullname")));
+            }
+        }
+        let names: Vec<String> = dead
+            .iter()
+            .map(|who| string(who, "fullname").to_string())
+            .collect();
+        match names.len() {
+            0 if party_here => Some("Nobody was killed: the fighting stopped.".into()),
+            0 => Some("Nobody was killed: the party is no longer standing in it.".into()),
+            1 => Some(format!("{} is dead.", names[0])),
+            _ => Some(format!("{} are dead.", to_sentence(&names))),
+        }
     }
 
     // --- the snapshot --------------------------------------------------------
@@ -1690,6 +2726,7 @@ pub fn thing_of(row: &Row, carried: bool) -> Thing {
         use_kind: text(row, "use_kind").unwrap_or("ordinary").to_string(),
         combustible: flag(row, "combustible"),
         carried,
+        template: int(row, "template_id"),
     }
 }
 
@@ -1702,6 +2739,21 @@ fn weights_for(pursuit: Option<&str>) -> Option<&'static [(String, i64)]> {
         .iter()
         .find(|(name, _)| name == pursuit)
         .map(|(_, row)| row.as_slice())
+}
+
+/// `"1 round"`, `"2 rounds"`.
+fn count(number: i64, noun: &str) -> String {
+    format!("{number} {noun}{}", if number == 1 { "" } else { "s" })
+}
+
+/// `Array#to_sentence`: `a, b, and c`.
+fn to_sentence(words: &[String]) -> String {
+    match words {
+        [] => String::new(),
+        [one] => one.clone(),
+        [one, two] => format!("{one} and {two}"),
+        [rest @ .., last] => format!("{}, and {last}", rest.join(", ")),
+    }
 }
 
 /// `Playthrough::Volition.shape_of`: `move:12` is a `move`.
