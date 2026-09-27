@@ -5,9 +5,10 @@
 //!
 //! The rules take values and return values. Nothing but the turn loop
 //! ([`store`], [`turn`], [`outcome`], [`engine`]) reads a database, and
-//! nothing reads the network, so each rule can be checked against the
-//! golden vectors the Ruby engine writes (see `vectors/README.md`) and the
-//! loop against the engine sweep (see `parity/README.md`).
+//! nothing but the model client ([`model`]) reads the network, so each rule
+//! can be checked against the golden vectors the Ruby engine writes (see
+//! `vectors/README.md`) and the loop against the engine sweep (see
+//! `parity/README.md`).
 //!
 //! Reading a line (`grammar`, `intent`, `refusal`, `slash_menu`, `cascade`)
 //! works over a [`room::Room`] of plain records. The System One cascade
@@ -16,7 +17,9 @@
 //! The request builders (`moment`, `ledger`, `memory`, `plan`, `volition`,
 //! `arrival`, `realization`, `dialogue`) read a [`records::Records`]: the
 //! rows a database would hold, handed in as values. They return each request
-//! as JSON, keys in the order it is sent, and send nothing.
+//! as JSON, keys in the order it is sent, and send nothing: [`model`] sends
+//! them, over the player's own key or the owner's relay, or answers them from
+//! fixed replies.
 //!
 //! Draws come from [`random::Random`], a reproduction of Ruby's `Random`, and
 //! never from any other generator: the same seed has to roll the same dice in
@@ -38,6 +41,7 @@ pub mod intent;
 pub mod interior;
 pub mod ledger;
 pub mod memory;
+pub mod model;
 pub mod moment;
 pub mod outcome;
 pub mod parameters;

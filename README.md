@@ -2,14 +2,16 @@
 
 The text-adventure engine in Rust: the dice, the geometry, reading a typed
 line against the room the player stands in, building the requests the engine
-hands a model, and a turn loop that plays a line with no model at all over the
-game's own SQLite database. The rules take values and return values; only the
-turn loop (`store`, `turn`, `outcome`, `engine`) touches a database, and
-nothing touches the network or an async runtime. Its dependencies are
+hands a model, the model client that sends them, and a turn loop that plays a
+line with no model at all over the game's own SQLite database. The rules take
+values and return values; only the turn loop (`store`, `turn`, `outcome`,
+`engine`) touches a database, only the model client (`model`) touches the
+network, and nothing needs an async runtime. Its dependencies are
 `serde_json`, for the System One request and answers and the rows a rule
 reads, `yaml-rust2`, for the engine data it compiles in (`data/`, see its
-README), `sha2`, for request digests, and `rusqlite` with SQLite bundled, for
-the database.
+README), `sha2`, for request digests, `rusqlite` with SQLite bundled, for the
+database, `regex`, for the refusal detector, and `ureq` with rustls, for
+HTTPS.
 
 It reproduces the Ruby engine exactly, roll for roll, and is checked against
 the golden vectors that engine exports (`vectors/`, see its README) and
@@ -56,6 +58,7 @@ with the state it wrote after every step (`parity/`, see its README).
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
 | `parity` | `EngineSweep::Walk`, `EngineSweep::Dump`, `EngineSweep::Parity` | a sweep script played through this engine, dumped step by step and compared |
+| `model` | `BaseAgent`, `BaseAgent::Refusal`, `SystemOneAgent`, RubyLLM's OpenRouter provider and its `chats`/`messages` receipts, `EngineSweep::BrowserTurn`'s fixed replies | where a model call goes, the body it sends, whether an answer is kept, the model rotation, and what a call leaves in the database |
 
 ## Playing a turn
 
@@ -104,6 +107,47 @@ A Ruby binding (magnus) is the next consumer and is not built yet. It is a
 thin layer over this surface: open an `Engine` on the app's database path,
 call `play` with a block that receives each chunk, turn the `Outcome` into a
 Hash, and raise one Ruby exception class per `Error` variant.
+
+## Model calls
+
+Every call goes to OpenRouter by one of two routes, and the engine takes the
+route as one value, `model::Route`:
+
+- `Direct { key }`: the player's own OpenRouter key, sent to
+  `https://openrouter.ai` and nowhere else;
+- `Relay { base_url, token }`: the owner's relay, which mirrors OpenRouter's
+  paths under its base and holds his key under a monthly cap per player, so
+  the request body is the same on both routes and only the base and the
+  bearer differ;
+- `None`: no model access, and the offline path only.
+
+`Route::pick` applies the precedence (the player's own key, then a relay
+invitation, unless the player asked for one of them) and never falls back
+from one to the other. A key or token is a `model::Secret`, which has no
+`Display` and a redacted `Debug`; a failure quotes the provider's message,
+never the request.
+
+`model::Live` sends a call under `BaseAgent`'s policy: the models in
+`REMOTE_MODEL_IDS` order, up to `MAX_ATTEMPTS`; a refusal, an ignored
+schema, a provider failure or the caller's own check asks the next model in
+the same context; a crisis answer is suppressed and a refused credential
+fails, neither rotated past. It writes the conversation to `chats` and
+`messages`, and a `ruby_llm_usages` row per attempt, as RubyLLM does, so the
+Ruby app reads the receipts of a call this engine made. System One goes over
+the same route to OpenRouter's decisions path, or to TypeSafe directly with
+a TypeSafe key.
+
+`model::Replay` answers each call with the next of a list of fixed replies
+tagged by purpose, and checks what each prompt includes and leaves out: the
+engine sweep's browser steps play this way, and nothing is sent anywhere.
+
+`tests/model.rs` holds the client to what RubyLLM sent for the same calls
+(`tests/fixtures/rubyllm_wire.json`, captured by a server on the machine
+that answered with fixed replies), the refusal detector to the Ruby
+engine's flags over its corpus (`tests/fixtures/refusal_corpus.json`), and
+both routes to the no-leak contract over a real socket on this machine. The
+kept requests of `vectors/kept_requests.json` are sent through the live
+client too (`tests/vectors/builders.rs`), and go out exactly as stored.
 
 ## Rules for changing it
 

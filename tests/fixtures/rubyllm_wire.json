@@ -1,0 +1,30 @@
+{
+  "source": "what RubyLLM 2.0.0's OpenRouter provider sent from BaseAgent in calebl/text-adventure at b4c9921c008ac1e459486318324aec66672a9366, captured by a server on this machine that answered with fixed replies; the schemas are Location::ExitsSchema and Interaction::Schema",
+  "bodies": [
+    {
+      "flow": "narration",
+      "path": "/api/v1/chat/completions",
+      "body": "{\"model\":\"mistralai/mistral-medium-3.1\",\"messages\":[{\"role\":\"developer\",\"content\":\"NARRATE.\"},{\"role\":\"user\",\"content\":\"The player types: look\"}],\"stream\":true,\"stream_options\":{\"include_usage\":true}}"
+    },
+    {
+      "flow": "two_asks",
+      "path": "/api/v1/chat/completions",
+      "body": "{\"model\":\"mistralai/mistral-medium-3.1\",\"messages\":[{\"role\":\"developer\",\"content\":\"REALIZE.\"},{\"role\":\"user\",\"content\":\"Describe it.\"},{\"role\":\"assistant\",\"content\":\"{\\\"description\\\":\\\"A room.\\\",\\\"lore\\\":\\\"Old.\\\",\\\"items\\\":[],\\\"people\\\":[]}\"},{\"role\":\"user\",\"content\":\"And the ways out.\"}],\"stream\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"Location__ExitsSchema\",\"schema\":{\"type\":\"object\",\"properties\":{\"exits\":{\"type\":\"array\",\"description\":\"The places a player can reach directly from here.\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"The name of the place this exit leads to, as a player would refer to it. 1 to 4 words, no article.\",\"maxLength\":60},\"teaser\":{\"type\":\"string\",\"description\":\"A one-line glimpse of what lies that way, enough to make the player choose it. Exactly one sentence.\",\"maxLength\":160},\"distance\":{\"type\":\"string\",\"enum\":[\"adjacent\",\"a short walk\",\"across the district\",\"a long journey\",\"days away\"],\"description\":\"How far it is. Pick the closest of these; the exact wording does not matter.\"},\"travel_method\":{\"type\":\"string\",\"enum\":[\"walking\",\"taking stairs\",\"climbing\",\"crawling\",\"swimming\",\"rowing\",\"riding\"],\"description\":\"How the player covers that ground. Pick the closest of these. It must read correctly in both directions, because the way back is the same edge.\"},\"inside\":{\"type\":\"string\",\"enum\":[\"no inside\",\"one room\",\"a few rooms\",\"a warren of rooms\"],\"description\":\"NO INSIDE for almost everything you name. Anything else here makes the game build a whole floor plan of rooms there and send the player walking through them, so answer otherwise ONLY for a place that is a BUILDING somebody goes in at a door: an inn, a keep, a counting house, a warren. NO INSIDE for a road, a shore, a clearing, a bridge, a square, a cave mouth, a stair, a courtyard -- and for a room, an office or a hall, which are already somewhere you stand. When it really is a building, pick the size it would really be.\"},\"population\":{\"type\":\"string\",\"enum\":[\"nobody\",\"a person or two\",\"a crowd\"],\"description\":\"How many people are in that place. Pick the closest of these words. It is a word and never a number: the engine decides how many people that is.\"}},\"required\":[\"name\",\"teaser\",\"distance\",\"travel_method\",\"population\"],\"additionalProperties\":false},\"minItems\":1,\"maxItems\":4}},\"required\":[\"exits\"],\"additionalProperties\":false},\"strict\":true}}}"
+    },
+    {
+      "flow": "durable",
+      "path": "/api/v1/chat/completions",
+      "body": "{\"model\":\"mistralai/mistral-medium-3.1\",\"messages\":[{\"role\":\"developer\",\"content\":\"BE Maren.\"},{\"role\":\"user\",\"content\":\"Hello.\"}],\"stream\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"Interaction__Schema\",\"schema\":{\"type\":\"object\",\"properties\":{\"pre_thought\":{\"type\":\"string\",\"description\":\"What you thought immediately in response to what was just said or done to you. One sentence, at most 320 characters.\",\"maxLength\":320},\"pre_feeling\":{\"type\":\"string\",\"description\":\"What you felt immediately in response to what was just said or done to you. Two or three words, comma separated, at most 120 characters.\",\"maxLength\":120},\"action\":{\"type\":\"string\",\"description\":\"What you did and said in response. Speech goes inside quotes. One or two sentences, at most 480 characters.\",\"maxLength\":480},\"post_feeling\":{\"type\":\"string\",\"description\":\"What you felt after you took the action. Two or three words, comma separated, at most 120 characters.\",\"maxLength\":120},\"post_thought\":{\"type\":\"string\",\"description\":\"What you thought after you took the action. One sentence, at most 320 characters.\",\"maxLength\":320},\"inner_resolution\":{\"type\":\"string\",\"description\":\"What you decided to do as a result of this exchange. One sentence, at most 320 characters.\",\"maxLength\":320}},\"required\":[\"pre_thought\",\"pre_feeling\",\"action\",\"post_feeling\",\"post_thought\",\"inner_resolution\"],\"additionalProperties\":false},\"strict\":true}}}"
+    },
+    {
+      "flow": "refusal_rotates",
+      "path": "/api/v1/chat/completions",
+      "body": "{\"model\":\"minimax/minimax-m3\",\"messages\":[{\"role\":\"developer\",\"content\":\"NARRATE.\"},{\"role\":\"user\",\"content\":\"The player types: wait\"}],\"stream\":true,\"stream_options\":{\"include_usage\":true}}"
+    },
+    {
+      "flow": "server_error_rotates",
+      "path": "/api/v1/chat/completions",
+      "body": "{\"model\":\"mistralai/mistral-medium-3.1\",\"messages\":[{\"role\":\"developer\",\"content\":\"NARRATE.\"},{\"role\":\"user\",\"content\":\"The player types: wait\"}],\"stream\":false}"
+    }
+  ]
+}
