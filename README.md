@@ -13,10 +13,13 @@ README), `sha2`, for request digests, `rusqlite` with SQLite bundled, for the
 database, `regex`, for the refusal detector, and `ureq` with rustls, for
 HTTPS.
 
-It reproduces the Ruby engine exactly, roll for roll, and is checked against
-the golden vectors that engine exports (`vectors/`, see its README) and
-against the engine sweep, the Ruby engine's stored scripts of typed lines
-with the state it wrote after every step (`parity/`, see its README).
+It was written to reproduce the game's Ruby engine exactly, roll for roll,
+and now owns the game's behaviour: it is checked against the golden vectors
+(`vectors/`, see its README), most of which the game still exports from the
+rules its Ruby code runs, and against the engine sweep, the game's stored
+scripts of typed lines with the state after every step (`parity/`, see its
+README). The goldens of the sweep are this repository's own: a change to a
+rule rewrites them here, and the game vendors them at the commit it pins.
 
 | Module | Ruby original | What it answers |
 | --- | --- | --- |
@@ -236,26 +239,34 @@ cargo test -- --nocapture
 `tests/vectors/` runs every case of every vector file and prints a pass count
 per portion. An answer is compared as written, so key order counts as well as
 values. It also checks each file's `constants` against this crate's
-tables, and refuses a file whose format version it does not know.
+tables, and refuses a file whose format version it does not know. The
+portions this crate owns (`vectors/ENGINE_OWNED`) are blessed rather than
+checked when `BLESS` is set:
+
+```sh
+BLESS=1 cargo test --test vectors   # rewrite the engine-owned portions from this crate
+```
 
 `tests/parity.rs` plays every sweep script in `parity/scripts` and compares
-each step's dump with the Ruby engine's golden file, and, for a script with
-a file in `parity/records`, every request it made and every row it wrote
-with the Ruby engine's, printing each other script's first divergence and a
-pass count. The binary does the same:
+each step's dump with its golden file, and, for a script with a file in
+`parity/records`, every request it made and every row it wrote with that
+file's, printing each other script's first divergence and a pass count. The
+binary does the same, and writes the goldens again once a rule has moved
+them:
 
 ```sh
 cargo run --release --bin parity -- --check parity
+cargo run --release --bin parity -- --write parity   # then review the diff
 ```
 
-and plays one script for the Ruby engine's own runner, which diffs it against
-the goldens there:
+and plays one script for the game repository's runner, which diffs it
+against a directory of goldens:
 
 ```sh
-ENGINE="target/release/parity --worlds $PWD/parity/worlds" bin/rails engine:parity_diff
+ENGINE="target/release/parity --worlds $PWD/parity/worlds" GOLDENS=$PWD/parity/goldens bin/rails engine:parity_diff
 ```
 
-In the shared-database mode the Ruby engine's runner prepares the world in a
+In the shared-database mode the game repository's runner prepares the world in a
 database file of its own, plays each `reseed:` step itself, and asks for one
 typed step at a time:
 

@@ -28,32 +28,54 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo test --workspace --locked
-      - name: the engine sweep against the Ruby engine's goldens
+      - name: the engine sweep against its goldens
         run: cargo run --release --locked --bin parity -- --check parity
 
   runner:
-    name: the engine sweep through the Ruby engine's runner
+    name: the engine sweep through the game's runner, and the game's gates
     runs-on: ubuntu-latest
     env:
-      # The text-adventure commit parity/README.md names.
-      RUBY_ENGINE_COMMIT: b9407f4499c319748aab1ba2a5f118bf401f1901
+      # The game commit whose runner, scripts and judges this checkout is
+      # held to (parity/README.md, "Changing a rule").
+      SERVER_COMMIT: 7f96d0e1e6968bcd8e973bbc68be6251097b3edc
     steps:
+      # Side by side, not one inside the other: the game's extension is a
+      # crate of its own, and inside this checkout cargo would read it as a
+      # member of this workspace.
       - uses: actions/checkout@v4
+        with:
+          path: engine
       - uses: actions/checkout@v4
         with:
           repository: renderedstep/server
-          ref: ${{ env.RUBY_ENGINE_COMMIT }}
-          path: ruby-engine
+          ref: ${{ env.SERVER_COMMIT }}
+          path: server
+      - name: install the extension's build dependencies
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libclang-dev sqlite3
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            engine -> target
+            server/ext/renderedstep -> target
       - run: cargo build --release --locked --bin parity
+        working-directory: engine
       - uses: ruby/setup-ruby@v1
         with:
-          working-directory: ruby-engine
+          working-directory: server
           bundler-cache: true
-      - name: load the Ruby engine's test schema
-        working-directory: ruby-engine
+      - name: load the game's test schema
+        working-directory: server
         env:
           RAILS_ENV: test
         run: bin/rails db:schema:load
-      - run: parity/runner.sh ruby-engine target/release/parity
+      - name: every script through the game's runner, against this repository's goldens
+        run: engine/parity/runner.sh server engine/target/release/parity
+      - name: build the game's extension against this checkout
+        working-directory: server
+        run: ENGINE_SOURCE="$GITHUB_WORKSPACE/engine" bin/rails engine:build
+      - name: the game's gates against this repository's goldens (the goldens as Ruby reads the rows, the invariants, the doctor and the audit)
+        working-directory: server
+        env:
+          RAILS_ENV: test
+        run: GOLDENS="$GITHUB_WORKSPACE/engine/parity/goldens" bin/rails engine:rust_gates

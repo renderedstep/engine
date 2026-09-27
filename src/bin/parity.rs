@@ -16,6 +16,13 @@
 //! `DIR/worlds`, compares each with its golden file in `DIR/goldens`, and
 //! names each script's first divergence. It fails when a script named in
 //! `DIR/PASSING` diverges, or when one that is not named there agrees.
+//!
+//! `parity --write DIR` plays the same scripts and writes each golden in
+//! `DIR/goldens` again whose dumps moved, and each records file in
+//! `DIR/records` whose requests or rows did, leaving every file that still
+//! agrees byte for byte as it was. The scripts in `DIR/PASSING_WITH_RUNNER`
+//! are the runner's to write (`parity/runner.sh --write`). It fails when a
+//! script stops before its last step.
 
 use renderedstep_engine::engine::Engine;
 use renderedstep_engine::parity;
@@ -26,6 +33,7 @@ fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
     let result = match args.as_slice() {
         [flag, dir] if flag == "--check" => check(Path::new(dir)),
+        [flag, dir] if flag == "--write" => write(Path::new(dir)),
         [flag, worlds, script] if flag == "--worlds" => dumps(Path::new(worlds), Path::new(script)),
         [database, file, player_flag, player, script]
             if database == "--database" && player_flag == "--player" =>
@@ -45,7 +53,8 @@ fn main() -> ExitCode {
 
 const USAGE: &str = "usage: parity --worlds DIR SCRIPT.yml \
                      | ENGINE_STEP=N parity --database FILE --player NAME SCRIPT.yml \
-                     | parity --check DIR";
+                     | parity --check DIR \
+                     | parity --write DIR";
 
 fn one_step(database: &Path, player: &str, path: &Path) -> Result<ExitCode, String> {
     let index: usize = std::env::var("ENGINE_STEP")
@@ -97,5 +106,28 @@ fn check(dir: &Path) -> Result<ExitCode, String> {
         Ok(ExitCode::SUCCESS)
     } else {
         Err(checked.failures.join("\n"))
+    }
+}
+
+fn write(dir: &Path) -> Result<ExitCode, String> {
+    let written = parity::write(dir)?;
+    for name in &written.goldens {
+        println!("wrote goldens/{name}.json");
+    }
+    for name in &written.records {
+        println!("wrote records/{name}.json");
+    }
+    println!(
+        "{} golden(s) and {} records file(s) written, {} script(s) unchanged; \
+         left to parity/runner.sh --write: {}",
+        written.goldens.len(),
+        written.records.len(),
+        written.unchanged.len(),
+        written.runner.join(", ")
+    );
+    if written.stopped.is_empty() {
+        Ok(ExitCode::SUCCESS)
+    } else {
+        Err(written.stopped.join("\n"))
     }
 }
