@@ -416,3 +416,132 @@ fn staged_cast(
         })
         .collect()
 }
+
+/// A transport that keeps what it was sent and answers every call with an
+/// answer that satisfies any schema the kept sets carry.
+#[derive(Default)]
+struct Kept {
+    sent: Vec<Value>,
+}
+
+impl renderedstep_engine::model::http::Transport for Kept {
+    fn post(
+        &mut self,
+        _endpoint: &renderedstep_engine::model::route::Endpoint,
+        body: &Value,
+        _options: &renderedstep_engine::model::http::Options,
+        _on_line: Option<&mut (dyn FnMut(&str) + '_)>,
+    ) -> Result<renderedstep_engine::model::http::Posted, renderedstep_engine::model::http::Unreached>
+    {
+        self.sent.push(body.clone());
+        let required = body["response_format"]["json_schema"]["schema"]["required"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default();
+        let content = if required.is_empty() {
+            json!("You look around.")
+        } else {
+            let fields: serde_json::Map<String, Value> = required
+                .iter()
+                .map(|key| (key.as_str().unwrap().to_string(), json!("x")))
+                .collect();
+            json!(Value::Object(fields).to_string())
+        };
+        Ok(renderedstep_engine::model::http::Posted {
+            status: 200,
+            body: json!({"choices": [{"message": {"content": content}, "finish_reason": "stop"}]})
+                .to_string(),
+        })
+    }
+}
+
+/// Every kept request, sent through the live client: the body that goes out
+/// carries exactly the request the kept set stores, on either route.
+#[test]
+fn kept_requests_on_the_live_path() {
+    use renderedstep_engine::model::{Agent, Book, Call, Filed, Live, Models, Route, Secret};
+    let vectors = crate::load("kept_requests");
+    let engine = renderedstep_engine::parity::open_world(include_str!(
+        "../../parity/worlds/the-quay-house.sql"
+    ))
+    .expect("a database for the receipts");
+    let mut checked = 0;
+    for case in &vectors.cases {
+        let input = crate::with_shared_records(&case["input"], &vectors.cases);
+        let records = records(&input);
+        let request = match input["set"].as_str().expect("a set") {
+            "arrival-branches" => arrival(&records),
+            set if set.starts_with("realization-") => realization(&records, &input["id"]),
+            _ => dialogue_request(&records, &input),
+        };
+        assert_eq!(request, case["output"], "{}", case["name"]);
+        for route in [
+            Route::Direct {
+                key: Secret::new("own"),
+            },
+            Route::Relay {
+                base_url: "https://relay.example/relay/openrouter".into(),
+                token: Secret::new("t"),
+            },
+        ] {
+            let mut live = Live::with_transport(route, Kept::default());
+            let mut agent = Agent::new(Filed {
+                purpose: "kept".into(),
+                ..Filed::default()
+            });
+            let mut mirror = Records::default();
+            let mut book = Book {
+                store: engine.store(),
+                records: &mut mirror,
+            };
+            live.ask(
+                &mut book,
+                &mut agent,
+                &Call::from_request(&request),
+                None,
+                None,
+            )
+            .unwrap_or_else(|failure| panic!("{}: {failure}", case["name"]));
+            let body = &live.transport().sent[0];
+            let messages = body["messages"].as_array().expect("messages");
+            let mut expected = Vec::new();
+            if let Some(system) = request["system"].as_str() {
+                expected.push(json!({ "role": "developer", "content": system }));
+            }
+            for message in request["history"].as_array().expect("history") {
+                if message["role"] == "system" {
+                    assert_eq!(
+                        message["content"], request["system"],
+                        "{}: one set of instructions",
+                        case["name"]
+                    );
+                } else {
+                    expected.push(message.clone());
+                }
+            }
+            expected.push(json!({ "role": "user", "content": request["user"] }));
+            assert_eq!(messages, &expected, "{}", case["name"]);
+            if request["schema"].is_null() {
+                assert!(body.get("response_format").is_none(), "{}", case["name"]);
+            } else {
+                let sent = &body["response_format"]["json_schema"];
+                let mut stored = request["schema"]["schema"].clone();
+                let strict = stored.as_object_mut().unwrap().remove("strict").unwrap();
+                assert_eq!(sent["schema"], stored, "{}", case["name"]);
+                assert_eq!(sent["strict"], strict, "{}", case["name"]);
+                assert_eq!(
+                    sent["name"],
+                    renderedstep_engine::model::wire::schema_name(
+                        request["schema"]["name"].as_str().unwrap()
+                    ),
+                    "{}",
+                    case["name"]
+                );
+            }
+            checked += 1;
+        }
+    }
+    println!(
+        "kept_requests on the live path: {checked} of {checked} sends carry the stored request"
+    );
+}

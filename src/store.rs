@@ -54,7 +54,14 @@ pub const TABLES: &[&str] = &[
     "playthrough_turn_events",
     "playthrough_vitals",
     "playthrough_volitions",
+    "chats",
+    "messages",
 ];
+
+/// Tables the engine writes and never loads: the receipts a model call
+/// leaves (`ruby_llm_usages` for a chat call, `system_one_receipts` for a
+/// System One request), which no rule reads back.
+pub const WRITTEN: &[&str] = &["ruby_llm_usages", "system_one_receipts"];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Kind {
@@ -130,7 +137,7 @@ impl Store {
             });
         }
         let mut columns = HashMap::new();
-        for table in TABLES {
+        for table in TABLES.iter().chain(WRITTEN) {
             let mut statement =
                 conn.prepare("SELECT name, type FROM pragma_table_info(?1) ORDER BY name")?;
             let found: Vec<Column> = statement
