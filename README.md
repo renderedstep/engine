@@ -1,7 +1,8 @@
 # renderedstep-engine
 
-The text-adventure engine's pure rules in Rust: the dice, the geometry, and
-reading a typed line against the room the player stands in. Every function
+The text-adventure engine's pure rules in Rust: the dice, the geometry,
+reading a typed line against the room the player stands in, and building the
+requests the engine hands a model. Every function
 takes values and returns values. Nothing here touches a database, the
 network, the clock or an async runtime. Its two dependencies are
 `serde_json`, for the System One request and answers, and `yaml-rust2`, for
@@ -32,6 +33,18 @@ the golden vectors that engine exports (`vectors/`, see its README).
 | `refusal` | `Playthrough::Refusal` (with `DeathNotice` and `StoryOverNotice` sentences) | what the engine says when it will not play a line |
 | `slash_menu` | `Playthrough::SlashMenu` | the words offered after a slash and what each completes to |
 | `cascade` | `Playthrough::Classifier::Cascade`, `::State`, `::Request`, `SystemOneAgent::Answers` | the System One request for a line, and recorded answers composed into an intent or escalated. It sends nothing |
+| `records` | the rows a builder reads | every row of every table, handed in as values; a query is a filter over a list |
+| `playthrough` | `Playthrough`'s readers, `Playthrough::Vitals::Condition`, `Playthrough::Toll#to_s` | who is in a room, how much is left of a body, who is fighting the party |
+| `ledger` | `Playthrough::Ledger` | what one person saw happen in one game, inside both of its bounds |
+| `memory` | `Playthrough::Memory` | which earlier exchanges come back into a prompt, ranked with Ruby's float arithmetic |
+| `plan` | `Location::Plan` | a room's size, storey and ways out, said in sentences |
+| `moment` | `Playthrough::Moment` | the narration context and a character's context for the moment the player stands in |
+| `volition` | `Playthrough::Volition#choices`, `::State`, `::SystemOne#request` | the acts a person may take and the System One request that asks which |
+| `schemas` | the `RubyLLM::Schema` classes a request carries | each schema's `to_json_schema` output, key for key |
+| `identity` | `Eval::RequestIdentity` | the canonical form of a set of requests and its 16-hex digest |
+| `arrival` | `Scene::Generator`, `Scene::ArrivalContext` | the arrival writer's request for walking into a place |
+| `realization` | `Location::Generator`, `Character::Desires.instructions` | the room writer's detail and exits requests |
+| `dialogue` | `InteractionAgent`, `Character#interaction_instructions`, `Playthrough::NpcAction` | the character pass and narrator pass of one exchange |
 
 ## Rules for changing it
 
@@ -48,7 +61,8 @@ cargo test -- --nocapture
 ```
 
 `tests/vectors/` runs every case of every vector file and prints a pass count
-per portion. It also checks each file's `constants` against this crate's
+per portion. An answer is compared as written, so key order counts as well as
+values. It also checks each file's `constants` against this crate's
 tables, and refuses a file whose format version it does not know.
 
 ## Licence

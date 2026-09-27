@@ -4,6 +4,7 @@
 //! Each portion checks its `constants` too, so a Ruby table that changed
 //! under an unchanged case list still fails here.
 
+mod builders;
 mod lines;
 mod portions;
 
@@ -69,8 +70,10 @@ pub fn check(portion: &str, expected_constants: Value, answer: impl Fn(&Value) -
     );
     let mut failures = Vec::new();
     for case in &vectors.cases {
-        let got = answer(&case["input"]);
-        if got != case["output"] {
+        let input = with_shared_records(&case["input"], &vectors.cases);
+        let got = answer(&input);
+        // Compared as written, so key order counts as well as values.
+        if serde_json::to_string(&got).ok() != serde_json::to_string(&case["output"]).ok() {
             failures.push(format!(
                 "  {}\n    input:    {}\n    expected: {}\n    got:      {}",
                 case["name"], case["input"], case["output"], got
@@ -90,6 +93,23 @@ pub fn check(portion: &str, expected_constants: Value, answer: impl Fn(&Value) -
             .collect::<Vec<_>>()
             .join("\n")
     );
+}
+
+/// A case that names another in `records_of` shares its rows: the input is
+/// handed on with that case's `records` in their place.
+fn with_shared_records(input: &Value, cases: &[Value]) -> Value {
+    let Some(name) = input.get("records_of") else {
+        return input.clone();
+    };
+    let owner = cases
+        .iter()
+        .find(|case| case["name"] == *name)
+        .unwrap_or_else(|| panic!("records_of names no case: {name}"));
+    let mut input = input.clone();
+    let fields = input.as_object_mut().expect("an input object");
+    fields.remove("records_of");
+    fields.insert("records".into(), owner["input"]["records"].clone());
+    input
 }
 
 /// Runs every case of a portion that stands in rooms: `answer` gets the

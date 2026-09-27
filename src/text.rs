@@ -152,3 +152,35 @@ pub fn upcase_first(text: &str) -> String {
 pub fn casecmp(a: &str, b: &str) -> bool {
     ruby_downcase(a) == ruby_downcase(b)
 }
+
+/// Rails' `String#truncate(length)`: the text itself when it fits, or its
+/// first `length - 3` characters and "...".
+pub fn truncate(text: &str, length: usize) -> String {
+    if text.chars().count() <= length {
+        return text.to_string();
+    }
+    let kept: String = text.chars().take(length.saturating_sub(3)).collect();
+    format!("{kept}...")
+}
+
+/// Rails' `presence` for a string: none where it is blank.
+pub fn presence(text: Option<&str>) -> Option<&str> {
+    text.filter(|text| !is_blank(text))
+}
+
+/// Ruby's `Array#sum` over floats: Kahan-Babuska compensated summation,
+/// which a plain running total does not reproduce to the last bit.
+pub fn ruby_sum(values: impl IntoIterator<Item = f64>) -> f64 {
+    let mut sum = 0.0_f64;
+    let mut compensation = 0.0_f64;
+    for x in values {
+        let total = sum + x;
+        if sum.abs() >= x.abs() {
+            compensation += (sum - total) + x;
+        } else {
+            compensation += (x - total) + sum;
+        }
+        sum = total;
+    }
+    sum + compensation
+}

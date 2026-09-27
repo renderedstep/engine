@@ -7,11 +7,12 @@ name = "renderedstep-engine"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.88"
-description = "The text-adventure engine's pure rules: the dice, the geometry and reading a typed line"
+description = "The text-adventure engine's pure rules: the dice, the geometry, reading a typed line and building model requests"
 repository = "https://github.com/renderedstep/engine"
 license = "MIT OR Apache-2.0"
 publish = false
 
 [dependencies]
 serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.10"
 yaml-rust2 = "0.13"
