@@ -8,8 +8,11 @@
 //! the first time a step is typed into it.
 
 use crate::engine::{Engine, Error};
+use crate::model::{Failure, Replay, Reply};
 use crate::outcome::{Inscription, Named, Outcome, Room};
 use crate::playthrough::Game;
+use crate::records::{int, text};
+use crate::turn::Report;
 use serde_json::{json, Map, Value};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -68,8 +71,9 @@ pub struct Step {
     pub reseed: bool,
     /// A fixed character decision for a conversation.
     pub npc_action: Option<String>,
-    /// The step plays a browser submission with fixed provider replies.
-    pub browser: bool,
+    /// The browser submission the step plays, with its fixed provider
+    /// replies (`EngineSweep::BrowserTurn`), as JSON.
+    pub browser: Option<Value>,
 }
 
 impl Step {
@@ -131,7 +135,7 @@ impl Script {
                     player,
                     reseed: !row["reseed"].is_badvalue(),
                     npc_action: scalar(&row["npc_action"]),
-                    browser: !row["browser"].is_badvalue(),
+                    browser: (!row["browser"].is_badvalue()).then(|| json_of(&row["browser"])),
                 }
             })
             .collect();
@@ -146,6 +150,25 @@ impl Script {
     /// engine names its world files (`WorldSeed.slug`).
     pub fn world(&self) -> String {
         slug(&self.story)
+    }
+}
+
+/// A YAML value as JSON.
+fn json_of(value: &Yaml) -> Value {
+    match value {
+        Yaml::Real(text) => text
+            .parse::<f64>()
+            .map_or(Value::String(text.clone()), Value::from),
+        Yaml::Integer(n) => Value::from(*n),
+        Yaml::String(text) => Value::String(text.clone()),
+        Yaml::Boolean(flag) => Value::Bool(*flag),
+        Yaml::Array(items) => items.iter().map(json_of).collect(),
+        Yaml::Hash(map) => Value::Object(
+            map.iter()
+                .filter_map(|(key, value)| scalar(key).map(|key| (key, json_of(value))))
+                .collect(),
+        ),
+        _ => Value::Null,
     }
 }
 
@@ -285,8 +308,8 @@ fn play_typed(engine: &mut Engine, step: &Step, playthrough: i64) -> Result<Valu
     if step.reseed {
         return Err(Error::Unsupported("reloading the world file".into()));
     }
-    if step.browser {
-        return Err(Error::Unsupported("a browser submission".into()));
+    if let Some(browser) = &step.browser {
+        return play_browser(engine, step, browser, playthrough);
     }
     let before = Counts::of(engine, playthrough)?;
     let typed = step.typed.as_deref().unwrap_or_default();
@@ -296,6 +319,128 @@ fn play_typed(engine: &mut Engine, step: &Step, playthrough: i64) -> Result<Valu
     };
     let after = Counts::of(engine, playthrough)?;
     Ok(dump(&outcome, &before, &after))
+}
+
+/// A browser step (`EngineSweep::BrowserTurn#run`): the lines typed while
+/// the previous turn was running accepted first, then this one submitted
+/// with the step's replies standing in for the providers, and the report
+/// read off what the submission and its queue left.
+fn play_browser(
+    engine: &mut Engine,
+    step: &Step,
+    browser: &Value,
+    playthrough: i64,
+) -> Result<Value, Error> {
+    let broken = |message: String| Error::Model(Failure::Unexpected(message));
+    let token = browser["token"]
+        .as_str()
+        .ok_or_else(|| broken(format!("{} has no token", step.label())))?;
+    if browser
+        .get("interrupt_after")
+        .is_some_and(|at| !at.is_null())
+    {
+        return Err(Error::Unsupported(
+            "stopping a worker part way through a turn".into(),
+        ));
+    }
+    let before = Counts::of(engine, playthrough)?;
+    let scene_before = current_scene(engine, playthrough)?;
+    let mut earlier = Vec::new();
+    for queued in browser["accepted_first"].as_array().into_iter().flatten() {
+        let queued_token = queued["token"].as_str().unwrap_or_default();
+        engine.accept(
+            playthrough,
+            queued["type"].as_str().unwrap_or_default(),
+            queued_token,
+        )?;
+        earlier.push(queued_token.to_string());
+    }
+    let replies = match browser["replies"].as_array() {
+        Some(replies) => replies
+            .iter()
+            .map(Reply::from_value)
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(broken)?,
+        None => browser["fail"]
+            .as_str()
+            .map(Reply::unavailable)
+            .into_iter()
+            .collect(),
+    };
+    let mut replay = Replay::new(replies);
+    let raises = browser["raises"].as_bool().unwrap_or(false);
+    let typed = step.typed.as_deref().unwrap_or_default();
+    let turned = match engine.submit(playthrough, typed, token, &mut replay, &mut |_| {}) {
+        Ok(submitted) => Some(submitted.turned),
+        Err(Error::Model(Failure::Unavailable(_))) if raises => None,
+        Err(error) => return Err(error),
+    };
+    if raises && turned.is_some() {
+        return Err(broken(
+            "browser step expected an unavailable provider to interrupt submission".into(),
+        ));
+    }
+    replay.finish().map_err(broken)?;
+
+    let records = engine.store().load()?;
+    let scene = turned
+        .as_ref()
+        .and_then(|turned| turned.scene)
+        .and_then(|scene| records.find("scenes", scene));
+    let understood = scene.and_then(|scene| {
+        let target = int(scene, "acted_on_id")?;
+        let label = match text(scene, "acted_on_type")? {
+            "Character" => text(records.find("characters", target)?, "fullname")?,
+            "Location" => text(records.find("locations", target)?, "name")?,
+            _ => text(records.find("items", target)?, "name")?,
+        };
+        Some(format!(
+            "{} -> {label}",
+            text(scene, "resolved_action").unwrap_or_default()
+        ))
+    });
+    let note = earlier
+        .iter()
+        .map(String::as_str)
+        .chain(std::iter::once(token))
+        .map(|token| {
+            let status = records
+                .first("playthrough_commands", |row| {
+                    int(row, "playthrough_id") == Some(playthrough)
+                        && text(row, "request_token") == Some(token)
+                })
+                .and_then(|row| text(row, "status"))
+                .unwrap_or("missing");
+            format!("{token}: {status}")
+        })
+        .collect();
+    let report = Report {
+        understood,
+        change: (current_scene(engine, playthrough)? != scene_before)
+            .then(|| "The browser turn completed.".to_string()),
+        refusal: turned
+            .as_ref()
+            .and_then(|turned| turned.refusal.as_ref())
+            .map(|refusal| refusal.text()),
+        note,
+        resolved_by: scene
+            .and_then(|scene| text(scene, "resolved_by"))
+            .map(str::to_string),
+    };
+    let outcome = Outcome {
+        report,
+        state: crate::outcome::State::read(&records, playthrough),
+    };
+    let after = Counts::of(engine, playthrough)?;
+    Ok(dump(&outcome, &before, &after))
+}
+
+fn current_scene(engine: &Engine, playthrough: i64) -> Result<Option<i64>, Error> {
+    Ok(engine.store().connection().query_row(
+        "SELECT current_scene_id FROM playthroughs WHERE id = ?1",
+        [playthrough],
+        |row| row.get(0),
+    )?)
 }
 
 /// The rows a step is counted by, before and after it.

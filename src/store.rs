@@ -314,6 +314,26 @@ impl Store {
         Ok(())
     }
 
+    /// Opens a savepoint: a transaction of its own when none is open, a
+    /// nested one inside one.
+    pub fn savepoint(&self) -> Result<(), Error> {
+        self.conn.execute_batch("SAVEPOINT journal")?;
+        Ok(())
+    }
+
+    /// Keeps what the innermost savepoint wrote.
+    pub fn release(&self) -> Result<(), Error> {
+        self.conn.execute_batch("RELEASE journal")?;
+        Ok(())
+    }
+
+    /// Takes back what the innermost savepoint wrote, and closes it.
+    pub fn rollback_to(&self) {
+        let _ = self
+            .conn
+            .execute_batch("ROLLBACK TO journal; RELEASE journal");
+    }
+
     pub fn rollback(&self) {
         let _ = self.conn.execute_batch("ROLLBACK");
     }

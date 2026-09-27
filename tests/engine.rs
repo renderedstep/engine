@@ -102,3 +102,125 @@ fn a_playthrough_that_is_not_there_is_an_error() {
         Error::NoSuchPlaythrough(42)
     );
 }
+
+fn gate() -> (Engine, i64) {
+    let mut engine = open_world(&world("a-turn-at-the-gate")).unwrap();
+    let story = engine
+        .story_titled(&format!("A Turn at the Gate{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    (engine, playthrough)
+}
+
+fn count(engine: &Engine, sql: &str) -> i64 {
+    engine
+        .store()
+        .connection()
+        .query_row(sql, [], |row| row.get(0))
+        .unwrap()
+}
+
+#[test]
+fn a_submitted_line_is_told_and_a_second_delivery_plays_nothing() {
+    use renderedstep_engine::model::{Replay, Reply};
+    let (mut engine, playthrough) = gate();
+    let reply = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+        "prompt_includes": ["The player types: take red coin", "picked the red coin up"],
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![reply]);
+    let submitted = engine
+        .submit(
+            playthrough,
+            "/take red coin",
+            "one",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    let scene = submitted.turned.scene.expect("the turn's scene");
+    assert!(submitted
+        .state
+        .carrying
+        .iter()
+        .any(|thing| thing.name == "red coin"));
+    assert_eq!(
+        engine
+            .store()
+            .connection()
+            .query_row(
+                "SELECT description || '|' || resolved_action || '|' || resolved_by FROM scenes WHERE id = ?1",
+                [scene],
+                |row| row.get::<_, String>(0)
+            )
+            .unwrap(),
+        "You pocket the red coin.|take|grammar"
+    );
+    let scenes = count(&engine, "SELECT COUNT(*) FROM scenes");
+
+    let mut nothing = Replay::new(Vec::new());
+    let again = engine
+        .submit(
+            playthrough,
+            "/take red coin",
+            "one",
+            &mut nothing,
+            &mut |_| {},
+        )
+        .unwrap();
+    nothing.finish().unwrap();
+    assert_eq!(again.turned.scene, Some(scene));
+    assert_eq!(count(&engine, "SELECT COUNT(*) FROM scenes"), scenes);
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM playthrough_commands WHERE status = 'completed'"
+        ),
+        1
+    );
+}
+
+#[test]
+fn with_no_model_access_an_effect_is_told_in_the_engines_own_words() {
+    use renderedstep_engine::model::{Live, Route};
+    let (mut engine, playthrough) = gate();
+    let mut live = Live::new(Route::None);
+    let mut chunks = String::new();
+    let submitted = engine
+        .submit(
+            playthrough,
+            "/take red coin",
+            "t",
+            &mut live,
+            &mut |chunk| chunks.push_str(chunk),
+        )
+        .unwrap();
+    assert!(submitted.turned.setup);
+    assert!(chunks.is_empty());
+    assert_eq!(
+        engine
+            .store()
+            .connection()
+            .query_row(
+                "SELECT description FROM scenes WHERE id = ?1 AND engine_fallback = 1",
+                [submitted.turned.scene.unwrap()],
+                |row| row.get::<_, String>(0)
+            )
+            .unwrap(),
+        "You pick up the red coin."
+    );
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM playthrough_commands WHERE error_kind = 'setup'"
+        ),
+        1
+    );
+    let refused = engine
+        .submit(playthrough, "look around", "u", &mut live, &mut |_| {})
+        .unwrap_err();
+    assert!(matches!(refused, Error::Unsupported(_)), "{refused:?}");
+}

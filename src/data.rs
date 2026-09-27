@@ -103,6 +103,7 @@ pub fn request_texts() -> &'static RequestTexts {
 const SCENE_GENERATOR: &str = include_str!("../data/scene/generator.yml");
 const LOCATION_GENERATOR: &str = include_str!("../data/location/generator.yml");
 const DESIRES: &str = include_str!("../data/character/desires.yml");
+const NARRATOR: &str = include_str!("../data/scene/narrator.yml");
 
 /// One string of a vendored file, by key.
 fn text_of(file: &'static OnceLock<Yaml>, name: &str, source: &str, key: &str) -> &'static str {
@@ -127,6 +128,23 @@ pub fn location_generator(key: &str) -> &'static str {
 pub fn desires(key: &str) -> &'static str {
     static FILE: OnceLock<Yaml> = OnceLock::new();
     text_of(&FILE, "character/desires.yml", DESIRES, key)
+}
+
+/// `config/engine/scene/narrator.yml`: the narrator's instructions.
+pub fn narrator_instructions() -> &'static str {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    text_of(&FILE, "scene/narrator.yml", NARRATOR, "instructions")
+}
+
+/// `Scene::Narrator::DOING`: what the narrator is told a kind of turn is, for
+/// the kinds that have a sentence.
+pub fn narrator_doing(intent: &str) -> Option<&'static str> {
+    static FILE: OnceLock<Yaml> = OnceLock::new();
+    file_of(&FILE, "scene/narrator.yml", NARRATOR)["doing"][intent].as_str()
+}
+
+fn file_of(file: &'static OnceLock<Yaml>, name: &str, source: &str) -> &'static Yaml {
+    file.get_or_init(|| load(name, source))
 }
 
 const WEIGHTS: &str = include_str!("../data/playthrough/volition/weights.yml");

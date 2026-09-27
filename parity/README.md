@@ -64,11 +64,15 @@ until `store::SCHEMA_VERSION`, and whatever the migration changed, is ported.
 
 ## What this engine cannot play yet
 
-A step with `browser:` plays a submission with fixed provider replies, which
-needs the model client; a step with `reseed:` reloads the world file, which
-needs the world loader. Both stop a script with `Error::Unsupported` here, and
+A step with `browser:` plays a submission through `Engine::submit` with the
+step's fixed provider replies (`model::Replay`), and fails when a call comes
+out of order, a reply is left over, or a prompt misses what its reply says it
+must include or leave out. A browser step this engine cannot play yet (see
+the crate README) stops its script with `Error::Unsupported`, and so does a
+step with `reseed:`, which reloads the world file and needs the world loader.
 `cargo run --release --bin parity -- --check parity` names every other
-script's first divergence.
+script's first divergence. A browser step that asserts `shown` agrees only
+through the runner, which renders the notices.
 
 The world loader stays in Ruby. A script with `reseed:` steps is played in
 the shared-database mode instead (`--database`, `--player` and `ENGINE_STEP`,

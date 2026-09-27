@@ -24,6 +24,9 @@ use crate::store::Store;
 use crate::{data, outcome, plan, shuffle_connections, volition, world_mechanic};
 use serde_json::Value;
 
+mod told;
+pub use told::{Turn, Turned};
+
 /// `Character::ABILITIES`, in order: a check's sequence is its place here.
 pub const ABILITIES: [&str; 3] = ["strength", "dexterity", "will"];
 
@@ -902,12 +905,29 @@ impl<'s> Mechanics<'s> {
             let recipient = choice.recipient.as_ref().map_or(0, |person| person.id);
             return self.talk(recipient, understood);
         }
+        let (status, fact) = self.apply_physical(choice)?;
+        match status {
+            "applied" => Ok(Report::change(fact, understood)),
+            "failed" => Ok(Report::read(vec![fact], understood)),
+            _ => {
+                self.engine_refused = true;
+                Ok(Report::refuse(fact, understood))
+            }
+        }
+    }
+
+    /// `Playthrough::PhysicalAction#apply!`: the attempt, if the room still
+    /// offers it, and what happened, as its status (`applied`, `failed` or
+    /// `rejected`) and the fact the engine states.
+    pub(crate) fn apply_physical(
+        &mut self,
+        choice: &Choice,
+    ) -> Result<(&'static str, String), Error> {
         let offered = self.room().physical_actions();
         let Some(choice) = offered.into_iter().find(|offer| offer == choice) else {
-            self.engine_refused = true;
-            return Ok(Report::refuse(
+            return Ok((
+                "rejected",
                 "That physical action is unavailable. No item or passage changed.".into(),
-                understood,
             ));
         };
         let item = choice.item.as_ref().map(|thing| thing.id);
@@ -926,11 +946,10 @@ impl<'s> Mechanics<'s> {
                     .and_then(|who| self.condition_of(who))
                     .map(|c| c.hp);
                 if before.is_none() && healing > 0 {
-                    self.engine_refused = true;
-                    return Ok(Report::refuse(
+                    return Ok((
+                        "rejected",
                         "Your condition is unavailable, so the healing item was not consumed."
                             .into(),
-                        understood,
                     ));
                 }
                 if let Some(who) = &player {
@@ -944,13 +963,13 @@ impl<'s> Mechanics<'s> {
                     _ => 0,
                 };
                 self.spend(item, "consumed")?;
-                Ok(Report::change(
+                Ok((
+                    "applied",
                     format!(
                         "You consumed {}. It is gone from your possessions. You recovered \
                          {gained} hit points.",
                         string(&row, "name")
                     ),
-                    understood,
                 ))
             }
             "burn" => {
@@ -962,22 +981,19 @@ impl<'s> Mechanics<'s> {
                     .as_ref()
                     .map(|t| t.name.clone())
                     .unwrap_or_default();
-                Ok(Report::change(
+                Ok((
+                    "applied",
                     format!(
                         "You burned {name} using {tool}. The burned item is gone; you still \
                          carry {tool}."
                     ),
-                    understood,
                 ))
             }
-            "unlock" | "pick" | "pry" | "force" => self.open_passage(&choice, understood),
-            _ => {
-                self.engine_refused = true;
-                Ok(Report::refuse(
-                    "The item remains in your hands until its recipient accepts it.".into(),
-                    understood,
-                ))
-            }
+            "unlock" | "pick" | "pry" | "force" => self.open_passage(&choice),
+            _ => Ok((
+                "rejected",
+                "The item remains in your hands until its recipient accepts it.".into(),
+            )),
         }
     }
 
@@ -999,11 +1015,7 @@ impl<'s> Mechanics<'s> {
     /// `PhysicalAction#open_passage!`: a key opens a lock outright; picking,
     /// prising and forcing each take a check. The way opens both ways, for
     /// this game only, and nobody crosses it.
-    fn open_passage(
-        &mut self,
-        choice: &Choice,
-        understood: Option<String>,
-    ) -> Result<Report, Error> {
+    fn open_passage(&mut self, choice: &Choice) -> Result<(&'static str, String), Error> {
         let Some(edge) = &choice.connection else {
             return Err(Error::Database("a passage with no doorway".into()));
         };
@@ -1023,12 +1035,12 @@ impl<'s> Mechanics<'s> {
         };
         if choice.kind != "unlock" && !check.as_ref().is_some_and(Check::passed) {
             let told = check.as_ref().map_or(String::new(), ToString::to_string);
-            return Ok(Report::read(
-                vec![format!(
+            return Ok((
+                "failed",
+                format!(
                     "You tried to {}. {told}. The way remains closed; you stay here.",
                     crate::text::ruby_downcase(&choice.name())
-                )],
-                understood,
+                ),
             ));
         }
         let means = match choice.kind.as_str() {
@@ -1077,13 +1089,13 @@ impl<'s> Mechanics<'s> {
         let here = self
             .here()
             .map_or(String::new(), |room| string(&room, "name").to_string());
-        Ok(Report::change(
+        Ok((
+            "applied",
             format!(
                 "You opened the way to {}.{} You have not crossed it; you remain in {here}.",
                 edge.place.name,
                 check.map_or(String::new(), |check| format!(" {check}."))
             ),
-            understood,
         ))
     }
 

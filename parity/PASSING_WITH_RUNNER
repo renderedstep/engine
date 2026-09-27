@@ -1,6 +1,8 @@
-# Scripts with `reseed:` steps that agree step for step when the Ruby
-# engine's runner plays them in its shared-database mode: it reloads the
-# world file itself and asks this engine for each typed step
-# (`parity/runner.sh`). The whole-script check cannot play them.
-re-seeding-a-building-somebody-is-inside
+# Scripts that agree step for step when the Ruby engine's runner plays them
+# in its shared-database mode (`parity/runner.sh`), and that the whole-script
+# check cannot: the runner reloads the world file itself for a `reseed:`
+# step, renders the notices a browser step asserts as `shown`, and asks this
+# engine for each typed step.
+hazard-notices-survive-quiet-arrival
 reseed-a-played-world
+re-seeding-a-building-somebody-is-inside
