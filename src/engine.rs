@@ -24,6 +24,14 @@ pub enum Error {
         found: Option<String>,
         expected: String,
     },
+    /// The database is at a newer schema version than this engine is
+    /// written against, and that newer schema changed a table the engine
+    /// touches: each difference is a fact of `store::SHAPE` it lacks
+    /// (`expected ...`) or one it has that the shape does not (`found ...`).
+    SchemaChanged {
+        found: String,
+        differences: Vec<String>,
+    },
     NoSuchPlaythrough(i64),
     NoSuchStory(String),
     /// SQLite refused a statement, or a row the engine needed is missing.
@@ -54,6 +62,11 @@ impl std::fmt::Display for Error {
                 f,
                 "the database is at schema {}, and this engine is written against {expected}",
                 found.as_deref().unwrap_or("(none)")
+            ),
+            Error::SchemaChanged { found, differences } => write!(
+                f,
+                "the database is at schema {found}, which changes what this engine reads and writes: {}",
+                differences.join("; ")
             ),
             Error::NoSuchPlaythrough(id) => write!(f, "there is no playthrough {id}"),
             Error::NoSuchStory(title) => write!(f, "there is no story titled {title:?}"),

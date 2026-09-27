@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_tool_calls" ("id" integer PRIMARY KEY AUTOI
 CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cache_read_cost" decimal(16,10), "cache_read_tokens" integer, "cache_write_cost" decimal(16,10), "cache_write_tokens" integer, "chat_id" integer NOT NULL, "chat_type" varchar NOT NULL, "created_at" datetime(6) NOT NULL, "input_cost" decimal(16,10), "input_tokens" integer, "message_id" integer, "message_type" varchar, "model" varchar NOT NULL, "operation" varchar NOT NULL, "output_cost" decimal(16,10), "output_tokens" integer, "provider" varchar NOT NULL, "status" varchar NOT NULL, "thinking_cost" decimal(16,10), "thinking_tokens" integer, "total_cost" decimal(16,10), "updated_at" datetime(6) NOT NULL, CONSTRAINT chk_rails_71abd85d6e CHECK (operation IN ('chat', 'embedding', 'moderation', 'image', 'speech', 'transcription', 'ocr', 'rerank')), CONSTRAINT chk_rails_f50895962a CHECK (status IN ('pending', 'succeeded', 'failed', 'cancelled')));
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("completed" boolean DEFAULT FALSE NOT NULL, "last_id" integer, "task" varchar NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text);
-INSERT INTO universes VALUES(1000000001,'A town that keeps its paperwork.','2026-09-27 13:51:30.253160','Fees, receipts and arrears.','A records office and the landing outside it.','The office has stood since the town did.','Ordinary physics.','A clerk of works answers to a council.','The town keeps a quiet calendar.','Ledgers, lamps and locked doors.','2026-09-27 13:51:30.253160','Nothing anybody carries.');
+INSERT INTO universes VALUES(1000000001,'A town that keeps its paperwork.','2026-09-27 18:22:34.515993','Fees, receipts and arrears.','A records office and the landing outside it.','The office has stood since the town did.','Ordinary physics.','A clerk of works answers to a council.','The town keeps a quiet calendar.','Ledgers, lamps and locked doors.','2026-09-27 18:22:34.515993','Nothing anybody carries.');
 CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, CONSTRAINT "fk_rails_56a213cbe2"
 FOREIGN KEY ("race_id")
   REFERENCES "races" ("id")
@@ -23,8 +23,8 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO characters VALUES(1000000001,34,'A wet coat and a folded paper.','A tenant who has come for a receipt and will not leave without one.','Wick wants a dated receipt for the quarter''s rent, in his hand, before the office closes.','2026-09-27 13:51:30.396400',0,'obtain',12,'Being asked to come back tomorrow.','Paying twice for the same thing.','Wick',8,0,0,1,10,'A receipt with a date on it.',NULL,'offer','Wick','Patient and stubborn in equal measure.',1000000001,'Wick needs to keep every receipt he has ever been given, because it is the only argument he has.','male',1000000001,12,'Wick wants somebody behind that counter to know his name without being told it.','Wick needs to say out loud that he cannot pay next quarter, to somebody who can do something about it.','2026-09-27 13:51:30.396400',12,NULL,NULL);
-INSERT INTO characters VALUES(1000000002,41,'An office coat and a ring of keys she keeps turning over.','A clerk of works who is due on the landing and has been due there for an hour.','Bell wants to be up on the landing where the survey is waiting, before the hour goes and the whole morning goes with it.','2026-09-27 13:51:30.438269',0,'reach',12,'Being caught on the stairs.','Being the one who held everybody up.','Bell',8,0,0,0,10,'A morning that runs to time.',1000000001,'attend','Bell','Brisk, decent, and already thinking about the next room.',1000000001,'Bell needs to answer whoever is at the counter first, because that is what the counter is for.','female',1000000001,12,'Bell wants one person in this building to say the delay was never hers.','Bell needs to stand still long enough to hear what the person at the counter actually came to say.','2026-09-27 13:51:30.438269',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000001,34,'A wet coat and a folded paper.','A tenant who has come for a receipt and will not leave without one.','Wick wants a dated receipt for the quarter''s rent, in his hand, before the office closes.','2026-09-27 18:22:34.708175',0,'obtain',12,'Being asked to come back tomorrow.','Paying twice for the same thing.','Wick',8,0,0,1,10,'A receipt with a date on it.',NULL,'offer','Wick','Patient and stubborn in equal measure.',1000000001,'Wick needs to keep every receipt he has ever been given, because it is the only argument he has.','male',1000000001,12,'Wick wants somebody behind that counter to know his name without being told it.','Wick needs to say out loud that he cannot pay next quarter, to somebody who can do something about it.','2026-09-27 18:22:34.708175',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000002,41,'An office coat and a ring of keys she keeps turning over.','A clerk of works who is due on the landing and has been due there for an hour.','Bell wants to be up on the landing where the survey is waiting, before the hour goes and the whole morning goes with it.','2026-09-27 18:22:34.754501',0,'reach',12,'Being caught on the stairs.','Being the one who held everybody up.','Bell',8,0,0,0,10,'A morning that runs to time.',1000000001,'attend','Bell','Brisk, decent, and already thinking about the next room.',1000000001,'Bell needs to answer whoever is at the counter first, because that is what the counter is for.','female',1000000001,12,'Bell wants one person in this building to say the delay was never hers.','Bell needs to stand still long enough to hear what the person at the counter actually came to say.','2026-09-27 18:22:34.754501',12,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cancelled" boolean DEFAULT FALSE NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "model_id_string" varchar, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "ruby_llm_model_id" integer, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -58,7 +58,7 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-27 13:51:30.343205','A ruled slip with the quarter''s date and no signature on it yet.','intact',NULL,1000000001,'quarter receipt',NULL,'{}',0,NULL,'2026-09-27 13:51:30.343205','ordinary',NULL,NULL);
+INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-27 18:22:34.647074','A ruled slip with the quarter''s date and no signature on it yet.','intact',NULL,1000000001,'quarter receipt',NULL,'{}',0,NULL,'2026-09-27 18:22:34.647074','ordinary',NULL,NULL);
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -81,8 +81,8 @@ FOREIGN KEY ("key_template_id")
 FOREIGN KEY ("connected_location_id")
   REFERENCES "locations" ("id")
 );
-INSERT INTO location_connections VALUES(1000000001,'open',1000000002,'2026-09-27 13:51:30.476930','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-27 13:51:30.476930');
-INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-27 13:51:30.483205','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-27 13:51:30.483205');
+INSERT INTO location_connections VALUES(1000000001,'open',1000000002,'2026-09-27 18:22:34.798920','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-27 18:22:34.798920');
+INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-27 18:22:34.806085','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-27 18:22:34.806085');
 CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
@@ -90,8 +90,8 @@ FOREIGN KEY ("parent_location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,'2026-09-27 13:51:30.294841','safe',NULL,'A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.','realized',NULL,NULL,NULL,NULL,'The office has kept the town''s receipts since the town had any.',0,'The Records Office',NULL,NULL,1000000001,'A counter and a wall of ledgers.','2026-09-27 13:51:30.294841',NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000002,'2026-09-27 13:51:30.350770','safe',NULL,'A half-landing with a survey spread on a trestle and a window going grey.','realized',NULL,NULL,NULL,NULL,'The survey has been spread on this trestle for three weeks.',0,'The Landing',NULL,NULL,1000000001,'A half-landing and a trestle table.','2026-09-27 13:51:30.350770',NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000001,'2026-09-27 18:22:34.566989','safe',NULL,'A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.','realized',NULL,NULL,NULL,NULL,'The office has kept the town''s receipts since the town had any.',0,'The Records Office',NULL,NULL,1000000001,'A counter and a wall of ledgers.','2026-09-27 18:22:34.566989',NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000002,'2026-09-27 18:22:34.656021','safe',NULL,'A half-landing with a survey spread on a trestle and a window going grey.','realized',NULL,NULL,NULL,NULL,'The survey has been spread on this trestle for three weeks.',0,'The Landing',NULL,NULL,1000000001,'A half-landing and a trestle table.','2026-09-27 18:22:34.656021',NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -268,7 +268,11 @@ CREATE TABLE IF NOT EXISTS "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT N
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO races VALUES(1000000001,'2026-09-27 13:51:30.255788','Ordinary people of the town.',0,'Townsfolk',1000000001,'2026-09-27 13:51:30.255788');
+INSERT INTO races VALUES(1000000001,'2026-09-27 18:22:34.519878','Ordinary people of the town.',0,'Townsfolk',1000000001,'2026-09-27 18:22:34.519878');
+CREATE TABLE IF NOT EXISTS "relay_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_source" varchar, "cost_usd" decimal(12,6), "created_at" datetime(6) NOT NULL, "finished_at" datetime(6), "input_tokens" integer, "model" varchar NOT NULL, "output_tokens" integer, "player_id" integer NOT NULL, "reserved_usd" decimal(12,6) NOT NULL, "route" varchar NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "stream" boolean DEFAULT FALSE NOT NULL, "updated_at" datetime(6) NOT NULL, "upstream_status" integer, CONSTRAINT "fk_rails_deae27bd71"
+FOREIGN KEY ("player_id")
+  REFERENCES "players" ("id")
+);
 CREATE TABLE IF NOT EXISTS "scenes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "acted_on_id" integer, "acted_on_type" varchar, "created_at" datetime(6) NOT NULL, "description" text, "engine_fact" text, "engine_fallback" boolean DEFAULT FALSE NOT NULL, "is_opening" boolean DEFAULT FALSE NOT NULL, "location_id" integer NOT NULL, "previous_scene_id" integer, "resolved_action" varchar, "resolved_by" varchar, "story_id" integer NOT NULL, "story_timestamp" datetime(6), "summary" text, "typed" text, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_5cc24f985a"
 FOREIGN KEY ("previous_scene_id")
   REFERENCES "scenes" ("id")
@@ -279,12 +283,12 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-27 13:51:30.591132','You are standing at the counter of the records office. Bell is behind it, already half turned toward the landing.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-19 09:00:00','Wick comes to the records office counter and finds Bell on her way out.',NULL,'2026-09-27 13:51:30.591132');
+INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-27 18:22:34.889832','You are standing at the counter of the records office. Bell is behind it, already half turned toward the landing.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-19 09:00:00','Wick comes to the records office counter and finds Bell on her way out.',NULL,'2026-09-27 18:22:34.889832');
 CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'2026-09-27 13:51:30.272294',NULL,'town adventure','The office is warm and somebody else is already looking at the door.','2026-09-19 09:00:00','Wick came for a receipt; Bell is due upstairs and the day is going.','A Clerk With Somewhere To Be (engine sweep)',1000000001,'2026-09-27 13:51:30.272294');
+INSERT INTO stories VALUES(1000000001,'2026-09-27 18:22:34.539556',NULL,'town adventure','The office is warm and somebody else is already looking at the door.','2026-09-19 09:00:00','Wick came for a receipt; Bell is due upstairs and the day is going.','A Clerk With Somewhere To Be (engine sweep)',1000000001,'2026-09-27 18:22:34.539556');
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -304,6 +308,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20260927152056');
 INSERT INTO schema_migrations VALUES('20260927031841');
 INSERT INTO schema_migrations VALUES('20260927031839');
 INSERT INTO schema_migrations VALUES('20260927031837');
@@ -374,8 +379,8 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
-INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-27 13:50:56.754682','2026-09-27 13:50:56.754684');
-INSERT INTO ar_internal_metadata VALUES('schema_sha1','d47252e629f64bc874a774b238f1136c0a701d75','2026-09-27 13:50:56.758479','2026-09-27 13:50:56.758480');
+INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-27 18:22:08.293675','2026-09-27 18:22:08.293678');
+INSERT INTO ar_internal_metadata VALUES('schema_sha1','ac751dcc86cc6d0c74a82f492cd96fec987af3be','2026-09-27 18:22:08.297774','2026-09-27 18:22:08.297776');
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -415,6 +420,7 @@ INSERT INTO sqlite_sequence VALUES('quest_outcomes',1000000000);
 INSERT INTO sqlite_sequence VALUES('quest_steps',1000000000);
 INSERT INTO sqlite_sequence VALUES('quests',1000000000);
 INSERT INTO sqlite_sequence VALUES('races',1000000001);
+INSERT INTO sqlite_sequence VALUES('relay_receipts',1000000000);
 INSERT INTO sqlite_sequence VALUES('scenes',1000000001);
 INSERT INTO sqlite_sequence VALUES('stories',1000000001);
 INSERT INTO sqlite_sequence VALUES('system_one_receipts',1000000000);
@@ -548,6 +554,9 @@ CREATE UNIQUE INDEX "index_quests_on_story_id_and_title" ON "quests" ("story_id"
 CREATE INDEX "index_quests_on_story_id" ON "quests" ("story_id");
 CREATE UNIQUE INDEX "index_races_on_universe_id_and_name" ON "races" ("universe_id", "name");
 CREATE INDEX "index_races_on_universe_id" ON "races" ("universe_id");
+CREATE INDEX "index_relay_receipts_on_player_id_and_created_at" ON "relay_receipts" ("player_id", "created_at");
+CREATE INDEX "index_relay_receipts_on_player_id_and_status" ON "relay_receipts" ("player_id", "status");
+CREATE INDEX "index_relay_receipts_on_player_id" ON "relay_receipts" ("player_id");
 CREATE INDEX "index_scenes_on_acted_on" ON "scenes" ("acted_on_type", "acted_on_id");
 CREATE INDEX "index_scenes_on_location_id" ON "scenes" ("location_id");
 CREATE INDEX "index_scenes_on_previous_scene_id" ON "scenes" ("previous_scene_id");
