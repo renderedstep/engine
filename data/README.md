@@ -1,7 +1,7 @@
 # Vendored engine data
 
 These YAML files are copied byte for byte from the Ruby engine's repository,
-[calebl/text-adventure](https://github.com/calebl/text-adventure), directory
+[renderedstep/server](https://github.com/renderedstep/server), directory
 `config/engine/`, at commit `659ca6ad5d8246f2fd7edee4bbd1e728e8148f59` (`playthrough/volition/weights.yml`
 at `f15d07b1bfff79cda40cb59e0269c8b38c6592f1`, where the others are unchanged). They
 are the one copy of their strings in this crate: `src/data.rs` compiles them

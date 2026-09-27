@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
-          repository: calebl/text-adventure
+          repository: renderedstep/server
           ref: ${{ env.RUBY_ENGINE_COMMIT }}
           path: ruby-engine
       - uses: dtolnay/rust-toolchain@stable

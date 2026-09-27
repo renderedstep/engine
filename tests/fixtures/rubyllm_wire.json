@@ -1,5 +1,5 @@
 {
-  "source": "what RubyLLM 2.0.0's OpenRouter provider sent from BaseAgent in calebl/text-adventure at b4c9921c008ac1e459486318324aec66672a9366, captured by a server on this machine that answered with fixed replies; the schemas are Location::ExitsSchema and Interaction::Schema",
+  "source": "what RubyLLM 2.0.0's OpenRouter provider sent from BaseAgent in renderedstep/server at b4c9921c008ac1e459486318324aec66672a9366, captured by a server on this machine that answered with fixed replies; the schemas are Location::ExitsSchema and Interaction::Schema",
   "bodies": [
     {
       "flow": "narration",

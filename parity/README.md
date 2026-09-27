@@ -2,7 +2,7 @@
 
 The Ruby engine's stored scripts of typed lines, and what it wrote after
 every step of each, copied from
-[calebl/text-adventure](https://github.com/calebl/text-adventure) at commit
+[renderedstep/server](https://github.com/renderedstep/server) at commit
 `f15d07b1bfff79cda40cb59e0269c8b38c6592f1`, and unchanged at `b9407f4499c319748aab1ba2a5f118bf401f1901`,
 the commit whose runner CI plays them through and whose schema the worlds
 are built from. That repository's
