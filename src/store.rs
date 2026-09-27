@@ -289,6 +289,14 @@ impl Store {
         Ok(written)
     }
 
+    /// Deletes one row.
+    pub fn delete(&self, table: &str, id: i64) -> Result<(), Error> {
+        self.columns(table)?;
+        self.conn
+            .execute(&format!("DELETE FROM \"{table}\" WHERE \"id\" = ?"), [id])?;
+        Ok(())
+    }
+
     pub fn begin(&self) -> Result<(), Error> {
         self.conn.execute_batch("BEGIN IMMEDIATE")?;
         Ok(())

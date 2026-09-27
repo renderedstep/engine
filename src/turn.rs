@@ -21,7 +21,7 @@ use crate::roll::{self, Seed};
 use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing};
 use crate::spot;
 use crate::store::Store;
-use crate::{data, outcome, plan, volition};
+use crate::{data, outcome, plan, shuffle_connections, volition, world_mechanic};
 use serde_json::Value;
 
 /// `Character::ABILITIES`, in order: a check's sequence is its place here.
@@ -1561,24 +1561,33 @@ impl<'s> Mechanics<'s> {
     fn catch_up_world(&mut self) -> Result<(), Error> {
         let now = self.clock();
         let story = self.story_id();
-        let start = int(self.game().story(), "start_time");
-        for mechanic in self
+        let start = self.start_time();
+        let mechanics: Vec<Row> = self
             .records
             .select("world_mechanics", |row| int(row, "story_id") == Some(story))
-        {
-            let from = int(mechanic, "last_run_at").or(start);
-            if from.is_some_and(|from| now > from) {
-                let period = match text(mechanic, "cadence") {
-                    Some("hourly") => 3600,
-                    Some("nightly") => 86_400,
-                    Some("weekly") => 604_800,
-                    _ => continue,
-                };
-                let from = from.unwrap_or_default();
-                let next = (from.div_euclid(period) + 1) * period;
-                if next <= now {
-                    return Err(Error::Unsupported("a world mechanic coming due".into()));
+            .into_iter()
+            .cloned()
+            .collect();
+        for mechanic in mechanics {
+            let Some(cadence) = text(&mechanic, "cadence").and_then(world_mechanic::cadence) else {
+                continue;
+            };
+            let Some(from) = int(&mechanic, "last_run_at").or(start) else {
+                continue;
+            };
+            for at in cadence.pending_boundaries(from, now) {
+                if text(&mechanic, "kind") != Some("shuffle_connections") {
+                    return Err(Error::Unsupported(format!(
+                        "the world mechanic {}",
+                        string(&mechanic, "kind")
+                    )));
                 }
+                self.shuffle_connections(&mechanic, at)?;
+                self.update(
+                    "world_mechanics",
+                    id(&mechanic),
+                    vec![("last_run_at", Value::from(at))],
+                )?;
             }
         }
         let mut due: Vec<(i64, i64)> = self
@@ -1594,6 +1603,245 @@ impl<'s> Mechanics<'s> {
         due.sort();
         for (_, event) in due {
             self.update("world_events", event, vec![("fired_at", Value::from(now))])?;
+        }
+        Ok(())
+    }
+
+    /// `WorldMechanic::ShuffleConnections#run!`: the mobile rooms' doorways
+    /// onto anchored rooms turned, each doorway keeping its own state and
+    /// this world's games keeping the passages they opened, and one event
+    /// saying what moved.
+    fn shuffle_connections(&mut self, mechanic: &Row, at: i64) -> Result<(), Error> {
+        let story = self.story_id();
+        let mut locations: Vec<(i64, bool, String)> = self
+            .records
+            .select("locations", |row| int(row, "story_id") == Some(story))
+            .iter()
+            .map(|row| {
+                (
+                    id(row),
+                    flag(row, "mobile"),
+                    string(row, "name").to_string(),
+                )
+            })
+            .collect();
+        locations.sort_by_key(|(room, _, _)| *room);
+        let ids: Vec<i64> = locations.iter().map(|(room, _, _)| *room).collect();
+        let doorways: Vec<Row> = self
+            .records
+            .select("location_connections", |row| {
+                int(row, "location_id").is_some_and(|room| ids.contains(&room))
+            })
+            .into_iter()
+            .cloned()
+            .collect();
+        let graph = shuffle_connections::Graph {
+            story_id: story,
+            locations: locations
+                .iter()
+                .map(|(room, mobile, _)| (*room, *mobile))
+                .collect(),
+            connections: doorways
+                .iter()
+                .map(|row| {
+                    (
+                        int(row, "location_id").unwrap_or_default(),
+                        int(row, "connected_location_id").unwrap_or_default(),
+                    )
+                })
+                .collect(),
+        };
+        let edges = graph.anchor_edges();
+        if edges.len() < 2 {
+            return Ok(());
+        }
+        let Some(arrangement) = graph.choose_arrangement(&edges, at) else {
+            return Ok(());
+        };
+        let rows: Vec<Row> = edges
+            .iter()
+            .map(|&(from, to)| {
+                doorways
+                    .iter()
+                    .find(|row| {
+                        int(row, "location_id") == Some(from)
+                            && int(row, "connected_location_id") == Some(to)
+                    })
+                    .cloned()
+                    .expect("an anchor edge is a doorway")
+            })
+            .collect();
+        let moves: Vec<(Row, i64, i64)> = rows
+            .into_iter()
+            .zip(arrangement)
+            .filter_map(|(edge, to)| {
+                let from = int(&edge, "connected_location_id")?;
+                (from != to).then_some((edge, from, to))
+            })
+            .collect();
+        if moves.is_empty() {
+            return Ok(());
+        }
+
+        let states: Vec<[Doorway; 2]> = moves
+            .iter()
+            .map(|(edge, _, _)| self.doorway_state(edge))
+            .collect();
+        for (edge, from, _) in &moves {
+            let room = int(edge, "location_id").unwrap_or_default();
+            self.remove_edge(room, *from)?;
+        }
+        for ((edge, _, to), state) in moves.iter().zip(states) {
+            let room = int(edge, "location_id").unwrap_or_default();
+            for ((a, b), doorway) in [(room, *to), (*to, room)].into_iter().zip(state) {
+                let mut values = doorway.values;
+                let time = travel_time(&values);
+                values.push(("location_id", Value::from(a)));
+                values.push(("connected_location_id", Value::from(b)));
+                values.push(("time_to_travel", time));
+                let written = id(&self.insert("location_connections", values)?);
+                for mut opening in doorway.openings {
+                    opening.push(("location_connection_id", Value::from(written)));
+                    self.insert("playthrough_passages", opening)?;
+                }
+            }
+        }
+
+        let name = |room: i64| {
+            locations
+                .iter()
+                .find(|(id, _, _)| *id == room)
+                .map_or("somewhere unrecorded".to_string(), |(_, _, name)| {
+                    name.clone()
+                })
+        };
+        let summary = moves
+            .iter()
+            .map(|(edge, from, to)| {
+                format!(
+                    "{} now opens onto {} instead of {}.",
+                    name(int(edge, "location_id").unwrap_or_default()),
+                    name(*to),
+                    name(*from)
+                )
+            })
+            .collect::<Vec<_>>()
+            .join(" ");
+        let event = self.insert(
+            "world_events",
+            vec![
+                ("world_mechanic_id", Value::from(id(mechanic))),
+                ("story_id", Value::from(story)),
+                ("source", Value::from("world_mechanic")),
+                ("occurred_at", Value::from(at)),
+                ("summary", Value::from(summary)),
+            ],
+        )?;
+        let mut touched: Vec<i64> = moves
+            .iter()
+            .flat_map(|(edge, from, to)| [int(edge, "location_id").unwrap_or_default(), *from, *to])
+            .collect();
+        touched.sort();
+        touched.dedup();
+        for room in touched {
+            self.insert(
+                "locations_world_events",
+                vec![
+                    ("location_id", Value::from(room)),
+                    ("world_event_id", Value::from(id(&event))),
+                ],
+            )?;
+        }
+        Ok(())
+    }
+
+    /// `ShuffleConnections#doorway_state`: what a doorway and its way back
+    /// carry, and the passages every game opened through them. A way back
+    /// that was never written is made from the doorway, with no hazard.
+    fn doorway_state(&self, edge: &Row) -> [Doorway; 2] {
+        let reverse = self
+            .records
+            .first("location_connections", |row| {
+                int(row, "location_id") == int(edge, "connected_location_id")
+                    && int(row, "connected_location_id") == int(edge, "location_id")
+            })
+            .cloned();
+        [Some(edge.clone()), reverse].map(|row| {
+            let written = row.is_some();
+            let source = row.unwrap_or_else(|| edge.clone());
+            let mut columns: Vec<&str> =
+                vec!["distance", "travel_method", "barrier", "key_template_id"];
+            if written {
+                columns.extend(["id", "created_at", "hazard", "hazard_die"]);
+            }
+            let values = columns
+                .into_iter()
+                .map(|column| (column, source.get(column).cloned().unwrap_or(Value::Null)))
+                .collect();
+            let openings = self
+                .records
+                .select("playthrough_passages", |passage| {
+                    int(passage, "location_connection_id") == Some(id(&source))
+                })
+                .into_iter()
+                .map(|passage| {
+                    PASSAGE_COLUMNS
+                        .iter()
+                        .filter(|column| written || **column != "id")
+                        .map(|column| {
+                            (
+                                *column,
+                                passage.get(*column).cloned().unwrap_or(Value::Null),
+                            )
+                        })
+                        .collect()
+                })
+                .collect();
+            Doorway { values, openings }
+        })
+    }
+
+    /// `ShuffleConnections#remove_edge`: a doorway both ways gone, its tolls
+    /// kept with no doorway, its passages with it.
+    fn remove_edge(&mut self, room: i64, far: i64) -> Result<(), Error> {
+        let rows: Vec<i64> = self
+            .records
+            .select("location_connections", |row| {
+                let pair = (int(row, "location_id"), int(row, "connected_location_id"));
+                pair == (Some(room), Some(far)) || pair == (Some(far), Some(room))
+            })
+            .into_iter()
+            .map(id)
+            .collect();
+        for row in rows {
+            let tolls: Vec<i64> = self
+                .records
+                .select("playthrough_tolls", |toll| {
+                    int(toll, "location_connection_id") == Some(row)
+                })
+                .into_iter()
+                .map(id)
+                .collect();
+            for toll in tolls {
+                self.update(
+                    "playthrough_tolls",
+                    toll,
+                    vec![("location_connection_id", Value::Null)],
+                )?;
+            }
+            let passages: Vec<i64> = self
+                .records
+                .select("playthrough_passages", |passage| {
+                    int(passage, "location_connection_id") == Some(row)
+                })
+                .into_iter()
+                .map(id)
+                .collect();
+            for passage in passages {
+                self.records.remove("playthrough_passages", passage);
+            }
+            self.store.delete("location_connections", row)?;
+            self.records.remove("location_connections", row);
         }
         Ok(())
     }
@@ -2654,6 +2902,55 @@ impl<'s> Mechanics<'s> {
         }
         Ok(())
     }
+}
+
+/// One side of a doorway as a shuffle rewrites it: its columns, and the
+/// passages opened through it.
+struct Doorway {
+    values: Vec<(&'static str, Value)>,
+    openings: Vec<Vec<(&'static str, Value)>>,
+}
+
+/// A passage's columns, less its doorway.
+const PASSAGE_COLUMNS: [&str; 7] = [
+    "id",
+    "playthrough_id",
+    "means",
+    "opened_at",
+    "opened_by_item_id",
+    "created_at",
+    "updated_at",
+];
+
+/// `LocationConnection#derive_time_to_travel`: a doorway's journey in words.
+fn travel_time(values: &[(&str, Value)]) -> Value {
+    let column = |name: &str| {
+        values
+            .iter()
+            .find(|(column, _)| *column == name)
+            .and_then(|(_, value)| value.as_str())
+    };
+    let (Some(distance), Some(method)) = (column("distance"), column("travel_method")) else {
+        return Value::Null;
+    };
+    let Some(minutes) = crate::arrival::travel_minutes(distance, method) else {
+        return Value::Null;
+    };
+    Value::from(if minutes < 1.0 {
+        "under a minute".to_string()
+    } else if minutes < 2.0 {
+        "about a minute".to_string()
+    } else if minutes < 60.0 {
+        format!("about {} minutes", minutes.round() as i64)
+    } else if minutes < 120.0 {
+        "about an hour".to_string()
+    } else if minutes < 1440.0 {
+        format!("about {} hours", (minutes / 60.0).round() as i64)
+    } else if minutes < 2880.0 {
+        "about a day".to_string()
+    } else {
+        format!("about {} days", (minutes / 1440.0).round() as i64)
+    })
 }
 
 /// Where a copied thing goes.

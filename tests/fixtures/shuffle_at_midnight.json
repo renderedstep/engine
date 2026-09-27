@@ -1,0 +1,280 @@
+{
+  "dump": {
+    "location": {
+      "id": 1000000001,
+      "name": "Grenn's Boarding House, Room 3",
+      "detail": "realized"
+    },
+    "storey": null,
+    "exits": [
+      {
+        "id": 1000000003,
+        "name": "Grenn's Boarding House hallway",
+        "detail": "stub"
+      },
+      {
+        "id": 1000000004,
+        "name": "Larkspur Quarter rooftops",
+        "detail": "stub"
+      },
+      {
+        "id": 1000000002,
+        "name": "Mournwell Lane",
+        "detail": "stub"
+      }
+    ],
+    "here": [],
+    "carrying": [],
+    "present": [
+      {
+        "id": 1000000002,
+        "name": "Grenn Ollivar"
+      }
+    ],
+    "foes": [],
+    "inscription": [],
+    "hp": 18,
+    "hp_of": {
+      "Grenn Ollivar": 6
+    },
+    "abilities": {
+      "strength": 11,
+      "dexterity": 14,
+      "will": 13
+    },
+    "dead": false,
+    "changed": false,
+    "change": null,
+    "refused": false,
+    "offers": null,
+    "understood": null,
+    "resolved_by": "grammar",
+    "note": null,
+    "drifts": 0,
+    "blows": 0,
+    "hazards": 0,
+    "quest": {
+      "1": "bound",
+      "2": "bound",
+      "3": "bound"
+    },
+    "volitions": 0,
+    "acts": 0,
+    "ending": "none",
+    "ending_words": null,
+    "scheduled": 1,
+    "fired": 1,
+    "elapsed_minutes": 0,
+    "shown": null
+  },
+  "location_connections": [
+    {
+      "id": 1000000001,
+      "location_id": 1000000001,
+      "connected_location_id": 1000000002,
+      "barrier": "open",
+      "distance": "adjacent",
+      "travel_method": "climbing",
+      "time_to_travel": "about 3 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000002,
+      "location_id": 1000000002,
+      "connected_location_id": 1000000001,
+      "barrier": "open",
+      "distance": "adjacent",
+      "travel_method": "climbing",
+      "time_to_travel": "about 3 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000003,
+      "location_id": 1000000001,
+      "connected_location_id": 1000000003,
+      "barrier": "open",
+      "distance": "adjacent",
+      "travel_method": "walking",
+      "time_to_travel": "about a minute",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000004,
+      "location_id": 1000000003,
+      "connected_location_id": 1000000001,
+      "barrier": "open",
+      "distance": "adjacent",
+      "travel_method": "walking",
+      "time_to_travel": "about a minute",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000005,
+      "location_id": 1000000001,
+      "connected_location_id": 1000000004,
+      "barrier": "open",
+      "distance": "a short walk",
+      "travel_method": "climbing",
+      "time_to_travel": "about 15 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000006,
+      "location_id": 1000000004,
+      "connected_location_id": 1000000001,
+      "barrier": "open",
+      "distance": "a short walk",
+      "travel_method": "climbing",
+      "time_to_travel": "about 15 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000007,
+      "location_id": 1000000002,
+      "connected_location_id": 1000000007,
+      "barrier": "open",
+      "distance": "across the district",
+      "travel_method": "walking",
+      "time_to_travel": "about 20 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000008,
+      "location_id": 1000000007,
+      "connected_location_id": 1000000002,
+      "barrier": "open",
+      "distance": "across the district",
+      "travel_method": "walking",
+      "time_to_travel": "about 20 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000009,
+      "location_id": 1000000003,
+      "connected_location_id": 1000000006,
+      "barrier": "open",
+      "distance": "a short walk",
+      "travel_method": "walking",
+      "time_to_travel": "about 5 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000010,
+      "location_id": 1000000006,
+      "connected_location_id": 1000000003,
+      "barrier": "open",
+      "distance": "a short walk",
+      "travel_method": "walking",
+      "time_to_travel": "about 5 minutes",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000011,
+      "location_id": 1000000004,
+      "connected_location_id": 1000000005,
+      "barrier": "open",
+      "distance": "across the district",
+      "travel_method": "climbing",
+      "time_to_travel": "about an hour",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    },
+    {
+      "id": 1000000012,
+      "location_id": 1000000005,
+      "connected_location_id": 1000000004,
+      "barrier": "open",
+      "distance": "across the district",
+      "travel_method": "climbing",
+      "time_to_travel": "about an hour",
+      "hazard": null,
+      "hazard_die": null,
+      "key_template_id": null
+    }
+  ],
+  "playthrough_passages": [
+    {
+      "id": 1000000001,
+      "location_connection_id": 1000000007,
+      "playthrough_id": 1000000001,
+      "means": "force",
+      "opened_at": 1788217200
+    }
+  ],
+  "world_events": [
+    {
+      "id": 1000000001,
+      "world_mechanic_id": null,
+      "source": "seeded",
+      "occurred_at": 1788217200,
+      "summary": "The building finishes settling into its new configuration for the night, and the plaster stops falling from the ceiling of Room 3."
+    },
+    {
+      "id": 1000000002,
+      "world_mechanic_id": null,
+      "source": "seeded",
+      "occurred_at": 1788217200,
+      "summary": "Grenn Ollivar comes for the overdue rent, and the table and the instruments go out into Mournwell Lane."
+    },
+    {
+      "id": 1000000003,
+      "world_mechanic_id": 1000000001,
+      "source": "world_mechanic",
+      "occurred_at": 1788220800,
+      "summary": "Mournwell Lane now opens onto The Bell of Saint Aravel instead of Sovereign's Circle. Grenn's Boarding House hallway now opens onto The Celestial Spire instead of The Bell of Saint Aravel. Larkspur Quarter rooftops now opens onto Sovereign's Circle instead of The Celestial Spire."
+    }
+  ],
+  "locations_world_events": [
+    {
+      "location_id": 1000000002,
+      "world_event_id": 1000000003
+    },
+    {
+      "location_id": 1000000003,
+      "world_event_id": 1000000003
+    },
+    {
+      "location_id": 1000000004,
+      "world_event_id": 1000000003
+    },
+    {
+      "location_id": 1000000005,
+      "world_event_id": 1000000003
+    },
+    {
+      "location_id": 1000000006,
+      "world_event_id": 1000000003
+    },
+    {
+      "location_id": 1000000007,
+      "world_event_id": 1000000003
+    }
+  ],
+  "world_mechanics": [
+    {
+      "id": 1000000001,
+      "last_run_at": 1788220800
+    }
+  ]
+}

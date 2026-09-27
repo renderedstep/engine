@@ -74,6 +74,13 @@ impl Records {
         self.tables.entry(name.to_string()).or_default().push(row);
     }
 
+    /// Takes the row with this id out of its table.
+    pub fn remove(&mut self, name: &str, id: i64) {
+        if let Some(rows) = self.tables.get_mut(name) {
+            rows.retain(|row| int(row, "id") != Some(id));
+        }
+    }
+
     /// Writes one column of the row with this id; nothing where there is no
     /// such row.
     pub fn set(&mut self, name: &str, id: i64, column: &str, value: Value) {
