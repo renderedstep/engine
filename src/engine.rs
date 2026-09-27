@@ -41,6 +41,10 @@ pub enum Error {
     Interrupted,
     /// A submission that already failed (`PreviouslyFailedError`).
     PreviouslyFailed,
+    /// The turn was stopped after this journal step, as a worker that dies
+    /// there stops: what it committed stands and the submission stays
+    /// running, to be finished by the next delivery.
+    Stopped(String),
 }
 
 impl std::fmt::Display for Error {
@@ -59,6 +63,7 @@ impl std::fmt::Display for Error {
             Error::Model(failure) => write!(f, "the model call failed: {failure}"),
             Error::Interrupted => f.write_str("a previous worker stopped during this turn"),
             Error::PreviouslyFailed => f.write_str("this submission has already failed"),
+            Error::Stopped(step) => write!(f, "the turn was stopped after its {step} step"),
         }
     }
 }
@@ -157,9 +162,25 @@ impl Engine {
         models: &mut dyn crate::model::Models,
         on_chunk: &mut dyn FnMut(&str),
     ) -> Result<Submitted, Error> {
+        self.submit_stopping(playthrough, line, token, models, on_chunk, None)
+    }
+
+    /// [`Engine::submit`], with the turn stopped right after the journal
+    /// step `stop_after` commits, as a worker killed there stops. The engine
+    /// sweep plays its interrupted workers this way.
+    pub fn submit_stopping(
+        &mut self,
+        playthrough: i64,
+        line: &str,
+        token: &str,
+        models: &mut dyn crate::model::Models,
+        on_chunk: &mut dyn FnMut(&str),
+        stop_after: Option<&str>,
+    ) -> Result<Submitted, Error> {
         let store = &self.store;
         let result = guarded(|| {
             let mut turn = crate::turn::Turn::new(store, playthrough, models, on_chunk)?;
+            turn.stop_after(stop_after);
             let turned = turn.play(line, token)?;
             Ok(Submitted {
                 turned,

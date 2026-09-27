@@ -18,9 +18,11 @@ a-scheduled-event-comes-due
 a-slash-in-front-of-the-line
 a-thing-can-be-thrown
 a-written-neighbour-only-loses-its-own-door
+consumption-survives-interruption-and-revisit
 death-ends-a-playthrough
 failed-rendering-still-completes-a-turn
 fleeing-then-a-longer-journey
+interrupted-worker-finishes-before-next-command
 npc-experience-survives-small-talk
 npc-promises-have-consequences
 one-act-per-line

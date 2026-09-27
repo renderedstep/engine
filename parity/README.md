@@ -13,7 +13,7 @@ the commit whose runner CI plays them through. That repository's
 | `goldens/` | `test/engine_parity/*.json` | the Ruby engine's dump after every step of each |
 | `worlds/` | produced from `lib/engine_sweep/worlds/` and `db/seeds/worlds/` (below) | each world as the Ruby engine loads it for a walk, as SQL text |
 | `PASSING` | this repository | the scripts this engine plays exactly as the Ruby engine does |
-| `PASSING_WITH_RUNNER` | this repository | the scripts with `reseed:` steps that agree when the Ruby engine's runner plays them |
+| `PASSING_WITH_RUNNER` | this repository | the scripts that agree only when the Ruby engine's runner plays them: those with `reseed:` steps, and those whose browser steps assert `shown` |
 | `runner.sh` | this repository | plays both lists through the Ruby engine's runner in its shared-database mode |
 
 Never edit the scripts or the goldens by hand. The scripts are re-emitted

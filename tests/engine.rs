@@ -417,3 +417,59 @@ fn a_conversation_is_picked_up_again_on_the_next_talk_on_the_live_path() {
         1
     );
 }
+
+#[test]
+fn a_turn_stopped_after_its_take_is_finished_by_the_next_delivery_and_takes_once() {
+    use renderedstep_engine::model::{Replay, Reply};
+    let (mut engine, playthrough) = gate();
+    let mut nothing = Replay::new(Vec::new());
+    let stopped = engine.submit_stopping(
+        playthrough,
+        "/take red coin",
+        "pickup",
+        &mut nothing,
+        &mut |_| {},
+        Some("take"),
+    );
+    assert_eq!(stopped.unwrap_err(), Error::Stopped("take".into()));
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM playthrough_commands WHERE status = 'running'"
+        ),
+        1,
+        "a stopped worker leaves its submission running"
+    );
+    let taken = "SELECT COUNT(*) FROM items WHERE name = 'red coin' AND playthrough_id IS NOT NULL AND location_id IS NULL AND character_id IS NULL";
+    assert_eq!(
+        count(&engine, taken),
+        1,
+        "the take committed with its receipt"
+    );
+
+    let reply = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![reply]);
+    let finished = engine
+        .submit(
+            playthrough,
+            "/take red coin",
+            "pickup",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert!(finished.turned.scene.is_some());
+    assert_eq!(count(&engine, taken), 1);
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM playthrough_commands WHERE status = 'completed'"
+        ),
+        1
+    );
+}

@@ -11,8 +11,8 @@
 //!
 //! A throw moves the row first and is told afterwards, as a take is.
 
+use super::kept::NpcEffect;
 use super::{model, Told, Turn};
-use crate::command::encode;
 use crate::dialogue;
 use crate::engine::Error;
 use crate::model::receipts::{self, Filed};
@@ -80,6 +80,9 @@ impl Turn<'_, '_> {
         command: &str,
         offered: Option<i64>,
     ) -> Result<Option<Told>, Error> {
+        if self.done("talked") {
+            return self.saved("talked").map(Option::flatten);
+        }
         if offered.is_some() {
             return Err(Error::Unsupported(
                 "offering a thing to somebody through the models".into(),
@@ -105,65 +108,54 @@ impl Turn<'_, '_> {
         };
         let mut character_agent = Agent::continuing(filed, chat);
 
-        let (reaction, fields) = self.remember(
-            "character_answer",
-            |(answer, fields): &(Value, Map<String, Value>)| {
-                encode::array(vec![
-                    hash_of(answer),
-                    hash_of(&Value::Object(fields.clone())),
-                ])
-            },
-            |turn| {
-                let game = Game::new(&turn.m.records, playthrough);
-                let request = dialogue::character_request(&game, &person, command);
-                let call = Call::from_request(&request);
-                let mut verified = None;
-                let mut verify = |content: &Value| {
-                    verified = Some(reaction_fields(content)?);
-                    Ok(())
-                };
-                let mut book = Book {
-                    store: turn.m.store,
-                    records: &mut turn.m.records,
-                };
-                let answer = turn
-                    .models
-                    .ask(
-                        &mut book,
-                        &mut character_agent,
-                        &call,
-                        Some(&mut verify),
-                        None,
-                    )
-                    .map_err(model)?;
-                let fields = match verified {
-                    Some(fields) => fields,
-                    None => reaction_fields(&answer.content)
-                        .map_err(|reason| model(Failure::Rejected(reason)))?,
-                };
-                Ok((answer.content, fields))
-            },
-        )?;
+        let (reaction, fields) = self.remember("character_answer", |turn| {
+            let game = Game::new(&turn.m.records, playthrough);
+            let request = dialogue::character_request(&game, &person, command);
+            let call = Call::from_request(&request);
+            let mut verified = None;
+            let mut verify = |content: &Value| {
+                verified = Some(reaction_fields(content)?);
+                Ok(())
+            };
+            let mut book = Book {
+                store: turn.m.store,
+                records: &mut turn.m.records,
+            };
+            let answer = turn
+                .models
+                .ask(
+                    &mut book,
+                    &mut character_agent,
+                    &call,
+                    Some(&mut verify),
+                    None,
+                )
+                .map_err(model)?;
+            let fields = match verified {
+                Some(fields) => fields,
+                None => reaction_fields(&answer.content)
+                    .map_err(|reason| model(Failure::Rejected(reason)))?,
+            };
+            Ok((answer.content, fields))
+        })?;
 
         let choice = reaction
             .get("engine_action")
             .and_then(Value::as_str)
             .unwrap_or(dialogue::NONE)
             .to_string();
-        let (action, status, fact) = self.commit(
-            "character_effect",
-            |(action, status, fact): &(String, &'static str, String)| {
-                encode::data(
-                    "Playthrough::NpcAction::Result",
-                    vec![
-                        ("action", Value::from(action.as_str())),
-                        ("status", Value::from(*status)),
-                        ("fact", Value::from(fact.as_str())),
-                    ],
-                )
-            },
-            |turn| turn.m.apply_npc(&person, &choice, offered),
-        )?;
+        let NpcEffect {
+            action,
+            status,
+            fact,
+        } = self.commit("character_effect", |turn| {
+            let (action, status, fact) = turn.m.apply_npc(&person, &choice, offered)?;
+            Ok(NpcEffect {
+                action,
+                status: status.to_string(),
+                fact,
+            })
+        })?;
 
         let reaction_map = reaction.as_object().cloned().unwrap_or_default();
         let request = {
@@ -212,7 +204,7 @@ impl Turn<'_, '_> {
             fact.clone(),
         ]
         .join(" ");
-        let told = self.commit("talked", Told::encoded, |turn| {
+        let told = self.commit("talked", |turn| {
             let here = turn.m.here().map(|room| id(&room));
             let at = turn.m.story_now() + CONVERSATION_SECONDS;
             let scene = turn.m.write_scene(
@@ -271,27 +263,7 @@ impl Turn<'_, '_> {
     ) -> Result<Option<Told>, Error> {
         let row = self.m.row("items", item)?;
         let thrower = self.m.player();
-        let report = self.commit(
-            "throw",
-            |report: &super::super::Report| {
-                encode::data(
-                    "Playthrough::Turn::Throw",
-                    vec![
-                        ("item", encode::record("items", item)),
-                        (
-                            "outcome",
-                            Value::from(
-                                report
-                                    .change
-                                    .clone()
-                                    .or_else(|| report.note.get(1).cloned()),
-                            ),
-                        ),
-                    ],
-                )
-            },
-            |turn| turn.m.throw_it(item, at, None),
-        )?;
+        let report = self.commit("throw", |turn| turn.m.throw_it(item, at, None))?;
         if report.refusal.is_some() {
             return self.narrate(command, None, None, None, None);
         }
@@ -349,21 +321,6 @@ impl Turn<'_, '_> {
         };
         let fallback = format!("Your throw of the {thing}: {words}.");
         self.narrate(command, Some(fact), None, None, Some(fallback))
-    }
-}
-
-/// A parsed answer as the journal keeps a Hash.
-fn hash_of(value: &Value) -> Value {
-    match value {
-        Value::Object(map) => {
-            let pairs: Vec<Value> = map
-                .iter()
-                .map(|(key, value)| Value::Array(vec![Value::from(key.as_str()), hash_of(value)]))
-                .collect();
-            serde_json::json!({ "hash": pairs })
-        }
-        Value::Array(items) => encode::array(items.iter().map(hash_of).collect()),
-        other => other.clone(),
     }
 }
 
