@@ -63,6 +63,12 @@ until `store::SCHEMA_VERSION`, and whatever the migration changed, is ported.
 
 A step with `browser:` plays a submission with fixed provider replies, which
 needs the model client; a step with `reseed:` reloads the world file, which
-needs the world loader. Both stop a script with `Error::Unsupported`, and
+needs the world loader. Both stop a script with `Error::Unsupported` here, and
 `cargo run --release --bin parity -- --check parity` names every other
 script's first divergence.
+
+The world loader stays in Ruby. A script with `reseed:` steps is played in
+the shared-database mode instead (`--database`, `--player` and `ENGINE_STEP`,
+see the crate README): the Ruby engine's runner owns the database, plays
+each `reseed:` step with `WorldSeed::Loader`, and asks this engine for each
+typed step in turn.

@@ -139,6 +139,18 @@ the goldens there:
 ENGINE="target/release/parity --worlds $PWD/parity/worlds" bin/rails engine:parity_diff
 ```
 
+In the shared-database mode the Ruby engine's runner prepares the world in a
+database file of its own, plays each `reseed:` step itself, and asks for one
+typed step at a time:
+
+```sh
+ENGINE_STEP=3 target/release/parity --database walk.sqlite3 --player first script.yml
+```
+
+It prints that step's one dump, with `shown` null for the runner to fill.
+Each player's playthrough is the story's playthrough in the order the
+players first appear in the script, started when it has none yet.
+
 ## Licence
 
 MIT OR Apache-2.0, at your option, see `LICENSE-MIT` and `LICENSE-APACHE`.
