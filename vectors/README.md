@@ -1,7 +1,7 @@
 # Golden vectors
 
 These JSON files are copied verbatim from the Ruby engine's repository,
-[calebl/text-adventure](https://github.com/calebl/text-adventure), directory
+[renderedstep/server](https://github.com/renderedstep/server), directory
 `test/engine_vectors/`, at commit `659ca6ad5d8246f2fd7edee4bbd1e728e8148f59`.
 Each holds one portion of the engine's pure rules as cases of named inputs and
 the exact output the Ruby code gives for them. `docs/engine-vectors.md` in that
