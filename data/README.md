@@ -43,7 +43,8 @@ prompts), because its shape is code.
 `physics.yml` has always been this engine's: `src/data.rs`
 (`physics()`) declares its shape and refuses any other. Its `bulk` and
 `thrown_damage` tables are what a throw reads (`room`, `turn`), and its
-`gravity`, `fall_die` and `fall_save` what a fall reads (`physics`, `turn`);
-its breakage and range tables are a starting calibration that nothing reads
-yet. Edit it here, run `cargo test`, and bless the `physics` vector portion
-(`vectors/README.md`).
+`gravity`, `fall_die` and `fall_save` what a fall reads (`physics`, `turn`),
+and its `fragility`, `break_die`, `height_step` and `surface` what a break
+reads (`physics`, `turn`); its range tables are a starting calibration that
+nothing reads yet. Edit it here, run `cargo test`, and bless the `physics`
+and `breakage` vector portions (`vectors/README.md`).

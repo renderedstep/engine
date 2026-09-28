@@ -354,7 +354,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             },
             {
               "id": 1000000004,
@@ -376,7 +377,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             }
           ],
           "removed": []
@@ -466,7 +468,8 @@
               "template_id": 1000000001,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000004,
@@ -484,7 +487,8 @@
               "template_id": 1000000002,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000005,
@@ -502,7 +506,8 @@
               "template_id": null,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000006,
@@ -520,7 +525,8 @@
               "template_id": 1000000005,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             }
           ],
           "removed": []
@@ -652,7 +658,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             },
             {
               "id": 1000000004,
@@ -674,7 +681,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             }
           ],
           "removed": []
@@ -764,7 +772,8 @@
               "template_id": 1000000001,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000004,
@@ -782,7 +791,8 @@
               "template_id": 1000000002,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000005,
@@ -800,7 +810,8 @@
               "template_id": null,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000006,
@@ -818,7 +829,8 @@
               "template_id": 1000000005,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             }
           ],
           "removed": []
@@ -1027,7 +1039,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             },
             {
               "id": 1000000004,
@@ -1049,7 +1062,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             }
           ],
           "removed": []
@@ -1139,7 +1153,8 @@
               "template_id": 1000000001,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000004,
@@ -1157,7 +1172,8 @@
               "template_id": 1000000002,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000005,
@@ -1175,7 +1191,8 @@
               "template_id": null,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000006,
@@ -1193,7 +1210,8 @@
               "template_id": 1000000005,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             }
           ],
           "removed": []
@@ -1712,7 +1730,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             },
             {
               "id": 1000000004,
@@ -1734,7 +1753,8 @@
               "width": null,
               "x": null,
               "y": null,
-              "z": null
+              "z": null,
+              "surface": null
             }
           ],
           "removed": []
@@ -1824,7 +1844,8 @@
               "template_id": 1000000001,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000004,
@@ -1842,7 +1863,8 @@
               "template_id": 1000000002,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000005,
@@ -1860,7 +1882,8 @@
               "template_id": null,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             },
             {
               "id": 1000000006,
@@ -1878,7 +1901,8 @@
               "template_id": 1000000005,
               "use_kind": "ordinary",
               "x": null,
-              "y": null
+              "y": null,
+              "fragility": "sturdy"
             }
           ],
           "removed": []

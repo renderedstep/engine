@@ -1,0 +1,92 @@
+---
+story: The Pottery on Mill Lane
+steps:
+- id: in-from-the-lane
+  type: go to the workshop
+  expect:
+    changed: true
+    location: The Workshop (realized)
+    storey: 0
+- id: in-the-workshop
+  type: look
+  expect:
+    location: The Workshop (realized)
+    carrying:
+    - clay jar
+    - glass float
+    - pewter mug
+    - stoneware crock
+    here: []
+    changed: false
+    refused: false
+- id: a-sturdy-mug-on-the-flagstones
+  type: drop the pewter mug
+  expect:
+    changed: true
+    change: now lying in The Workshop
+    here:
+    - pewter mug
+    carrying:
+    - clay jar
+    - glass float
+    - stoneware crock
+- id: into-the-showroom
+  type: go to the showroom
+  expect:
+    changed: true
+    location: The Showroom (realized)
+    here:
+    - glazed bowl
+- id: a-fragile-float-on-the-matting
+  type: drop the glass float
+  expect:
+    changed: true
+    change: now lying in The Showroom
+    note:
+    - 'break: glass float -- fragile, dropped on a soft floor'
+    - HELD
+    here:
+    - glass float
+    - glazed bowl
+    carrying:
+    - clay jar
+    - stoneware crock
+- id: back-into-the-workshop
+  type: go to the workshop
+  expect:
+    changed: true
+    location: The Workshop (realized)
+    here:
+    - pewter mug
+- id: a-brittle-jar-on-the-flagstones
+  type: drop the clay jar
+  expect:
+    changed: true
+    note: 'break: clay jar -- brittle, dropped on a hard floor'
+    carrying:
+    - stoneware crock
+- id: a-brittle-crock-on-the-flagstones
+  type: drop the stoneware crock
+  expect:
+    changed: true
+    note: 'break: stoneware crock -- brittle, dropped on a hard floor'
+    carrying: []
+- id: what-is-lying-here
+  type: look
+  expect:
+    location: The Workshop (realized)
+    changed: false
+- id: the-jar-is-not-there-to-take
+  type: take the clay jar
+  expect:
+    location: The Workshop (realized)
+- id: out-to-the-yard
+  type: go to the kiln yard
+  expect:
+    changed: true
+    location: The Kiln Yard (realized)
+- id: and-back-again
+  type: go to the workshop
+  expect:
+    changed: true
+    location: The Workshop (realized)

@@ -14,6 +14,7 @@
 use crate::engine::Error;
 use crate::grammar::{self, Grammar, Reading};
 use crate::intent::Intent;
+use crate::physics::{Break, Landing};
 use crate::playthrough::{max_hp, stat_block, Condition, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
@@ -605,18 +606,60 @@ impl<'s> Mechanics<'s> {
         let here = self
             .here()
             .ok_or_else(|| Error::Database("a drop with nowhere to stand".into()))?;
-        self.put_down(item, &here)?;
+        let rolled = self.land(item, &here, Landing::Dropped)?;
         let dropper = self.player().map_or("the party".to_string(), |who| {
             string(&who, "fullname").to_string()
         });
-        Ok(Report::change(
-            format!(
-                "dropped: {} (was carried by {dropper}, now lying in {})",
-                string(&row, "name"),
-                string(&here, "name")
-            ),
+        let name = string(&row, "name");
+        let room = string(&here, "name");
+        let mut report = Report::change(
+            if rolled.is_some_and(|rolled| rolled.broke) {
+                format!("dropped: {name} (was carried by {dropper}, and broke in {room})")
+            } else {
+                format!("dropped: {name} (was carried by {dropper}, now lying in {room})")
+            },
             understood,
-        ))
+        );
+        report.note = break_note(&row, Landing::Dropped, &here, rolled);
+        Ok(report)
+    }
+
+    /// A thing coming to rest on the floor of `room`, the way `landing` says
+    /// it came down: this game's copy lies there, or, when the break die
+    /// comes up at or under its share, it breaks and lies nowhere. The die
+    /// is thrown out of a generator keyed on the thing, with a kind of its
+    /// own; none is thrown for a thing that never breaks, or for one of the
+    /// world's own rows, which no typed line may spend.
+    fn land(&mut self, item: i64, room: &Row, landing: Landing) -> Result<Option<Break>, Error> {
+        let row = self.row("items", item)?;
+        let share = physics::share(text(&row, "fragility"), landing, text(room, "surface"))
+            .filter(|_| int(&row, "playthrough_id").is_some());
+        let rolled = share.map(|share| {
+            let mut rng = self.generator(self.story_now(), item, roll::BREAK);
+            physics::break_roll(share, &mut rng)
+        });
+        if rolled.is_some_and(|rolled| rolled.broke) {
+            self.spend(item, physics::BROKEN)?;
+        } else {
+            self.put_down(item, room)?;
+        }
+        Ok(rolled)
+    }
+
+    /// How a thing thrown through the way into `room` came down: it fell
+    /// when the doorway is a fall that would throw dice at this world's
+    /// gravity, and was thrown otherwise.
+    fn landing_through(&self, here: &Row, room: &Row) -> Landing {
+        let falls = self
+            .walked(Some(here), Some(room))
+            .filter(|edge| text(edge, "hazard") == Some(physics::FALL))
+            .and_then(|_| physics::storeys(int(here, "z"), int(room, "z")))
+            .and_then(|storeys| physics::dice(storeys, self.gravity().as_deref()));
+        if falls.is_some() {
+            Landing::Fell
+        } else {
+            Landing::Thrown
+        }
     }
 
     /// `Playthrough::Turn#put_down!`: this game's copy lies in a room, at a
@@ -770,12 +813,15 @@ impl<'s> Mechanics<'s> {
                 understood,
             ));
         }
+        let rolled;
+        let floor;
         let landed = match at {
             Record::Person(person) => {
                 let here = self
                     .here()
                     .ok_or_else(|| Error::Database("a throw with nowhere to stand".into()))?;
-                self.put_down(item, &here)?;
+                rolled = self.land(item, &here, Landing::Thrown)?;
+                floor = (Landing::Thrown, here.clone());
                 let damage = roll::die(die, &mut rng);
                 let target_row = self.row("characters", person.id)?;
                 let blow = self.strike(&thrower, &target_row, &here, Some(damage))?;
@@ -788,6 +834,11 @@ impl<'s> Mechanics<'s> {
                         .find(|row| int(row, "playthrough_id") == Some(game))
                         .cloned()
                 });
+                let lying = if rolled.is_some_and(|rolled| rolled.broke) {
+                    "broke"
+                } else {
+                    "is lying at their feet"
+                };
                 match struck {
                     Some(blow) => {
                         let condition = Condition {
@@ -795,22 +846,31 @@ impl<'s> Mechanics<'s> {
                             max: max_hp(&target_row).unwrap_or_default(),
                         };
                         format!(
-                            "it hit {who} for {} and is lying at their feet; {who} is {}",
+                            "it hit {who} for {} and {lying}; {who} is {}",
                             int(&blow, "damage").unwrap_or_default(),
                             condition.in_words(),
                             who = person.fullname
                         )
                     }
                     None => format!(
-                        "it hit {} and is lying at their feet; there is no stat block to hurt",
+                        "it hit {} and {lying}; there is no stat block to hurt",
                         person.fullname
                     ),
                 }
             }
             Record::Place(place) => {
                 let room = self.row("locations", place.id)?;
-                self.put_down(item, &room)?;
-                format!("it went through and is lying in {}", place.name)
+                let here = self
+                    .here()
+                    .ok_or_else(|| Error::Database("a throw with nowhere to stand".into()))?;
+                let landing = self.landing_through(&here, &room);
+                rolled = self.land(item, &room, landing)?;
+                floor = (landing, room);
+                if rolled.is_some_and(|rolled| rolled.broke) {
+                    format!("it went through into {} and broke", place.name)
+                } else {
+                    format!("it went through and is lying in {}", place.name)
+                }
             }
             _ => {
                 return Err(Error::Database(
@@ -818,10 +878,12 @@ impl<'s> Mechanics<'s> {
                 ))
             }
         };
+        let mut note = vec![attempt];
+        note.extend(break_note(&row, floor.0, &floor.1, rolled));
         Ok(Report {
             understood,
             change: Some(landed),
-            note: vec![attempt],
+            note,
             ..Report::default()
         })
     }
@@ -3038,11 +3100,12 @@ const NOT_COPIED: [&str; 7] = [
 
 /// A column name as a `'static` string, for the columns an item copies.
 fn column_name(column: &str) -> &'static str {
-    const COLUMNS: [&str; 11] = [
+    const COLUMNS: [&str; 12] = [
         "bulk",
         "combustible",
         "description",
         "disposition",
+        "fragility",
         "inscription",
         "name",
         "properties",
@@ -3056,6 +3119,29 @@ fn column_name(column: &str) -> &'static str {
         .find(|name| **name == column)
         .copied()
         .unwrap_or_else(|| panic!("items has a column {column} this engine does not copy"))
+}
+
+/// The read-out of a break roll, or nothing where no die was thrown: the
+/// thing's fragility, how it came down and on what, and the die against its
+/// share.
+fn break_note(item: &Row, landing: Landing, room: &Row, rolled: Option<Break>) -> Vec<String> {
+    let Some(rolled) = rolled else {
+        return Vec::new();
+    };
+    let floor = match text(room, "surface") {
+        Some(surface) => format!("a {surface} floor"),
+        None => "the floor".to_string(),
+    };
+    vec![format!(
+        "break: {} -- {}, {} on {floor}: d{}({}) <= {} {}",
+        string(item, "name"),
+        text(item, "fragility").unwrap_or_default(),
+        landing.name(),
+        physics::break_die(),
+        rolled.die,
+        rolled.share,
+        if rolled.broke { "BROKE" } else { "HELD" }
+    )]
 }
 
 /// The help text, where a reading carries it.

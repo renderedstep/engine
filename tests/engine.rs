@@ -107,6 +107,130 @@ fn a_fall_costs_nothing_in_a_world_with_no_gravity() {
     assert!(hp.is_some_and(|hp| hp < 18), "three d6 cost something");
 }
 
+/// The pottery on Mill Lane, with `sql` run over it, a game started in it
+/// and `lines` played in turn; the outcome of the last, the scratch database
+/// and the game, once the player has come in off the lane to the workshop.
+/// Ada Hollin's strength is put past anything a d20 can miss,
+/// so every lift passes and only the break die is left to the dice.
+fn at_the_pottery(
+    name: &str,
+    sql: &str,
+    lines: &[&str],
+) -> (renderedstep_engine::outcome::Outcome, Scratch, i64) {
+    let sql = format!(
+        "{}UPDATE characters SET strength = 21 WHERE fullname = 'Ada Hollin';{sql}",
+        world("the-pottery-on-mill-lane")
+    );
+    let scratch = Scratch::new(&format!("break-{name}"), &sql);
+    let mut engine = Engine::open(&scratch.0).expect("the database opens");
+    let story = engine
+        .story_titled(&format!("The Pottery on Mill Lane{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let mut last = None;
+    for line in std::iter::once(&"go to the workshop").chain(lines) {
+        last = Some(engine.play(playthrough, line, &mut |_| {}).unwrap());
+    }
+    (last.expect("a line"), scratch, playthrough)
+}
+
+fn names(named: &[renderedstep_engine::outcome::Named]) -> Vec<&str> {
+    named.iter().map(|thing| thing.name.as_str()).collect()
+}
+
+/// This game's copies of the thing called `name`, and their dispositions.
+fn copies(scratch: &Scratch, playthrough: i64, name: &str) -> Vec<String> {
+    let conn = rusqlite::Connection::open(&scratch.0).unwrap();
+    let mut statement = conn
+        .prepare("SELECT disposition FROM items WHERE playthrough_id = ?1 AND name = ?2")
+        .unwrap();
+    statement
+        .query_map(rusqlite::params![playthrough, name], |row| row.get(0))
+        .unwrap()
+        .map(Result::unwrap)
+        .collect()
+}
+
+#[test]
+fn a_brittle_thing_thrown_onto_a_hard_floor_breaks_and_a_sturdy_one_does_not() {
+    let (outcome, scratch, game) = at_the_pottery(
+        "brittle",
+        "",
+        &["throw the clay jar at the kiln yard", "go to the kiln yard"],
+    );
+    assert_eq!(copies(&scratch, game, "clay jar"), ["broken"]);
+    assert!(!names(&outcome.state.here).contains(&"clay jar"));
+    assert!(!names(&outcome.state.carrying).contains(&"clay jar"));
+
+    let (thrown, _, _) = at_the_pottery("thrown", "", &["throw the clay jar at the kiln yard"]);
+    assert_eq!(
+        thrown.report.change.as_deref(),
+        Some("it went through into The Kiln Yard and broke")
+    );
+    assert!(thrown.report.note[1]
+        .starts_with("break: clay jar -- brittle, thrown on a hard floor: d6("));
+    assert!(thrown.report.note[1].ends_with(") <= 6 BROKE"));
+
+    let (outcome, scratch, game) = at_the_pottery(
+        "sturdy",
+        "UPDATE items SET fragility = 'sturdy';",
+        &["throw the clay jar at the kiln yard", "go to the kiln yard"],
+    );
+    assert_eq!(copies(&scratch, game, "clay jar"), ["intact"]);
+    assert!(names(&outcome.state.here).contains(&"clay jar"));
+}
+
+#[test]
+fn a_thing_thrown_through_the_window_fell_only_in_a_world_with_a_gravity() {
+    let up = [
+        "go to the drying loft",
+        "throw the glass float at the kiln yard",
+    ];
+    let (falling, _, _) = at_the_pottery("fell", "", &up);
+    assert!(falling.report.note[1]
+        .starts_with("break: glass float -- fragile, fell on a hard floor: d6("));
+    assert!(falling.report.note[1].contains(") <= 5 "));
+    let (weightless, _, _) =
+        at_the_pottery("weightless", "UPDATE universes SET gravity = NULL;", &up);
+    assert!(weightless.report.note[1]
+        .starts_with("break: glass float -- fragile, thrown on a hard floor: d6("));
+    assert!(weightless.report.note[1].contains(") <= 4 "));
+}
+
+#[test]
+fn a_fragile_thing_dropped_on_a_soft_floor_holds_and_a_broken_one_is_not_copied_again() {
+    let (outcome, _, _) =
+        at_the_pottery("soft", "", &["go to the showroom", "drop the glass float"]);
+    let [note] = outcome.report.note.as_slice() else {
+        panic!("one break roll, not {:?}", outcome.report.note);
+    };
+    assert!(note.starts_with("break: glass float -- fragile, dropped on a soft floor: d6("));
+    assert!(note.ends_with(") <= 0 HELD"));
+    assert!(names(&outcome.state.here).contains(&"glass float"));
+
+    let (outcome, scratch, game) = at_the_pottery(
+        "gone",
+        "UPDATE items SET fragility = 'brittle' WHERE name = 'glazed bowl';",
+        &[
+            "go to the showroom",
+            "throw the glazed bowl at the workshop",
+            "go to the workshop",
+            "go to the showroom",
+        ],
+    );
+    assert_eq!(copies(&scratch, game, "glazed bowl"), ["broken"]);
+    assert!(!names(&outcome.state.here).contains(&"glazed bowl"));
+    let world: String = rusqlite::Connection::open(&scratch.0)
+        .unwrap()
+        .query_row(
+            "SELECT disposition FROM items WHERE playthrough_id IS NULL AND name = 'glazed bowl'",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap();
+    assert_eq!(world, "intact", "the world's own bowl is never broken");
+}
+
 #[test]
 fn a_database_at_an_older_schema_is_refused() {
     let conn = rusqlite::Connection::open_in_memory().unwrap();

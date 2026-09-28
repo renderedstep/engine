@@ -38,6 +38,7 @@ pub const NAMES: &[&str] = &[
     "request_identity",
     "volition_request",
     "physics",
+    "breakage",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -595,5 +596,44 @@ fn physics() {
             "damage": fall.damage,
             "words": physics::words(storeys, fall.saved(), fall.damage),
         })
+    });
+}
+
+#[test]
+fn breakage() {
+    use renderedstep_engine::physics::{self, Landing};
+    let constants = json!({
+        "fragility": physics::fragilities(),
+        "height_step": physics::height_steps(),
+        "surface": physics::surfaces(),
+        "break_die": physics::break_die(),
+        "kind": roll::BREAK as i64,
+    });
+    check("breakage", constants, |input| {
+        let landing = match input["landing"].as_str() {
+            Some("dropped") => Landing::Dropped,
+            Some("thrown") => Landing::Thrown,
+            Some("fell") => Landing::Fell,
+            other => panic!("a landing, not {other:?}"),
+        };
+        let share = physics::share(
+            input["fragility"].as_str(),
+            landing,
+            input["surface"].as_str(),
+        );
+        let Some(share) = share else {
+            return json!({ "share": null });
+        };
+        let seed = &input["seed"];
+        let mut rng = roll::Seed {
+            story: int(&seed["story"]).into(),
+            playthrough: int(&seed["playthrough"]).into(),
+            at: int(&seed["at"]).into(),
+            sequence: int(&seed["sequence"]).into(),
+            kind: roll::BREAK,
+        }
+        .generator();
+        let rolled = physics::break_roll(share, &mut rng);
+        json!({ "share": share, "die": rolled.die, "broke": rolled.broke })
     });
 }

@@ -91,6 +91,23 @@ pub fn dropped(item: &Row, here: &Row, dropper: Option<&Row>) -> String {
     )
 }
 
+/// A put-down thing that broke on the floor: gone, and in no place. It
+/// stands in for [`dropped`] on the turn the thing broke.
+pub fn dropped_and_broke(item: &Row, here: &Row, dropper: Option<&Row>) -> String {
+    format!(
+        "ON THIS TURN, and not before it, {} put the {} down, and it BROKE on the floor of {}. \
+         Until this turn it WAS in their hands. It is not lying anywhere now: it is broken and \
+         gone, and nobody can pick it up, carry it or use it again. The putting down and the \
+         breaking are what has just happened and they are what to narrate. Do not write it \
+         landing whole, or anybody picking it up or finding it. {} is the only thing that \
+         moved: nothing else was lifted, opened, drawn out or taken into anybody's hands.",
+        dropper.map_or("The party", |who| string(who, "fullname")),
+        bare_name(item),
+        string(here, "name"),
+        upcase_first(&definite_name(item)),
+    )
+}
+
 /// `Playthrough::Turn#read_fact`: a readable thing's words, quoted.
 pub fn read(item: &Row, words: &str) -> String {
     format!(
@@ -103,10 +120,11 @@ pub fn read(item: &Row, words: &str) -> String {
 /// How a throw came out, as `Playthrough::Turn#thrown_fact` states it.
 #[derive(Clone, Copy, Debug)]
 pub enum Throw<'a> {
-    /// It hit the person named.
-    Struck { target: &'a str },
-    /// It went through the way out into the room named.
-    Thrown { into: &'a str },
+    /// It hit the person named, and broke if `broke`.
+    Struck { target: &'a str, broke: bool },
+    /// It went through the way out into the room named, and broke where it
+    /// landed if `broke`.
+    Thrown { into: &'a str, broke: bool },
     /// It does not move for anybody, so no die was thrown.
     Immovable,
     /// The lift failed; `carried` says whether it is still in the party's
@@ -120,13 +138,29 @@ pub enum Throw<'a> {
 pub fn thrown(thrower: Option<&str>, thing: &str, bulk: &str, outcome: Throw) -> String {
     let who = thrower.unwrap_or("The party");
     match outcome {
-        Throw::Struck { target } => format!(
+        Throw::Struck {
+            target,
+            broke: false,
+        } => format!(
             "{who} threw the {thing} at {target} and it hit them. The {thing} is NO LONGER CARRIED: it is lying \
              on the floor at {target}'s feet, where it stays until somebody picks it up."
         ),
-        Throw::Thrown { into } => format!(
+        Throw::Struck {
+            target,
+            broke: true,
+        } => format!(
+            "{who} threw the {thing} at {target} and it hit them, and it BROKE. The {thing} is NO LONGER \
+             CARRIED and is not lying anywhere: it is broken and gone, and nobody can pick it up, carry \
+             it or use it again."
+        ),
+        Throw::Thrown { into, broke: false } => format!(
             "{who} threw the {thing} through the way out into {into}. The {thing} is NO LONGER CARRIED and is \
              no longer in this room at all: it is lying in {into}, where it stays until somebody picks it up."
+        ),
+        Throw::Thrown { into, broke: true } => format!(
+            "{who} threw the {thing} through the way out into {into}, and it BROKE where it landed. The \
+             {thing} is NO LONGER CARRIED and is not lying anywhere, in this room or in {into}: it is \
+             broken and gone, and nobody can pick it up, carry it or use it again."
         ),
         Throw::Immovable => format!(
             "{who} could not throw the {thing} at all: it is {bulk} and does not move. Nothing happened."
