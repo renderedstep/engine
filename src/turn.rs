@@ -550,7 +550,12 @@ impl<'s> Mechanics<'s> {
 
     /// `Playthrough::Turn#refusal_for`: the reading first, the game and its
     /// closed doorways second.
-    fn refusal_for(&self, intent: &Intent, command: &str, room: &Room) -> Option<Refusal> {
+    pub(crate) fn refusal_for(
+        &self,
+        intent: &Intent,
+        command: &str,
+        room: &Room,
+    ) -> Option<Refusal> {
         if intent.refused() {
             return Refusal::for_intent(intent, command, &room.offered_for(&intent.action));
         }

@@ -49,7 +49,8 @@ fn missed(action: &str) -> Option<&'static str> {
     })
 }
 
-fn empty(action: &str) -> Option<&'static str> {
+/// What an action that reads a closed set says when that set is empty.
+pub fn empty(action: &str) -> Option<&'static str> {
     Some(match action {
         "move" => "There is no way out of here at all.",
         "talk" => "There is nobody here to talk to.",

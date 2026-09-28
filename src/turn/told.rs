@@ -17,6 +17,7 @@ use crate::command::{self, Journal, Produced};
 use crate::data;
 use crate::dialogue::sanitize;
 use crate::engine::Error;
+use crate::facts::{self, definite_name};
 use crate::grammar::{self, Grammar};
 use crate::intent::Intent;
 use crate::model::{Agent, Book, Call, Failure, Filed, Models};
@@ -26,7 +27,7 @@ use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::room::{Choice, Record};
 use crate::store::Store;
-use crate::text::{is_blank, presence, ruby_strip, upcase_first};
+use crate::text::{is_blank, presence, ruby_strip};
 use kept::Kept;
 use serde_json::{json, Value};
 
@@ -623,7 +624,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         let from = self.m.here();
         let taker = self.m.player();
         self.commit("take", |turn| turn.m.take(item, None).map(|_| ()))?;
-        let fact = taken_fact(&row, taker.as_ref(), from.as_ref());
+        let fact = facts::taken(&row, taker.as_ref(), from.as_ref());
         self.narrate(
             command,
             Some(fact),
@@ -644,7 +645,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             .ok_or_else(|| Error::Database("a drop with nowhere to stand".into()))?;
         let dropper = self.m.player();
         self.commit("drop", |turn| turn.m.drop(item, None).map(|_| ()))?;
-        let fact = dropped_fact(&row, &here, dropper.as_ref());
+        let fact = facts::dropped(&row, &here, dropper.as_ref());
         self.narrate(
             command,
             Some(fact),
@@ -668,11 +669,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             return self.narrate(command, None, None, None, None);
         }
         let (words, inscriber) = self.inscribe(item)?;
-        let fact = format!(
-            "{} has writing on it. {}",
-            upcase_first(&definite_name(&row)),
-            written_words_fact(&words)
-        );
+        let fact = facts::read(&row, &words);
         let fallback = format!("On {} you read: {words}", definite_name(&row));
         let told = self.narrate(command, Some(fact), None, None, Some(fallback))?;
         if let (Some(told), Some(agent)) = (&told, &inscriber) {
@@ -1185,19 +1182,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             ending: None,
         };
         let context = moment.narration_context(true, true);
-        let fact = match fact.filter(|fact| !is_blank(fact)) {
-            Some(fact) => format!(
-                "\nWhat has ALREADY happened, recorded by the game: {fact}\nNarrate it as done. Do not contradict it and do not undo it.\n"
-            ),
-            None => String::new(),
-        };
-        let doing = match doing.and_then(data::narrator_doing) {
-            Some(sentence) => format!("\n{sentence}\n"),
-            None => String::new(),
-        };
-        format!(
-            "{context}\n{fact}\n{doing}\nThe player types: {command}\n\nNarrate what happens.\n"
-        )
+        facts::framing(&context, command, fact, doing)
     }
 }
 
@@ -1219,70 +1204,6 @@ fn turned(produced: Produced, crisis: bool) -> Turned {
         },
         Produced::Nothing => Turned::default(),
     }
-}
-
-/// `Item#bare_name` and `#definite_name`: "the" in front of the name, with
-/// any article the name arrived with taken off first.
-fn definite_name(item: &Row) -> String {
-    crate::moment::definite_name(string(item, "name"))
-}
-
-fn bare_name(item: &Row) -> String {
-    let name = string(item, "name");
-    let definite = crate::moment::definite_name(name);
-    definite
-        .strip_prefix("the ")
-        .unwrap_or(&definite)
-        .to_string()
-}
-
-fn written_words_fact(words: &str) -> String {
-    format!(
-        "This is exactly what is written on it, word for word: \"{words}\" -- those are \
-         the words on it, and they do not change between readings. Quote them as they \
-         are; do not add to them, and do not write different ones."
-    )
-}
-
-/// `Playthrough::Turn#taken_fact`.
-fn taken_fact(item: &Row, taker: Option<&Row>, from: Option<&Row>) -> String {
-    let lying = match from {
-        Some(room) => format!("in {}", string(room, "name")),
-        None => "in this room".into(),
-    };
-    let description = match presence(text(item, "description")) {
-        Some(description) => format!(" -- {description}"),
-        None => String::new(),
-    };
-    let inscribed = match presence(text(item, "inscription")).filter(|_| flag(item, "readable")) {
-        Some(words) => format!(" {}", written_words_fact(words)),
-        None => String::new(),
-    };
-    format!(
-        "ON THIS TURN, and not before it, {} picked {} up. Until this turn it was NOT in their \
-         hands at all: it was lying {lying}. Now they are carrying it{description}. The picking up \
-         is what has just happened and it is what to narrate. Do not write it as something they \
-         already had, already held, or turn out to be holding. {} is the only thing that moved: \
-         nothing else was lifted, opened, drawn out or taken into anybody's hands.{inscribed}",
-        taker.map_or("", |who| string(who, "fullname")),
-        definite_name(item),
-        upcase_first(&definite_name(item)),
-    )
-}
-
-/// `Playthrough::Turn#dropped_fact`.
-fn dropped_fact(item: &Row, here: &Row, dropper: Option<&Row>) -> String {
-    format!(
-        "ON THIS TURN, and not before it, {} put the {} down. Until this turn it WAS in their \
-         hands: it is no longer carried, and it is now lying in {}, where it stays until somebody \
-         picks it up. The putting down is what has just happened and it is what to narrate. Do \
-         not write them picking it up or finding it. {} is the only thing that moved: nothing \
-         else was lifted, opened, drawn out or taken into anybody's hands.",
-        dropper.map_or("The party", |who| string(who, "fullname")),
-        bare_name(item),
-        string(here, "name"),
-        upcase_first(&definite_name(item)),
-    )
 }
 
 /// `Item#whereabouts`: where a thing is, and whose layer of the world it

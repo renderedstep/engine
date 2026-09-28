@@ -15,10 +15,11 @@ use super::kept::NpcEffect;
 use super::{model, Told, Turn};
 use crate::dialogue;
 use crate::engine::Error;
+use crate::facts::{self, Throw};
 use crate::model::receipts::{self, Filed};
 use crate::model::{Agent, Book, Call, Failure};
 use crate::playthrough::Game;
-use crate::records::{id, int, string, text, Row};
+use crate::records::{id, int, string, text};
 use crate::room::Record;
 use serde_json::{Map, Value};
 
@@ -264,70 +265,44 @@ impl Turn<'_, '_> {
         if report.refusal.is_some() {
             return self.narrate(command, None, None, None, None);
         }
-        let thing = bare_name(&row);
-        let who = thrower
-            .as_ref()
-            .map_or("The party", |who| string(who, "fullname"))
-            .to_string();
-        let (fact, words) = match (&report.change, at) {
+        let thing = facts::bare_name(&row);
+        let who = thrower.as_ref().map(|who| string(who, "fullname"));
+        let bulk = text(&row, "bulk").unwrap_or_default();
+        let (outcome, words) = match (&report.change, at) {
             (Some(landed), Some(Record::Person(person))) => (
-                format!(
-                    "{who} threw the {thing} at {name} and it hit them. The {thing} is NO LONGER CARRIED: it is lying \
-                     on the floor at {name}'s feet, where it stays until somebody picks it up.",
-                    name = person.fullname
-                ),
+                Throw::Struck {
+                    target: &person.fullname,
+                },
                 landed.clone(),
             ),
-            (Some(landed), Some(Record::Place(place))) => (
-                format!(
-                    "{who} threw the {thing} through the way out into {name}. The {thing} is NO LONGER CARRIED and is \
-                     no longer in this room at all: it is lying in {name}, where it stays until somebody picks it up.",
-                    name = place.name
-                ),
-                landed.clone(),
-            ),
+            (Some(landed), Some(Record::Place(place))) => {
+                (Throw::Thrown { into: &place.name }, landed.clone())
+            }
             _ => {
                 let now = self.m.row("items", item)?;
-                let carried = int(&now, "location_id").is_none() && int(&now, "character_id").is_none();
-                let fumbled = report.note.get(1).is_some_and(|note| note.starts_with("the lift failed"));
+                let carried =
+                    int(&now, "location_id").is_none() && int(&now, "character_id").is_none();
+                let fumbled = report
+                    .note
+                    .get(1)
+                    .is_some_and(|note| note.starts_with("the lift failed"));
                 if !fumbled {
                     (
-                        format!(
-                            "{who} could not throw the {thing} at all: it is {} and does not move. Nothing happened.",
-                            text(&row, "bulk").unwrap_or_default()
-                        ),
+                        Throw::Immovable,
                         "it does not move for anybody, so no die was thrown".to_string(),
                     )
                 } else {
                     (
-                        format!(
-                            "{who} tried to pick up and throw the {thing} and could not get it moving: it is {} and the \
-                             attempt failed. NOTHING WAS THROWN and nothing was hit -- the {thing} {}. The turn was \
-                             spent on the attempt.",
-                            text(&row, "bulk").unwrap_or_default(),
-                            if carried {
-                                "is still in the party's hands"
-                            } else {
-                                "is still lying exactly where it was"
-                            }
-                        ),
+                        Throw::Fumbled { carried },
                         "the lift failed: nothing was thrown and no row moved".to_string(),
                     )
                 }
             }
         };
+        let fact = facts::thrown(who, &thing, bulk, outcome);
         let fallback = format!("Your throw of the {thing}: {words}.");
         self.narrate(command, Some(fact), None, None, Some(fallback))
     }
-}
-
-/// `Item#bare_name`: the name without an article it arrived with.
-fn bare_name(item: &Row) -> String {
-    let definite = crate::moment::definite_name(string(item, "name"));
-    definite
-        .strip_prefix("the ")
-        .unwrap_or(&definite)
-        .to_string()
 }
 
 /// `Interaction#compose_summary`: what the player said, what the person did

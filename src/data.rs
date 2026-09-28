@@ -168,8 +168,21 @@ pub fn narrator_instructions() -> &'static str {
 /// `Scene::Narrator::DOING`: what the narrator is told a kind of turn is, for
 /// the kinds that have a sentence.
 pub fn narrator_doing(intent: &str) -> Option<&'static str> {
+    narrator_doings()[intent].as_str()
+}
+
+/// `Scene::Narrator::DOING.keys`: the kinds of turn that have a sentence, in
+/// file order.
+pub fn narrator_doing_intents() -> Vec<&'static str> {
+    narrator_doings()
+        .as_hash()
+        .map(|doing| doing.keys().filter_map(Yaml::as_str).collect())
+        .unwrap_or_default()
+}
+
+fn narrator_doings() -> &'static Yaml {
     static FILE: OnceLock<Yaml> = OnceLock::new();
-    file_of(&FILE, "scene/narrator.yml", NARRATOR)["doing"][intent].as_str()
+    &file_of(&FILE, "scene/narrator.yml", NARRATOR)["doing"]
 }
 
 fn file_of(file: &'static OnceLock<Yaml>, name: &str, source: &str) -> &'static Yaml {

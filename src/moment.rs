@@ -81,7 +81,7 @@ impl Direction {
         }
     }
 
-    fn note(self) -> &'static str {
+    pub fn note(self) -> &'static str {
         match self {
             Direction::Taken => "picked up just now, on this turn",
             Direction::Dropped => "put down just now, on this turn",
@@ -515,7 +515,7 @@ impl<'a> Moment<'a> {
 
     /// `Playthrough::Arc#next_step`'s summary: the main open arc's first
     /// step by position this game has not reached.
-    fn next_beat(&self) -> Option<String> {
+    pub fn next_beat(&self) -> Option<String> {
         let story = Some(self.game.story_id());
         let arc = self.records().first("quests", |quest| {
             int(quest, "story_id") == story
