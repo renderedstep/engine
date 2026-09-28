@@ -12,11 +12,12 @@ const REQUEST: &str = include_str!("../data/playthrough/classifier/request.yml")
 /// Every data file, by its path under `data/` without `.yml`, and its
 /// text exactly as compiled in: what a host that reads the same words
 /// (the game's `EngineData`) reads.
-pub fn files() -> [(&'static str, &'static str); 11] {
+pub fn files() -> [(&'static str, &'static str); 12] {
     [
         ("character/desires", DESIRES),
         ("item/inscriber", INSCRIBER),
         ("location/generator", LOCATION_GENERATOR),
+        ("location/kind", LOCATION_KIND),
         ("physics", PHYSICS),
         ("playthrough/classifier", CLASSIFIER),
         ("playthrough/classifier/request", REQUEST),
@@ -372,6 +373,59 @@ fn read_physics(source: &str) -> Physics {
 /// A table's rows, without their values.
 fn rows(rows: &[(String, i64)]) -> Vec<&str> {
     rows.iter().map(|(row, _)| row.as_str()).collect()
+}
+
+const LOCATION_KIND: &str = include_str!("../data/location/kind.yml");
+
+/// `data/location/kind.yml`: what sort of place a room may be, how
+/// cluttered, and which rooms a building of each sort has.
+pub struct LocationKind {
+    pub kinds: Vec<String>,
+    pub densities: Vec<String>,
+    pub buildings: Vec<(String, Building)>,
+}
+
+/// One building's rooms: the one you walk in at, then the bands the rest are
+/// dealt from, in the order ground, above, below.
+pub struct Building {
+    pub entry: String,
+    pub bands: [Vec<String>; 3],
+}
+
+fn strings(value: &Yaml, what: &str) -> Vec<String> {
+    value
+        .as_vec()
+        .unwrap_or_else(|| panic!("{what} is not a list"))
+        .iter()
+        .map(|word| string(word, what))
+        .collect()
+}
+
+pub fn location_kind() -> &'static LocationKind {
+    static KIND: OnceLock<LocationKind> = OnceLock::new();
+    KIND.get_or_init(|| {
+        let file = load("location/kind.yml", LOCATION_KIND);
+        let buildings = file["buildings"]
+            .as_hash()
+            .expect("buildings is a map")
+            .iter()
+            .map(|(name, plan)| {
+                let band = |key: &str| strings(&plan[key], key);
+                (
+                    string(name, "a building"),
+                    Building {
+                        entry: string(&plan["entry"], "entry"),
+                        bands: [band("ground"), band("above"), band("below")],
+                    },
+                )
+            })
+            .collect();
+        LocationKind {
+            kinds: strings(&file["kinds"], "kinds"),
+            densities: strings(&file["densities"], "densities"),
+            buildings,
+        }
+    })
 }
 
 #[cfg(test)]

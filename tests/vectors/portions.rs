@@ -490,6 +490,8 @@ fn interior() {
             clock: INTERIOR_STORY_START,
             existing_locations: 1,
             footprint,
+            kind: input["kind"].as_str(),
+            density: input["density"].as_str(),
         };
         let picks = input["picks"]
             .is_object()
@@ -504,6 +506,8 @@ fn interior() {
                 "danger": room.danger,
                 "hazard": room.hazard.map(|h| h.hazard),
                 "hazard_die": room.hazard.map(|h| h.hazard_die),
+                "kind": room.kind,
+                "density": room.density,
             })).collect::<Vec<_>>(),
             "edges": layout.edges.iter().map(|e| json!([e.from, e.to, e.distance, e.travel_method])).collect::<Vec<_>>(),
         })

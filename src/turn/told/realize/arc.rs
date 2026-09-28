@@ -13,7 +13,7 @@
 //! person in the deepest room of a place they can reach (a place is built
 //! to keep them in when there is none), or a thing on the floor.
 
-use super::{Parameters, Turn};
+use super::{Parameters, Turn, Words};
 use crate::cast;
 use crate::deadline::{self, Room, GRACE_ROOMS};
 use crate::engine::Error;
@@ -246,9 +246,9 @@ impl Turn<'_, '_> {
     /// `#place_a_place!`.
     fn place_a_place(&mut self, step: &Row, anchor: i64) -> Result<(), Error> {
         let name = string(step, "target_name").to_string();
-        let place = self.create_stub(&name, &teaser_for(step), None, None)?;
+        let place = self.create_stub(&name, &teaser_for(step), None, None, Words::default())?;
         self.open_the_door(anchor, place)?;
-        self.lay_out(place, Some(&picks()))
+        self.lay_out(place, Some(&picks()), None)
     }
 
     /// `#place_a_person!`: the deepest room of a place the party can reach,
@@ -312,9 +312,9 @@ impl Turn<'_, '_> {
     /// the anchor room, laid out, and its deepest room.
     fn somewhere_to_keep_them(&mut self, step: &Row, anchor: i64) -> Result<i64, Error> {
         let name = format!("where {} is", string(step, "target_name"));
-        let place = self.create_stub(&name, &teaser_for(step), None, None)?;
+        let place = self.create_stub(&name, &teaser_for(step), None, None, Words::default())?;
         self.open_the_door(anchor, place)?;
-        self.lay_out(place, Some(&picks()))?;
+        self.lay_out(place, Some(&picks()), None)?;
         Ok(self
             .m
             .records

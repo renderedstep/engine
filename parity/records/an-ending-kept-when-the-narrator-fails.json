@@ -843,7 +843,9 @@
               "x": 6,
               "y": 5,
               "z": 0,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -1118,7 +1120,9 @@
               "x": 6,
               "y": 5,
               "z": 0,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -1437,7 +1441,9 @@
               "x": 6,
               "y": 5,
               "z": 0,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -1794,7 +1800,9 @@
               "x": 6,
               "y": 5,
               "z": 0,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -2189,7 +2197,9 @@
               "x": 6,
               "y": 5,
               "z": 0,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -2590,7 +2600,9 @@
               "x": 6,
               "y": 5,
               "z": 0,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -3028,7 +3040,9 @@
               "x": 6,
               "y": 5,
               "z": 0,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []

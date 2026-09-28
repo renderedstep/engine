@@ -33,6 +33,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `parameters` | `Location::Parameters` | a building's picks resolved against its tables, kept in key order |
 | `boxes` | `Location::Box` | walls, shared ground, bearings and distances between rooms |
 | `interior` | `Location::Interior` | a building's rooms and doorways, returned rather than written |
+| `kind` | `Location::Kind` | what sort of place a room may be and how cluttered, and the sort each room of a building is dealt |
 | `shuffle_connections` | `WorldMechanic::ShuffleConnections` | how a shuffle rearranges the mobile rooms' doorways |
 | `world_mechanic` | `WorldMechanic` | the cadence boundaries a mechanic has to run for |
 | `deadline` | `Quest::Deadline` | the hops walk and the anchor room an overdue step is placed from |

@@ -1,0 +1,359 @@
+# What sort of place a room is, how much small stuff lies about in it, and
+# which sort each room of a building is dealt. Owned by this engine and read
+# by `src/kind.rs`, and by the game's `Location::Kind` through its extension,
+# which declares this file's shape. Every word here is sent to a model: an
+# edit is a prompt change and needs a baseline (the game's AGENTS.md).
+#
+# The words are meant for any setting a story may have -- a walled town, a
+# modern city, a ship between planets -- and each names one sort of place
+# only. They are a first cut and will be revisited.
+#
+# A building deals its rooms by where they are in it: `entry` is the room its
+# way in opens onto, `ground` the rest of that storey, `above` the storeys
+# over it and `below` the storeys under it, each band dealt in turn from the
+# top. For a ship or a station a storey is a deck: the entry is the airlock,
+# `ground` the rest of the deck it opens onto, and `above` and `below` the
+# decks over and under that one.
+---
+kinds:
+- corridor
+- common room
+- assembly hall
+- kitchen
+- sleeping quarters
+- washroom
+- study
+- library
+- office
+- classroom
+- laboratory
+- infirmary
+- workshop
+- machine room
+- control room
+- storeroom
+- shop
+- shrine
+- auditorium
+- cell
+- stable
+- hangar
+- airlock
+- garden
+- courtyard
+- rooftop
+- street
+- road
+- square
+- market
+- crossing
+- field
+- forest
+- shore
+- mountainside
+- desert
+- cave
+- ruin
+densities:
+- sparse
+- lived-in
+- cluttered
+buildings:
+  house:
+    entry: common room
+    ground:
+    - kitchen
+    - study
+    above:
+    - sleeping quarters
+    - washroom
+    below:
+    - storeroom
+  farmhouse:
+    entry: kitchen
+    ground:
+    - common room
+    - storeroom
+    above:
+    - sleeping quarters
+    below:
+    - storeroom
+  mansion:
+    entry: assembly hall
+    ground:
+    - study
+    - kitchen
+    - library
+    - common room
+    above:
+    - sleeping quarters
+    - washroom
+    - study
+    below:
+    - storeroom
+  apartment block:
+    entry: corridor
+    ground:
+    - common room
+    - shop
+    above:
+    - sleeping quarters
+    - kitchen
+    - washroom
+    below:
+    - storeroom
+    - machine room
+  inn:
+    entry: common room
+    ground:
+    - kitchen
+    - common room
+    above:
+    - sleeping quarters
+    below:
+    - storeroom
+  shop:
+    entry: shop
+    ground:
+    - storeroom
+    - office
+    above:
+    - sleeping quarters
+    below:
+    - storeroom
+  office building:
+    entry: office
+    ground:
+    - office
+    - common room
+    above:
+    - office
+    - study
+    below:
+    - storeroom
+  guildhall:
+    entry: assembly hall
+    ground:
+    - office
+    - common room
+    - library
+    above:
+    - office
+    - study
+    below:
+    - storeroom
+  workshop:
+    entry: workshop
+    ground:
+    - workshop
+    - storeroom
+    - office
+    above:
+    - sleeping quarters
+    below:
+    - storeroom
+  smithy:
+    entry: workshop
+    ground:
+    - workshop
+    - storeroom
+    above:
+    - sleeping quarters
+    below:
+    - storeroom
+  mill:
+    entry: machine room
+    ground:
+    - storeroom
+    - workshop
+    above:
+    - storeroom
+    - machine room
+    below:
+    - machine room
+  factory:
+    entry: workshop
+    ground:
+    - workshop
+    - machine room
+    - office
+    - storeroom
+    above:
+    - office
+    - workshop
+    below:
+    - machine room
+    - storeroom
+  warehouse:
+    entry: office
+    ground:
+    - storeroom
+    above:
+    - storeroom
+    below:
+    - storeroom
+  barn:
+    entry: stable
+    ground:
+    - stable
+    - storeroom
+    above:
+    - storeroom
+    below:
+    - storeroom
+  temple:
+    entry: shrine
+    ground:
+    - shrine
+    - study
+    above:
+    - study
+    - sleeping quarters
+    below:
+    - storeroom
+  library:
+    entry: library
+    ground:
+    - library
+    - study
+    above:
+    - library
+    - study
+    below:
+    - storeroom
+  school:
+    entry: corridor
+    ground:
+    - classroom
+    - office
+    above:
+    - classroom
+    - library
+    below:
+    - storeroom
+  hospital:
+    entry: corridor
+    ground:
+    - infirmary
+    - office
+    above:
+    - infirmary
+    - laboratory
+    below:
+    - storeroom
+  theatre:
+    entry: common room
+    ground:
+    - auditorium
+    - storeroom
+    above:
+    - auditorium
+    - office
+    below:
+    - storeroom
+  bathhouse:
+    entry: common room
+    ground:
+    - washroom
+    above:
+    - washroom
+    below:
+    - machine room
+  barracks:
+    entry: common room
+    ground:
+    - sleeping quarters
+    - kitchen
+    - washroom
+    above:
+    - sleeping quarters
+    below:
+    - storeroom
+  fortress:
+    entry: assembly hall
+    ground:
+    - courtyard
+    - kitchen
+    - workshop
+    above:
+    - control room
+    - sleeping quarters
+    below:
+    - cell
+    - storeroom
+  jail:
+    entry: office
+    ground:
+    - cell
+    - corridor
+    above:
+    - cell
+    below:
+    - cell
+  tower:
+    entry: common room
+    ground:
+    - storeroom
+    above:
+    - study
+    - sleeping quarters
+    - library
+    below:
+    - storeroom
+  lighthouse:
+    entry: common room
+    ground:
+    - storeroom
+    - kitchen
+    above:
+    - sleeping quarters
+    - machine room
+    below:
+    - storeroom
+  warren:
+    entry: cave
+    ground:
+    - cave
+    above:
+    - cave
+    below:
+    - cave
+  ruin:
+    entry: ruin
+    ground:
+    - ruin
+    above:
+    - ruin
+    below:
+    - cave
+  spaceship:
+    entry: airlock
+    ground:
+    - corridor
+    - common room
+    - kitchen
+    - infirmary
+    above:
+    - control room
+    - sleeping quarters
+    - laboratory
+    below:
+    - machine room
+    - storeroom
+    - hangar
+  space station:
+    entry: airlock
+    ground:
+    - corridor
+    - shop
+    - common room
+    - infirmary
+    above:
+    - sleeping quarters
+    - office
+    - laboratory
+    - control room
+    below:
+    - machine room
+    - storeroom
+    - hangar

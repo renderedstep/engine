@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_tool_calls" ("id" integer PRIMARY KEY AUTOI
 CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cache_read_cost" decimal(16,10), "cache_read_tokens" integer, "cache_write_cost" decimal(16,10), "cache_write_tokens" integer, "chat_id" integer NOT NULL, "chat_type" varchar NOT NULL, "created_at" datetime(6) NOT NULL, "input_cost" decimal(16,10), "input_tokens" integer, "message_id" integer, "message_type" varchar, "model" varchar NOT NULL, "operation" varchar NOT NULL, "output_cost" decimal(16,10), "output_tokens" integer, "provider" varchar NOT NULL, "status" varchar NOT NULL, "thinking_cost" decimal(16,10), "thinking_tokens" integer, "total_cost" decimal(16,10), "updated_at" datetime(6) NOT NULL, CONSTRAINT chk_rails_71abd85d6e CHECK (operation IN ('chat', 'embedding', 'moderation', 'image', 'speech', 'transcription', 'ocr', 'rerank')), CONSTRAINT chk_rails_f50895962a CHECK (status IN ('pending', 'succeeded', 'failed', 'cancelled')));
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("completed" boolean DEFAULT FALSE NOT NULL, "last_id" integer, "task" varchar NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text, "gravity" varchar);
-INSERT INTO universes VALUES(1000000001,'A farming parish that keeps to itself.','2026-09-28 08:04:38.497276','Paid at market in coin, and in kind the rest of the year.','One farm at the end of a lane, and the fields around it.','Four generations of Halloways have worked the same ground.','Ordinary physics. What falls, falls as hard as it would anywhere.','The parish council, which is mostly Halloways.','A harvest service, and nothing much in between.','Hand tools, a well and a lamp.','2026-09-28 08:04:38.497276','A pitchfork, and whatever is nearest the door.','ordinary');
+INSERT INTO universes VALUES(1000000001,'A farming parish that keeps to itself.','2026-09-28 12:00:43.756977','Paid at market in coin, and in kind the rest of the year.','One farm at the end of a lane, and the fields around it.','Four generations of Halloways have worked the same ground.','Ordinary physics. What falls, falls as hard as it would anywhere.','The parish council, which is mostly Halloways.','A harvest service, and nothing much in between.','Hand tools, a well and a lamp.','2026-09-28 12:00:43.756977','A pitchfork, and whatever is nearest the door.','ordinary');
 CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, CONSTRAINT "fk_rails_56a213cbe2"
 FOREIGN KEY ("race_id")
   REFERENCES "races" ("id")
@@ -23,7 +23,7 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO characters VALUES(1000000001,29,'A work coat two sizes too big.','Runs the farm since her father''s knees gave out, and keeps the accounts in her head.',NULL,'2026-09-28 08:04:38.762213',0,NULL,11,'A door bolted from the wrong side','The farm going to her cousin','Wenna Halloway',8,0,0,1,3,'A job finished before dark',1000000001,NULL,'Wenna','Practical, and slow to be frightened.',1000000001,NULL,'female',1000000001,11,NULL,NULL,'2026-09-28 08:04:38.762213',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000001,29,'A work coat two sizes too big.','Runs the farm since her father''s knees gave out, and keeps the accounts in her head.',NULL,'2026-09-28 12:00:43.968860',0,NULL,11,'A door bolted from the wrong side','The farm going to her cousin','Wenna Halloway',8,0,0,1,3,'A job finished before dark',1000000001,NULL,'Wenna','Practical, and slow to be frightened.',1000000001,NULL,'female',1000000001,11,NULL,NULL,'2026-09-28 12:00:43.968860',12,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cancelled" boolean DEFAULT FALSE NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "model_id_string" varchar, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "ruby_llm_model_id" integer, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -79,26 +79,26 @@ FOREIGN KEY ("key_template_id")
 FOREIGN KEY ("connected_location_id")
   REFERENCES "locations" ("id")
 );
-INSERT INTO location_connections VALUES(1000000001,'open',1000000005,'2026-09-28 08:04:38.839569','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 08:04:38.839569');
-INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-28 08:04:38.849899','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-28 08:04:38.849899');
-INSERT INTO location_connections VALUES(1000000003,'open',1000000004,'2026-09-28 08:04:38.853540','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-28 08:04:38.853540');
-INSERT INTO location_connections VALUES(1000000004,'open',1000000005,'2026-09-28 08:04:38.856357','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-28 08:04:38.856357');
-INSERT INTO location_connections VALUES(1000000005,'open',1000000003,'2026-09-28 08:04:38.861092','adjacent',NULL,NULL,NULL,1000000004,'about a minute','taking stairs','2026-09-28 08:04:38.861092');
-INSERT INTO location_connections VALUES(1000000006,'open',1000000004,'2026-09-28 08:04:38.864321','adjacent',NULL,NULL,NULL,1000000003,'about a minute','taking stairs','2026-09-28 08:04:38.864321');
-INSERT INTO location_connections VALUES(1000000007,'open',1000000005,'2026-09-28 08:04:38.868693','adjacent','fall',NULL,NULL,1000000003,'about 3 minutes','climbing','2026-09-28 08:04:38.868693');
-INSERT INTO location_connections VALUES(1000000008,'open',1000000003,'2026-09-28 08:04:38.872026','adjacent',NULL,NULL,NULL,1000000005,'about 3 minutes','climbing','2026-09-28 08:04:38.872026');
-CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, "surface" varchar, CONSTRAINT "fk_rails_5bc98acf09"
+INSERT INTO location_connections VALUES(1000000001,'open',1000000005,'2026-09-28 12:00:44.026661','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 12:00:44.026661');
+INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-28 12:00:44.034874','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-28 12:00:44.034874');
+INSERT INTO location_connections VALUES(1000000003,'open',1000000004,'2026-09-28 12:00:44.037091','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-28 12:00:44.037091');
+INSERT INTO location_connections VALUES(1000000004,'open',1000000005,'2026-09-28 12:00:44.038523','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-28 12:00:44.038523');
+INSERT INTO location_connections VALUES(1000000005,'open',1000000003,'2026-09-28 12:00:44.040182','adjacent',NULL,NULL,NULL,1000000004,'about a minute','taking stairs','2026-09-28 12:00:44.040182');
+INSERT INTO location_connections VALUES(1000000006,'open',1000000004,'2026-09-28 12:00:44.041885','adjacent',NULL,NULL,NULL,1000000003,'about a minute','taking stairs','2026-09-28 12:00:44.041885');
+INSERT INTO location_connections VALUES(1000000007,'open',1000000005,'2026-09-28 12:00:44.043698','adjacent','fall',NULL,NULL,1000000003,'about 3 minutes','climbing','2026-09-28 12:00:44.043698');
+INSERT INTO location_connections VALUES(1000000008,'open',1000000003,'2026-09-28 12:00:44.045017','adjacent',NULL,NULL,NULL,1000000005,'about 3 minutes','climbing','2026-09-28 12:00:44.045017');
+CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, "surface" varchar, "kind" varchar, "density" varchar, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_fedd9b21a0"
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,'2026-09-28 08:04:38.554512','safe',NULL,'A rutted lane between hedges, ending at the farm gate and the yard beyond it.','realized',NULL,NULL,NULL,NULL,'The lane has flooded every spring since anybody wrote it down.',0,'The Lane',NULL,NULL,1000000001,'The lane up to Halloway Farm.','2026-09-28 08:04:38.554512',NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000002,'2026-09-28 08:04:38.568259','safe',8,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'Halloway Farm',NULL,NULL,1000000001,'A farmhouse and its yard at the end of the lane.','2026-09-28 08:04:38.568259',12,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000003,'2026-09-28 08:04:38.591050','safe',8,'Straw bales under the rafters, and a shuttered window over the yard.','realized',NULL,NULL,NULL,NULL,'The loft has kept the winter hay dry for a hundred years.',0,'The Loft',1000000002,NULL,1000000001,'The loft above the kitchen.','2026-09-28 08:04:38.638014',6,6,0,1,NULL);
-INSERT INTO locations VALUES(1000000004,'2026-09-28 08:04:38.609853','safe',8,'A range gone cold, a scrubbed table, and the stair up to the loft.','realized',NULL,NULL,NULL,NULL,'Every Halloway was born within earshot of this range.',0,'The Kitchen',1000000002,NULL,1000000001,'The farm kitchen, with the stair to the loft.','2026-09-28 08:04:38.651573',6,6,0,0,NULL);
-INSERT INTO locations VALUES(1000000005,'2026-09-28 08:04:38.627305','safe',8,'Cobbles, a well, and the loft window high in the house wall above.','realized',NULL,NULL,NULL,NULL,'The cobbles were laid by the first Halloway, and nobody has relaid one since.',0,'The Yard',1000000002,NULL,1000000001,'The farmyard, cobbled and wet.','2026-09-28 08:04:38.655682',6,0,0,0,NULL);
+INSERT INTO locations VALUES(1000000001,'2026-09-28 12:00:43.803669','safe',NULL,'A rutted lane between hedges, ending at the farm gate and the yard beyond it.','realized',NULL,NULL,NULL,NULL,'The lane has flooded every spring since anybody wrote it down.',0,'The Lane',NULL,NULL,1000000001,'The lane up to Halloway Farm.','2026-09-28 12:00:43.803669',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000002,'2026-09-28 12:00:43.816023','safe',8,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'Halloway Farm',NULL,NULL,1000000001,'A farmhouse and its yard at the end of the lane.','2026-09-28 12:00:43.816023',12,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000003,'2026-09-28 12:00:43.834932','safe',8,'Straw bales under the rafters, and a shuttered window over the yard.','realized',NULL,NULL,NULL,NULL,'The loft has kept the winter hay dry for a hundred years.',0,'The Loft',1000000002,NULL,1000000001,'The loft above the kitchen.','2026-09-28 12:00:43.876108',6,6,0,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000004,'2026-09-28 12:00:43.850255','safe',8,'A range gone cold, a scrubbed table, and the stair up to the loft.','realized',NULL,NULL,NULL,NULL,'Every Halloway was born within earshot of this range.',0,'The Kitchen',1000000002,NULL,1000000001,'The farm kitchen, with the stair to the loft.','2026-09-28 12:00:43.882209',6,6,0,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000005,'2026-09-28 12:00:43.864008','safe',8,'Cobbles, a well, and the loft window high in the house wall above.','realized',NULL,NULL,NULL,NULL,'The cobbles were laid by the first Halloway, and nobody has relaid one since.',0,'The Yard',1000000002,NULL,1000000001,'The farmyard, cobbled and wet.','2026-09-28 12:00:43.884828',6,0,0,0,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -275,7 +275,7 @@ CREATE TABLE IF NOT EXISTS "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT N
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO races VALUES(1000000001,'2026-09-28 08:04:38.502445','Born within sight of the church tower, and likely to die there.',0,'Parishfolk',1000000001,'2026-09-28 08:04:38.502445');
+INSERT INTO races VALUES(1000000001,'2026-09-28 12:00:43.760307','Born within sight of the church tower, and likely to die there.',0,'Parishfolk',1000000001,'2026-09-28 12:00:43.760307');
 CREATE TABLE IF NOT EXISTS "relay_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_source" varchar, "cost_usd" decimal(12,6), "created_at" datetime(6) NOT NULL, "finished_at" datetime(6), "input_tokens" integer, "model" varchar NOT NULL, "output_tokens" integer, "player_id" integer NOT NULL, "reserved_usd" decimal(12,6) NOT NULL, "route" varchar NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "stream" boolean DEFAULT FALSE NOT NULL, "updated_at" datetime(6) NOT NULL, "upstream_status" integer, CONSTRAINT "fk_rails_deae27bd71"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -290,12 +290,12 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-28 08:04:39.051468','The lane runs up to the farm gate, and the loft window above the yard is open.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-20 07:00:00','The story opens in the lane outside Halloway Farm.',NULL,'2026-09-28 08:04:39.051468');
+INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-28 12:00:44.137937','The lane runs up to the farm gate, and the loft window above the yard is open.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-20 07:00:00','The story opens in the lane outside Halloway Farm.',NULL,'2026-09-28 12:00:44.137937');
 CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'2026-09-28 08:04:38.526398',NULL,'rural mystery','The farmhouse door is bolted from the inside, and the loft window is standing open.','2026-09-20 07:00:00','Wenna Halloway comes home up the lane to a house she cannot get into by the door.','A Window Over the Yard (engine sweep)',1000000001,'2026-09-28 08:04:38.526398');
+INSERT INTO stories VALUES(1000000001,'2026-09-28 12:00:43.781235',NULL,'rural mystery','The farmhouse door is bolted from the inside, and the loft window is standing open.','2026-09-20 07:00:00','Wenna Halloway comes home up the lane to a house she cannot get into by the door.','A Window Over the Yard (engine sweep)',1000000001,'2026-09-28 12:00:43.781235');
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -315,6 +315,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20260928102823');
 INSERT INTO schema_migrations VALUES('20260928035434');
 INSERT INTO schema_migrations VALUES('20260928035429');
 INSERT INTO schema_migrations VALUES('20260928031026');
@@ -391,8 +392,8 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
-INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-28 08:04:11.981278','2026-09-28 08:04:11.981283');
-INSERT INTO ar_internal_metadata VALUES('schema_sha1','0ac19d803e60477f0a66d948e0255683b378ac78','2026-09-28 08:04:11.990182','2026-09-28 08:04:11.990187');
+INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-28 12:00:28.658342','2026-09-28 12:00:28.658345');
+INSERT INTO ar_internal_metadata VALUES('schema_sha1','a170d373ac9b94fbbf2c0335a10f091d790c8412','2026-09-28 12:00:28.662888','2026-09-28 12:00:28.662890');
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;

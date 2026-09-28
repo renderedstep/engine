@@ -5,7 +5,7 @@
 //!
 //! Each schema below is the Ruby class of the same name, field for field.
 
-use crate::{interior, parameters, population};
+use crate::{interior, kind, parameters, population};
 use serde_json::{json, Map, Value};
 
 /// A table's keys, in its order.
@@ -333,6 +333,10 @@ pub fn desire_writer() -> Value {
 pub fn location_place() -> Value {
     let mut fields = prose_fields();
     fields.push(optional(
+        "place_kind",
+        string("What sort of place with rooms this is -- a building, a ship, a station -- as the game will lay out and furnish its rooms: pick the closest. The game decides which rooms it has and what stands in each; you describe it from outside and at its way in.").choices(&kind::buildings()),
+    ));
+    fields.push(optional(
                 "parameters",
                 object(
                     Some("What kind of building this is. Every field is optional; leave one out and the game takes the quietest option. Answer for the place you have just described."),
@@ -398,6 +402,14 @@ pub fn location_exits() -> Value {
                             field(
                                 "population",
                                 string("How many people are in that place. Pick the closest of these words. It is a word and never a number: the engine decides how many people that is.").choices(&keys(&population::BANDS)),
+                            ),
+                            field(
+                                "kind",
+                                string("What sort of place that is, as the game will furnish it. Pick the closest of these words; the game decides what stands in a place of that kind and tells you room by room. It is a word and never a list of furniture.").choices(kind::kinds()),
+                            ),
+                            field(
+                                "density",
+                                string("How much small stuff is lying about in it: 'sparse' for somewhere kept or empty, 'lived-in' for most places, 'cluttered' for somewhere nobody tidies. A word; the game rolls the count.").choices(kind::densities()),
                             ),
                         ],
                     ),
