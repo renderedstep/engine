@@ -9,7 +9,8 @@
 //! - [`Live`], which sends the call over a [`Route`] (the player's own key
 //!   straight to OpenRouter, or the owner's relay) under `BaseAgent`'s policy:
 //!   the model rotation, a refusal or an ignored schema asking the next
-//!   model, a crisis answer suppressed and never rotated past, a rejected key
+//!   model, a crisis answer suppressed and never rotated past (and never
+//!   streamed as far as the words it is suppressed for), a rejected key
 //!   never rotated past, and the conversation written to `chats` and
 //!   `messages` as it goes;
 //! - [`Replay`], which answers each call with the next of a list of fixed
@@ -174,8 +175,9 @@ pub type Verify<'v> = &'v mut dyn FnMut(&Value) -> Result<(), String>;
 /// What a turn asks its models through.
 pub trait Models {
     /// One chat call (`BaseAgent#ask`). With `on_chunk` the answer streams,
-    /// and each piece of prose goes there as it arrives; a rotation streams
-    /// both attempts.
+    /// and prose goes there as it arrives, as far as
+    /// [`declined::Held`] can tell it will be kept; a rotation streams both
+    /// attempts.
     fn ask(
         &mut self,
         book: &mut Book,
