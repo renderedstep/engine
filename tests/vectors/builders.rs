@@ -12,7 +12,7 @@ use renderedstep_engine::realization::{self, Realization, Slot};
 use renderedstep_engine::records::{id, Records};
 use renderedstep_engine::roll::{self, Seed};
 use renderedstep_engine::{cast, danger, population, text};
-use renderedstep_engine::{identity, ledger, memory, moment, schemas, volition};
+use renderedstep_engine::{data, identity, ledger, memory, moment, schemas, volition};
 use serde_json::{json, Value};
 
 fn int(value: &Value) -> i64 {
@@ -121,6 +121,67 @@ fn volition_request() {
             .collect();
         let location = game.location(int(&input["location"]));
         volition::request(&game, &characters, location, input["line"].as_str())
+    });
+}
+
+#[test]
+fn speech_choices() {
+    let speech = data::speech();
+    let table: serde_json::Map<String, Value> = speech
+        .table
+        .iter()
+        .map(|(pursuit, row)| {
+            let row: serde_json::Map<String, Value> = row
+                .iter()
+                .map(|(shape, weight)| (shape.clone(), json!(weight)))
+                .collect();
+            (pursuit.clone(), Value::Object(row))
+        })
+        .collect();
+    let tables = json!({
+        "shapes": speech.shapes,
+        "silent": { "turn": speech.silent.turn, "arrival": speech.silent.arrival },
+        "cooldown_turns": speech.cooldown_turns,
+        "max_speakers": { "turn": speech.max_speakers.turn, "arrival": speech.max_speakers.arrival },
+        "table": table,
+    });
+    check("speech_choices", tables, |input| {
+        let records = records(input);
+        let playthrough = records
+            .table("playthroughs")
+            .first()
+            .expect("a playthrough");
+        let game = Game::new(&records, id(playthrough));
+        let location = game.location(int(&input["location"]));
+        let people: Vec<Value> = input["characters"]
+            .as_array()
+            .expect("characters")
+            .iter()
+            .map(|who| {
+                let character = game.character(int(who));
+                let choices: Vec<Value> = volition::speech_choices(&game, character, location)
+                    .into_iter()
+                    .map(|(token, fact)| json!([token, fact]))
+                    .collect();
+                let mut rng = Seed {
+                    story: game.story_id().into(),
+                    playthrough: game.id().into(),
+                    at: game.story_now().into(),
+                    sequence: id(character).into(),
+                    kind: roll::SPEECH,
+                }
+                .generator();
+                let thrown = volition::throw_speech(
+                    &game,
+                    character,
+                    location,
+                    speech.silent.turn,
+                    &mut rng,
+                );
+                json!({ "character": id(character), "choices": choices, "throw": thrown })
+            })
+            .collect();
+        Value::Array(people)
     });
 }
 

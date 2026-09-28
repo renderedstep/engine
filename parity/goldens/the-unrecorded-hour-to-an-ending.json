@@ -454,7 +454,7 @@
         "offers": null,
         "understood": "take -> blank closure writ",
         "resolved_by": "grammar",
-        "note": "the story: Take the blank closure writ out of the tube basket before anybody fills in its name.\nthe story is over: With Perrin's index and the unsigned writ side by side on your desk, the missing hour has a source at last -- the same hand closed 0714, 0902 and Perrin Lasco. Query 1188 stays open in your name, and this time the record says why.",
+        "note": "someone here: Halkett Rowe spoke up unasked and told Odile Vance to leave Ward Office 12. Nobody moved.\nthe story: Take the blank closure writ out of the tube basket before anybody fills in its name.\nthe story is over: With Perrin's index and the unsigned writ side by side on your desk, the missing hour has a source at last -- the same hand closed 0714, 0902 and Perrin Lasco. Query 1188 stays open in your name, and this time the record says why.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -464,7 +464,7 @@
           "3": "reached"
         },
         "volitions": 1,
-        "acts": 0,
+        "acts": 1,
         "ending": "query-answered",
         "ending_words": "With Perrin's index and the unsigned writ side by side on your desk, the missing hour has a source at last -- the same hand closed 0714, 0902 and Perrin Lasco. Query 1188 stays open in your name, and this time the record says why.",
         "scheduled": 0,

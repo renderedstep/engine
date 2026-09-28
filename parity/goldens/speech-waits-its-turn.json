@@ -1,171 +1,47 @@
 {
-  "script": "somebody-walks-out-on-their-own",
-  "story": "A Clerk With Somewhere To Be",
+  "script": "speech-waits-its-turn",
+  "story": "Two Clerks at One Counter",
   "steps": [
     {
-      "step": "step 1",
+      "step": "step 1 one-voice-on-a-turn",
       "player": "first",
-      "typed": "stats",
+      "typed": "/examine pawn ticket",
       "dump": {
         "location": {
           "id": 1000000001,
-          "name": "The Records Office",
+          "name": "The Pawn Counter",
           "detail": "realized"
         },
         "storey": null,
-        "exits": [
-          {
-            "id": 1000000002,
-            "name": "The Landing",
-            "detail": "realized"
-          }
-        ],
+        "exits": [],
         "here": [
           {
-            "id": 1000000002,
-            "name": "quarter receipt"
+            "id": 1000000004,
+            "name": "brass tally"
           }
         ],
-        "carrying": [],
-        "present": [
-          {
-            "id": 1000000002,
-            "name": "Bell"
-          }
-        ],
-        "foes": [],
-        "inscription": [],
-        "hp": 53,
-        "hp_of": {
-          "Bell": 53
-        },
-        "abilities": {
-          "strength": 12,
-          "dexterity": 12,
-          "will": 12
-        },
-        "dead": false,
-        "changed": false,
-        "change": null,
-        "refused": false,
-        "offers": null,
-        "understood": null,
-        "resolved_by": "engine_view",
-        "note": null,
-        "drifts": 0,
-        "blows": 0,
-        "hazards": 0,
-        "quest": {},
-        "volitions": 0,
-        "acts": 0,
-        "ending": "none",
-        "ending_words": null,
-        "scheduled": 0,
-        "fired": 0,
-        "elapsed_minutes": 0.0,
-        "shown": null
-      }
-    },
-    {
-      "step": "step 2",
-      "player": "first",
-      "typed": "take the moon",
-      "dump": {
-        "location": {
-          "id": 1000000001,
-          "name": "The Records Office",
-          "detail": "realized"
-        },
-        "storey": null,
-        "exits": [
-          {
-            "id": 1000000002,
-            "name": "The Landing",
-            "detail": "realized"
-          }
-        ],
-        "here": [
-          {
-            "id": 1000000002,
-            "name": "quarter receipt"
-          }
-        ],
-        "carrying": [],
-        "present": [
-          {
-            "id": 1000000002,
-            "name": "Bell"
-          }
-        ],
-        "foes": [],
-        "inscription": [],
-        "hp": 53,
-        "hp_of": {
-          "Bell": 53
-        },
-        "abilities": {
-          "strength": 12,
-          "dexterity": 12,
-          "will": 12
-        },
-        "dead": false,
-        "changed": false,
-        "change": null,
-        "refused": true,
-        "offers": "there is no thing lying here called \"the moon\". There is: quarter receipt",
-        "understood": null,
-        "resolved_by": "grammar",
-        "note": null,
-        "drifts": 0,
-        "blows": 0,
-        "hazards": 0,
-        "quest": {},
-        "volitions": 0,
-        "acts": 0,
-        "ending": "none",
-        "ending_words": null,
-        "scheduled": 0,
-        "fired": 0,
-        "elapsed_minutes": 0.0,
-        "shown": null
-      }
-    },
-    {
-      "step": "step 3",
-      "player": "first",
-      "typed": "take the quarter receipt",
-      "dump": {
-        "location": {
-          "id": 1000000001,
-          "name": "The Records Office",
-          "detail": "realized"
-        },
-        "storey": null,
-        "exits": [
-          {
-            "id": 1000000002,
-            "name": "The Landing",
-            "detail": "realized"
-          }
-        ],
-        "here": [],
         "carrying": [
           {
-            "id": 1000000002,
-            "name": "quarter receipt"
+            "id": 1000000003,
+            "name": "pawn ticket"
           }
         ],
         "present": [
           {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
             "id": 1000000002,
-            "name": "Bell"
+            "name": "Tamsin Gale"
           }
         ],
         "foes": [],
         "inscription": [],
         "hp": 53,
         "hp_of": {
-          "Bell": 53
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
         },
         "abilities": {
           "strength": 12,
@@ -174,62 +50,61 @@
         },
         "dead": false,
         "changed": true,
-        "change": "took: quarter receipt (was lying in The Records Office, now carried by Wick)",
+        "change": "The browser turn completed.",
         "refused": false,
         "offers": null,
-        "understood": "take -> quarter receipt",
+        "understood": "examine -> pawn ticket",
         "resolved_by": "grammar",
-        "note": "someone here: Bell spoke up unasked and told Wick to leave The Records Office. Nobody moved.",
+        "note": "first: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
         "quest": {},
-        "volitions": 1,
+        "volitions": 2,
         "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 0.0,
+        "elapsed_minutes": 5.0,
         "shown": null
       }
     },
     {
-      "step": "step 4",
+      "step": "step 2 nothing-said-twice",
       "player": "first",
-      "typed": "go to The Landing",
+      "typed": "/examine pawn ticket",
       "dump": {
         "location": {
-          "id": 1000000002,
-          "name": "The Landing",
+          "id": 1000000001,
+          "name": "The Pawn Counter",
           "detail": "realized"
         },
         "storey": null,
-        "exits": [
-          {
-            "id": 1000000001,
-            "name": "The Records Office",
-            "detail": "realized"
-          }
-        ],
+        "exits": [],
         "here": [],
         "carrying": [
           {
-            "id": 1000000002,
-            "name": "quarter receipt"
+            "id": 1000000003,
+            "name": "pawn ticket"
           }
         ],
         "present": [
           {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
             "id": 1000000002,
-            "name": "Bell"
+            "name": "Tamsin Gale"
           }
         ],
         "foes": [],
         "inscription": [],
         "hp": 53,
         "hp_of": {
-          "Bell": 53
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
         },
         "abilities": {
           "strength": 12,
@@ -238,23 +113,149 @@
         },
         "dead": false,
         "changed": true,
-        "change": "moved: The Records Office -> The Landing",
+        "change": "The browser turn completed.",
         "refused": false,
         "offers": null,
-        "understood": "move -> The Landing",
+        "understood": "examine -> pawn ticket",
         "resolved_by": "grammar",
-        "note": "someone here: Bell walked out of The Records Office to The Landing and is no longer in The Records Office.",
+        "note": "second: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
         "quest": {},
-        "volitions": 1,
+        "volitions": 2,
+        "acts": 2,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 the-one-who-spoke-waits",
+      "player": "first",
+      "typed": "/examine pawn ticket",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Pawn Counter",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
+            "id": 1000000002,
+            "name": "Tamsin Gale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "examine -> pawn ticket",
+        "resolved_by": "grammar",
+        "note": "third: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 2,
         "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 0.0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 both-wait",
+      "player": "first",
+      "typed": "/examine pawn ticket",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Pawn Counter",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
+            "id": 1000000002,
+            "name": "Tamsin Gale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "examine -> pawn ticket",
+        "resolved_by": "grammar",
+        "note": "fourth: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 2,
+        "acts": 2,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
         "shown": null
       }
     }

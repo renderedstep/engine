@@ -80,7 +80,7 @@
         "offers": null,
         "understood": "take -> blank closure writ",
         "resolved_by": "grammar",
-        "note": "the story: Take the blank closure writ out of the tube basket before anybody fills in its name.",
+        "note": "someone here: Halkett Rowe spoke up unasked and told Odile Vance to leave Ward Office 12. Nobody moved.\nthe story: Take the blank closure writ out of the tube basket before anybody fills in its name.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -90,7 +90,7 @@
           "3": "reached"
         },
         "volitions": 1,
-        "acts": 0,
+        "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,

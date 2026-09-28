@@ -3,10 +3,12 @@
 //!
 //! The line is read by the fixed grammar ([`crate::grammar`]) against the
 //! room the player stands in, refused ([`crate::refusal`]) or played, and
-//! then the world answers exactly where the Ruby engine lets it: every foe in
-//! the room the turn began in strikes, everybody else there takes a turn on
-//! volition's die, the place itself takes its toll, the story's arc is read,
-//! and a fight that has ended is closed with one scene.
+//! then the world answers exactly where the Ruby engine lets it: somebody in
+//! the room may speak up unasked, on a line the served turn would write a
+//! paragraph for, every foe in the room the turn began in strikes, everybody
+//! else there who did not speak takes a turn on volition's die, the place
+//! itself takes its toll, the story's arc is read, and a fight that has ended
+//! is closed with one scene.
 //!
 //! Every write goes to the database and to the turn's copy of the rows in the
 //! same step, so what a later rule reads is what the database now says.
@@ -189,6 +191,8 @@ pub struct Mechanics<'s> {
     /// What the arc concluded with on this line, if it did
     /// (`Playthrough::Arc#conclusion`).
     concluded: Option<Concluded>,
+    /// Who spoke up unasked on this line, and so takes no act on it.
+    spoke: Vec<i64>,
 }
 
 /// `Playthrough::Arc::Concluded`: the ending a game reached, the outcome it
@@ -217,6 +221,7 @@ impl<'s> Mechanics<'s> {
             decision: None,
             decided: false,
             concluded: None,
+            spoke: Vec::new(),
         })
     }
 
@@ -323,6 +328,7 @@ impl<'s> Mechanics<'s> {
     /// Plays one typed line.
     pub fn run(&mut self, command: &str) -> Result<Report, Error> {
         self.engine_refused = false;
+        self.spoke.clear();
         if self.over() {
             let refusal = self.over_refusal(command);
             return Ok(Report::refuse(refusal.reason(), None));
@@ -1935,8 +1941,13 @@ impl<'s> Mechanics<'s> {
             return Ok(report);
         }
 
+        let mut volitions = Vec::new();
+        if tells(intent) {
+            let here = self.here();
+            volitions.extend(self.speech(here.as_ref(), addressee(intent))?);
+        }
         let blows = self.riposte(from)?;
-        let volitions = self.volitions(from)?;
+        volitions.extend(self.volitions(from)?);
         if let Some(room) = from {
             self.standing(room, "every_turn")?;
         }
@@ -2072,9 +2083,93 @@ impl<'s> Mechanics<'s> {
         Ok(())
     }
 
+    /// Somebody in the room the player stands in may speak up unasked,
+    /// before the paragraph that tells it is written: each person there, in
+    /// id order, takes one throw of the speech die until as many have spoken
+    /// as one turn allows. The person the player is talking to does not
+    /// interrupt their own exchange. Nothing here asks a model. Returns what
+    /// was said, and remembers who said it, so that nobody who spoke also
+    /// acts on this line.
+    fn speech(
+        &mut self,
+        location: Option<&Row>,
+        addressee: Option<i64>,
+    ) -> Result<Vec<Volition>, Error> {
+        let Some(location) = location else {
+            return Ok(Vec::new());
+        };
+        if self.over() {
+            return Ok(Vec::new());
+        }
+        let cast: Vec<Row> = {
+            let player = self.player_id();
+            self.game()
+                .cast_in(Some(location))
+                .into_iter()
+                .filter(|who| {
+                    Some(id(who)) != player
+                        && !flag(who, "is_protagonist")
+                        && Some(id(who)) != addressee
+                        && volition::speech_weights(text(who, "desire_pursuit")).is_some()
+                })
+                .cloned()
+                .collect()
+        };
+        let mut said = Vec::new();
+        for who in cast {
+            if said.len() as i64 >= data::speech().max_speakers.turn {
+                break;
+            }
+            if let Some(token) = self.speak(&who, location, data::speech().silent.turn) {
+                said.push(self.apply_speech(&who, location, &token)?);
+                self.spoke.push(id(&who));
+            }
+        }
+        Ok(said)
+    }
+
+    /// The speech die for one person, seeded off the story's time and who
+    /// is speaking, apart from the act die, so an act it leaves alone rolls
+    /// as it did before anybody spoke.
+    fn speak(&self, character: &Row, location: &Row, silent: i64) -> Option<String> {
+        let mut rng = self.generator(self.story_now(), id(character), roll::SPEECH);
+        volition::throw_speech(&self.game(), character, location, silent, &mut rng)
+    }
+
+    /// What somebody said, if it is still theirs to say, and its record
+    /// either way. Saying it moves nothing.
+    fn apply_speech(
+        &mut self,
+        character: &Row,
+        location: &Row,
+        chosen: &str,
+    ) -> Result<Volition, Error> {
+        let offered = volition::speech_choices(&self.game(), character, location);
+        let Some((_, fact)) = offered.into_iter().find(|(token, _)| token == chosen) else {
+            let fact = format!(
+                "{} was going to act and could not: the act is no longer available. \
+                 Nothing moved.",
+                string(character, "fullname")
+            );
+            return self.record_volition(character, location, chosen, "rejected", fact, "none");
+        };
+        let serves = volition::speech_weights(text(character, "desire_pursuit"))
+            .zip(volition::speech_shape(chosen))
+            .is_some_and(|(row, shape)| weight_of(row, shape) > 0);
+        self.record_volition(
+            character,
+            location,
+            chosen,
+            "applied",
+            fact,
+            if serves { "conscious" } else { "none" },
+        )
+    }
+
     /// `Playthrough::Volition.run!`: everybody else in the room the turn
     /// began in takes a turn on volition's die. Nothing here asks a model,
-    /// so every decision is the die's.
+    /// so every decision is the die's. Whoever spoke up on this line has
+    /// made their one choice for it already.
     fn volitions(&mut self, location: Option<&Row>) -> Result<Vec<Volition>, Error> {
         let Some(location) = location else {
             return Ok(Vec::new());
@@ -2097,6 +2192,7 @@ impl<'s> Mechanics<'s> {
                     Some(id(who)) != player
                         && !flag(who, "is_protagonist")
                         && !fighting.contains(&id(who))
+                        && !self.spoke.contains(&id(who))
                         && weights_for(text(who, "desire_pursuit")).is_some()
                 })
                 .collect();
@@ -3275,6 +3371,32 @@ pub fn thing_of(row: &Row, carried: bool) -> Thing {
         combustible: flag(row, "combustible"),
         carried,
         template: int(row, "template_id"),
+    }
+}
+
+/// Whether the served turn writes a paragraph for this reading, which is
+/// where somebody may speak up: every branch but an attack and a walk.
+fn tells(intent: &Intent) -> bool {
+    if intent.physical.is_some() {
+        return true;
+    }
+    if let Some(Record::Place(_)) = &intent.destination {
+        return false;
+    }
+    !matches!(&intent.speaker, Some(Record::Person(_)) if intent.action == "attack")
+}
+
+/// The person a reading talks to, who does not speak up on their own
+/// exchange: the one spoken to, or the one offered a thing.
+fn addressee(intent: &Intent) -> Option<i64> {
+    if let Some(choice) = &intent.physical {
+        return (choice.kind == "offer")
+            .then(|| choice.recipient.as_ref().map(|person| person.id))
+            .flatten();
+    }
+    match &intent.speaker {
+        Some(Record::Person(person)) if intent.action != "attack" => Some(person.id),
+        _ => None,
     }
 }
 

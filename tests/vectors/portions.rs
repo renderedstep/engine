@@ -37,6 +37,7 @@ pub const NAMES: &[&str] = &[
     "plan",
     "request_identity",
     "volition_request",
+    "speech_choices",
     "physics",
     "breakage",
 ];

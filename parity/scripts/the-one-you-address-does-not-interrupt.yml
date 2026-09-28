@@ -1,0 +1,33 @@
+---
+story: Two Clerks at One Counter
+steps:
+- id: rowe-interjects
+  type: "/talk Tamsin"
+  browser:
+    token: talk
+    replies:
+    - purpose: character
+      content:
+        pre_thought: Ansel has the ticket in his hand.
+        pre_feeling: eager
+        action: Tamsin smiles at Ansel and opens the ticket book.
+        post_thought: He will hand it over if I am patient.
+        post_feeling: hopeful
+        inner_resolution: I will wait for the ticket.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Tamsin opens the ticket book for you, and behind her Rowe holds out
+        his hand.
+      prompt_includes:
+      - 'What else happened here, recorded by the game: Rowe Harker spoke up unasked
+        and demanded pawn ticket from Ansel Mott. Nothing changed hands.'
+      prompt_excludes:
+      - Tamsin Gale spoke up unasked
+  expect:
+    changed: true
+    carrying:
+    - pawn ticket
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+    volitions: 2

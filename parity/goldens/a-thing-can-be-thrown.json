@@ -953,7 +953,7 @@
         "offers": null,
         "understood": "throw -> ward stamp at Halkett Rowe",
         "resolved_by": "grammar",
-        "note": "threw: ward stamp at Halkett Rowe -- strength -> d20(20) <= 9 FAIL\nthe lift failed: nothing was thrown and no row moved",
+        "note": "threw: ward stamp at Halkett Rowe -- strength -> d20(20) <= 9 FAIL\nthe lift failed: nothing was thrown and no row moved\nsomeone here: Halkett Rowe spoke up unasked and told Odile Vance to leave Ward Office 12. Nobody moved.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -963,7 +963,7 @@
           "3": "bound"
         },
         "volitions": 1,
-        "acts": 0,
+        "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,

@@ -394,6 +394,12 @@ fn history(game: &Game, character: &Row) -> Vec<Value> {
         .collect()
 }
 
+/// Whether this person has a conversation with this game that holds
+/// anything yet: somebody who has already been spoken with is past greeting.
+pub fn spoken_with(game: &Game, character: &Row) -> bool {
+    !history(game, character).is_empty()
+}
+
 /// The character pass's request: `{system, user, schema, history}`.
 pub fn character_request(game: &Game, character: &Row, line: &str) -> Value {
     character_request_offering(game, character, line, None)
