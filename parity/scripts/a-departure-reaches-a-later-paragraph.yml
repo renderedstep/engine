@@ -74,6 +74,7 @@ steps:
     - purpose: interaction-narration
       content: Bell is bent over the survey, and answers without looking up.
       prompt_includes:
-      - 'What else happened here, recorded by the game: Bell walked out of The Records Office to The Landing'
+      - 'What else happened here, recorded by the game: Bell walked out of The Records
+        Office to The Landing'
   expect:
     location: The Landing (realized)
