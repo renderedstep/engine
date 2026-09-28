@@ -1,0 +1,39 @@
+---
+story: A Clerk With Somewhere To Be
+steps:
+- id: up-to-a-landing-cut-off-at-its-cap
+  type: "/move The Landing"
+  browser:
+    token: cut-up
+    replies:
+    - purpose: arrival
+      content:
+        description: The stair turns once and the half-landing opens under a high
+          window, its sill thick with dust. The stair turns once and the half-landing
+          opens under a high window, its sill thick with dust. The stair turns once
+          and the half-landing opens under a high window, its sill thick with dust.
+          The stair turns once and the half-landing opens under a high window, its
+          sill thick with dust. The stair turns once and the half-landing opens under
+          a high window, its sill thick with dust. The stair turns once and the half-landing
+          opens under a high window, its sill thick with dust. The stair turns once
+          and the half-landing opens under a high window, its sill thick with dust.
+          The stair turns once and the half-landing opens under a high window, its
+          sill thick with dust. The stair turns once and the half-landing opens under
+          a high window, its sill thick with dust. A clerk waits by the rail, turned
+          half toward
+        summary: Wick climbs to the landing.
+  expect:
+    location: The Landing (realized)
+    changed: true
+- id: back-down-to-a-finished-arrival
+  type: "/move The Records Office"
+  browser:
+    token: finished-down
+    replies:
+    - purpose: arrival
+      content:
+        description: You come back down into the office.
+        summary: Wick goes back down to the office.
+  expect:
+    location: The Records Office (realized)
+    changed: true

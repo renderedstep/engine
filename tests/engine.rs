@@ -839,3 +839,82 @@ fn a_line_is_read_over_rows_as_a_turn_reads_it() {
         );
     }
 }
+
+/// An arrival's description the provider stopped at its 900-character cap,
+/// mid-word, as a provider that enforces `maxLength` leaves it.
+fn cut_at_the_cap() -> String {
+    let base = "You step into the courtyard and the market's noise falls away behind the wall. ";
+    let text: String = base.repeat(12).chars().take(900).collect();
+    assert_eq!(text.chars().count(), 900);
+    text
+}
+
+/// The first scene written in the courtyard: the arrival, and whether it is
+/// the engine's own words.
+fn courtyard_arrival(engine: &Engine) -> (String, bool) {
+    engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT description, COALESCE(engine_fallback, 0) FROM scenes \
+             WHERE location_id = (SELECT id FROM locations WHERE name = 'Courtyard') \
+             ORDER BY id LIMIT 1",
+            [],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .unwrap()
+}
+
+#[test]
+fn an_arrival_cut_off_at_its_cap_is_asked_of_the_next_model_and_never_kept() {
+    use renderedstep_engine::model::{Live, Route, Secret};
+    use serde_json::json;
+    let (mut engine, playthrough) = gate();
+    let finished = "You step into the courtyard, and the market's noise falls away.";
+    let transport = Scripted {
+        answers: vec![
+            answered(json!({"description": cut_at_the_cap(), "summary": "Into the courtyard."})),
+            answered(json!({"description": finished, "summary": "Into the courtyard."})),
+        ],
+        sent: Vec::new(),
+    };
+    let route = Route::Direct {
+        key: Secret::new("own"),
+    };
+    let mut live = Live::with_transport(route, transport);
+    let submitted = engine
+        .submit(playthrough, "/move Courtyard", "a", &mut live, &mut |_| {})
+        .unwrap();
+    assert_eq!(submitted.state.location.as_ref().unwrap().name, "Courtyard");
+    assert_eq!(
+        live.transport().sent.len(),
+        2,
+        "the cut answer is asked again"
+    );
+    assert_eq!(courtyard_arrival(&engine), (finished.to_string(), false));
+}
+
+#[test]
+fn an_arrival_no_model_finished_is_told_in_the_engines_own_words() {
+    use renderedstep_engine::model::{Live, Route, Secret};
+    use serde_json::json;
+    let (mut engine, playthrough) = gate();
+    let cut = answered(json!({"description": cut_at_the_cap(), "summary": "Into the courtyard."}));
+    let transport = Scripted {
+        answers: vec![cut.clone(), cut],
+        sent: Vec::new(),
+    };
+    let route = Route::Direct {
+        key: Secret::new("own"),
+    };
+    let mut live = Live::with_transport(route, transport);
+    engine
+        .submit(playthrough, "/move Courtyard", "a", &mut live, &mut |_| {})
+        .unwrap();
+    let (description, fallback) = courtyard_arrival(&engine);
+    assert!(fallback, "the arrival is the engine's own: {description:?}");
+    assert!(
+        description.starts_with("You arrive at Courtyard."),
+        "{description:?}"
+    );
+}

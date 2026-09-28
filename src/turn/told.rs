@@ -141,6 +141,35 @@ fn model(failure: Failure) -> Error {
     Error::Model(failure)
 }
 
+/// Every string field of `content` short of the `maxLength` its schema asked
+/// for (`SanitizesGeneratedText::TruncatedTextError`). A field that arrives
+/// AT its cap was cut off by the provider rather than finished by the model,
+/// so the answer is refused inside the ask and the next model is asked; an
+/// arrival nobody could finish falls to the engine's own words. Counted on
+/// the raw text, before `sanitize`, because that is what the provider
+/// counted.
+fn under_its_caps(call: &Call, content: &Value) -> Result<(), String> {
+    let Some(properties) = call
+        .schema
+        .as_ref()
+        .and_then(|schema| schema["schema"]["properties"].as_object())
+    else {
+        return Ok(());
+    };
+    for (key, property) in properties {
+        let (Some(cap), Some(raw)) = (property["maxLength"].as_u64(), content[key].as_str()) else {
+            continue;
+        };
+        let length = raw.chars().count() as u64;
+        if length >= cap {
+            return Err(format!(
+                "generated text arrived at its {cap}-character cap ({length} characters), so it was cut off rather than finished"
+            ));
+        }
+    }
+    Ok(())
+}
+
 impl<'s, 'm> Turn<'s, 'm> {
     pub fn new(
         store: &'s Store,
@@ -941,9 +970,10 @@ impl<'s, 'm> Turn<'s, 'm> {
             store: self.m.store,
             records: &mut self.m.records,
         };
+        let mut verify = |content: &Value| under_its_caps(&call, content);
         let answer = self
             .models
-            .ask(&mut book, &mut agent, &call, None, None)
+            .ask(&mut book, &mut agent, &call, Some(&mut verify), None)
             .map_err(model)?;
         let field = |key: &str| sanitize(answer.content[key].as_str().unwrap_or_default());
         let (description, summary) = (field("description"), field("summary"));
