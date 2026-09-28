@@ -67,16 +67,21 @@ column items.created_at datetime(6) not null pk=0
 column items.description text pk=0
 column items.disposition varchar not null default 'intact' pk=0
 column items.fragility varchar not null default 'sturdy' pk=0
+column items.holds varchar pk=0
+column items.how varchar pk=0
 column items.id integer not null pk=1
 column items.inscription text pk=0
+column items.kit_key varchar pk=0
 column items.location_id integer pk=0
 column items.name varchar pk=0
 column items.playthrough_id integer pk=0
 column items.properties text pk=0
 column items.readable boolean not null default FALSE pk=0
 column items.template_id integer pk=0
+column items.tier varchar not null default 'portable' pk=0
 column items.updated_at datetime(6) not null pk=0
 column items.use_kind varchar not null default 'ordinary' pk=0
+column items.within_id integer pk=0
 column items.x integer pk=0
 column items.y integer pk=0
 column location_connections.barrier varchar not null default 'open' pk=0
@@ -513,6 +518,7 @@ index items (playthrough_id)
 index items (playthrough_id, id)
 index items (playthrough_id, template_id)
 index items (template_id)
+index items (within_id)
 index location_connections (connected_location_id)
 index location_connections (key_template_id)
 index location_connections (location_id)

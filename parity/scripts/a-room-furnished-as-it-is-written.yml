@@ -1,0 +1,87 @@
+---
+story: The Furnished Rooms
+steps:
+- id: into-the-reading-room
+  type: "/move The Reading Room"
+  browser:
+    token: first-entry
+    realizes: The Reading Room
+    replies:
+    - purpose: location
+      prompt_includes:
+      - "## Already Here, Decided By The Game"
+      - 'Fixed in place: desk (unsearched), bookcase, windowsill.'
+      - 'On the desk: paperweight.'
+      - 'Loose, and could be picked up: chair, lamp, button, coin.'
+      - Nobody has searched the desk yet, so do not say what is in it.
+      content:
+        description: A quiet room of books, a desk under the window.
+        lore: The clerk reads here when the ward is quiet.
+        items:
+        - name: brass letter knife
+          description: A thin brass knife for slitting envelopes.
+          use_kind: ordinary
+          combustible: false
+          readable: false
+        people: []
+    - purpose: location
+      content:
+        exits: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Reading Room (realized)
+    here:
+    - desk
+    - bookcase
+    - windowsill
+    - chair
+    - lamp
+    - paperweight
+    - bound volume
+    - journal
+    - candle stub
+    - dead fly
+    - button
+    - coin
+    - brass letter knife
+    changed: true
+    refused: false
+- id: a-paperweight-off-the-desk
+  type: take the paperweight
+  expect:
+    understood: take -> paperweight
+    changed: true
+    carrying:
+    - paperweight
+- id: the-kits-desk-does-not-move
+  type: take the desk
+  expect:
+    refused: true
+    offers:
+    - desk is immovable and does not move for anybody
+- id: out-and-back
+  type: go to The Clerk's Study
+  expect:
+    changed: true
+    location: The Clerk's Study (realized)
+- id: nothing-furnished-twice
+  type: go to The Reading Room
+  expect:
+    changed: true
+    location: The Reading Room (realized)
+    here:
+    - desk
+    - bookcase
+    - windowsill
+    - chair
+    - lamp
+    - bound volume
+    - journal
+    - candle stub
+    - dead fly
+    - button
+    - coin
+    - brass letter knife
+    carrying:
+    - paperweight

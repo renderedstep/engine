@@ -12,10 +12,11 @@ const REQUEST: &str = include_str!("../data/playthrough/classifier/request.yml")
 /// Every data file, by its path under `data/` without `.yml`, and its
 /// text exactly as compiled in: what a host that reads the same words
 /// (the game's `EngineData`) reads.
-pub fn files() -> [(&'static str, &'static str); 12] {
+pub fn files() -> [(&'static str, &'static str); 13] {
     [
         ("character/desires", DESIRES),
         ("item/inscriber", INSCRIBER),
+        ("item/kits", KITS),
         ("location/generator", LOCATION_GENERATOR),
         ("location/kind", LOCATION_KIND),
         ("physics", PHYSICS),
@@ -426,6 +427,198 @@ pub fn location_kind() -> &'static LocationKind {
             buildings,
         }
     })
+}
+
+const KITS: &str = include_str!("../data/item/kits.yml");
+
+/// `data/item/kits.yml`: what stands in a room of each sort, what lies on or
+/// in it, and what small stuff lies about, each table in file order.
+#[derive(Debug)]
+pub struct Kits {
+    pub kit_die: i64,
+    pub visible: usize,
+    pub density: Vec<(String, Vec<i64>)>,
+    pub kinds: Vec<(String, Kit)>,
+    pub pieces: Vec<(String, String)>,
+    pub holding: Vec<(String, String)>,
+    pub pools: Vec<(String, Pool)>,
+    pub readable: Vec<String>,
+    pub use_kinds: Vec<(String, String)>,
+    pub combustible: Vec<String>,
+}
+
+/// One sort of place: each piece and its share of the die, and the small
+/// stuff that may lie about.
+#[derive(Debug)]
+pub struct Kit {
+    pub pieces: Vec<(String, i64)>,
+    pub loose: Vec<String>,
+}
+
+/// What lies on or in a piece: how many, one of the list drawn, and the names
+/// they are drawn from.
+#[derive(Debug)]
+pub struct Pool {
+    pub count: Vec<i64>,
+    pub from: Vec<String>,
+}
+
+/// The file's shape: every top-level key, and nothing else.
+const KITS_KEYS: &[&str] = &[
+    "kit_die",
+    "visible",
+    "density",
+    "kinds",
+    "pieces",
+    "holding",
+    "pools",
+    "readable",
+    "use_kinds",
+    "combustible",
+];
+
+pub fn kits() -> &'static Kits {
+    static TABLES: OnceLock<Kits> = OnceLock::new();
+    TABLES.get_or_init(|| read_kits(KITS))
+}
+
+fn integers(value: &Yaml, what: &str) -> Vec<i64> {
+    value
+        .as_vec()
+        .unwrap_or_else(|| panic!("{what} is not a list"))
+        .iter()
+        .map(|n| {
+            n.as_i64()
+                .unwrap_or_else(|| panic!("{what} holds a non-integer"))
+        })
+        .collect()
+}
+
+fn entries<'y>(value: &'y Yaml, what: &str) -> Vec<(String, &'y Yaml)> {
+    value
+        .as_hash()
+        .unwrap_or_else(|| panic!("{what} is not a map"))
+        .iter()
+        .map(|(key, value)| (string(key, what), value))
+        .collect()
+}
+
+fn read_kits(source: &str) -> Kits {
+    let file = load("item/kits.yml", source);
+    let keys: Vec<String> = entries(&file, "item/kits.yml")
+        .into_iter()
+        .map(|(key, _)| key)
+        .collect();
+    assert_eq!(keys, KITS_KEYS, "item/kits.yml: its keys");
+    let number = |key: &str| {
+        file[key]
+            .as_i64()
+            .unwrap_or_else(|| panic!("item/kits.yml: {key} is not an integer"))
+    };
+    let kits = Kits {
+        kit_die: number("kit_die"),
+        visible: usize::try_from(number("visible")).expect("item/kits.yml: visible"),
+        density: entries(&file["density"], "density")
+            .into_iter()
+            .map(|(word, band)| (word, integers(band, "a density")))
+            .collect(),
+        kinds: entries(&file["kinds"], "kinds")
+            .into_iter()
+            .map(|(kind, kit)| {
+                let pieces = entries(&kit["pieces"], "a kind's pieces")
+                    .into_iter()
+                    .map(|(piece, share)| (piece, share.as_i64().expect("a share is an integer")))
+                    .collect();
+                (
+                    kind,
+                    Kit {
+                        pieces,
+                        loose: strings(&kit["loose"], "a kind's loose"),
+                    },
+                )
+            })
+            .collect(),
+        pieces: pairs(&file["pieces"], "pieces"),
+        holding: pairs(&file["holding"], "holding"),
+        pools: entries(&file["pools"], "pools")
+            .into_iter()
+            .map(|(name, pool)| {
+                (
+                    name,
+                    Pool {
+                        count: integers(&pool["count"], "a pool's count"),
+                        from: strings(&pool["from"], "a pool's names"),
+                    },
+                )
+            })
+            .collect(),
+        readable: strings(&file["readable"], "readable"),
+        use_kinds: pairs(&file["use_kinds"], "use_kinds"),
+        combustible: strings(&file["combustible"], "combustible"),
+    };
+    check_kits(&kits);
+    kits
+}
+
+/// `Item::Kit.checked!`: a table that cannot be right fails as it is read.
+fn check_kits(kits: &Kits) {
+    let words = [
+        "nothing", "top", "hollow", "closed", "light", "handy", "heavy",
+    ];
+    let piece = |name: &str| kits.pieces.iter().find(|(p, _)| p == name).map(|(_, w)| w);
+    for (name, word) in &kits.pieces {
+        assert!(
+            words.contains(&word.as_str()),
+            "item/kits.yml: {name} is {word:?}"
+        );
+    }
+    for (kind, kit) in &kits.kinds {
+        assert!(
+            location_kind().kinds.contains(kind),
+            "item/kits.yml: {kind} is not a kind"
+        );
+        for (name, _) in &kit.pieces {
+            assert!(
+                piece(name).is_some(),
+                "item/kits.yml: {kind} lists {name}, which is no piece"
+            );
+        }
+    }
+    for (name, pool) in &kits.holding {
+        assert!(
+            kits.pools.iter().any(|(p, _)| p == pool),
+            "item/kits.yml: {name} holds from {pool}, which is no pool"
+        );
+        assert!(
+            piece(name).is_some_and(|w| ["top", "hollow", "closed"].contains(&w.as_str())),
+            "item/kits.yml: {name} holds things and is not fixed"
+        );
+    }
+    for (name, word) in &kits.pieces {
+        if ["top", "hollow"].contains(&word.as_str()) {
+            assert!(
+                kits.holding.iter().any(|(p, _)| p == name),
+                "item/kits.yml: {name} is {word} and holds nothing"
+            );
+        }
+    }
+    let drawn = kits
+        .pools
+        .iter()
+        .flat_map(|(_, pool)| &pool.from)
+        .chain(kits.kinds.iter().flat_map(|(_, kit)| &kit.loose));
+    for name in drawn {
+        assert!(
+            piece(name).is_none(),
+            "item/kits.yml: {name} is both a piece and a thing"
+        );
+    }
+    for (word, _) in &kits.density {
+        assert!(
+            location_kind().densities.contains(word),
+            "item/kits.yml: density {word} is not a density"
+        );
+    }
 }
 
 #[cfg(test)]

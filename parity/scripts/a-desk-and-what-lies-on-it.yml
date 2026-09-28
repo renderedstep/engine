@@ -1,0 +1,121 @@
+---
+story: The Furnished Rooms
+steps:
+- id: in-the-study
+  type: look
+  expect:
+    location: The Clerk's Study (realized)
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - ward stamp
+    - potted fern
+    - lump of coal
+    carrying: []
+    changed: false
+    refused: false
+- id: a-look-at-the-desk-is-a-look-at-a-record
+  type: "/inspect the desk"
+  expect:
+    understood: examine -> desk
+    refused: true
+    offers:
+    - there is nothing written on the desk
+    changed: false
+- id: the-desk-does-not-move
+  type: take the desk
+  expect:
+    understood: take -> desk
+    refused: true
+    offers:
+    - desk is immovable and does not move for anybody
+    changed: false
+    carrying: []
+- id: the-stamp-comes-off-the-desk
+  type: take the ward stamp
+  expect:
+    understood: take -> ward stamp
+    changed: true
+    carrying:
+    - ward stamp
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - potted fern
+    - lump of coal
+- id: and-down-onto-the-floor
+  type: drop the ward stamp
+  expect:
+    changed: true
+    carrying: []
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - ward stamp
+    - potted fern
+    - lump of coal
+- id: out-of-the-scuttle
+  type: take the lump of coal
+  expect:
+    understood: take -> lump of coal
+    changed: true
+    carrying:
+    - lump of coal
+- id: to-the-stall
+  type: go to Cinder Lane Stall
+  expect:
+    changed: true
+    location: Cinder Lane Stall (realized)
+    here:
+    - market stall
+    - crate
+    - apple
+- id: an-apple-off-the-counter
+  type: take the apple
+  expect:
+    understood: take -> apple
+    changed: true
+    carrying:
+    - apple
+    - lump of coal
+    here:
+    - market stall
+    - crate
+- id: the-crate-does-not-move-either
+  type: take the crate
+  expect:
+    refused: true
+    offers:
+    - crate is immovable and does not move for anybody
+    here:
+    - market stall
+    - crate
+- id: back-through-the-study-to-the-clearing
+  type: go to The Clerk's Study
+  expect:
+    changed: true
+    location: The Clerk's Study (realized)
+- id: into-the-clearing
+  type: go to The Beech Clearing
+  expect:
+    changed: true
+    location: The Beech Clearing (realized)
+    here:
+    - old beech
+    - fallen log
+    - pine cone
+- id: a-cone-off-the-log
+  type: take the pine cone
+  expect:
+    understood: take -> pine cone
+    changed: true
+    carrying:
+    - apple
+    - lump of coal
+    - pine cone
+    here:
+    - old beech
+    - fallen log
