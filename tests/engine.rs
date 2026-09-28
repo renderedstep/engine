@@ -167,9 +167,13 @@ fn a_brittle_thing_thrown_onto_a_hard_floor_breaks_and_a_sturdy_one_does_not() {
         thrown.report.change.as_deref(),
         Some("it went through into The Kiln Yard and broke")
     );
-    assert!(thrown.report.note[1]
-        .starts_with("break: clay jar -- brittle, thrown on a hard floor: d6("));
-    assert!(thrown.report.note[1].ends_with(") <= 6 BROKE"));
+    assert_eq!(
+        thrown.report.note[1],
+        "range: clay jar -- light, 16 paces at ordinary gravity; 3 paces to The Kiln Yard, REACHED"
+    );
+    let rolled = thrown.report.note.last().unwrap();
+    assert!(rolled.starts_with("break: clay jar -- brittle, thrown on a hard floor: d6("));
+    assert!(rolled.ends_with(") <= 6 BROKE"));
 
     let (outcome, scratch, game) = at_the_pottery(
         "sturdy",
@@ -180,6 +184,169 @@ fn a_brittle_thing_thrown_onto_a_hard_floor_breaks_and_a_sturdy_one_does_not() {
     assert!(names(&outcome.state.here).contains(&"clay jar"));
 }
 
+/// The Ropewalk at Saltmarsh, with `sql` run over it, and a game of it
+/// started on the green.
+fn at_the_ropewalk(name: &str, sql: &str) -> (Engine, Scratch, i64) {
+    let sql = format!("{}{sql}", world("the-ropewalk-at-saltmarsh"));
+    let scratch = Scratch::new(&format!("range-{name}"), &sql);
+    let mut engine = Engine::open(&scratch.0).expect("the database opens");
+    let story = engine
+        .story_titled(&format!("The Ropewalk at Saltmarsh{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    (engine, scratch, playthrough)
+}
+
+/// A line submitted with one narration reply, whose prompt must include and
+/// leave out the texts given; and the journal the line's command kept.
+fn narrated(
+    engine: &mut Engine,
+    playthrough: i64,
+    line: &str,
+    includes: &[&str],
+    excludes: &[&str],
+) -> (renderedstep_engine::engine::Submitted, String) {
+    use renderedstep_engine::model::{Replay, Reply};
+    let reply = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "It is thrown.",
+        "prompt_includes": includes,
+        "prompt_excludes": excludes,
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![reply]);
+    let submitted = engine
+        .submit(playthrough, line, line, &mut replay, &mut |_| {})
+        .unwrap();
+    replay.finish().unwrap();
+    let journal = engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT journal FROM playthrough_commands ORDER BY id DESC LIMIT 1",
+            [],
+            |row| row.get::<_, String>(0),
+        )
+        .unwrap();
+    (submitted, journal)
+}
+
+#[test]
+fn a_throw_in_a_laid_out_room_that_falls_short_hits_nobody_and_lands_along_the_line() {
+    // Strength 25 passes every lift (a d20 at or under 20), and adds no more
+    // reach than 18 does. The player's row keeps a spot at the ropewalk's
+    // east end, which is where they stand once they are in it, 11 paces from
+    // Hester Vane and 24 from the tarring shed's door; and the floor is hard,
+    // so a brittle thing thrown onto it always breaks.
+    let (mut engine, _scratch, game) = at_the_ropewalk(
+        "short",
+        "UPDATE characters SET strength = 25, x = 29, y = 1, location_id = \
+         (SELECT id FROM locations WHERE name = 'The Ropewalk') WHERE fullname = 'Jory Pask'; \
+         UPDATE locations SET surface = 'hard' WHERE name = 'The Ropewalk';",
+    );
+    engine
+        .play(game, "go to the ropewalk", &mut |_| {})
+        .unwrap();
+    let (short, journal) = narrated(
+        &mut engine,
+        game,
+        "/throw lead sinker at Hester Vane",
+        &[
+            "Jory Pask threw the lead sinker at Hester Vane and it FELL SHORT: the lead sinker is \
+           heavy and carries only 7 paces, and Hester Vane was 11 paces away. It hit nobody. The \
+           lead sinker is NO LONGER CARRIED: it is lying on the floor between them",
+        ],
+        &["and it hit them"],
+    );
+    assert!(names(&short.state.here).contains(&"lead sinker"));
+    assert_eq!(
+        count(&engine, "SELECT COUNT(*) FROM playthrough_blows"),
+        0,
+        "no blow was struck"
+    );
+    assert!(journal.contains("\"reach\""), "{journal}");
+    assert!(
+        !journal.contains("Physics::Break"),
+        "a sturdy thing throws no break die"
+    );
+    let (x, y): (i64, i64) = engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT x, y FROM items WHERE name = 'lead sinker' AND playthrough_id IS NOT NULL",
+            [],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .unwrap();
+    // Seven paces along the line from where the player stands, and the four
+    // it did not carry short of Hester Vane, who stands at 18,1.
+    assert_eq!((x, y), (22, 1));
+
+    let (broke, journal) = narrated(
+        &mut engine,
+        game,
+        "/throw tar pot at The Tarring Shed",
+        &[
+            "Jory Pask threw the tar pot at the way out into The Tarring Shed and it FELL SHORT: \
+             the tar pot is light and carries only 16 paces, and the way out was 24 paces away.",
+            "It did not go through, and it BROKE where it landed.",
+            "in The Ropewalk or in The Tarring Shed",
+        ],
+        &[],
+    );
+    assert!(!names(&broke.state.here).contains(&"tar pot"));
+    assert!(journal.contains("Physics::Break"), "{journal}");
+
+    let (reached, _) = narrated(
+        &mut engine,
+        game,
+        "/throw cork float at Hester Vane",
+        &["Jory Pask threw the cork float at Hester Vane and it hit them."],
+        &["FELL SHORT", "carries about"],
+    );
+    assert!(names(&reached.state.here).contains(&"cork float"));
+}
+
+#[test]
+fn a_throw_where_nothing_is_laid_out_is_told_its_range_and_holds_nothing_back() {
+    let (mut engine, _scratch, game) = at_the_ropewalk("told", "");
+    narrated(
+        &mut engine,
+        game,
+        "/throw cork float at Wat Coyle",
+        &[
+            "Jory Pask threw the cork float at Wat Coyle and it hit them.",
+            "The cork float is light; a throw of it carries about 16 paces.",
+        ],
+        &["FELL SHORT"],
+    );
+    let (weightless, _scratch, game) =
+        at_the_ropewalk("weightless", "UPDATE universes SET gravity = NULL;");
+    let mut weightless = weightless;
+    narrated(
+        &mut weightless,
+        game,
+        "/throw cork float at Wat Coyle",
+        &["Jory Pask threw the cork float at Wat Coyle and it hit them."],
+        &["carries about", "FELL SHORT"],
+    );
+    let note = weightless.read(game, Vec::new()).unwrap();
+    assert!(note.report.note.is_empty());
+}
+
+#[test]
+fn a_break_die_is_kept_in_the_journal_of_the_line_that_threw_it() {
+    let (mut engine, _scratch, game) = at_the_ropewalk("kept", "");
+    let (_, journal) = narrated(&mut engine, game, "/drop tar pot", &["tar pot"], &[]);
+    assert!(journal.contains("Physics::Break"), "{journal}");
+    assert!(journal.contains("\"sides\""), "{journal}");
+    let (_, journal) = narrated(&mut engine, game, "/drop hank of twine", &["twine"], &[]);
+    assert!(
+        !journal.contains("Physics::Break"),
+        "a sturdy thing throws none"
+    );
+}
+
 #[test]
 fn a_thing_thrown_through_the_window_fell_only_in_a_world_with_a_gravity() {
     let up = [
@@ -187,9 +354,9 @@ fn a_thing_thrown_through_the_window_fell_only_in_a_world_with_a_gravity() {
         "throw the glass float at the kiln yard",
     ];
     let (falling, _, _) = at_the_pottery("fell", "", &up);
-    assert!(falling.report.note[1]
-        .starts_with("break: glass float -- fragile, fell on a hard floor: d6("));
-    assert!(falling.report.note[1].contains(") <= 5 "));
+    let rolled = falling.report.note.last().unwrap();
+    assert!(rolled.starts_with("break: glass float -- fragile, fell on a hard floor: d6("));
+    assert!(rolled.contains(") <= 5 "));
     let (weightless, _, _) =
         at_the_pottery("weightless", "UPDATE universes SET gravity = NULL;", &up);
     assert!(weightless.report.note[1]

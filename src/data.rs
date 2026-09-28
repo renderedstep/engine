@@ -319,8 +319,6 @@ const PHYSICS: &str = include_str!("../data/physics.yml");
 /// `data/physics.yml`: the physics and item tables. Each table keeps its
 /// file order; a `None` is a row the file leaves empty on purpose (a thing
 /// that does not move, a thing that never breaks).
-// The range tables have no reader yet.
-#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Physics {
     pub bulk: Vec<(String, Option<i64>)>,

@@ -1,0 +1,39 @@
+---
+story: The Ropewalk at Saltmarsh
+steps:
+- id: into-the-ropewalk
+  type: go to the ropewalk
+  expect:
+    changed: true
+    location: The Ropewalk (realized)
+    carrying:
+    - cork float
+    - hank of twine
+    - lead sinker
+    - tar pot
+- id: the-sinker-at-hester
+  type: throw the lead sinker at hester vane
+  expect:
+    refused: false
+    note:
+    - 'threw: lead sinker at Hester Vane'
+    - 'range: lead sinker -- heavy, 7 paces at ordinary gravity;'
+- id: the-pot-at-the-shed
+  type: throw the tar pot at the tarring shed
+  expect:
+    refused: false
+    note:
+    - 'threw: tar pot at The Tarring Shed'
+    - 'range: tar pot -- light, 16 paces at ordinary gravity;'
+- id: the-float-at-hester
+  type: throw the cork float at hester vane
+  expect:
+    refused: false
+    note:
+    - 'threw: cork float at Hester Vane'
+    - 'range: cork float -- light, 16 paces at ordinary gravity;'
+- id: into-the-shed
+  type: go to the tarring shed
+  expect:
+    changed: true
+    location: The Tarring Shed (realized)

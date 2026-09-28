@@ -47,6 +47,7 @@ prompts), because its shape is code.
 `thrown_damage` tables are what a throw reads (`room`, `turn`), and its
 `gravity`, `fall_die` and `fall_save` what a fall reads (`physics`, `turn`),
 and its `fragility`, `break_die`, `height_step` and `surface` what a break
-reads (`physics`, `turn`); its range tables are a starting calibration that
-nothing reads yet. Edit it here, run `cargo test`, and bless the `physics`
-and `breakage` vector portions (`vectors/README.md`).
+reads (`physics`, `turn`), and its `throw_range`, `throw_reach_per_strength`
+and `throw_reach_cap` what a throw's range reads (`physics`, `turn`). Edit it
+here, run `cargo test`, and bless the `physics`, `breakage` and `range`
+vector portions (`vectors/README.md`).

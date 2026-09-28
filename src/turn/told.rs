@@ -701,7 +701,9 @@ impl<'s, 'm> Turn<'s, 'm> {
             .here()
             .ok_or_else(|| Error::Database("a drop with nowhere to stand".into()))?;
         let dropper = self.m.player();
-        self.commit("drop", |turn| turn.m.drop(item, None).map(|_| ()))?;
+        self.commit("drop", |turn| {
+            turn.m.drop(item, None).map(|report| report.break_roll)
+        })?;
         if broken(&self.m.row("items", item)?) {
             let fact = facts::dropped_and_broke(&row, &here, dropper.as_ref());
             return self.narrate(

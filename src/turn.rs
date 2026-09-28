@@ -13,10 +13,11 @@
 //! Every write goes to the database and to the turn's copy of the rows in the
 //! same step, so what a later rule reads is what the database now says.
 
+use crate::boxes::Spot;
 use crate::engine::Error;
 use crate::grammar::{self, Grammar, Reading};
 use crate::intent::Intent;
-use crate::physics::{Break, Landing};
+use crate::physics::{Break, Landing, Reach};
 use crate::playthrough::{max_hp, stat_block, Condition, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
@@ -144,6 +145,11 @@ pub struct Report {
     pub refusal: Option<String>,
     pub note: Vec<String>,
     pub resolved_by: Option<String>,
+    /// A throw's range and what it was held against, in a world with a
+    /// gravity.
+    pub reach: Option<Reach>,
+    /// The break die thrown for a thing that came down on a floor.
+    pub break_roll: Option<Break>,
 }
 
 impl Report {
@@ -631,7 +637,7 @@ impl<'s> Mechanics<'s> {
         let here = self
             .here()
             .ok_or_else(|| Error::Database("a drop with nowhere to stand".into()))?;
-        let rolled = self.land(item, &here, Landing::Dropped)?;
+        let rolled = self.land(item, &here, Landing::Dropped, None)?;
         let dropper = self.player().map_or("the party".to_string(), |who| {
             string(&who, "fullname").to_string()
         });
@@ -646,16 +652,24 @@ impl<'s> Mechanics<'s> {
             understood,
         );
         report.note = break_note(&row, Landing::Dropped, &here, rolled);
+        report.break_roll = rolled;
         Ok(report)
     }
 
     /// A thing coming to rest on the floor of `room`, the way `landing` says
-    /// it came down: this game's copy lies there, or, when the break die
-    /// comes up at or under its share, it breaks and lies nowhere. The die
-    /// is thrown out of a generator keyed on the thing, with a kind of its
-    /// own; none is thrown for a thing that never breaks, or for one of the
-    /// world's own rows, which no typed line may spend.
-    fn land(&mut self, item: i64, room: &Row, landing: Landing) -> Result<Option<Break>, Error> {
+    /// it came down, at `spot` when the engine worked out where and at a spot
+    /// rolled for this game otherwise: this game's copy lies there, or, when
+    /// the break die comes up at or under its share, it breaks and lies
+    /// nowhere. The die is thrown out of a generator keyed on the thing, with
+    /// a kind of its own; none is thrown for a thing that never breaks, or for
+    /// one of the world's own rows, which no typed line may spend.
+    fn land(
+        &mut self,
+        item: i64,
+        room: &Row,
+        landing: Landing,
+        spot: Option<Spot>,
+    ) -> Result<Option<Break>, Error> {
         let row = self.row("items", item)?;
         let share = physics::share(text(&row, "fragility"), landing, text(room, "surface"))
             .filter(|_| int(&row, "playthrough_id").is_some());
@@ -666,7 +680,8 @@ impl<'s> Mechanics<'s> {
         if rolled.is_some_and(|rolled| rolled.broke) {
             self.spend(item, physics::BROKEN)?;
         } else {
-            self.put_down(item, room)?;
+            let spot = spot.or_else(|| self.spot_in_a_game(room, item));
+            self.lay(item, room, spot)?;
         }
         Ok(rolled)
     }
@@ -691,6 +706,11 @@ impl<'s> Mechanics<'s> {
     /// spot rolled for this game.
     fn put_down(&mut self, item: i64, room: &Row) -> Result<(), Error> {
         let spot = self.spot_in_a_game(room, item);
+        self.lay(item, room, spot)
+    }
+
+    /// This game's copy of a thing lies in a room, at `spot`.
+    fn lay(&mut self, item: i64, room: &Row, spot: Option<Spot>) -> Result<(), Error> {
         self.update(
             "items",
             item,
@@ -838,14 +858,47 @@ impl<'s> Mechanics<'s> {
                 understood,
             ));
         }
+        let measured = physics::range(
+            text(&row, "bulk"),
+            int(&thrower, "strength").unwrap_or_default(),
+            self.gravity().as_deref(),
+        )
+        .map(|range| self.measure(range, at, &thrower))
+        .transpose()?;
+        let reach = measured.map(|(reach, _)| reach);
+        let short = measured.and_then(|(_, short)| short);
         let rolled;
         let floor;
-        let landed = match at {
-            Record::Person(person) => {
+        let landed = match (at, short) {
+            (_, Some(spot)) => {
                 let here = self
                     .here()
                     .ok_or_else(|| Error::Database("a throw with nowhere to stand".into()))?;
-                rolled = self.land(item, &here, Landing::Thrown)?;
+                rolled = self.land(item, &here, Landing::Thrown, Some(spot))?;
+                floor = (Landing::Thrown, here.clone());
+                let (range, distance) = reach
+                    .map(|reach| (reach.range, reach.distance.unwrap_or_default()))
+                    .unwrap_or_default();
+                let aim = match at {
+                    Record::Person(person) => person.fullname.clone(),
+                    _ => "the way out".to_string(),
+                };
+                let lying = if rolled.is_some_and(|rolled| rolled.broke) {
+                    "broke".to_string()
+                } else {
+                    format!("is lying in {}", string(&here, "name"))
+                };
+                format!(
+                    "it fell short, carrying {} of the {} to {aim}, hit nobody and {lying}",
+                    count(range, "pace"),
+                    count(distance, "pace")
+                )
+            }
+            (Record::Person(person), None) => {
+                let here = self
+                    .here()
+                    .ok_or_else(|| Error::Database("a throw with nowhere to stand".into()))?;
+                rolled = self.land(item, &here, Landing::Thrown, None)?;
                 floor = (Landing::Thrown, here.clone());
                 let damage = roll::die(die, &mut rng);
                 let target_row = self.row("characters", person.id)?;
@@ -883,13 +936,13 @@ impl<'s> Mechanics<'s> {
                     ),
                 }
             }
-            Record::Place(place) => {
+            (Record::Place(place), None) => {
                 let room = self.row("locations", place.id)?;
                 let here = self
                     .here()
                     .ok_or_else(|| Error::Database("a throw with nowhere to stand".into()))?;
                 let landing = self.landing_through(&here, &room);
-                rolled = self.land(item, &room, landing)?;
+                rolled = self.land(item, &room, landing, None)?;
                 floor = (landing, room);
                 if rolled.is_some_and(|rolled| rolled.broke) {
                     format!("it went through into {} and broke", place.name)
@@ -904,12 +957,84 @@ impl<'s> Mechanics<'s> {
             }
         };
         let mut note = vec![attempt];
+        note.extend(reach.map(|reach| range_note(&row, reach, &target, self.gravity())));
         note.extend(break_note(&row, floor.0, &floor.1, rolled));
         Ok(Report {
             understood,
             change: Some(landed),
             note,
+            reach,
+            break_roll: rolled,
             ..Report::default()
+        })
+    }
+
+    /// A throw's range held against the room it was thrown in: the paces from
+    /// where the thrower stands to what the thing was thrown at, and where it
+    /// comes down when it carries less far. Nothing is measured, and the
+    /// range is only told, in a room with no box, or at a way out with no
+    /// doorway in this room's walls (a stair, a window).
+    fn measure(
+        &self,
+        range: i64,
+        at: &Record,
+        thrower: &Row,
+    ) -> Result<(Reach, Option<Spot>), Error> {
+        let told = (
+            Reach {
+                range,
+                distance: None,
+            },
+            None,
+        );
+        let Some((here, room)) = self
+            .here()
+            .and_then(|here| plan::box_of(&here).map(|room| (here, room)))
+        else {
+            return Ok(told);
+        };
+        let from = self.stands_at(thrower, &here, &room);
+        let to = match at {
+            Record::Person(person) => {
+                let target = self.row("characters", person.id)?;
+                Some((self.stands_at(&target, &here, &room), 0))
+            }
+            Record::Place(place) => plan::box_of(&self.row("locations", place.id)?)
+                .and_then(|other| physics::by_the_way_out(&room, &other, from))
+                .map(|beside| (beside, 1)),
+            _ => None,
+        };
+        let Some((to, through)) = to else {
+            return Ok(told);
+        };
+        let reach = Reach {
+            range,
+            distance: Some(physics::paces(from, to) + through),
+        };
+        Ok((reach, reach.short().then(|| spot::along(from, to, range))))
+    }
+
+    /// Where somebody stands in a laid-out room: the spot their row keeps,
+    /// when it keeps one in this room, and otherwise the one
+    /// `Location::Placement.in_a_game` would roll them for this game at this
+    /// moment, which is worked out and never written (the player's never is).
+    fn stands_at(&self, who: &Row, here: &Row, room: &crate::boxes::Box) -> Spot {
+        let kept = match (int(who, "x"), int(who, "y")) {
+            (Some(x), Some(y)) if int(who, "location_id") == Some(id(here)) => Some(Spot { x, y }),
+            _ => None,
+        }
+        .filter(|spot| room.contains(*spot));
+        kept.unwrap_or_else(|| {
+            spot::place(
+                int(here, "story_id").unwrap_or_default(),
+                Some(room),
+                spot::Record::Character(id(who)),
+                Some(spot::Game {
+                    playthrough_id: self.playthrough,
+                    story_now: self.story_now(),
+                }),
+            )
+            .expect("a room with a box places")
         })
     }
 
@@ -3370,6 +3495,26 @@ fn break_note(item: &Row, landing: Landing, room: &Row, rolled: Option<Break>) -
         rolled.share,
         if rolled.broke { "BROKE" } else { "HELD" }
     )]
+}
+
+/// The read-out of a throw's range: the thing's bulk, how far it carries
+/// at this world's gravity, and what that was held against.
+fn range_note(item: &Row, reach: Reach, target: &str, gravity: Option<String>) -> String {
+    let measured = match reach.distance {
+        Some(distance) => format!(
+            "{} to {target}, {}",
+            count(distance, "pace"),
+            if reach.short() { "SHORT" } else { "REACHED" }
+        ),
+        None => "no floor plan to hold it against".to_string(),
+    };
+    format!(
+        "range: {} -- {}, {} at {} gravity; {measured}",
+        string(item, "name"),
+        text(item, "bulk").unwrap_or_default(),
+        count(reach.range, "pace"),
+        gravity.unwrap_or_default()
+    )
 }
 
 /// The help text, where a reading carries it.

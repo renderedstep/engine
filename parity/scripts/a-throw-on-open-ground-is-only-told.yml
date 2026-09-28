@@ -1,0 +1,19 @@
+---
+story: The Ropewalk at Saltmarsh
+steps:
+- id: the-pot-into-the-ropewalk
+  type: throw the tar pot at the ropewalk
+  expect:
+    refused: false
+    note:
+    - 'threw: tar pot at The Ropewalk'
+    - 'range: tar pot -- light, 16 paces at ordinary gravity; no floor plan to hold
+      it against'
+- id: the-float-at-wat
+  type: throw the cork float at wat coyle
+  expect:
+    refused: false
+    note:
+    - 'threw: cork float at Wat Coyle'
+    - 'range: cork float -- light, 16 paces at ordinary gravity; no floor plan to
+      hold it against'
