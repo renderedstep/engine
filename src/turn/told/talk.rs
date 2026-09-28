@@ -236,7 +236,7 @@ impl Turn<'_, '_> {
             Ok(Told {
                 id: scene,
                 tolls: None,
-                volitions: true,
+                volitions: !fallback,
                 safety,
                 setup: false,
             })

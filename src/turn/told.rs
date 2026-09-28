@@ -94,7 +94,8 @@ struct Told {
     /// The tolls its paragraph told, where it did not tell them all.
     tolls: Option<Vec<i64>>,
     /// Whether its prompt carried the untold volitions. An arrival's does
-    /// not, so they wait for the next paragraph that tells them.
+    /// not, nor do the engine's own words, so they wait for the next
+    /// paragraph that tells them.
     volitions: bool,
     safety: bool,
     setup: bool,
@@ -1097,7 +1098,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(Told {
                 id: scene,
                 tolls: used_fallback.then(Vec::new),
-                volitions: true,
+                volitions: !used_fallback,
                 safety,
                 setup,
             })

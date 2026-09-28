@@ -667,3 +667,41 @@ fn a_world_mechanic_of_a_kind_there_is_not_fails_the_line_and_keeps_nothing() {
         );
     }
 }
+
+#[test]
+fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
+    use renderedstep_engine::model::{Replay, Reply};
+    let mut engine = open_world(&world("a-clerk-with-somewhere-to-be")).unwrap();
+    let story = engine
+        .story_titled(&format!("A Clerk With Somewhere To Be{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let untold = "SELECT COUNT(*) FROM playthrough_volitions WHERE scene_id IS NULL";
+    let play = |engine: &mut Engine, line: &str, token: &str, reply: serde_json::Value| {
+        let mut replay = Replay::new(vec![Reply::from_value(&reply).unwrap()]);
+        engine
+            .submit(playthrough, line, token, &mut replay, &mut |_| {})
+            .unwrap();
+        replay.finish().unwrap();
+    };
+
+    play(
+        &mut engine,
+        "/take quarter receipt",
+        "take",
+        serde_json::json!({"purpose": "narration", "content": "You take the receipt."}),
+    );
+    assert_eq!(count(&engine, untold), 1, "the clerk acts after the take");
+
+    play(
+        &mut engine,
+        "/drop quarter receipt",
+        "drop",
+        serde_json::json!({"purpose": "narration", "unavailable": true}),
+    );
+    assert_eq!(
+        count(&engine, untold),
+        1,
+        "the engine's own words for the drop tell nobody's act"
+    );
+}
