@@ -1,7 +1,33 @@
-# Read by Playthrough::Classifier::Request through EngineData (app/models/engine_data.rb), which
-# declares this file's shape. Why each value says what it says is in the
-# header of Playthrough::Classifier::Request, beside the constant that names it. Every byte here is
-# sent or rolled: an edit is a prompt change and needs a baseline (AGENTS.md).
+# The words of the System One request a typed line is asked: read by this
+# engine's `cascade` module, which builds the request and composes its
+# answers, and by the game through its extension (`EngineData`). Every byte
+# here is sent: an edit is a prompt change and needs a baseline either side of
+# it (the game's EVALUATION.md; `rake eval:classifier CASCADE=1` takes the
+# reading and `rake eval:classifier_compare` gives the verdict).
+#
+# A TARGET QUESTION PER ACTION IS WHAT MAKES AN OUT-OF-LIST ANSWER
+# STRUCTURALLY IMPOSSIBLE. The model call's schema holds one `target` over the
+# union of every list, so a model could answer `take` with the name of a
+# doorway and the engine had to null it -- 7 to 12 times a run over four
+# repetitions of each measured arm. Here each option set is the intent's own
+# set, and that happened zero times in every repetition of every arm that
+# used this shape. The engine reads only the chosen intent's answer.
+#
+# THE WORDING IS THE MEASURED ARM'S WORDING, AND THAT IS THE RULE. Every
+# sentence is the text of the arm the design of record was chosen on -- the
+# collective-word pass, with the presence question appended -- and the game
+# keeps that arm's own stored request (`test/fixtures/files/
+# scored_classifier_request.json`), which the `classifier_request` vector
+# portion reproduces. The rule is written here because it was broken here:
+# the `also_named` and per-action target sentences once shipped as an earlier
+# revision of themselves, and nothing caught it because nothing compared them.
+#
+# THE ONE DELIBERATE EDIT is `examine`, which says "or looking around the
+# place in general": a targetless look at the room is an `examine` in the
+# corpus's own labels, and the same words are in the classifier's
+# instructions (`playthrough/classifier.yml`), because two readers with two
+# definitions of `examine` would make the escalation itself a source of
+# disagreement.
 ---
 intent_instructions: Which single intent is the player requesting in `player_action`? Keep the requested intent even when its target is absent from the corresponding state list.
 intent_criteria:

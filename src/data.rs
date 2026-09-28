@@ -1,12 +1,32 @@
-//! The data files the Ruby engine reads its verb table and its System One
-//! wording from, vendored under `data/` byte for byte (see `data/README.md`).
-//! They are the one copy of those strings: nothing here retypes them.
+//! The engine's data files (`data/`, see its README): the words a model is
+//! handed and the tables a rule reads. They are the one copy of those
+//! strings, compiled in: nothing here retypes them, and the game reads the
+//! same bytes through [`files`] rather than keeping a copy of its own.
 
 use std::sync::OnceLock;
 use yaml_rust2::{Yaml, YamlLoader};
 
 const GRAMMAR: &str = include_str!("../data/playthrough/grammar.yml");
 const REQUEST: &str = include_str!("../data/playthrough/classifier/request.yml");
+
+/// Every data file, by its path under `data/` without `.yml`, and its
+/// text exactly as compiled in: what a host that reads the same words
+/// (the game's `EngineData`) reads.
+pub fn files() -> [(&'static str, &'static str); 11] {
+    [
+        ("character/desires", DESIRES),
+        ("item/inscriber", INSCRIBER),
+        ("location/generator", LOCATION_GENERATOR),
+        ("physics", PHYSICS),
+        ("playthrough/classifier", CLASSIFIER),
+        ("playthrough/classifier/request", REQUEST),
+        ("playthrough/grammar", GRAMMAR),
+        ("playthrough/volition/weights", WEIGHTS),
+        ("scene/ending", ENDING),
+        ("scene/generator", SCENE_GENERATOR),
+        ("scene/narrator", NARRATOR),
+    ]
+}
 
 fn load(name: &str, text: &str) -> Yaml {
     YamlLoader::load_from_str(text)
@@ -395,5 +415,41 @@ mod tests {
     #[should_panic(expected = "thrown_damage")]
     fn physics_refuses_a_moving_bulk_with_no_damage_die() {
         read_physics(&PHYSICS.replace("  heavy: 8\n", ""));
+    }
+
+    /// Every YAML file under `data/` is one `files` hands out, byte for
+    /// byte, so a file added here cannot be missing from what the game reads.
+    #[test]
+    fn files_are_every_data_file_exactly() {
+        fn walk(
+            directory: &std::path::Path,
+            root: &std::path::Path,
+            found: &mut Vec<(String, String)>,
+        ) {
+            for entry in std::fs::read_dir(directory).expect("data/") {
+                let path = entry.expect("an entry").path();
+                if path.is_dir() {
+                    walk(&path, root, found);
+                } else if path.extension().is_some_and(|extension| extension == "yml") {
+                    let name = path
+                        .strip_prefix(root)
+                        .expect("under data/")
+                        .with_extension("")
+                        .to_string_lossy()
+                        .replace('\\', "/");
+                    found.push((name, std::fs::read_to_string(&path).expect("a file")));
+                }
+            }
+        }
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("data");
+        let mut found = Vec::new();
+        walk(&root, &root, &mut found);
+        found.sort();
+        let mut listed: Vec<(String, String)> = files()
+            .iter()
+            .map(|(name, text)| (name.to_string(), text.to_string()))
+            .collect();
+        listed.sort();
+        assert_eq!(listed, found);
     }
 }
