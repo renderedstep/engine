@@ -262,7 +262,22 @@ impl<T: Transport> Models for Live<T> {
             };
             written(receipts::message(book, chat, "user", &call.user, None).map(|_| ()))?;
 
-            let judged = match self.send(&model, call, on_chunk.as_deref_mut()) {
+            // Prose is shown only as far as the judgement below cannot turn
+            // on it; the rest follows once the answer is kept.
+            let mut held = declined::Held::new();
+            let sent = match on_chunk.as_deref_mut() {
+                Some(show) if call.schema.is_none() => {
+                    let mut guarded = |part: &str| {
+                        let shown = held.take(part);
+                        if !shown.is_empty() {
+                            show(shown);
+                        }
+                    };
+                    self.send(&model, call, Some(&mut guarded))
+                }
+                streaming => self.send(&model, call, streaming),
+            };
+            let judged = match sent {
                 Err(Sent::Unauthorized(message)) => {
                     written(receipts::usage(book, chat, None, &model, None))?;
                     written(receipts::rewind(book, chat, mark))?;
@@ -305,6 +320,12 @@ impl<T: Transport> Models for Live<T> {
             };
             match judged {
                 Ok(content) => {
+                    if let Some(show) = on_chunk.as_deref_mut() {
+                        let rest = held.rest();
+                        if !rest.is_empty() {
+                            show(rest);
+                        }
+                    }
                     let exchanged = receipts::since(book, chat, mark);
                     agent.recorded.extend(exchanged);
                     return Ok(Answer {

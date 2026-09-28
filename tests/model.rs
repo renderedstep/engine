@@ -132,6 +132,81 @@ fn the_refusal_detector_reads_the_corpus_as_ruby_does() {
     );
 }
 
+/// What a player watching the stream is shown of every text in the corpus,
+/// arriving a few characters at a time as a provider sends it, before the
+/// answer is complete and judged: nothing the finished answer is
+/// suppressed for, and all of every answer that is kept.
+#[test]
+fn a_stream_shows_nothing_of_the_corpus_that_the_finished_answer_is_suppressed_for() {
+    use renderedstep_engine::model::declined::{self, Flag, Held};
+    let corpus = fixture("refusal_corpus.json");
+    let cases = corpus["cases"].as_array().unwrap();
+    let mut kept_waits: Vec<(usize, usize)> = Vec::new();
+    let mut suppressed = 0;
+    let mut suppressed_showing_prose = 0;
+    for size in [1, 4, 16, 64] {
+        for case in cases {
+            let text = case["text"].as_str().unwrap();
+            let flags = declined::flags(text);
+            let mut held = Held::new();
+            let mut shown = String::new();
+            let mut first_shown = None;
+            let mut arrived = 0;
+            let chars: Vec<char> = text.chars().collect();
+            for piece in chars.chunks(size) {
+                let piece: String = piece.iter().collect();
+                arrived += piece.chars().count();
+                let now = held.take(&piece);
+                if !now.is_empty() && first_shown.is_none() {
+                    first_shown = Some(arrived);
+                }
+                shown.push_str(now);
+            }
+            assert!(text.starts_with(&shown), "{text:?}");
+            if flags.is_empty() {
+                assert!(
+                    !held.stopped(),
+                    "stopped on an answer that is kept: {text:?}"
+                );
+                shown.push_str(held.rest());
+                assert_eq!(shown, text);
+                if size == 16 {
+                    kept_waits.push((first_shown.unwrap_or(chars.len()), chars.len()));
+                }
+                continue;
+            }
+            if flags.contains(&Flag::UnquotedFirstPerson) {
+                assert_eq!(shown, "", "the model's own voice was shown: {text:?}");
+            }
+            assert!(
+                declined::flags(&shown).is_empty(),
+                "{:?} shown of {text:?}",
+                declined::flags(&shown)
+            );
+            if size == 16 {
+                suppressed += 1;
+                if !shown.trim().is_empty() {
+                    suppressed_showing_prose += 1;
+                }
+            }
+        }
+    }
+    kept_waits.sort_unstable();
+    let median = kept_waits[kept_waits.len() / 2];
+    let whole = kept_waits
+        .iter()
+        .filter(|(waited, length)| waited >= length)
+        .count();
+    println!(
+        "streaming guard over {} texts: {suppressed} suppressed, {suppressed_showing_prose} of them showing prose that came before what they are suppressed for; \
+         {} kept, 0 stopped, the median kept answer shown from its {}th of {} characters, {whole} shown only once complete",
+        cases.len(),
+        kept_waits.len(),
+        median.0,
+        median.1
+    );
+}
+
 // --- the policy over fixed replies ------------------------------------------
 
 /// A transport that answers with the next canned reply and keeps what it
@@ -300,7 +375,11 @@ fn a_narration_streams_and_leaves_its_receipts() {
         )
         .unwrap();
     assert_eq!(answer.text(), "You look around.");
-    assert_eq!(chunks, ["You look ", "around."]);
+    assert_eq!(
+        chunks,
+        ["You look around."],
+        "an answer too short to judge in part is shown once it is kept"
+    );
     let (url, bearer, body) = &live.transport().sent[0];
     assert_eq!(url, "https://openrouter.ai/api/v1/chat/completions");
     assert_eq!(bearer, "Secret(set)");
@@ -329,6 +408,88 @@ fn a_narration_streams_and_leaves_its_receipts() {
         agent.recorded().len(),
         2,
         "the exchange this agent had, for the scene to claim"
+    );
+}
+
+#[test]
+fn a_refused_attempt_is_not_shown_while_it_streams() {
+    let mut game = game();
+    let refusal = format!(
+        "I can't continue this scene. {}",
+        "You stand there in the rain. ".repeat(20)
+    );
+    let transport = Canned::default()
+        .stream(&[&refusal[..90], &refusal[90..400], &refusal[400..]])
+        .stream(&["You wait."]);
+    let mut live = Live::with_transport(own_key(), transport);
+    let mut agent = narration(game.playthrough);
+    let call = Call {
+        system: Some("NARRATE.".into()),
+        ..Call::prompt("The player types: wait")
+    };
+    let mut book = Book {
+        store: game.engine.store(),
+        records: &mut game.records,
+    };
+    let mut chunks = Vec::new();
+    let answer = live
+        .ask(
+            &mut book,
+            &mut agent,
+            &call,
+            None,
+            Some(&mut |chunk: &str| chunks.push(chunk.to_string())),
+        )
+        .unwrap();
+    assert_eq!(answer.text(), "You wait.");
+    assert_eq!(
+        chunks,
+        ["You wait."],
+        "only the kept attempt reaches the page"
+    );
+}
+
+#[test]
+fn a_crisis_line_is_not_shown_while_it_streams() {
+    let mut game = game();
+    let prose = "You stand there in the rain. ".repeat(12);
+    let crisis = format!("{prose}\"If you are hurting, call 988 tonight,\" she says. {prose}");
+    let parts: Vec<String> = crisis
+        .as_bytes()
+        .chunks(7)
+        .map(|part| String::from_utf8(part.to_vec()).unwrap())
+        .collect();
+    let parts: Vec<&str> = parts.iter().map(String::as_str).collect();
+    let mut live = Live::with_transport(own_key(), Canned::default().stream(&parts));
+    let mut agent = narration(game.playthrough);
+    let call = Call {
+        system: Some("NARRATE.".into()),
+        ..Call::prompt("The player types: wait")
+    };
+    let mut book = Book {
+        store: game.engine.store(),
+        records: &mut game.records,
+    };
+    let mut shown = String::new();
+    let failed = live
+        .ask(
+            &mut book,
+            &mut agent,
+            &call,
+            None,
+            Some(&mut |chunk: &str| shown.push_str(chunk)),
+        )
+        .unwrap_err();
+    assert!(failed.crisis(), "{failed:?}");
+    assert_eq!(
+        live.transport().models_asked().len(),
+        1,
+        "never rotated past"
+    );
+    assert!(!shown.contains("988"), "{shown:?}");
+    assert!(
+        prose.starts_with(&shown) || shown.starts_with(&prose),
+        "{shown:?}"
     );
 }
 

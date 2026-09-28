@@ -232,7 +232,8 @@ engine sweep's browser steps play this way, and nothing is sent anywhere.
 `tests/model.rs` holds the client to what RubyLLM sent for the same calls
 (`tests/fixtures/rubyllm_wire.json`, captured by a server on the machine
 that answered with fixed replies), the refusal detector to the Ruby
-engine's flags over its corpus (`tests/fixtures/refusal_corpus.json`), and
+engine's flags over its corpus (`tests/fixtures/refusal_corpus.json`), a
+stream to what it shows of that corpus before the answer is judged, and
 both routes to the no-leak contract over a real socket on this machine. The
 kept requests of `vectors/kept_requests.json` are sent through the live
 client too (`tests/vectors/builders.rs`), and go out exactly as stored.
