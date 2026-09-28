@@ -8,7 +8,7 @@ documents the format (version 1).
 **Two owners.** Most portions are rules the game's Ruby code still runs (world
 creation, seeding, repair, the doctor, the benches), so the game exports them
 from that code, and these are verbatim copies of its `test/engine_vectors/` at
-commit `350496731d1a90119f89798e702fa8670e693720`, the last to change any of
+commit `f121cd54da57673b17497cf7c94e156c002dedc8`, the last to change any of
 them. The portions named in `ENGINE_OWNED` are this crate's: no Ruby code runs
 them any more but the game's Ruby turn loop, which no player plays, so the game
 no longer exports them. They are blessed here from this crate's answers, as a
