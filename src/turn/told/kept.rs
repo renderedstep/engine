@@ -88,6 +88,19 @@ impl Kept for bool {
     }
 }
 
+/// Ids, as the journal keeps a list.
+impl Kept for Vec<i64> {
+    fn encode(&self) -> Value {
+        json!({ "array": self })
+    }
+    fn decode(_: &Turn, value: &Value) -> Result<Vec<i64>, Error> {
+        value["array"]
+            .as_array()
+            .map(|ids| ids.iter().filter_map(Value::as_i64).collect())
+            .ok_or_else(|| unreadable("a list", value))
+    }
+}
+
 impl Kept for i64 {
     fn encode(&self) -> Value {
         Value::from(*self)
@@ -130,11 +143,13 @@ impl Kept for Option<Row> {
 
 impl Kept for Told {
     fn encode(&self) -> Value {
-        let mut value = encode::scene(self.id, self.tolls.as_deref(), self.safety, self.setup);
-        if !self.volitions {
-            value["volitions"] = Value::Bool(false);
-        }
-        value
+        encode::scene(
+            self.id,
+            self.tolls.as_deref(),
+            self.volitions.as_deref(),
+            self.safety,
+            self.setup,
+        )
     }
     fn decode(_: &Turn, value: &Value) -> Result<Told, Error> {
         let id = value["id"]
@@ -145,7 +160,13 @@ impl Kept for Told {
             tolls: value["tolls"]
                 .as_array()
                 .map(|tolls| tolls.iter().filter_map(Value::as_i64).collect()),
-            volitions: value["volitions"].as_bool().unwrap_or(true),
+            volitions: match &value["volitions"] {
+                // Written before a scene named the volitions it stated: a
+                // prompt that stated none.
+                Value::Bool(false) => Some(Vec::new()),
+                Value::Array(told) => Some(told.iter().filter_map(Value::as_i64).collect()),
+                _ => None,
+            },
             safety: value["safety"].as_bool().unwrap_or(false),
             setup: value["setup"].as_bool().unwrap_or(false),
         })

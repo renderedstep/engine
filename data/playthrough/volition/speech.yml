@@ -1,0 +1,72 @@
+# Read by the engine's speech die (`turn`, `Mechanics#speech`) through
+# `data::speech`, which declares this file's shape. It has no Ruby reader: a
+# person speaking up unasked is the Rust engine's own rule. Every byte here is
+# rolled, and a fact a roll picks is sent: an edit moves every golden that
+# walks a world with desires, and needs a baseline (the game's AGENTS.md).
+#
+# The die is SHAPE-FIRST: one weighted draw over `silent` and every shape that
+# has at least one act on offer, then an even draw over that shape's targets.
+# So a player carrying six things is asked for one no more often than a
+# player carrying one. `silent` is the weight of saying nothing, on an
+# ordinary turn and on an arrival; `cooldown_turns` is how many scenes of the
+# game's chain a speaker stays quiet after the scene that told what they
+# said; `max_speakers` is how many people may speak on one turn, taken in
+# id order. The table is keyed by the same pursuits as `weights.yml`, and a
+# person whose pursuit has no row here never speaks.
+---
+shapes:
+- greet
+- warn
+- ask
+- demand
+- dismiss
+silent:
+  turn: 30
+  arrival: 8
+cooldown_turns: 3
+max_speakers:
+  turn: 1
+  arrival: 2
+table:
+  keep:
+    greet: 2
+    warn: 3
+    ask: 0
+    demand: 1
+    dismiss: 4
+  obtain:
+    greet: 2
+    warn: 1
+    ask: 5
+    demand: 3
+    dismiss: 0
+  reach:
+    greet: 1
+    warn: 2
+    ask: 1
+    demand: 0
+    dismiss: 1
+  attend:
+    greet: 5
+    warn: 4
+    ask: 1
+    demand: 0
+    dismiss: 0
+  avoid:
+    greet: 0
+    warn: 2
+    ask: 0
+    demand: 0
+    dismiss: 5
+  withhold:
+    greet: 1
+    warn: 1
+    ask: 0
+    demand: 1
+    dismiss: 4
+  offer:
+    greet: 4
+    warn: 3
+    ask: 0
+    demand: 0
+    dismiss: 0

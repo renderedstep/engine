@@ -12,7 +12,7 @@ const REQUEST: &str = include_str!("../data/playthrough/classifier/request.yml")
 /// Every data file, by its path under `data/` without `.yml`, and its
 /// text exactly as compiled in: what a host that reads the same words
 /// (the game's `EngineData`) reads.
-pub fn files() -> [(&'static str, &'static str); 12] {
+pub fn files() -> [(&'static str, &'static str); 13] {
     [
         ("character/desires", DESIRES),
         ("item/inscriber", INSCRIBER),
@@ -22,6 +22,7 @@ pub fn files() -> [(&'static str, &'static str); 12] {
         ("playthrough/classifier", CLASSIFIER),
         ("playthrough/classifier/request", REQUEST),
         ("playthrough/grammar", GRAMMAR),
+        ("playthrough/volition/speech", SPEECH),
         ("playthrough/volition/weights", WEIGHTS),
         ("scene/ending", ENDING),
         ("scene/generator", SCENE_GENERATOR),
@@ -244,6 +245,72 @@ pub fn weights() -> &'static Weights {
             })
             .collect();
         Weights { base, table }
+    })
+}
+
+const SPEECH: &str = include_str!("../data/playthrough/volition/speech.yml");
+
+/// A pair of values, one for an ordinary turn and one for an arrival.
+pub struct PerTurn {
+    pub turn: i64,
+    pub arrival: i64,
+}
+
+/// `data/playthrough/volition/speech.yml`: the speech die's shapes, the
+/// weight of saying nothing, the cooldown, how many may speak at once, and
+/// each pursuit's weight per shape, in file order.
+pub struct Speech {
+    pub shapes: Vec<String>,
+    pub silent: PerTurn,
+    pub cooldown_turns: i64,
+    pub max_speakers: PerTurn,
+    pub table: Vec<(String, Vec<(String, i64)>)>,
+}
+
+pub fn speech() -> &'static Speech {
+    static SPEECH_TABLE: OnceLock<Speech> = OnceLock::new();
+    SPEECH_TABLE.get_or_init(|| {
+        let file = load("speech.yml", SPEECH);
+        let whole = |value: &Yaml, what: &str| {
+            value
+                .as_i64()
+                .unwrap_or_else(|| panic!("{what} is not a whole number"))
+        };
+        let per_turn = |value: &Yaml, what: &str| PerTurn {
+            turn: whole(&value["turn"], what),
+            arrival: whole(&value["arrival"], what),
+        };
+        let shapes: Vec<String> = file["shapes"]
+            .as_vec()
+            .expect("a list of shapes")
+            .iter()
+            .map(|shape| string(shape, "a shape"))
+            .collect();
+        let table = file["table"]
+            .as_hash()
+            .expect("a table of pursuits")
+            .iter()
+            .map(|(pursuit, row)| {
+                let row: Vec<(String, i64)> = row
+                    .as_hash()
+                    .expect("a pursuit's weights")
+                    .iter()
+                    .map(|(shape, weight)| (string(shape, "a shape"), whole(weight, "a weight")))
+                    .collect();
+                assert!(
+                    row.iter().map(|(shape, _)| shape).eq(shapes.iter()),
+                    "a pursuit weighs every shape, in order"
+                );
+                (string(pursuit, "a pursuit"), row)
+            })
+            .collect();
+        Speech {
+            silent: per_turn(&file["silent"], "silent"),
+            cooldown_turns: whole(&file["cooldown_turns"], "cooldown_turns"),
+            max_speakers: per_turn(&file["max_speakers"], "max_speakers"),
+            shapes,
+            table,
+        }
     })
 }
 

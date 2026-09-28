@@ -96,10 +96,10 @@ struct Told {
     id: i64,
     /// The tolls its paragraph told, where it did not tell them all.
     tolls: Option<Vec<i64>>,
-    /// Whether its prompt carried the untold volitions. An arrival's does
-    /// not, nor do the engine's own words, so they wait for the next
-    /// paragraph that tells them.
-    volitions: bool,
+    /// The volitions its prompt stated, where it did not state every untold
+    /// one. An arrival's prompt states none, nor do the engine's own words,
+    /// so those wait for the next paragraph that tells them.
+    volitions: Option<Vec<i64>>,
     safety: bool,
     setup: bool,
 }
@@ -109,7 +109,7 @@ impl Told {
         Told {
             id,
             tolls: None,
-            volitions: true,
+            volitions: None,
             safety: false,
             setup: false,
         }
@@ -393,6 +393,7 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// `#play_serially`.
     fn play_serially(&mut self, command: &str) -> Result<Played, Error> {
+        self.m.spoke.clear();
         let ended = self.commit("already_over", |turn| {
             Ok(turn.m.over().then(|| turn.m.over_refusal(command)))
         })?;
@@ -455,6 +456,9 @@ impl<'s, 'm> Turn<'s, 'm> {
             turn.claim_volitions(scene.as_ref())
         })?;
         self.commit("riposte", |turn| turn.m.riposte(from.as_ref()).map(|_| ()))?;
+        if let Some(spoke) = self.saved::<Vec<i64>>("speech")? {
+            self.m.spoke = spoke;
+        }
         self.commit("volition", |turn| {
             turn.m.volitions(from.as_ref()).map(|_| ())
         })?;
@@ -621,7 +625,7 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// `#claim_volitions!`.
     fn claim_volitions(&mut self, scene: Option<&Told>) -> Result<i64, Error> {
-        let Some(scene) = scene.filter(|scene| scene.volitions) else {
+        let Some(scene) = scene else {
             return Ok(0);
         };
         let acts: Vec<i64> = self
@@ -631,6 +635,12 @@ impl<'s, 'm> Turn<'s, 'm> {
             .into_iter()
             .filter(|act| int(act, "scene_id").is_none())
             .map(id)
+            .filter(|act| {
+                scene
+                    .volitions
+                    .as_ref()
+                    .is_none_or(|told| told.contains(act))
+            })
             .collect();
         for act in &acts {
             self.m.update(
@@ -1003,7 +1013,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             )?;
             Ok(Told {
                 tolls: Some(tolls),
-                volitions: false,
+                volitions: Some(Vec::new()),
                 ..Told::plain(scene)
             })
         })?;
@@ -1042,7 +1052,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(Told {
                 id: scene,
                 tolls: Some(tolls),
-                volitions: false,
+                volitions: Some(Vec::new()),
                 safety,
                 setup,
             })
@@ -1081,6 +1091,20 @@ impl<'s, 'm> Turn<'s, 'm> {
         self.m.write_scene(values, cast)
     }
 
+    /// Whoever speaks up unasked in the room the player stands in, before the
+    /// paragraph that tells it is asked for, so it is told on this turn.
+    /// Kept by the journal, so a worker killed after it never throws the
+    /// die again.
+    fn speak_up(&mut self, addressee: Option<i64>) -> Result<(), Error> {
+        let spoke = self.commit("speech", |turn| {
+            let here = turn.m.here();
+            turn.m.speech(here.as_ref(), addressee)?;
+            Ok(turn.m.spoke.clone())
+        })?;
+        self.m.spoke = spoke;
+        Ok(())
+    }
+
     /// `Scene::Narrator#narrate`: prose for the line, streamed as it comes,
     /// or the engine's own sentence when there is one and the call failed.
     fn narrate(
@@ -1094,6 +1118,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         if self.done("narrated") {
             return self.saved("narrated").map(Option::flatten);
         }
+        self.speak_up(None)?;
         let call = narration::call(self.m.game(), command, fact.as_deref(), doing, handled);
         let mut agent = Agent::new(self.filed("narration"));
         let asked = {
@@ -1147,7 +1172,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(Told {
                 id: scene,
                 tolls: used_fallback.then(Vec::new),
-                volitions: !used_fallback,
+                volitions: used_fallback.then(Vec::new),
                 safety,
                 setup,
             })

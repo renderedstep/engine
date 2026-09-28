@@ -49,7 +49,9 @@ writer's cases, whose Ruby builders still write a world's rooms and its
 opening arrival. Two `dialogue_requests` cases need what the rows do not
 hold: the line the player typed and the character's stored answer. Those are
 in `tests/fixtures/dialogue_replay.json`, which names the files they come
-from.
+from. `speech_choices`, what a person may say unasked and the speech die
+thrown over it, never had a Ruby original: it is this crate's from the start,
+and its cases stand on `volition_request`'s rows.
 
 Never edit the game's portions by hand. To refresh them, in the game's
 repository:

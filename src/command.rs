@@ -270,8 +270,21 @@ pub mod encode {
     }
 
     /// A scene, with what its turn knows about it beside the row.
-    pub fn scene(id: i64, tolls: Option<&[i64]>, safety: bool, setup: bool) -> Value {
-        json!({ "record": "Scene", "id": id, "tolls": tolls, "safety": safety, "setup": setup })
+    pub fn scene(
+        id: i64,
+        tolls: Option<&[i64]>,
+        volitions: Option<&[i64]>,
+        safety: bool,
+        setup: bool,
+    ) -> Value {
+        json!({
+            "record": "Scene",
+            "id": id,
+            "tolls": tolls,
+            "volitions": volitions,
+            "safety": safety,
+            "setup": setup,
+        })
     }
 
     pub fn refusal(refusal: &Refusal) -> Value {
