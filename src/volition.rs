@@ -75,6 +75,23 @@ fn arc_item_ids(game: &Game) -> Vec<i64> {
 
 /// `Volition#choices`: token => sentence, in the order they are offered.
 pub fn choices(game: &Game, character: &Row, location: &Row) -> Vec<(String, String)> {
+    acts(
+        game,
+        character,
+        location,
+        int(game.row, "current_location_id"),
+    )
+}
+
+/// [`choices`] for somebody in the room the party is walking into, before
+/// the move stands it there: the party is counted as already in `location`,
+/// so what needs the player present (a give, a follow) is offered.
+pub fn arrival_choices(game: &Game, character: &Row, location: &Row) -> Vec<(String, String)> {
+    acts(game, character, location, Some(id(location)))
+}
+
+/// The acts on offer with the party standing in `party`.
+fn acts(game: &Game, character: &Row, location: &Row, party: Option<i64>) -> Vec<(String, String)> {
     let mut available = vec![(
         WAIT.to_string(),
         "Stay where you are and change nothing.".to_string(),
@@ -117,8 +134,7 @@ pub fn choices(game: &Game, character: &Row, location: &Row) -> Vec<(String, Str
             format!("Pick up {} from {here}.", string(item, "name")),
         ));
     }
-    let player_present =
-        player.is_some() && int(game.row, "current_location_id") == Some(id(location));
+    let player_present = player.is_some() && party == Some(id(location));
     let Some(player) = player.filter(|_| player_present) else {
         return available;
     };
@@ -209,6 +225,31 @@ pub fn cooling(game: &Game, character: &Row) -> bool {
 /// pursuit has no speech row, or while they are cooling. Somebody fighting
 /// the party may only demand or dismiss.
 pub fn speech_choices(game: &Game, character: &Row, location: &Row) -> Vec<(String, String)> {
+    sayings(
+        game,
+        character,
+        location,
+        int(game.row, "current_location_id"),
+    )
+}
+
+/// [`speech_choices`] for somebody in the room the party is walking into,
+/// with the party counted as already in `location`.
+pub fn arrival_speech_choices(
+    game: &Game,
+    character: &Row,
+    location: &Row,
+) -> Vec<(String, String)> {
+    sayings(game, character, location, Some(id(location)))
+}
+
+/// What may be said with the party standing in `party`.
+fn sayings(
+    game: &Game,
+    character: &Row,
+    location: &Row,
+    party: Option<i64>,
+) -> Vec<(String, String)> {
     let mut offered = Vec::new();
     let Some(player) = game.protagonist() else {
         return offered;
@@ -217,7 +258,7 @@ pub fn speech_choices(game: &Game, character: &Row, location: &Row) -> Vec<(Stri
         && id(player) != id(character)
         && !flag(character, "is_protagonist")
         && int(character, "story_id") == Some(game.story_id())
-        && int(game.row, "current_location_id") == Some(id(location))
+        && party == Some(id(location))
         && game
             .cast_in(Some(location))
             .iter()
@@ -330,8 +371,38 @@ pub fn throw_speech(
     silent: i64,
     rng: &mut Random,
 ) -> Option<String> {
+    throw_over(
+        character,
+        &speech_choices(game, character, location),
+        silent,
+        rng,
+    )
+}
+
+/// The speech die for somebody in the room the party is walking into, over
+/// [`arrival_speech_choices`] and at the arrival's weight of saying nothing.
+pub fn throw_arrival_speech(
+    game: &Game,
+    character: &Row,
+    location: &Row,
+    rng: &mut Random,
+) -> Option<String> {
+    throw_over(
+        character,
+        &arrival_speech_choices(game, character, location),
+        data::speech().silent.arrival,
+        rng,
+    )
+}
+
+/// Either die over what it offers: the shape, then the target.
+fn throw_over(
+    character: &Row,
+    offered: &[(String, String)],
+    silent: i64,
+    rng: &mut Random,
+) -> Option<String> {
     let row = speech_weights(text(character, "desire_pursuit"))?;
-    let offered = speech_choices(game, character, location);
     let of = |shape: &str| {
         offered
             .iter()

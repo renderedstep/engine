@@ -64,10 +64,11 @@ steps:
     changed: false
     offers:
     - talk to whom
-- id: neb-is-not-reachable-from-here
+- id: neb-is-reachable-where-he-walked-to
   type: talk to Neb
   expect:
+    understood: talk -> Neb Halloran
     refused: true
     changed: false
     offers:
-    - there is no person here
+    - Neb Halloran is here and the classifier resolved them

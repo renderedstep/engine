@@ -1,0 +1,37 @@
+---
+story: A Lodge Inside the Gate
+steps:
+- id: the-lodge-reacts-as-you-come-in
+  type: "/move The Porters' Lodge"
+  browser:
+    token: in
+    replies:
+    - purpose: arrival
+      content:
+        description: Mabry looks up from the lodge book with a greeting as you come
+          in, and the under-porter slips out to the back stair.
+        summary: Wren comes into the porters' lodge.
+      prompt_includes:
+      - "## As You Come In"
+      - Mabry Quill spoke up unasked and greeted Wren Adley.
+      - Osric Venn walked out of The Porters' Lodge to The Back Stair and is no longer
+        in The Porters' Lodge.
+  expect:
+    location: The Porters' Lodge (realized)
+    present:
+    - Mabry Quill
+    volitions: 2
+    acts: 2
+- id: the-next-paragraph-does-not-say-it-again
+  type: "/examine lodge book"
+  browser:
+    token: look
+    replies:
+    - purpose: narration
+      content: The lodge book is open at today's page.
+      prompt_excludes:
+      - Mabry Quill spoke up unasked
+      - Osric Venn walked out
+  expect:
+    present:
+    - Mabry Quill
