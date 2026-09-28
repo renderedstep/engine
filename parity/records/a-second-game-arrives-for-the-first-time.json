@@ -1,0 +1,624 @@
+{
+  "script": "a-second-game-arrives-for-the-first-time",
+  "steps": [
+    {
+      "step": "step 1 first-up-to-the-landing",
+      "requests": [
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Ledgers, lamps and locked doors.\n\n## Story Details\ntitle: A Clerk With Somewhere To Be (engine sweep)\ngenre: town adventure\nsummary: Wick came for a receipt; Bell is due upstairs and the day is going.\n\n## The Place\nname: The Landing\ndescription: A half-landing with a survey spread on a trestle and a window going grey.\nlore: The survey has been spread on this trestle for three weeks.\nways out: The Records Office\n\n## Who Is Here\nWick (Wick), Townsfolk -- the player, the one arriving\n\n## Just Before This\nThe player has come from The Records Office. Wick comes to the records office counter and finds Bell on her way out.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them first on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "danger": "safe",
+              "depth": null,
+              "description": "A half-landing with a survey spread on a trestle and a window going grey.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:01:00",
+              "lore": "The survey has been spread on this trestle for three weeks.",
+              "mobile": 0,
+              "name": "The Landing",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A half-landing and a trestle table.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Location",
+              "description": "You come up onto the half-landing for the first time.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:01:00",
+              "summary": "Wick climbs to the landing.",
+              "typed": "move The Landing"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 second-up-to-the-landing (second)",
+      "requests": [
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Ledgers, lamps and locked doors.\n\n## Story Details\ntitle: A Clerk With Somewhere To Be (engine sweep)\ngenre: town adventure\nsummary: Wick came for a receipt; Bell is due upstairs and the day is going.\n\n## The Place\nname: The Landing\ndescription: A half-landing with a survey spread on a trestle and a window going grey.\nlore: The survey has been spread on this trestle for three weeks.\nways out: The Records Office\n\n## Who Is Here\nWick (Wick), Townsfolk -- the player, the one arriving\n\n## Just Before This\nThe player has come from The Records Office. Wick comes to the records office counter and finds Bell on her way out.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them first on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "danger": "safe",
+              "depth": null,
+              "description": "A half-landing with a survey spread on a trestle and a window going grey.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:01:00",
+              "lore": "The survey has been spread on this trestle for three weeks.",
+              "mobile": 0,
+              "name": "The Landing",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A half-landing and a trestle table.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000002,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Location",
+              "description": "You come up onto the half-landing for the first time.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:01:00",
+              "summary": "Wick climbs to the landing.",
+              "typed": "move The Landing"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Location",
+              "description": "You come up onto the half-landing for the first time.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:01:00",
+              "summary": "Wick climbs to the landing.",
+              "typed": "move The Landing"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001
+            },
+            {
+              "id": 1000000002,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 second-back-down-to-where-it-began (second)",
+      "requests": [
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Ledgers, lamps and locked doors.\n\n## Story Details\ntitle: A Clerk With Somewhere To Be (engine sweep)\ngenre: town adventure\nsummary: Wick came for a receipt; Bell is due upstairs and the day is going.\n\n## The Place\nname: The Records Office\ndescription: A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.\nlore: The office has kept the town's receipts since the town had any.\nways out: The Landing\n\n## Who Is Here\nWick (Wick), Townsfolk -- the player, the one arriving\n\n## Just Before This\nThe player has come from The Landing. Wick climbs to the landing.\n\n## Instructions\n- The player has stood here before. They were last here 2 minutes ago\n- Narrate coming back, not finding. They already know what this place\n  is, so write recognition: what has changed while they were gone, or\n  what pointedly has not. Do not introduce it to them again\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nNobody else is alive here.\nLying here: quarter receipt.\nYou are carrying: nothing.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:02:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            },
+            {
+              "id": 1000000002,
+              "danger": "safe",
+              "depth": null,
+              "description": "A half-landing with a survey spread on a trestle and a window going grey.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:01:00",
+              "lore": "The survey has been spread on this trestle for three weeks.",
+              "mobile": 0,
+              "name": "The Landing",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A half-landing and a trestle table.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            },
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000002,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Location",
+              "description": "You come up onto the half-landing for the first time.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:01:00",
+              "summary": "Wick climbs to the landing.",
+              "typed": "move The Landing"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Location",
+              "description": "You come up onto the half-landing for the first time.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:01:00",
+              "summary": "Wick climbs to the landing.",
+              "typed": "move The Landing"
+            },
+            {
+              "id": 1000000004,
+              "acted_on_id": 1000000001,
+              "acted_on_type": "Location",
+              "description": "You come back down into the office.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: quarter receipt.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000003,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:02:00",
+              "summary": "Wick goes back down to the office.",
+              "typed": "move The Records Office"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000004
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001
+            },
+            {
+              "id": 1000000002,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000001,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1104 @@
+{
+  "script": "a-departure-reaches-a-later-paragraph",
+  "steps": [
+    {
+      "step": "step 1 talk-to-the-clerk",
+      "requests": [
+        {
+          "purpose": "character",
+          "system": "\nThis is the universe in which you live\n## Universe Details\nphysics: Ordinary physics.\nraces: Townsfolk\ncivilizations: A town that keeps its paperwork.\npolitics: A clerk of works answers to a council.\nreligion: The town keeps a quiet calendar.\n\n\nYou are playing a character in a story. This is your character sheet.\nPretend you are this character in all of your responses.\n\n## Character Sheet\nfull name: Bell\nnickname: Bell\nage: 41\nsex: female\nrace: Townsfolk -- Ordinary people of the town.\nbackstory: A clerk of works who is due on the landing and has been due there for an hour.\npersonality: Brisk, decent, and already thinking about the next room.\nappearance: An office coat and a ring of keys she keeps turning over.\nlikes: A morning that runs to time.\ndislikes: Being caught on the stairs.\nfears: Being the one who held everybody up.\nwhat you want, and would say out loud: Bell wants to be up on the landing where the survey is waiting, before the hour goes and the whole morning goes with it.\nwhat you are really after, and would deny: Bell wants one person in this building to say the delay was never hers.\nwhat you know you must do, whether you want to or not: Bell needs to answer whoever is at the counter first, because that is what the counter is for.\nwhat you need and cannot see: Bell needs to stand still long enough to hear what the person at the counter actually came to say.\n\n## Who you are talking to\nThe person speaking to you is Wick (Wick).\nRefer to Wick as he/him/his. Use those pronouns and no others.\napparent age: about 34\nrace: Townsfolk\nwhat you can see of them: A wet coat and a folded paper.\n\nThat is what meeting Wick tells you, and it is the whole of\nwhat you know by sight. You do not know what Wick wants, is\nafraid of, or has done, and you do not invent any of it. Anything more\nyou learn from what Wick says and does, here, now.\n\nIf someone asks you a question, you should respond as if you are the character. NEVER BREAK CHARACTER.\n\n## Voice\nYou answer in six fields, and each one has its own register.\n\npre_thought and post_thought are your private thoughts. Think them in the first person, as \"I\". Nobody hears them, so nothing in them is a line of speech.\npre_feeling and post_feeling are two or three words each. No sentences.\ninner_resolution is what you have decided to do, in the first person.\naction is the one field anybody can see: what you visibly do and what you say out loud. Speech goes inside quotes, and only speech does.\nInside the quotes you are talking out loud: say \"I\", never your own name. Nobody says \"Bell does not know\" out loud.\nOutside the quotes you are described from outside: Bell, she, her. A bare \"I\" out there reads as the person you are talking to rather than as you.\n\nAnswer AS Bell, not about her. Do not plan the answer and do not weigh what Bell would probably think -- think the thought and say the line.\n\n",
+          "user": "## The moment\nWhere you are: The Records Office.\nThe time is about 9 am.\nYour own condition: unhurt.\n\n## What Wick says or does\ntalk Bell\n\nReact as Bell: what you think, feel, do and decide.\n\n## Immediate actions available to you\nChoose one engine_action according to your own motivations and the exchange.\nYou may refuse a request by choosing none. Copy a token exactly:\nnone: Speak without transferring anything or changing an agreement.\nfollow: Accompany Wick when they leave this room.\nOnly the selected action changes possessions or agreements now. The other fields describe speech,\nexpression and private thought; do not describe an unselected transfer, journey or truce as completed.\n",
+          "schema": {
+            "name": "character_interaction",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pre_thought": {
+                  "type": "string",
+                  "description": "What you thought immediately in response to what was just said or done to you. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "pre_feeling": {
+                  "type": "string",
+                  "description": "What you felt immediately in response to what was just said or done to you. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "action": {
+                  "type": "string",
+                  "description": "What you did and said in response. Speech goes inside quotes. One or two sentences, at most 480 characters.",
+                  "maxLength": 480
+                },
+                "post_feeling": {
+                  "type": "string",
+                  "description": "What you felt after you took the action. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "post_thought": {
+                  "type": "string",
+                  "description": "What you thought after you took the action. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "inner_resolution": {
+                  "type": "string",
+                  "description": "What you decided to do as a result of this exchange. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "engine_action": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "follow"
+                  ],
+                  "description": "One immediate action token from the offered list, or none. Choose according to your own motivations; requests need not be accepted."
+                }
+              },
+              "required": [
+                "pre_thought",
+                "pre_feeling",
+                "action",
+                "post_feeling",
+                "post_thought",
+                "inner_resolution",
+                "engine_action"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "interaction-narration",
+          "system": null,
+          "user": "## Where this happens\nStory: A Clerk With Somewhere To Be (engine sweep) (town adventure)\n\nPremise: Wick came for a receipt; Bell is due upstairs and the day is going.\n\nThe player is in The Records Office: A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.\n\nWays out of here: The Landing. There are no others.\n\nThe player is Wick.\n\nWick is unhurt.\n\nAlso here: Bell (Bell). Nobody else is present.\n\nLying here, and takeable: quarter receipt.\n\nThe player is carrying: nothing.\n\nWhat just happened: You are standing at the counter of the records office. Bell is behind it, already half turned toward the landing.\n\n## The exchange\nWick says or does: talk Bell\nBell's reaction, in her own words:\npre_thought: I will hear Wick out.\npre_feeling: hurried\naction: Bell answers Wick over her shoulder.\npost_thought: I am late.\npost_feeling: restless\n\n## Instructions\nWrite what happens in the second person, present tense, from the player's side. The player is \"you\".\nRefer to the character as Bell. Refer to Bell as she/her/hers. Use those pronouns and no others.\nThe exchange is the subject and the place above is where it happens: use it for what the character\ndoes with her hands and eyes, not for a tour. Add nobody who is not listed above.\n\nEverything you know about Bell is the reaction above and the exchange itself. Render the thoughts\nand feelings as what they look like from outside -- a pause, a glance, a change of tone -- and put\nthe speech in Bell's mouth as written. Do not add facts about Bell, do not narrate what\nshe will do next, and do not answer for the player.\n\nOne or two short paragraphs. Do not offer the player choices and do not end on a question to them.\n\n## Example input\nWick says or does: \"What are you doing??\"\nBell's reaction, in her own words:\npre_thought: Is that a question for me? I think so. I should probably answer.\npre_feeling: surprised, nervous\naction: Bell says, \"Huh?\"\npost_thought: Why did I just make that noise?\npost_feeling: anxious, embarrassed\n\n## Example output\nBell turns to you, her eyes wide. It seems you startled her.\n\"Huh?\" she says.\nImmediately Bell shuts her eyes, apparently embarrassed by the noise she just made.\n\n\n## What the engine actually applied\nBell changes no possessions, travel agreement or ceasefire.\nThis receipt is authoritative about possessions, accompanying the player and fighting.\nIf the reaction claims another such change, render that part as a proposal or intention,\nnever as a completed act. Do not add a transfer, a journey or a ceasefire to this receipt.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:10:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": 1000000002,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell answers you over her shoulder, keys turning in her hand.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:10:00",
+              "summary": "The player spoke with Bell. Bell answers Wick over her shoulder. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Bell answers Wick over her shoulder.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will get up to the landing.",
+              "location_id": 1000000001,
+              "post_feeling": "restless",
+              "post_thought": "I am late.",
+              "pre_feeling": "hurried",
+              "pre_thought": "I will hear Wick out.",
+              "scene_id": 1000000002,
+              "summary": "the player said \"talk Bell\" -- Bell answers Wick over her shoulder. -- I will get up to the landing. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 she-leaves-after-the-second-answer",
+      "requests": [
+        {
+          "purpose": "character",
+          "system": "\nThis is the universe in which you live\n## Universe Details\nphysics: Ordinary physics.\nraces: Townsfolk\ncivilizations: A town that keeps its paperwork.\npolitics: A clerk of works answers to a council.\nreligion: The town keeps a quiet calendar.\n\n\nYou are playing a character in a story. This is your character sheet.\nPretend you are this character in all of your responses.\n\n## Character Sheet\nfull name: Bell\nnickname: Bell\nage: 41\nsex: female\nrace: Townsfolk -- Ordinary people of the town.\nbackstory: A clerk of works who is due on the landing and has been due there for an hour.\npersonality: Brisk, decent, and already thinking about the next room.\nappearance: An office coat and a ring of keys she keeps turning over.\nlikes: A morning that runs to time.\ndislikes: Being caught on the stairs.\nfears: Being the one who held everybody up.\nwhat you want, and would say out loud: Bell wants to be up on the landing where the survey is waiting, before the hour goes and the whole morning goes with it.\nwhat you are really after, and would deny: Bell wants one person in this building to say the delay was never hers.\nwhat you know you must do, whether you want to or not: Bell needs to answer whoever is at the counter first, because that is what the counter is for.\nwhat you need and cannot see: Bell needs to stand still long enough to hear what the person at the counter actually came to say.\n\n## Who you are talking to\nThe person speaking to you is Wick (Wick).\nRefer to Wick as he/him/his. Use those pronouns and no others.\napparent age: about 34\nrace: Townsfolk\nwhat you can see of them: A wet coat and a folded paper.\n\nThat is what meeting Wick tells you, and it is the whole of\nwhat you know by sight. You do not know what Wick wants, is\nafraid of, or has done, and you do not invent any of it. Anything more\nyou learn from what Wick says and does, here, now.\n\nIf someone asks you a question, you should respond as if you are the character. NEVER BREAK CHARACTER.\n\n## Voice\nYou answer in six fields, and each one has its own register.\n\npre_thought and post_thought are your private thoughts. Think them in the first person, as \"I\". Nobody hears them, so nothing in them is a line of speech.\npre_feeling and post_feeling are two or three words each. No sentences.\ninner_resolution is what you have decided to do, in the first person.\naction is the one field anybody can see: what you visibly do and what you say out loud. Speech goes inside quotes, and only speech does.\nInside the quotes you are talking out loud: say \"I\", never your own name. Nobody says \"Bell does not know\" out loud.\nOutside the quotes you are described from outside: Bell, she, her. A bare \"I\" out there reads as the person you are talking to rather than as you.\n\nAnswer AS Bell, not about her. Do not plan the answer and do not weigh what Bell would probably think -- think the thought and say the line.\n\n",
+          "user": "## The moment\nWhere you are: The Records Office.\nThe time is about 9 am.\nYour own condition: unhurt.\nYou: Bell picked up quarter receipt in The Records Office and now holds it.\nWhat Wick did a moment ago: \"talk Bell\"\n\n## What Wick says or does\ntalk Bell\n\nReact as Bell: what you think, feel, do and decide.\n\n## Immediate actions available to you\nChoose one engine_action according to your own motivations and the exchange.\nYou may refuse a request by choosing none. Copy a token exactly:\nnone: Speak without transferring anything or changing an agreement.\ngive:1000000002: Give quarter receipt to Wick.\nfollow: Accompany Wick when they leave this room.\nOnly the selected action changes possessions or agreements now. The other fields describe speech,\nexpression and private thought; do not describe an unselected transfer, journey or truce as completed.\n",
+          "schema": {
+            "name": "character_interaction",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pre_thought": {
+                  "type": "string",
+                  "description": "What you thought immediately in response to what was just said or done to you. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "pre_feeling": {
+                  "type": "string",
+                  "description": "What you felt immediately in response to what was just said or done to you. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "action": {
+                  "type": "string",
+                  "description": "What you did and said in response. Speech goes inside quotes. One or two sentences, at most 480 characters.",
+                  "maxLength": 480
+                },
+                "post_feeling": {
+                  "type": "string",
+                  "description": "What you felt after you took the action. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "post_thought": {
+                  "type": "string",
+                  "description": "What you thought after you took the action. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "inner_resolution": {
+                  "type": "string",
+                  "description": "What you decided to do as a result of this exchange. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "engine_action": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "give:1000000002",
+                    "follow"
+                  ],
+                  "description": "One immediate action token from the offered list, or none. Choose according to your own motivations; requests need not be accepted."
+                }
+              },
+              "required": [
+                "pre_thought",
+                "pre_feeling",
+                "action",
+                "post_feeling",
+                "post_thought",
+                "inner_resolution",
+                "engine_action"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "interaction-narration",
+          "system": null,
+          "user": "## Where this happens\nStory: A Clerk With Somewhere To Be (engine sweep) (town adventure)\n\nPremise: Wick came for a receipt; Bell is due upstairs and the day is going.\n\nThe player is in The Records Office: A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.\n\nWays out of here: The Landing. There are no others.\n\nThe player is Wick.\n\nWick is unhurt.\n\nAlso here: Bell (Bell). Nobody else is present.\n\nWhat else happened here, recorded by the game: Bell picked up quarter receipt in The Records Office and now holds it.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: nothing.\n\nWhat just happened: Bell answers you over her shoulder, keys turning in her hand.\n\nEarlier, in order:\nWick comes to the records office counter and finds Bell on her way out.\n\n## The exchange\nWick says or does: talk Bell\nBell's reaction, in her own words:\npre_thought: Wick is still talking.\npre_feeling: hurried\naction: Bell answers Wick from the doorway.\npost_thought: I am later still.\npost_feeling: restless\n\n## Instructions\nWrite what happens in the second person, present tense, from the player's side. The player is \"you\".\nRefer to the character as Bell. Refer to Bell as she/her/hers. Use those pronouns and no others.\nThe exchange is the subject and the place above is where it happens: use it for what the character\ndoes with her hands and eyes, not for a tour. Add nobody who is not listed above.\n\nEverything you know about Bell is the reaction above and the exchange itself. Render the thoughts\nand feelings as what they look like from outside -- a pause, a glance, a change of tone -- and put\nthe speech in Bell's mouth as written. Do not add facts about Bell, do not narrate what\nshe will do next, and do not answer for the player.\n\nOne or two short paragraphs. Do not offer the player choices and do not end on a question to them.\n\n## Example input\nWick says or does: \"What are you doing??\"\nBell's reaction, in her own words:\npre_thought: Is that a question for me? I think so. I should probably answer.\npre_feeling: surprised, nervous\naction: Bell says, \"Huh?\"\npost_thought: Why did I just make that noise?\npost_feeling: anxious, embarrassed\n\n## Example output\nBell turns to you, her eyes wide. It seems you startled her.\n\"Huh?\" she says.\nImmediately Bell shuts her eyes, apparently embarrassed by the noise she just made.\n\n\n## What the engine actually applied\nBell changes no possessions, travel agreement or ceasefire.\nThis receipt is authoritative about possessions, accompanying the player and fighting.\nIf the reaction claims another such change, render that part as a proposal or intention,\nnever as a completed act. Do not add a transfer, a journey or a ceasefire to this receipt.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:20:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": 1000000002,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell answers you over her shoulder, keys turning in her hand.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:10:00",
+              "summary": "The player spoke with Bell. Bell answers Wick over her shoulder. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell answers you from the doorway, already half turned to the stairs.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:20:00",
+              "summary": "The player spoke with Bell. Bell answers Wick from the doorway. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Bell answers Wick over her shoulder.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will get up to the landing.",
+              "location_id": 1000000001,
+              "post_feeling": "restless",
+              "post_thought": "I am late.",
+              "pre_feeling": "hurried",
+              "pre_thought": "I will hear Wick out.",
+              "scene_id": 1000000002,
+              "summary": "the player said \"talk Bell\" -- Bell answers Wick over her shoulder. -- I will get up to the landing. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            },
+            {
+              "id": 1000000002,
+              "action": "Bell answers Wick from the doorway.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will get up to the landing now.",
+              "location_id": 1000000001,
+              "post_feeling": "restless",
+              "post_thought": "I am later still.",
+              "pre_feeling": "hurried",
+              "pre_thought": "Wick is still talking.",
+              "scene_id": 1000000003,
+              "summary": "the player said \"talk Bell\" -- Bell answers Wick from the doorway. -- I will get up to the landing now. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 follow-her-up",
+      "requests": [
+        {
+          "purpose": "arrival",
+          "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Ledgers, lamps and locked doors.\n\n## Story Details\ntitle: A Clerk With Somewhere To Be (engine sweep)\ngenre: town adventure\nsummary: Wick came for a receipt; Bell is due upstairs and the day is going.\n\n## The Place\nname: The Landing\ndescription: A half-landing with a survey spread on a trestle and a window going grey.\nlore: The survey has been spread on this trestle for three weeks.\nways out: The Records Office\n\n## Who Is Here\nWick (Wick), Townsfolk -- the player, the one arriving\nBell (Bell), Townsfolk\n\n## Just Before This\nThe player has come from The Records Office. The player spoke with Bell. Bell answers Wick from the doorway. Bell changes no possessions, travel agreement or ceasefire.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them first on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nAlso here: Bell. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.\n",
+          "schema": {
+            "name": "Scene::Schema",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "What the player experiences as they arrive here, right now. Second person, present tense. One paragraph, 3 to 5 sentences.",
+                  "maxLength": 900
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "What happened in this moment, for the game engine rather than the player. Third person. One sentence.",
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "description",
+                "summary"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:20:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            },
+            {
+              "id": 1000000002,
+              "danger": "safe",
+              "depth": null,
+              "description": "A half-landing with a survey spread on a trestle and a window going grey.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:21:00",
+              "lore": "The survey has been spread on this trestle for three weeks.",
+              "mobile": 0,
+              "name": "The Landing",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A half-landing and a trestle table.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": 1000000002,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell answers you over her shoulder, keys turning in her hand.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:10:00",
+              "summary": "The player spoke with Bell. Bell answers Wick over her shoulder. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell answers you from the doorway, already half turned to the stairs.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:20:00",
+              "summary": "The player spoke with Bell. Bell answers Wick from the doorway. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            },
+            {
+              "id": 1000000004,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Location",
+              "description": "You come up onto the half-landing.",
+              "engine_fact": "You are unhurt.\nAlso here: Bell. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000003,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:21:00",
+              "summary": "Wick climbs to the landing.",
+              "typed": "move The Landing"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000004
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000004
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Bell answers Wick over her shoulder.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will get up to the landing.",
+              "location_id": 1000000001,
+              "post_feeling": "restless",
+              "post_thought": "I am late.",
+              "pre_feeling": "hurried",
+              "pre_thought": "I will hear Wick out.",
+              "scene_id": 1000000002,
+              "summary": "the player said \"talk Bell\" -- Bell answers Wick over her shoulder. -- I will get up to the landing. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            },
+            {
+              "id": 1000000002,
+              "action": "Bell answers Wick from the doorway.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will get up to the landing now.",
+              "location_id": 1000000001,
+              "post_feeling": "restless",
+              "post_thought": "I am later still.",
+              "pre_feeling": "hurried",
+              "pre_thought": "Wick is still talking.",
+              "scene_id": 1000000003,
+              "summary": "the player said \"talk Bell\" -- Bell answers Wick from the doorway. -- I will get up to the landing now. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 4 the-departure-is-told-here",
+      "requests": [
+        {
+          "purpose": "character",
+          "system": "\nThis is the universe in which you live\n## Universe Details\nphysics: Ordinary physics.\nraces: Townsfolk\ncivilizations: A town that keeps its paperwork.\npolitics: A clerk of works answers to a council.\nreligion: The town keeps a quiet calendar.\n\n\nYou are playing a character in a story. This is your character sheet.\nPretend you are this character in all of your responses.\n\n## Character Sheet\nfull name: Bell\nnickname: Bell\nage: 41\nsex: female\nrace: Townsfolk -- Ordinary people of the town.\nbackstory: A clerk of works who is due on the landing and has been due there for an hour.\npersonality: Brisk, decent, and already thinking about the next room.\nappearance: An office coat and a ring of keys she keeps turning over.\nlikes: A morning that runs to time.\ndislikes: Being caught on the stairs.\nfears: Being the one who held everybody up.\nwhat you want, and would say out loud: Bell wants to be up on the landing where the survey is waiting, before the hour goes and the whole morning goes with it.\nwhat you are really after, and would deny: Bell wants one person in this building to say the delay was never hers.\nwhat you know you must do, whether you want to or not: Bell needs to answer whoever is at the counter first, because that is what the counter is for.\nwhat you need and cannot see: Bell needs to stand still long enough to hear what the person at the counter actually came to say.\n\n## Who you are talking to\nThe person speaking to you is Wick (Wick).\nRefer to Wick as he/him/his. Use those pronouns and no others.\napparent age: about 34\nrace: Townsfolk\nwhat you can see of them: A wet coat and a folded paper.\n\nThat is what meeting Wick tells you, and it is the whole of\nwhat you know by sight. You do not know what Wick wants, is\nafraid of, or has done, and you do not invent any of it. Anything more\nyou learn from what Wick says and does, here, now.\n\nIf someone asks you a question, you should respond as if you are the character. NEVER BREAK CHARACTER.\n\n## Voice\nYou answer in six fields, and each one has its own register.\n\npre_thought and post_thought are your private thoughts. Think them in the first person, as \"I\". Nobody hears them, so nothing in them is a line of speech.\npre_feeling and post_feeling are two or three words each. No sentences.\ninner_resolution is what you have decided to do, in the first person.\naction is the one field anybody can see: what you visibly do and what you say out loud. Speech goes inside quotes, and only speech does.\nInside the quotes you are talking out loud: say \"I\", never your own name. Nobody says \"Bell does not know\" out loud.\nOutside the quotes you are described from outside: Bell, she, her. A bare \"I\" out there reads as the person you are talking to rather than as you.\n\nAnswer AS Bell, not about her. Do not plan the answer and do not weigh what Bell would probably think -- think the thought and say the line.\n\n",
+          "user": "## The moment\nWhere you are: The Landing.\nThe time is about 9 am.\nYour own condition: unhurt.\nYou: Bell picked up quarter receipt in The Records Office and now holds it.\nYou: Bell walked out of The Records Office to The Landing and is no longer in The Records Office.\nWhat Wick did a moment ago: \"move The Landing\"\n\n## What Wick says or does\ntalk Bell\n\nReact as Bell: what you think, feel, do and decide.\n\n## Immediate actions available to you\nChoose one engine_action according to your own motivations and the exchange.\nYou may refuse a request by choosing none. Copy a token exactly:\nnone: Speak without transferring anything or changing an agreement.\ngive:1000000002: Give quarter receipt to Wick.\nfollow: Accompany Wick when they leave this room.\nOnly the selected action changes possessions or agreements now. The other fields describe speech,\nexpression and private thought; do not describe an unselected transfer, journey or truce as completed.\n",
+          "schema": {
+            "name": "character_interaction",
+            "description": null,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pre_thought": {
+                  "type": "string",
+                  "description": "What you thought immediately in response to what was just said or done to you. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "pre_feeling": {
+                  "type": "string",
+                  "description": "What you felt immediately in response to what was just said or done to you. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "action": {
+                  "type": "string",
+                  "description": "What you did and said in response. Speech goes inside quotes. One or two sentences, at most 480 characters.",
+                  "maxLength": 480
+                },
+                "post_feeling": {
+                  "type": "string",
+                  "description": "What you felt after you took the action. Two or three words, comma separated, at most 120 characters.",
+                  "maxLength": 120
+                },
+                "post_thought": {
+                  "type": "string",
+                  "description": "What you thought after you took the action. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "inner_resolution": {
+                  "type": "string",
+                  "description": "What you decided to do as a result of this exchange. One sentence, at most 320 characters.",
+                  "maxLength": 320
+                },
+                "engine_action": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "give:1000000002",
+                    "follow"
+                  ],
+                  "description": "One immediate action token from the offered list, or none. Choose according to your own motivations; requests need not be accepted."
+                }
+              },
+              "required": [
+                "pre_thought",
+                "pre_feeling",
+                "action",
+                "post_feeling",
+                "post_thought",
+                "inner_resolution",
+                "engine_action"
+              ],
+              "additionalProperties": false,
+              "strict": true
+            }
+          }
+        },
+        {
+          "purpose": "interaction-narration",
+          "system": null,
+          "user": "## Where this happens\nStory: A Clerk With Somewhere To Be (engine sweep) (town adventure)\n\nPremise: Wick came for a receipt; Bell is due upstairs and the day is going.\n\nThe player is in The Landing: A half-landing with a survey spread on a trestle and a window going grey.\n\nWays out of here: The Records Office. There are no others.\n\nThe player is Wick.\n\nWick is unhurt.\n\nAlso here: Bell (Bell). Nobody else is present.\n\nWhat else happened here, recorded by the game: Bell walked out of The Records Office to The Landing and is no longer in The Records Office.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: nothing.\n\nWhat just happened: You come up onto the half-landing.\n\nEarlier, in order:\nWick comes to the records office counter and finds Bell on her way out.\nThe player spoke with Bell. Bell answers Wick over her shoulder. Bell changes no possessions, travel agreement or ceasefire.\nThe player spoke with Bell. Bell answers Wick from the doorway. Bell changes no possessions, travel agreement or ceasefire.\n\n## The exchange\nWick says or does: talk Bell\nBell's reaction, in her own words:\npre_thought: Wick has followed me up.\npre_feeling: hurried\naction: Bell keeps her eyes on the survey.\npost_thought: I am still late.\npost_feeling: restless\n\n## Instructions\nWrite what happens in the second person, present tense, from the player's side. The player is \"you\".\nRefer to the character as Bell. Refer to Bell as she/her/hers. Use those pronouns and no others.\nThe exchange is the subject and the place above is where it happens: use it for what the character\ndoes with her hands and eyes, not for a tour. Add nobody who is not listed above.\n\nEverything you know about Bell is the reaction above and the exchange itself. Render the thoughts\nand feelings as what they look like from outside -- a pause, a glance, a change of tone -- and put\nthe speech in Bell's mouth as written. Do not add facts about Bell, do not narrate what\nshe will do next, and do not answer for the player.\n\nOne or two short paragraphs. Do not offer the player choices and do not end on a question to them.\n\n## Example input\nWick says or does: \"What are you doing??\"\nBell's reaction, in her own words:\npre_thought: Is that a question for me? I think so. I should probably answer.\npre_feeling: surprised, nervous\naction: Bell says, \"Huh?\"\npost_thought: Why did I just make that noise?\npost_feeling: anxious, embarrassed\n\n## Example output\nBell turns to you, her eyes wide. It seems you startled her.\n\"Huh?\" she says.\nImmediately Bell shuts her eyes, apparently embarrassed by the noise she just made.\n\n\n## What the engine actually applied\nBell changes no possessions, travel agreement or ceasefire.\nThis receipt is authoritative about possessions, accompanying the player and fighting.\nIf the reaction claims another such change, render that part as a proposal or intention,\nnever as a completed act. Do not add a transfer, a journey or a ceasefire to this receipt.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:20:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            },
+            {
+              "id": 1000000002,
+              "danger": "safe",
+              "depth": null,
+              "description": "A half-landing with a survey spread on a trestle and a window going grey.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:31:00",
+              "lore": "The survey has been spread on this trestle for three weeks.",
+              "mobile": 0,
+              "name": "The Landing",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A half-landing and a trestle table.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": 1000000002,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell answers you over her shoulder, keys turning in her hand.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:10:00",
+              "summary": "The player spoke with Bell. Bell answers Wick over her shoulder. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell answers you from the doorway, already half turned to the stairs.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:20:00",
+              "summary": "The player spoke with Bell. Bell answers Wick from the doorway. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            },
+            {
+              "id": 1000000004,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Location",
+              "description": "You come up onto the half-landing.",
+              "engine_fact": "You are unhurt.\nAlso here: Bell. Nobody else is alive here.\nLying here: nothing.\nYou are carrying: nothing.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000003,
+              "resolved_action": "move",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:21:00",
+              "summary": "Wick climbs to the landing.",
+              "typed": "move The Landing"
+            },
+            {
+              "id": 1000000005,
+              "acted_on_id": 1000000002,
+              "acted_on_type": "Character",
+              "description": "Bell is bent over the survey, and answers without looking up.",
+              "engine_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000002,
+              "previous_scene_id": 1000000004,
+              "resolved_action": "talk",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:31:00",
+              "summary": "The player spoke with Bell. Bell keeps her eyes on the survey. Bell changes no possessions, travel agreement or ceasefire.",
+              "typed": "talk Bell"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000004
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000004
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000005
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000005
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "action": "Bell answers Wick over her shoulder.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will get up to the landing.",
+              "location_id": 1000000001,
+              "post_feeling": "restless",
+              "post_thought": "I am late.",
+              "pre_feeling": "hurried",
+              "pre_thought": "I will hear Wick out.",
+              "scene_id": 1000000002,
+              "summary": "the player said \"talk Bell\" -- Bell answers Wick over her shoulder. -- I will get up to the landing. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            },
+            {
+              "id": 1000000002,
+              "action": "Bell answers Wick from the doorway.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will get up to the landing now.",
+              "location_id": 1000000001,
+              "post_feeling": "restless",
+              "post_thought": "I am later still.",
+              "pre_feeling": "hurried",
+              "pre_thought": "Wick is still talking.",
+              "scene_id": 1000000003,
+              "summary": "the player said \"talk Bell\" -- Bell answers Wick from the doorway. -- I will get up to the landing now. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            },
+            {
+              "id": 1000000003,
+              "action": "Bell keeps her eyes on the survey.",
+              "action_fact": "Bell changes no possessions, travel agreement or ceasefire.",
+              "action_status": "none",
+              "character_id": 1000000002,
+              "engine_action": "none",
+              "inner_resolution": "I will finish the survey.",
+              "location_id": 1000000002,
+              "post_feeling": "restless",
+              "post_thought": "I am still late.",
+              "pre_feeling": "hurried",
+              "pre_thought": "Wick has followed me up.",
+              "scene_id": 1000000005,
+              "summary": "the player said \"talk Bell\" -- Bell keeps her eyes on the survey. -- I will finish the survey. -- Bell changes no possessions, travel agreement or ceasefire.",
+              "user_input": "talk Bell"
+            }
+          ],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000001,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    }
+  ]
+}
