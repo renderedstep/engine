@@ -33,3 +33,11 @@ contexts, most of the room writer's and the character pass's prompts). This
 crate writes those strings in the module that ports each class, and the
 vectors hold both copies to the same bytes; when the Ruby engine moves one
 into a data file, it moves here too.
+
+## Owned here
+
+`physics.yml` is not vendored: this engine owns it, and `src/data.rs`
+(`physics()`) declares its shape and refuses any other. Its `bulk` and
+`thrown_damage` tables are what a throw reads (`room`, `turn`); its fall,
+breakage and range tables are a starting calibration that nothing reads yet.
+Edit it here, and run `cargo test`.

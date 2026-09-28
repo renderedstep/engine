@@ -25,7 +25,7 @@ pub struct Person {
 pub struct Thing {
     pub id: i64,
     pub name: String,
-    /// A key into [`BULK`]; `handy` unless the world says otherwise.
+    /// A key into `bulk` in `data/physics.yml`; `handy` unless the world says otherwise.
     pub bulk: String,
     /// One of [`USE_KINDS`]; `ordinary` unless the world says otherwise.
     pub use_kind: String,
@@ -35,15 +35,6 @@ pub struct Thing {
     /// The world's own row this is a game's copy of, where it is one.
     pub template: Option<i64>,
 }
-
-/// How hard a thing is to pick up and throw: the penalty taken off a
-/// thrower's strength, and `None` for a thing that does not move at all.
-pub const BULK: &[(&str, Option<i64>)] = &[
-    ("light", Some(0)),
-    ("handy", Some(2)),
-    ("heavy", Some(5)),
-    ("immovable", None),
-];
 
 pub const USE_KINDS: &[&str] = &[
     "ordinary",
@@ -75,7 +66,9 @@ impl Thing {
     /// Whether it can leave a pair of hands at all. A bulk outside the table
     /// reads as a thing that does not move.
     pub fn throwable(&self) -> bool {
-        BULK.iter()
+        crate::data::physics()
+            .bulk
+            .iter()
             .any(|(bulk, penalty)| *bulk == self.bulk && penalty.is_some())
     }
 

@@ -817,12 +817,12 @@ impl<'s> Mechanics<'s> {
         let row = self.row("items", item)?;
         let name = string(&row, "name").to_string();
         let target = at.label();
-        let thrown_die = match text(&row, "bulk") {
-            Some("light") => Some((0, 4)),
-            Some("handy") => Some((2, 6)),
-            Some("heavy") => Some((5, 8)),
-            _ => None,
-        };
+        let thrown_die = text(&row, "bulk").and_then(|bulk| {
+            let physics = crate::data::physics();
+            let penalty = physics.bulk.iter().find(|(row, _)| row == bulk)?.1?;
+            let die = physics.thrown_damage.iter().find(|(row, _)| row == bulk)?.1;
+            Some((penalty, die))
+        });
         let Some((penalty, die)) = thrown_die else {
             let attempt = format!("threw: {name} at {target}");
             return Ok(Report::read(
