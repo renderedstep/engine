@@ -12,7 +12,7 @@
 //! A throw moves the row first and is told afterwards, as a take is.
 
 use super::kept::NpcEffect;
-use super::{model, Told, Turn};
+use super::{broken, model, Told, Turn};
 use crate::dialogue;
 use crate::engine::Error;
 use crate::facts::{self, Throw};
@@ -268,16 +268,22 @@ impl Turn<'_, '_> {
         let thing = facts::bare_name(&row);
         let who = thrower.as_ref().map(|who| string(who, "fullname"));
         let bulk = text(&row, "bulk").unwrap_or_default();
+        let broke = broken(&self.m.row("items", item)?);
         let (outcome, words) = match (&report.change, at) {
             (Some(landed), Some(Record::Person(person))) => (
                 Throw::Struck {
                     target: &person.fullname,
+                    broke,
                 },
                 landed.clone(),
             ),
-            (Some(landed), Some(Record::Place(place))) => {
-                (Throw::Thrown { into: &place.name }, landed.clone())
-            }
+            (Some(landed), Some(Record::Place(place))) => (
+                Throw::Thrown {
+                    into: &place.name,
+                    broke,
+                },
+                landed.clone(),
+            ),
             _ => {
                 let now = self.m.row("items", item)?;
                 let carried =

@@ -74,6 +74,8 @@ pub fn scaffold() -> String {
         facts::taken(&described, Some(&somebody), Some(&somewhere)),
         facts::dropped(&plain, &somewhere, None),
         facts::dropped(&described, &somewhere, Some(&somebody)),
+        facts::dropped_and_broke(&plain, &somewhere, None),
+        facts::dropped_and_broke(&described, &somewhere, Some(&somebody)),
         facts::read(&plain, WORDS),
         facts::written_words(WORDS),
     ]);
@@ -82,8 +84,34 @@ pub fn scaffold() -> String {
     let throws = [
         ("handy", Throw::Fumbled { carried: true }),
         ("heavy", Throw::Fumbled { carried: false }),
-        ("handy", Throw::Struck { target: WHO }),
-        ("handy", Throw::Thrown { into: WHERE }),
+        (
+            "handy",
+            Throw::Struck {
+                target: WHO,
+                broke: false,
+            },
+        ),
+        (
+            "handy",
+            Throw::Struck {
+                target: WHO,
+                broke: true,
+            },
+        ),
+        (
+            "handy",
+            Throw::Thrown {
+                into: WHERE,
+                broke: false,
+            },
+        ),
+        (
+            "handy",
+            Throw::Thrown {
+                into: WHERE,
+                broke: true,
+            },
+        ),
         ("heavy", Throw::Immovable),
     ];
     texts.extend(
@@ -134,6 +162,9 @@ mod tests {
             "is still lying exactly where it was",
             "and it hit them",
             "through the way out into <where>",
+            "put the <item> down, and it BROKE on the floor of <where>",
+            "and it hit them, and it BROKE",
+            "and it BROKE where it landed",
             "could not throw the <item> at all: it is heavy",
             "picked up just now, on this turn",
             "put down just now, on this turn",

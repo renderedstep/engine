@@ -686,6 +686,20 @@ impl<'s, 'm> Turn<'s, 'm> {
             .ok_or_else(|| Error::Database("a drop with nowhere to stand".into()))?;
         let dropper = self.m.player();
         self.commit("drop", |turn| turn.m.drop(item, None).map(|_| ()))?;
+        if broken(&self.m.row("items", item)?) {
+            let fact = facts::dropped_and_broke(&row, &here, dropper.as_ref());
+            return self.narrate(
+                command,
+                Some(fact),
+                None,
+                None,
+                Some(format!(
+                    "You put down {} in {}, and it breaks.",
+                    definite_name(&row),
+                    string(&here, "name")
+                )),
+            );
+        }
         let fact = facts::dropped(&row, &here, dropper.as_ref());
         self.narrate(
             command,
@@ -1211,6 +1225,11 @@ fn turned(produced: Produced, crisis: bool) -> Turned {
         },
         Produced::Nothing => Turned::default(),
     }
+}
+
+/// Whether a thing broke: its disposition, off the row.
+pub(super) fn broken(item: &Row) -> bool {
+    text(item, "disposition") == Some(crate::physics::BROKEN)
 }
 
 /// `Item#whereabouts`: where a thing is, and whose layer of the world it

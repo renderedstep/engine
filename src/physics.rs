@@ -1,5 +1,6 @@
-//! Falls: how far the player dropped through a doorway, at the gravity of
-//! the world they are in, and what the landing cost.
+//! Falls and breakage: how far the player dropped through a doorway, at the
+//! gravity of the world they are in, and what the landing cost; and whether
+//! a thing that came down on a floor broke.
 //!
 //! A fall is a doorway's hazard (`location_connections.hazard` = `fall`)
 //! whose die is not on the row: the storeys between its two rooms and the
@@ -7,6 +8,12 @@
 //! out of `data/physics.yml`. A world with no gravity, or a doorway that
 //! does not go down, throws nothing, so a world that says nothing about
 //! gravity plays exactly as it did before falls existed.
+//!
+//! A break is a thing's fragility (`items.fragility`), how it came down and
+//! what it landed on (`locations.surface`): together they are a share of
+//! one die, and the thing breaks when the die comes up at or under it. A
+//! sturdy thing throws no die at all, so a world that gives nothing a
+//! fragility plays exactly as it did before things could break.
 
 use crate::data;
 use crate::random::Random;
@@ -94,6 +101,98 @@ pub fn words(storeys: Option<i64>, saved: bool, damage: i64) -> String {
     words
 }
 
+/// The disposition of a thing that broke. Like a thing used up, it stays
+/// as a row in no place, so the thing it was copied from is never copied
+/// into the same game again.
+pub const BROKEN: &str = "broken";
+
+/// How a thing came down on the floor it landed on: the rows of
+/// `data/physics.yml`'s `height_step`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Landing {
+    /// Put down by the player.
+    Dropped,
+    /// Thrown at somebody or through a way out on the same storey.
+    Thrown,
+    /// Thrown through a doorway that is a fall.
+    Fell,
+}
+
+impl Landing {
+    pub fn name(self) -> &'static str {
+        match self {
+            Landing::Dropped => "dropped",
+            Landing::Thrown => "thrown",
+            Landing::Fell => "fell",
+        }
+    }
+}
+
+/// One break roll: the share of the die the thing breaks on, the die, and
+/// whether it broke.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Break {
+    pub share: i64,
+    pub die: i64,
+    pub broke: bool,
+}
+
+/// `data/physics.yml`'s `fragility`: each fragility and its base share, none
+/// for a thing that never breaks.
+pub fn fragilities() -> &'static [(String, Option<i64>)] {
+    &data::physics().fragility
+}
+
+/// `data/physics.yml`'s `height_step`: what each way of coming down adds to a
+/// share.
+pub fn height_steps() -> &'static [(String, i64)] {
+    &data::physics().height_step
+}
+
+/// `data/physics.yml`'s `surface`: each surface and what it adds to a share.
+pub fn surfaces() -> &'static [(String, i64)] {
+    &data::physics().surface
+}
+
+/// The die a break is thrown on.
+pub fn break_die() -> i64 {
+    data::physics().break_die
+}
+
+/// The share of the break die a thing of `fragility` breaks on, landing
+/// the way `landing` says on a floor of `surface`: its base, plus how it
+/// came down, plus the floor, held between 0 and the die. None, and no die
+/// thrown, for a thing that never breaks or whose fragility the table does
+/// not name; a surface the table does not name adds nothing.
+pub fn share(fragility: Option<&str>, landing: Landing, surface: Option<&str>) -> Option<i64> {
+    let physics = data::physics();
+    let fragility = fragility?;
+    let base = physics
+        .fragility
+        .iter()
+        .find(|(name, _)| name == fragility)
+        .and_then(|(_, base)| *base)?;
+    let step = height_steps()
+        .iter()
+        .find(|(name, _)| name == landing.name())
+        .map_or(0, |(_, step)| *step);
+    let floor = surface
+        .and_then(|surface| physics.surface.iter().find(|(name, _)| name == surface))
+        .map_or(0, |(_, added)| *added);
+    Some((base + step + floor).clamp(0, physics.break_die))
+}
+
+/// A break roll on `share`: one die, and the thing breaks when it comes up
+/// at or under the share.
+pub fn break_roll(share: i64, rng: &mut Random) -> Break {
+    let die = roll::die(break_die(), rng);
+    Break {
+        share,
+        die,
+        broke: die <= share,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -164,5 +263,60 @@ mod tests {
         );
         assert_eq!(words(Some(1), true, 0), "a fall of 1 storey");
         assert_eq!(words(None, false, 3), "a fall");
+    }
+
+    #[test]
+    fn a_sturdy_thing_or_one_the_table_does_not_name_throws_no_die() {
+        assert_eq!(share(Some("sturdy"), Landing::Fell, Some("hard")), None);
+        assert_eq!(share(Some("porcelain"), Landing::Fell, Some("hard")), None);
+        assert_eq!(share(None, Landing::Dropped, None), None);
+    }
+
+    #[test]
+    fn the_share_is_the_base_how_it_came_down_and_the_floor_held_to_the_die() {
+        assert_eq!(share(Some("fragile"), Landing::Dropped, None), Some(2));
+        assert_eq!(
+            share(Some("fragile"), Landing::Dropped, Some("soft")),
+            Some(0)
+        );
+        assert_eq!(
+            share(Some("fragile"), Landing::Thrown, Some("hard")),
+            Some(4)
+        );
+        assert_eq!(share(Some("fragile"), Landing::Fell, Some("hard")), Some(5));
+        assert_eq!(
+            share(Some("brittle"), Landing::Dropped, Some("hard")),
+            Some(5)
+        );
+        assert_eq!(
+            share(Some("brittle"), Landing::Thrown, Some("hard")),
+            Some(6)
+        );
+        assert_eq!(share(Some("brittle"), Landing::Fell, Some("hard")), Some(6));
+        assert_eq!(
+            share(Some("brittle"), Landing::Dropped, Some("mud")),
+            Some(4)
+        );
+    }
+
+    #[test]
+    fn a_thing_breaks_when_the_die_is_at_or_under_its_share() {
+        let seed = Seed {
+            story: 1,
+            playthrough: 1,
+            at: 0,
+            sequence: 7,
+            kind: roll::BREAK,
+        };
+        let sure = break_roll(6, &mut seed.generator());
+        assert!(sure.broke);
+        assert!((1..=6).contains(&sure.die));
+        let never = break_roll(0, &mut seed.generator());
+        assert!(!never.broke);
+        assert_eq!(never.die, sure.die, "one seed, one die");
+        for share in 0..=6 {
+            let rolled = break_roll(share, &mut seed.generator());
+            assert_eq!(rolled.broke, rolled.die <= share);
+        }
     }
 }
