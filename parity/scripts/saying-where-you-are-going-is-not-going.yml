@@ -1,0 +1,96 @@
+---
+story: A Turn at the Gate
+steps:
+- id: telling-somebody-here-is-the-talk
+  type: tell Maren I am going to the courtyard
+  browser:
+    token: told-maren
+    replies:
+    - purpose: system_one
+      prompt_includes:
+      - Courtyard
+      - Maren
+      content:
+        intent: move
+        target_move: way_1
+        target_talk: person_1
+        named_more_than_one: 0.19
+        target_present: 0.84
+    - purpose: character
+      content:
+        pre_thought: Cal is leaving.
+        pre_feeling: wary
+        action: Maren watches Cal and says nothing.
+        post_thought: Cal says he is going to the courtyard.
+        post_feeling: wary
+        inner_resolution: I will see where Cal goes.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Maren hears you out and keeps her staff where it is.
+  expect:
+    location: Market (realized)
+    understood: talk -> Maren
+    resolved_by: typed_model
+    refused: false
+    changed: true
+- id: going-there-is-the-move
+  type: go to the courtyard
+  browser:
+    token: to-the-courtyard
+    replies:
+    - purpose: system_one
+      content:
+        intent: move
+        target_move: way_1
+        named_more_than_one: 0.02
+        target_present: 0.95
+    - purpose: arrival
+      content:
+        description: You step through into the courtyard.
+        summary: Cal crosses into the courtyard.
+  expect:
+    location: Courtyard (realized)
+    present: []
+    understood: move -> Courtyard
+    resolved_by: typed_model
+    changed: true
+- id: telling-nobody-is-a-talk-that-reaches-for-nobody
+  type: tell her you are going to the tower
+  browser:
+    token: told-nobody
+    replies:
+    - purpose: system_one
+      prompt_includes:
+      - Tower
+      content:
+        intent: move
+        target_move: way_2
+        named_more_than_one: 0.11
+        target_present: 0.62
+  expect:
+    location: Courtyard (realized)
+    refused: true
+    changed: false
+    offers:
+    - There is nobody here to talk to.
+    drifts: 1
+- id: going-and-then-telling-is-the-move
+  type: go to the tower and tell Maren where I went
+  browser:
+    token: to-the-tower
+    replies:
+    - purpose: system_one
+      content:
+        intent: move
+        target_move: way_2
+        named_more_than_one: 0.2
+        target_present: 0.3
+    - purpose: arrival
+      content:
+        description: You walk the long road out to the tower.
+        summary: Cal walks out to the tower.
+  expect:
+    location: Tower (realized)
+    understood: move -> Tower
+    resolved_by: typed_model
+    changed: true

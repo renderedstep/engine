@@ -10,6 +10,9 @@
 //! Two flags send a line on to the model call instead: `named_more_than_one`
 //! at or above [`TWO_NAME_THRESHOLD`], or `target_present` below
 //! [`PRESENCE_THRESHOLD`]. That is escalation, not refusal.
+//!
+//! A move read off a line that opens by speaking to somebody ([`spoken`]) is
+//! composed as the talk it is.
 
 use crate::data;
 use crate::intent::{slot_for, Intent};
@@ -21,6 +24,22 @@ pub const PRESENCE_THRESHOLD: f64 = 0.15;
 
 /// At or above this, the line is taken to name two records for one act.
 pub const TWO_NAME_THRESHOLD: f64 = 0.5;
+
+/// The verbs a line opens with when the player is speaking to somebody.
+pub const SPEECH_VERBS: &[&str] = &[
+    "tell", "ask", "say", "shout", "yell", "whisper", "warn", "inform", "remind", "promise",
+];
+
+/// Whether the line opens with a verb of speaking. Such a line is the player
+/// talking, whatever place it names: "tell Rowe I am going into the closet"
+/// says where the player means to go and does not go there. Only the first
+/// word counts, so "go back to the court and tell Brace" is still a move.
+pub fn spoken(command: &str) -> bool {
+    let line = crate::text::ruby_downcase(command);
+    line.split(|c: char| !c.is_alphanumeric())
+        .find(|word| !word.is_empty())
+        .is_some_and(|word| SPEECH_VERBS.contains(&word))
+}
 
 /// The state blocks, and the intent whose closed set is each one.
 struct Group {
@@ -440,6 +459,13 @@ pub fn compose(
             intent: None,
         };
     }
+    // The talk's own target question names who is spoken to; with nobody
+    // here it was never asked, and the talk reaches for nothing.
+    let action = if action == "move" && spoken(&state.command) {
+        "talk".to_string()
+    } else {
+        action
+    };
     let chosen = if presence >= PRESENCE_THRESHOLD {
         chosen_target(state, &answers, &action).and_then(|target| {
             let also = chosen_also(state, &answers, &action, target.as_ref())?;
@@ -514,5 +540,146 @@ fn intent_for(action: &str, target: Option<Record>, also: Option<Record>) -> Int
         }
         .with(slot, target),
         None => Intent::new(action),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::room::{Exit, Person, Place};
+
+    fn room(cast: Vec<Person>) -> Room {
+        Room {
+            protagonist: Some(Person {
+                id: 1,
+                fullname: "Cal".into(),
+                nickname: None,
+            }),
+            here: Some(Place {
+                id: 10,
+                name: "Ward Office 12".into(),
+            }),
+            exits: vec![Exit {
+                place: Place {
+                    id: 11,
+                    name: "The Supply Closet".into(),
+                },
+                barrier: "open".into(),
+                edge: 100,
+                key: None,
+            }],
+            cast,
+            lying: Vec::new(),
+            carried: Vec::new(),
+            over: false,
+        }
+    }
+
+    fn rowe() -> Person {
+        Person {
+            id: 2,
+            fullname: "Halkett Rowe".into(),
+            nickname: Some("Rowe".into()),
+        }
+    }
+
+    /// System One's body for every question sent: the choices named, and
+    /// `nothing` or a probability of zero for the rest.
+    fn body(questions: &Value, chosen: &[(&str, Value)]) -> Value {
+        let answers: Map<String, Value> = questions
+            .as_object()
+            .expect("questions")
+            .iter()
+            .map(|(id, question)| {
+                let given = chosen.iter().find(|(key, _)| key == id).map(|(_, v)| v);
+                let answer = if question["type"] == "noul" {
+                    json!({ "type": "noul", "noul": given.cloned().unwrap_or(json!(0.0)) })
+                } else {
+                    json!({ "type": "choice", "choice": given.cloned().unwrap_or(json!(NOTHING)) })
+                };
+                (id.clone(), answer)
+            })
+            .collect();
+        json!({ "answers": answers })
+    }
+
+    /// The line read as a move to the closet, as System One reads a reported
+    /// intention.
+    fn read_as_move(room: &Room, typed: &str) -> Outcome {
+        let state = State::new(room, typed);
+        let questions = request(&state);
+        let reply = body(
+            &questions,
+            &[
+                ("intent", json!("move")),
+                ("target_move", json!("way_1")),
+                ("target_talk", json!("person_1")),
+                ("target_present", json!(0.84)),
+                ("named_more_than_one", json!(0.19)),
+            ],
+        );
+        compose(&state, &questions, Ok(&reply), Escalation::On)
+    }
+
+    #[test]
+    fn a_reported_move_is_the_talk_to_whoever_is_told() {
+        let room = room(vec![rowe()]);
+        let outcome = read_as_move(&room, "tell Rowe I am going into the closet");
+        let intent = outcome.intent.expect("composed");
+        assert_eq!(outcome.path, "typed_model");
+        assert_eq!(intent.action, "talk");
+        assert_eq!(intent.speaker, Some(Record::Person(rowe())));
+        assert_eq!(intent.destination, None);
+        assert!(!intent.refused());
+    }
+
+    #[test]
+    fn a_reported_move_with_nobody_to_tell_reaches_for_nobody() {
+        let room = room(Vec::new());
+        let outcome = read_as_move(&room, "tell her you are going to climb the bell");
+        let intent = outcome.intent.expect("composed");
+        assert_eq!(outcome.path, "typed_model");
+        assert_eq!(intent.action, "talk");
+        assert_eq!(intent.subject(), None);
+        assert!(intent.reached_for_nothing());
+    }
+
+    #[test]
+    fn a_move_that_goes_on_to_tell_somebody_is_still_a_move() {
+        let room = room(vec![rowe()]);
+        for typed in [
+            "go into the closet and tell Rowe what I found",
+            "walk into the closet",
+            "Telling nobody, go into the closet",
+        ] {
+            let intent = read_as_move(&room, typed).intent.expect("composed");
+            assert_eq!(intent.action, "move", "{typed}");
+            assert_eq!(
+                intent.destination.map(|d| d.label()),
+                Some("The Supply Closet".to_string()),
+                "{typed}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_line_opens_by_speaking_only_on_its_first_word() {
+        for typed in [
+            "tell Rowe I am going into the closet",
+            "Tell me plainly, Rowe.",
+            "ask: can I go?",
+            "  whisper to Rowe that I am leaving",
+            "say goodbye and go",
+        ] {
+            assert!(spoken(typed), "{typed}");
+        }
+        for typed in [
+            "go back to the court and tell Brace what Neb said",
+            "Rowe, tell me what you found",
+            "tellurium is in the closet",
+            "",
+        ] {
+            assert!(!spoken(typed), "{typed}");
+        }
     }
 }
