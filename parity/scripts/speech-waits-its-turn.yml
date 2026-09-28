@@ -18,38 +18,10 @@ steps:
     - Rowe Harker
     - Tamsin Gale
     volitions: 2
-- id: nothing-said-twice
-  type: "/examine pawn ticket"
-  browser:
-    token: second
-    replies:
-    - purpose: narration
-      content: You turn the ticket over.
-      prompt_excludes:
-      - spoke up unasked
-  expect:
-    present:
-    - Rowe Harker
-    - Tamsin Gale
-    volitions: 2
 - id: the-one-who-spoke-waits
   type: "/examine pawn ticket"
   browser:
-    token: third
-    replies:
-    - purpose: narration
-      content: Tamsin taps the ticket book and says nothing.
-      prompt_excludes:
-      - spoke up unasked
-  expect:
-    present:
-    - Rowe Harker
-    - Tamsin Gale
-    volitions: 2
-- id: the-other-one-speaks
-  type: "/examine pawn ticket"
-  browser:
-    token: fourth
+    token: second
     replies:
     - purpose: narration
       content: Rowe jerks his head at the door.
@@ -58,6 +30,34 @@ steps:
         Nobody moved.
       prompt_excludes:
       - Tamsin Gale spoke up unasked
+  expect:
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+    volitions: 2
+- id: both-wait
+  type: "/examine pawn ticket"
+  browser:
+    token: third
+    replies:
+    - purpose: narration
+      content: The shop is quiet.
+      prompt_excludes:
+      - spoke up unasked
+  expect:
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+    volitions: 2
+- id: both-wait-still
+  type: "/examine pawn ticket"
+  browser:
+    token: fourth
+    replies:
+    - purpose: narration
+      content: The till ticks over.
+      prompt_excludes:
+      - spoke up unasked
   expect:
     present:
     - Rowe Harker

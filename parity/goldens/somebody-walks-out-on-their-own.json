@@ -155,18 +155,11 @@
             "name": "quarter receipt"
           }
         ],
-        "present": [
-          {
-            "id": 1000000002,
-            "name": "Bell"
-          }
-        ],
+        "present": [],
         "foes": [],
         "inscription": [],
         "hp": 53,
-        "hp_of": {
-          "Bell": 53
-        },
+        "hp_of": {},
         "abilities": {
           "strength": 12,
           "dexterity": 12,
@@ -179,7 +172,7 @@
         "offers": null,
         "understood": "take -> quarter receipt",
         "resolved_by": "grammar",
-        "note": "someone here: Bell spoke up unasked and told Wick to leave The Records Office. Nobody moved.",
+        "note": "someone here: Bell walked out of The Records Office to The Landing and is no longer in The Records Office.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -243,13 +236,13 @@
         "offers": null,
         "understood": "move -> The Landing",
         "resolved_by": "grammar",
-        "note": "someone here: Bell walked out of The Records Office to The Landing and is no longer in The Records Office.",
+        "note": null,
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
         "quest": {},
-        "volitions": 1,
-        "acts": 1,
+        "volitions": 0,
+        "acts": 0,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,

@@ -31,7 +31,7 @@ steps:
     - purpose: narration
       content: The ticket is creased where you have been holding it.
       prompt_excludes:
-      - spoke up unasked
+      - Tamsin Gale spoke up unasked
   expect:
     carrying:
     - brass tally

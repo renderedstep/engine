@@ -120,12 +120,7 @@
           }
         ],
         "carrying": [],
-        "present": [
-          {
-            "id": 1000000002,
-            "name": "Ammon Brace"
-          }
-        ],
+        "present": [],
         "foes": [],
         "inscription": [
           {
@@ -135,9 +130,7 @@
           }
         ],
         "hp": 18,
-        "hp_of": {
-          "Ammon Brace": 6
-        },
+        "hp_of": {},
         "abilities": {
           "strength": 13,
           "dexterity": 10,
@@ -150,7 +143,7 @@
         "offers": null,
         "understood": "drop -> Assize tide-slate",
         "resolved_by": "grammar",
-        "note": "someone here: Ammon Brace spoke up unasked and warned Coraith Vell about the drop on the way to The Vestry Hulk.",
+        "note": "someone here: Ammon Brace walked out of The Causeway Court to The Vestry Hulk and is no longer in The Causeway Court.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -213,7 +206,7 @@
         "offers": null,
         "understood": "move -> The Tide Post",
         "resolved_by": "grammar",
-        "note": "someone here: Ammon Brace walked out of The Causeway Court to The Vestry Hulk and is no longer in The Causeway Court.\nthe world: flooded on The Tide Post cost Coraith Vell 1 hit point (the water takes your legs); Coraith Vell is hurt (17 of 18)\nthe story: Go out to the tide post and read the stain band against the water yourself.",
+        "note": "the world: flooded on The Tide Post cost Coraith Vell 1 hit point (the water takes your legs); Coraith Vell is hurt (17 of 18)\nthe story: Go out to the tide post and read the stain band against the water yourself.",
         "drifts": 0,
         "blows": 0,
         "hazards": 1,
@@ -222,8 +215,8 @@
           "2": "bound",
           "3": "bound"
         },
-        "volitions": 1,
-        "acts": 1,
+        "volitions": 0,
+        "acts": 0,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,

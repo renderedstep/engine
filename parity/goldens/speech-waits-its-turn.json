@@ -20,7 +20,12 @@
             "detail": "stub"
           }
         ],
-        "here": [],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          }
+        ],
         "carrying": [
           {
             "id": 1000000003,
@@ -62,7 +67,7 @@
         "hazards": 0,
         "quest": {},
         "volitions": 2,
-        "acts": 2,
+        "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
@@ -72,7 +77,7 @@
       }
     },
     {
-      "step": "step 2 nothing-said-twice",
+      "step": "step 2 the-one-who-spoke-waits",
       "player": "first",
       "typed": "/examine pawn ticket",
       "dump": {
@@ -89,7 +94,12 @@
             "detail": "stub"
           }
         ],
-        "here": [],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          }
+        ],
         "carrying": [
           {
             "id": 1000000003,
@@ -131,7 +141,7 @@
         "hazards": 0,
         "quest": {},
         "volitions": 2,
-        "acts": 2,
+        "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
@@ -141,7 +151,7 @@
       }
     },
     {
-      "step": "step 3 the-one-who-spoke-waits",
+      "step": "step 3 both-wait",
       "player": "first",
       "typed": "/examine pawn ticket",
       "dump": {
@@ -200,7 +210,7 @@
         "hazards": 0,
         "quest": {},
         "volitions": 2,
-        "acts": 1,
+        "acts": 2,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
@@ -210,7 +220,7 @@
       }
     },
     {
-      "step": "step 4 the-other-one-speaks",
+      "step": "step 4 both-wait-still",
       "player": "first",
       "typed": "/examine pawn ticket",
       "dump": {
@@ -229,6 +239,10 @@
         ],
         "here": [],
         "carrying": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          },
           {
             "id": 1000000003,
             "name": "pawn ticket"
@@ -269,7 +283,7 @@
         "hazards": 0,
         "quest": {},
         "volitions": 2,
-        "acts": 2,
+        "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,

@@ -12,7 +12,7 @@ const REQUEST: &str = include_str!("../data/playthrough/classifier/request.yml")
 /// Every data file, by its path under `data/` without `.yml`, and its
 /// text exactly as compiled in: what a host that reads the same words
 /// (the game's `EngineData`) reads.
-pub fn files() -> [(&'static str, &'static str); 12] {
+pub fn files() -> [(&'static str, &'static str); 13] {
     [
         ("character/desires", DESIRES),
         ("item/inscriber", INSCRIBER),

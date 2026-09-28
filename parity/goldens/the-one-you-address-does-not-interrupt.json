@@ -20,7 +20,12 @@
             "detail": "stub"
           }
         ],
-        "here": [],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          }
+        ],
         "carrying": [
           {
             "id": 1000000003,
@@ -62,7 +67,7 @@
         "hazards": 0,
         "quest": {},
         "volitions": 2,
-        "acts": 2,
+        "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
