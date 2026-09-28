@@ -1,0 +1,55 @@
+---
+story: A Window Over the Yard
+steps:
+- id: into-the-yard
+  type: go to the yard
+  expect:
+    changed: true
+    location: The Yard (realized)
+    storey: 0
+    hazards: 0
+- id: into-the-kitchen
+  type: go to the kitchen
+  expect:
+    changed: true
+    location: The Kitchen (realized)
+    storey: 0
+    hazards: 0
+- id: up-the-stair
+  type: go to the loft
+  expect:
+    changed: true
+    location: The Loft (realized)
+    storey: 1
+    hazards: 0
+- id: down-the-stair
+  type: go to the kitchen
+  expect:
+    changed: true
+    location: The Kitchen (realized)
+    storey: 0
+    hazards: 0
+    blows: 0
+- id: jump-into-the-yard-from-the-kitchen
+  type: jump into the yard
+  expect:
+    changed: true
+    location: The Yard (realized)
+    storey: 0
+    hazards: 0
+- id: a-jump-at-nowhere
+  type: jump into the well
+  expect:
+    refused: true
+    changed: false
+    location: The Yard (realized)
+    hazards: 0
+- id: up-through-the-window
+  type: go to the loft
+  expect:
+    changed: true
+    location: The Loft (realized)
+    storey: 1
+    hp: 18
+    hazards: 0
+    blows: 0

@@ -1,0 +1,75 @@
+---
+story: A Window Over the Yard
+steps:
+- id: in-the-lane
+  type: look
+  expect:
+    location: The Lane (realized)
+    exits:
+    - The Yard (realized)
+    hp: 18
+    hazards: 0
+    blows: 0
+    changed: false
+    refused: false
+- id: into-the-yard
+  type: go to the yard
+  expect:
+    changed: true
+    location: The Yard (realized)
+    storey: 0
+    hazards: 0
+- id: climb-in-at-the-window
+  type: go to the loft
+  expect:
+    changed: true
+    location: The Loft (realized)
+    storey: 1
+    exits:
+    - The Kitchen (realized)
+    - The Yard (realized)
+    hp: 18
+    hazards: 0
+    blows: 0
+- id: jump-into-the-yard
+  type: jump into the yard
+  expect:
+    changed: true
+    location: The Yard (realized)
+    storey: 0
+    hazards: 1
+    blows: 0
+    dead: false
+    exits:
+    - The Lane (realized)
+    - The Kitchen (realized)
+    - The Loft (realized)
+- id: climb-back-up
+  type: go to the loft
+  expect:
+    changed: true
+    location: The Loft (realized)
+    storey: 1
+    hazards: 0
+    blows: 0
+    dead: false
+- id: patched-up-before-the-next-jump
+  type: mend 20
+  expect:
+    hp: 18
+    hazards: 0
+    dead: false
+- id: leap-again
+  type: leap into the yard
+  expect:
+    changed: true
+    location: The Yard (realized)
+    hazards: 1
+    blows: 0
+    dead: false
+- id: standing-in-the-yard-costs-nothing
+  type: look
+  expect:
+    location: The Yard (realized)
+    hazards: 0
+    blows: 0

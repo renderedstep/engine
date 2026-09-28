@@ -2,3 +2,4 @@
 # no longer exports them: `BLESS=1 cargo test --test vectors` writes them
 # from this crate, and the game vendors them at the pinned commit.
 shuffle_connections
+physics

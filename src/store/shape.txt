@@ -377,6 +377,7 @@ column universes.civilizations text pk=0
 column universes.created_at datetime(6) not null pk=0
 column universes.economics text pk=0
 column universes.geographies text pk=0
+column universes.gravity varchar pk=0
 column universes.history text pk=0
 column universes.id integer not null pk=1
 column universes.physics text pk=0

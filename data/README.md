@@ -9,7 +9,7 @@ in and reads them, and no string in them is retyped anywhere else.
 
 | File | Source | Read by |
 | --- | --- | --- |
-| `playthrough/grammar.yml` | `config/engine/playthrough/grammar.yml` | `grammar`: the fixed grammar's verb table |
+| `playthrough/grammar.yml` | `config/engine/playthrough/grammar.yml` (at `a74e9c4c43b46ab61a0480240e611790178c7215`) | `grammar`: the fixed grammar's verb table |
 | `playthrough/classifier/request.yml` | `config/engine/playthrough/classifier/request.yml` | `cascade`: the wording of a System One request |
 | `scene/generator.yml` | `config/engine/scene/generator.yml` | `arrival`: the arrival writer's instructions |
 | `playthrough/classifier.yml` | `config/engine/playthrough/classifier.yml` (at `b4c9921c008ac1e459486318324aec66672a9366`) | `turn`: the classifier's instructions |
@@ -38,6 +38,8 @@ into a data file, it moves here too.
 
 `physics.yml` is not vendored: this engine owns it, and `src/data.rs`
 (`physics()`) declares its shape and refuses any other. Its `bulk` and
-`thrown_damage` tables are what a throw reads (`room`, `turn`); its fall,
-breakage and range tables are a starting calibration that nothing reads yet.
-Edit it here, and run `cargo test`.
+`thrown_damage` tables are what a throw reads (`room`, `turn`), and its
+`gravity`, `fall_die` and `fall_save` what a fall reads (`physics`, `turn`);
+its breakage and range tables are a starting calibration that nothing reads
+yet. Edit it here, run `cargo test`, and bless the `physics` vector portion
+(`vectors/README.md`).

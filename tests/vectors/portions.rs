@@ -36,6 +36,7 @@ pub const NAMES: &[&str] = &[
     "plan",
     "request_identity",
     "volition_request",
+    "physics",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -550,5 +551,48 @@ fn cast() {
             .iter()
             .map(|slot| json!({ "race": slot.race, "age": slot.age, "sex": slot.sex }))
             .collect()
+    });
+}
+
+#[test]
+fn physics() {
+    use renderedstep_engine::physics;
+    let (fall_die, fall_save) = physics::fall_die();
+    let constants = json!({
+        "gravity": physics::gravities(),
+        "fall_die": fall_die,
+        "fall_save": fall_save,
+        "kind": roll::FALL as i64,
+    });
+    check("physics", constants, |input| {
+        let z = |key: &str| input[key].as_i64();
+        let storeys = physics::storeys(z("from_z"), z("to_z"));
+        let dice = storeys.and_then(|storeys| physics::dice(storeys, input["gravity"].as_str()));
+        let Some(dice) = dice else {
+            return json!({ "storeys": storeys, "dice": null });
+        };
+        let who = input["abilities"].as_object().cloned().unwrap_or_default();
+        let seed = &input["seed"];
+        let mut rng = roll::Seed {
+            story: int(&seed["story"]).into(),
+            playthrough: int(&seed["playthrough"]).into(),
+            at: int(&seed["at"]).into(),
+            sequence: int(&seed["sequence"]).into(),
+            kind: roll::FALL,
+        }
+        .generator();
+        let fall = physics::fall(dice, &who, &mut rng);
+        json!({
+            "storeys": storeys,
+            "dice": dice,
+            "save": fall.save.as_ref().map(|save| json!({
+                "die": save.die,
+                "target": save.target(),
+                "passed": save.passed(),
+            })),
+            "rolled": fall.rolled,
+            "damage": fall.damage,
+            "words": physics::words(storeys, fall.saved(), fall.damage),
+        })
     });
 }

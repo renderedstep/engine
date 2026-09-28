@@ -2,10 +2,11 @@
 # (`physics()`), which declares this file's shape and refuses any other.
 # Every number here is one a die or a check is rolled against.
 #
-# `bulk` and `thrown_damage` are read today, by a throw. The other tables are
-# the starting calibration for falls, breakage and throwing range; nothing
-# reads them yet, so they change no game until a world supplies a gravity, a
-# fragility or a surface.
+# `bulk` and `thrown_damage` are read by a throw, and `gravity`, `fall_die`
+# and `fall_save` by a fall through a doorway (`src/physics.rs`), which throws
+# nothing in a world with no gravity. The other tables are the starting
+# calibration for breakage and throwing range; nothing reads them yet, so they
+# change no game until a world supplies a fragility or a surface.
 ---
 bulk:                    # items.bulk: the penalty taken off a thrower's strength
   light: 0

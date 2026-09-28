@@ -67,6 +67,46 @@ fn a_turn_is_written_to_the_database_and_read_back_by_the_next_connection() {
     assert_eq!(outcome.state.location, Some(room));
 }
 
+/// The tolls the window over the yard's fall wrote after one jump, in a
+/// world whose gravity is `gravity`.
+fn a_jump_at(gravity: &str) -> (i64, Option<i64>) {
+    let sql = format!(
+        "{}UPDATE universes SET gravity = {gravity};",
+        world("a-window-over-the-yard")
+    );
+    let scratch = Scratch::new(&format!("fall-{}", gravity.len()), &sql);
+    let mut engine = Engine::open(&scratch.0).expect("the database opens");
+    let story = engine
+        .story_titled(&format!("A Window Over the Yard{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    for line in ["go to the yard", "go to the loft"] {
+        engine.play(playthrough, line, &mut |_| {}).unwrap();
+    }
+    let outcome = engine
+        .play(playthrough, "jump into the yard", &mut |_| {})
+        .unwrap();
+    assert_eq!(
+        outcome.report.change.as_deref(),
+        Some("moved: The Loft -> The Yard")
+    );
+    let tolls: i64 = rusqlite::Connection::open(&scratch.0)
+        .unwrap()
+        .query_row("SELECT COUNT(*) FROM playthrough_tolls", [], |row| {
+            row.get(0)
+        })
+        .unwrap();
+    (tolls, outcome.state.hp)
+}
+
+#[test]
+fn a_fall_costs_nothing_in_a_world_with_no_gravity() {
+    assert_eq!(a_jump_at("NULL"), (0, Some(18)));
+    let (tolls, hp) = a_jump_at("'heavy'");
+    assert_eq!(tolls, 1);
+    assert!(hp.is_some_and(|hp| hp < 18), "three d6 cost something");
+}
+
 #[test]
 fn a_database_at_an_older_schema_is_refused() {
     let conn = rusqlite::Connection::open_in_memory().unwrap();

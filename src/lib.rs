@@ -47,6 +47,7 @@ pub mod moment;
 pub mod outcome;
 pub mod parameters;
 pub mod parity;
+pub mod physics;
 pub mod plan;
 pub mod playthrough;
 pub mod population;

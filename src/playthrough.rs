@@ -6,6 +6,7 @@
 //! (`app/models/playthrough.rb`), asked of a [`Records`] rather than of a
 //! database, so it returns rows in the order that query returns them.
 
+use crate::physics;
 use crate::records::{flag, id, int, string, text, Records, Row};
 
 /// A room's own hazards, and the words the engine says of each
@@ -374,7 +375,7 @@ impl<'a> Game<'a> {
         );
         let hazard = string(toll, "hazard");
         let where_it_was = self.where_it_was(toll);
-        if flag(toll, "saved") {
+        if got_clear(toll) {
             return format!("{who} got clear of {hazard} on {where_it_was}");
         }
         let damage = int(toll, "damage").expect("damage");
@@ -385,8 +386,29 @@ impl<'a> Game<'a> {
         format!(
             "{hazard} on {where_it_was} cost {who} {damage} hit point{} ({}); {who} is {}",
             if damage == 1 { "" } else { "s" },
-            toll_words(toll),
+            self.toll_words(toll),
             condition.in_words()
+        )
+    }
+
+    /// `Playthrough::Toll#words`, and for a fall, how far it was and whether
+    /// a landing halved it.
+    pub fn toll_words(&self, toll: &Row) -> String {
+        if text(toll, "hazard") != Some(physics::FALL) {
+            return toll_words(toll);
+        }
+        let storeys = int(toll, "location_connection_id")
+            .and_then(|edge| self.records.find("location_connections", edge))
+            .and_then(|edge| {
+                physics::storeys(
+                    int(self.location(int(edge, "location_id")?), "z"),
+                    int(self.location(int(edge, "connected_location_id")?), "z"),
+                )
+            });
+        physics::words(
+            storeys,
+            flag(toll, "saved"),
+            int(toll, "damage").unwrap_or_default(),
         )
     }
 
@@ -410,6 +432,13 @@ impl<'a> Game<'a> {
             ),
         }
     }
+}
+
+/// Whether a toll cost nothing because the save was made. A fall's save
+/// only halves it, so a saved fall that still cost something is a cost.
+pub fn got_clear(toll: &Row) -> bool {
+    flag(toll, "saved")
+        && (text(toll, "hazard") != Some(physics::FALL) || int(toll, "damage") == Some(0))
 }
 
 /// `Playthrough::Toll#words`: the catalogue's sentence, or the bare key.
