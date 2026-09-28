@@ -207,6 +207,35 @@ impl Engine {
         result
     }
 
+    /// [`Engine::submit`], with the line read as `fixed` says wherever the
+    /// classifier would have been asked (`turn::Fixed`): a bench that
+    /// measures what a turn does after its reading plays its cases this
+    /// way, so the one model call it does not measure is never made.
+    pub fn submit_fixed(
+        &mut self,
+        playthrough: i64,
+        line: &str,
+        token: &str,
+        fixed: &crate::turn::Fixed,
+        models: &mut dyn crate::model::Models,
+        on_chunk: &mut dyn FnMut(&str),
+    ) -> Result<Submitted, Error> {
+        let store = &self.store;
+        let result = guarded(|| {
+            let mut turn = crate::turn::Turn::new(store, playthrough, models, on_chunk)?;
+            turn.read_as(Some(fixed.clone()));
+            let turned = turn.play(line, token)?;
+            Ok(Submitted {
+                turned,
+                state: State::read(turn.records(), playthrough),
+            })
+        });
+        if matches!(result, Err(Error::Panicked(_))) {
+            store.rollback();
+        }
+        result
+    }
+
     /// Accepts a line into a game's submission queue without playing it,
     /// as a browser does for a line typed while a turn is still running.
     pub fn accept(&mut self, playthrough: i64, line: &str, token: &str) -> Result<(), Error> {

@@ -21,7 +21,8 @@ use crate::facts::{self, definite_name};
 use crate::grammar::{self, Grammar};
 use crate::intent::Intent;
 use crate::model::{Agent, Book, Call, Failure, Filed, Models};
-use crate::moment::{Direction, Handled, Moment};
+use crate::moment::{Direction, Handled};
+use crate::narration;
 use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
@@ -32,6 +33,7 @@ use kept::Kept;
 use serde_json::{json, Value};
 
 mod classify;
+pub use classify::Fixed;
 mod kept;
 mod realize;
 mod talk;
@@ -131,6 +133,8 @@ pub struct Turn<'s, 'm> {
     classifier: Option<Agent>,
     /// The journal step a stopped worker stops after, for the engine sweep.
     stop_after: Option<String>,
+    /// The reading every line takes in place of the classifier's.
+    fixed: Option<Fixed>,
 }
 
 fn model(failure: Failure) -> Error {
@@ -152,7 +156,15 @@ impl<'s, 'm> Turn<'s, 'm> {
             safety: false,
             classifier: None,
             stop_after: None,
+            fixed: None,
         })
+    }
+
+    /// Reads every line this turn plays as `fixed` says, wherever the
+    /// classifier would have been asked. The grammar still claims a line it
+    /// claims first, as it does before the classifier.
+    pub fn read_as(&mut self, fixed: Option<Fixed>) {
+        self.fixed = fixed;
     }
 
     /// Stops the turn right after this journal step commits.
@@ -1038,11 +1050,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         if self.done("narrated") {
             return self.saved("narrated").map(Option::flatten);
         }
-        let prompt = self.narration_prompt(command, fact.as_deref(), doing, handled);
-        let call = Call {
-            system: Some(data::narrator_instructions().to_string()),
-            ..Call::prompt(prompt)
-        };
+        let call = narration::call(self.m.game(), command, fact.as_deref(), doing, handled);
         let mut agent = Agent::new(self.filed("narration"));
         let asked = {
             let on_chunk = &mut *self.on_chunk;
@@ -1116,22 +1124,8 @@ impl<'s, 'm> Turn<'s, 'm> {
         if let Some(told) = self.saved::<Told>("ending_scene")? {
             return Ok(told);
         }
-        let prompt = {
-            let outcome = self.m.row("quest_outcomes", concluded.outcome)?;
-            let moment = Moment {
-                game: self.m.game(),
-                handled: None,
-                ending: Some(&outcome),
-            };
-            format!(
-                "{}\n\nWrite the ending.\n",
-                moment.narration_context(true, true)
-            )
-        };
-        let call = Call {
-            system: Some(data::ending_instructions().to_string()),
-            ..Call::prompt(prompt)
-        };
+        let outcome = self.m.row("quest_outcomes", concluded.outcome)?;
+        let call = narration::ending_call(self.m.game(), &outcome);
         let mut agent = Agent::new(self.filed(ENDING));
         let asked = {
             let on_chunk = &mut *self.on_chunk;
@@ -1166,23 +1160,6 @@ impl<'s, 'm> Turn<'s, 'm> {
         };
         self.models.attribute(&mut book, &agent, told.id)?;
         Ok(told)
-    }
-
-    /// `Scene::Narrator#prompt_for`.
-    fn narration_prompt(
-        &self,
-        command: &str,
-        fact: Option<&str>,
-        doing: Option<&str>,
-        handled: Option<Handled>,
-    ) -> String {
-        let moment = Moment {
-            game: self.m.game(),
-            handled,
-            ending: None,
-        };
-        let context = moment.narration_context(true, true);
-        facts::framing(&context, command, fact, doing)
     }
 }
 

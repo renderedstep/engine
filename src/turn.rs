@@ -25,7 +25,7 @@ use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_m
 use serde_json::Value;
 
 mod told;
-pub use told::{Turn, Turned};
+pub use told::{Fixed, Turn, Turned};
 
 /// `Character::ABILITIES`, in order: a check's sequence is its place here.
 pub const ABILITIES: [&str; 3] = ["strength", "dexterity", "will"];
@@ -384,83 +384,11 @@ impl<'s> Mechanics<'s> {
 
     /// The room as the grammar reads it: the classifier's four closed sets.
     pub fn room(&self) -> Room {
-        let game = self.game();
-        let here = game.current_location();
-        let story_protagonist = self.story_protagonist();
-        let exits = match here {
-            None => Vec::new(),
-            Some(room) => self
-                .exits_of(room)
-                .into_iter()
-                .map(|(edge, far)| Exit {
-                    place: Place {
-                        id: id(&far),
-                        name: string(&far, "name").to_string(),
-                    },
-                    barrier: if self.open_for(&edge) {
-                        "open".to_string()
-                    } else {
-                        string(&edge, "barrier").to_string()
-                    },
-                    edge: id(&edge),
-                    key: int(&edge, "key_template_id"),
-                })
-                .collect(),
-        };
-        Room {
-            protagonist: game.protagonist().map(person_of),
-            here: here.map(|room| Place {
-                id: id(room),
-                name: string(room, "name").to_string(),
-            }),
-            exits,
-            cast: game
-                .cast_in(here)
-                .into_iter()
-                .filter(|who| Some(id(who)) != story_protagonist)
-                .map(person_of)
-                .collect(),
-            lying: game
-                .items_lying_in(here)
-                .into_iter()
-                .map(|item| thing_of(item, false))
-                .collect(),
-            carried: game
-                .carried()
-                .into_iter()
-                .map(|item| thing_of(item, true))
-                .collect(),
-            over: self.over(),
-        }
+        room_of(&self.records, self.playthrough)
     }
 
     fn story_protagonist(&self) -> Option<i64> {
-        let story = self.story_id();
-        self.records
-            .first("characters", |row| {
-                int(row, "story_id") == Some(story) && flag(row, "is_protagonist")
-            })
-            .map(id)
-    }
-
-    /// A room's doorways and the rooms beyond them, by the far room's id.
-    fn exits_of(&self, room: &Row) -> Vec<(Row, Row)> {
-        let here = id(room);
-        let mut ways: Vec<(Row, Row)> = self
-            .records
-            .select("location_connections", |edge| {
-                int(edge, "location_id") == Some(here)
-            })
-            .into_iter()
-            .filter_map(|edge| {
-                let far = self
-                    .records
-                    .find("locations", int(edge, "connected_location_id")?)?;
-                Some((edge.clone(), far.clone()))
-            })
-            .collect();
-        ways.sort_by_key(|(_, far)| id(far));
-        ways
+        story_protagonist(&self.records, self.story_id())
     }
 
     /// `LocationConnection.walked`: the doorway from one room into another.
@@ -476,24 +404,7 @@ impl<'s> Mechanics<'s> {
 
     /// `LocationConnection#open_for?`.
     fn open_for(&self, edge: &Row) -> bool {
-        let story = Some(self.story_id());
-        let in_story = |column: &str| {
-            int(edge, column)
-                .and_then(|room| self.records.find("locations", room))
-                .is_some_and(|room| int(room, "story_id") == story)
-        };
-        if !in_story("location_id") || !in_story("connected_location_id") {
-            return false;
-        }
-        let game = self.playthrough;
-        text(edge, "barrier") == Some("open")
-            || self
-                .records
-                .first("playthrough_passages", |row| {
-                    int(row, "location_connection_id") == Some(id(edge))
-                        && int(row, "playthrough_id") == Some(game)
-                })
-                .is_some()
+        open_for(&self.records, self.playthrough, edge)
     }
 
     // --- acting on it ------------------------------------------------------
@@ -3157,6 +3068,107 @@ fn note_of(reading: &Reading) -> Vec<String> {
 }
 
 /// A person as the grammar reads them.
+/// The room a game stands in, read off its rows with nothing played: the
+/// ways out, who is here, what is lying here and what the party carries
+/// (`Playthrough::Classifier`'s closed sets). [`Mechanics::room`] answers
+/// this, and so does a caller holding a staged position's rows and no
+/// database.
+pub fn room_of(records: &Records, playthrough: i64) -> Room {
+    let game = Game::new(records, playthrough);
+    let here = game.current_location();
+    let story_protagonist = story_protagonist(records, game.story_id());
+    let exits = match here {
+        None => Vec::new(),
+        Some(room) => exits_of(records, room)
+            .into_iter()
+            .map(|(edge, far)| Exit {
+                place: Place {
+                    id: id(&far),
+                    name: string(&far, "name").to_string(),
+                },
+                barrier: if open_for(records, playthrough, &edge) {
+                    "open".to_string()
+                } else {
+                    string(&edge, "barrier").to_string()
+                },
+                edge: id(&edge),
+                key: int(&edge, "key_template_id"),
+            })
+            .collect(),
+    };
+    Room {
+        protagonist: game.protagonist().map(person_of),
+        here: here.map(|room| Place {
+            id: id(room),
+            name: string(room, "name").to_string(),
+        }),
+        exits,
+        cast: game
+            .cast_in(here)
+            .into_iter()
+            .filter(|who| Some(id(who)) != story_protagonist)
+            .map(person_of)
+            .collect(),
+        lying: game
+            .items_lying_in(here)
+            .into_iter()
+            .map(|item| thing_of(item, false))
+            .collect(),
+        carried: game
+            .carried()
+            .into_iter()
+            .map(|item| thing_of(item, true))
+            .collect(),
+        over: int(game.row, "ended_at").is_some(),
+    }
+}
+
+/// The story's protagonist, by id.
+fn story_protagonist(records: &Records, story: i64) -> Option<i64> {
+    records
+        .first("characters", |row| {
+            int(row, "story_id") == Some(story) && flag(row, "is_protagonist")
+        })
+        .map(id)
+}
+
+/// A room's doorways and the rooms beyond them, by the far room's id.
+fn exits_of(records: &Records, room: &Row) -> Vec<(Row, Row)> {
+    let here = id(room);
+    let mut ways: Vec<(Row, Row)> = records
+        .select("location_connections", |edge| {
+            int(edge, "location_id") == Some(here)
+        })
+        .into_iter()
+        .filter_map(|edge| {
+            let far = records.find("locations", int(edge, "connected_location_id")?)?;
+            Some((edge.clone(), far.clone()))
+        })
+        .collect();
+    ways.sort_by_key(|(_, far)| id(far));
+    ways
+}
+
+/// `LocationConnection#open_for?`.
+fn open_for(records: &Records, playthrough: i64, edge: &Row) -> bool {
+    let story = Some(Game::new(records, playthrough).story_id());
+    let in_story = |column: &str| {
+        int(edge, column)
+            .and_then(|room| records.find("locations", room))
+            .is_some_and(|room| int(room, "story_id") == story)
+    };
+    if !in_story("location_id") || !in_story("connected_location_id") {
+        return false;
+    }
+    text(edge, "barrier") == Some("open")
+        || records
+            .first("playthrough_passages", |row| {
+                int(row, "location_connection_id") == Some(id(edge))
+                    && int(row, "playthrough_id") == Some(playthrough)
+            })
+            .is_some()
+}
+
 pub fn person_of(row: &Row) -> Person {
     Person {
         id: id(row),
