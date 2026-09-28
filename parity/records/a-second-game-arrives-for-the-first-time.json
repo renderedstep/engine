@@ -59,7 +59,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -221,7 +223,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -432,7 +436,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             },
             {
               "id": 1000000002,
@@ -455,7 +461,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []

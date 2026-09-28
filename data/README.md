@@ -21,6 +21,7 @@ built against the commit it pins (`data::files`).
 | `item/inscriber.yml` | `turn`: the instructions the words on a readable thing are written under |
 | `playthrough/volition/weights.yml` | `turn`: how heavily each person's pursuit weighs each act on volition's die |
 | `physics.yml` | `room`, `turn`: the bulk and thrown-damage tables a throw reads |
+| `location/kind.yml` | `kind`: what sort of place a room may be, how cluttered, and the sort each room of a building is dealt; `schemas` offers the first two to the exits call and the buildings to the place call |
 
 Their comments name files in the game repository, where the reasons for
 each value were first written.
@@ -29,8 +30,8 @@ Edit them here, and run `cargo test`: the `grammar`, `cascade` and
 `kept_requests` vector portions read through them, and a portion this
 engine owns is blessed again (`vectors/README.md`). A change to a file the
 game's own code also reads -- world creation writes rooms and their opening
-arrivals with `location/generator.yml`, `character/desires.yml` and
-`scene/generator.yml` -- reaches it when the game moves its pin, and moves
+arrivals with `location/generator.yml`, `location/kind.yml`,
+`character/desires.yml` and `scene/generator.yml` -- reaches it when the game moves its pin, and moves
 the digests its benches print; the game's `rake eval:prompt_digest`,
 `eval:classifier_digest` and `eval:realization_digest` are how a change is
 seen there.

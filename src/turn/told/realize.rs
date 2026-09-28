@@ -21,6 +21,7 @@ use crate::danger;
 use crate::dialogue::sanitize;
 use crate::engine::Error;
 use crate::interior::{self, Place};
+use crate::kind;
 use crate::model::{Agent, Book, Call, Failure, Filed};
 use crate::parameters::Parameters;
 use crate::plan::box_of;
@@ -96,6 +97,14 @@ const DESIRES: [&str; 4] = [
     "recognized_need",
     "unrecognized_need",
 ];
+
+/// What sort of place a stub is and how cluttered (`Location::Kind`'s
+/// words), when somebody picked them.
+#[derive(Clone, Copy, Default)]
+struct Words<'w> {
+    kind: Option<&'w str>,
+    density: Option<&'w str>,
+}
 
 /// A field that arrived at its cap: cut off rather than finished
 /// (`SanitizesGeneratedText::TruncatedTextError`).
@@ -455,7 +464,12 @@ impl Turn<'_, '_> {
                 self.bind(Bound::Place, location)?;
             }
             if Self::is_place(&row) {
-                self.lay_out_interior(location, detail.get("parameters"))?;
+                let building = kind::word(
+                    &sanitize(&value_text(&detail["place_kind"])),
+                    &kind::buildings(),
+                )
+                .map(str::to_string);
+                self.lay_out_interior(location, detail.get("parameters"), building.as_deref())?;
             }
             let row = self.location(location)?;
             if !self.laid_out(&row) {
@@ -941,6 +955,7 @@ impl Turn<'_, '_> {
         teaser: &str,
         inside: Option<&str>,
         population: Option<&str>,
+        words: Words,
     ) -> Result<i64, Error> {
         let story = self.m.story_id();
         let rooms = self
@@ -958,6 +973,8 @@ impl Turn<'_, '_> {
                 ("detail_level", Value::from("stub")),
                 ("danger", Value::from(danger)),
                 ("population", population.map_or(Value::Null, Value::from)),
+                ("kind", words.kind.map_or(Value::Null, Value::from)),
+                ("density", words.density.map_or(Value::Null, Value::from)),
             ],
         )?;
         let room = id(&row);
@@ -1066,7 +1083,20 @@ impl Turn<'_, '_> {
                 let population = POPULATION_WORDS
                     .contains(&population.as_str())
                     .then_some(population);
-                self.create_stub(&name, &teaser, Some(inside.as_str()), population.as_deref())?
+                let words = Words {
+                    kind: kind::word(&sanitize(&value_text(&exit["kind"])), kind::kinds()),
+                    density: kind::word(
+                        &sanitize(&value_text(&exit["density"])),
+                        kind::densities(),
+                    ),
+                };
+                self.create_stub(
+                    &name,
+                    &teaser,
+                    Some(inside.as_str()),
+                    population.as_deref(),
+                    words,
+                )?
             }
         };
         let distance = sanitize(&value_text(&exit["distance"]));
@@ -1098,17 +1128,28 @@ impl Turn<'_, '_> {
 
     /// `#lay_out_interior!`: the building's rooms and doorways written,
     /// and its ways in moved onto its doorstep rooms.
-    fn lay_out_interior(&mut self, location: i64, picks: Option<&Value>) -> Result<(), Error> {
+    fn lay_out_interior(
+        &mut self,
+        location: i64,
+        picks: Option<&Value>,
+        building: Option<&str>,
+    ) -> Result<(), Error> {
         let row = self.location(location)?;
         if !Self::is_place(&row) || self.laid_out(&row) {
             return Ok(());
         }
-        self.lay_out(location, parameters_from(picks).as_ref())
+        self.lay_out(location, parameters_from(picks).as_ref(), building)
     }
 
     /// `Location::Interior.lay_out!` and `#open_the_way_in!`: a place's
-    /// rooms and doorways, its footprint rolled first when it has none.
-    fn lay_out(&mut self, location: i64, parameters: Option<&Parameters>) -> Result<(), Error> {
+    /// rooms and doorways, its footprint rolled first when it has none, and
+    /// each room dealt its sort from `building`'s.
+    fn lay_out(
+        &mut self,
+        location: i64,
+        parameters: Option<&Parameters>,
+        building: Option<&str>,
+    ) -> Result<(), Error> {
         let row = self.location(location)?;
         let story = self.m.story_id();
         let existing = self
@@ -1125,6 +1166,8 @@ impl Turn<'_, '_> {
                 clock: self.m.clock(),
                 existing_locations: existing,
                 footprint: int(&row, "width").zip(int(&row, "depth")),
+                kind: building,
+                density: text(&row, "density"),
             },
             None,
             parameters,
@@ -1156,6 +1199,11 @@ impl Turn<'_, '_> {
                 ("z", Value::from(bounds.z)),
                 ("width", Value::from(bounds.width)),
                 ("depth", Value::from(bounds.depth)),
+                ("kind", room.kind.map_or(Value::Null, Value::from)),
+                (
+                    "density",
+                    room.density.as_deref().map_or(Value::Null, Value::from),
+                ),
             ];
             if let Some(hazard) = &room.hazard {
                 values.push(("hazard", Value::from(hazard.hazard)));

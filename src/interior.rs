@@ -4,9 +4,11 @@
 //! Every draw comes from one generator, in the Ruby order: the footprint (when
 //! the place has none), the storey count, the basements, every storey's boxes,
 //! each room's conditions as it is created, the stairs, then the extra doors.
+//! Each room's sort is dealt from the building's, with no draw at all.
 
 use crate::boxes::Box;
 use crate::danger::{self, Hazard};
+use crate::kind;
 use crate::parameters::Parameters;
 use crate::random::Random;
 use crate::roll::{self, Seed};
@@ -47,6 +49,11 @@ pub struct Place<'a> {
     pub existing_locations: i64,
     /// `[width, depth]`, or `None` to roll one.
     pub footprint: Option<(i64, i64)>,
+    /// What sort of building this is (`Location::Kind::BUILDINGS`), which
+    /// decides the sort each room is dealt, or `None` to deal none.
+    pub kind: Option<&'a str>,
+    /// How cluttered the place is, which every room of it is too.
+    pub density: Option<&'a str>,
 }
 
 /// One room as it would be written.
@@ -56,6 +63,9 @@ pub struct Room {
     pub bounds: Box,
     pub danger: &'static str,
     pub hazard: Option<Hazard>,
+    /// The sort of room it was dealt (`Location::Kind.deal`).
+    pub kind: Option<&'static str>,
+    pub density: Option<String>,
 }
 
 /// One doorway row, by room index, in the order the rows would be written.
@@ -141,6 +151,14 @@ pub fn lay_out(place: &Place, below: Option<i64>, parameters: Option<&Parameters
         builder.open_extra_doors(storey);
     }
     builder.close_connectivity();
+    let storeys: Vec<i64> = builder.rooms.iter().map(|room| room.bounds.z).collect();
+    for (room, dealt) in builder
+        .rooms
+        .iter_mut()
+        .zip(kind::deal(place.kind, &storeys))
+    {
+        room.kind = dealt;
+    }
     Layout {
         footprint: (width, depth),
         rooms: builder.rooms,
@@ -241,6 +259,8 @@ impl Builder {
             bounds,
             danger: room_danger,
             hazard,
+            kind: None,
+            density: place.density.map(str::to_string),
         });
         number - 1
     }

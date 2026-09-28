@@ -192,7 +192,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -460,7 +462,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -770,7 +774,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -1122,7 +1128,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -1516,7 +1524,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -1952,7 +1962,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -2430,7 +2442,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -2950,7 +2964,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -3512,7 +3528,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -4116,7 +4134,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []
@@ -4762,7 +4782,9 @@
               "x": null,
               "y": null,
               "z": null,
-              "surface": null
+              "surface": null,
+              "kind": null,
+              "density": null
             }
           ],
           "removed": []

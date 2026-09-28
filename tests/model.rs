@@ -74,12 +74,24 @@ fn a_prose_call_goes_as_rubyllm_sent_it() {
     );
 }
 
+/// The schema a captured body was sent with, as `to_json_schema` wrote it:
+/// the capture's own, so the capture stays a record of the wire after the
+/// schema's builder moves on. The `request_identity` vectors hold each
+/// builder to the Ruby engine's bytes.
+fn captured_schema(flow: &str, class: &str) -> Value {
+    let body: Value = serde_json::from_str(&captured(flow)).unwrap();
+    let format = &body["response_format"]["json_schema"];
+    let mut schema = format["schema"].clone();
+    schema["strict"] = format["strict"].clone();
+    json!({ "name": class, "description": null, "schema": schema })
+}
+
 #[test]
 fn a_structured_call_and_a_continued_one_go_as_rubyllm_sent_them() {
     let call = Call {
         system: Some("REALIZE.".into()),
         user: "And the ways out.".into(),
-        schema: Some(schemas::location_exits()),
+        schema: Some(captured_schema("two_asks", "Location::ExitsSchema")),
         history: vec![
             Message {
                 role: "user".into(),

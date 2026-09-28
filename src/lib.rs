@@ -43,6 +43,7 @@ pub mod grammar;
 pub mod identity;
 pub mod intent;
 pub mod interior;
+pub mod kind;
 pub mod ledger;
 pub mod memory;
 pub mod model;
