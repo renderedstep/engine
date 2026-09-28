@@ -319,8 +319,27 @@ impl<'a> Arrival<'a> {
         format!("{coming_from}{summary}")
     }
 
+    /// When this game last stood here: the story time of the latest scene
+    /// in its own chain that was set in this room. The room's
+    /// `last_protagonist_visit` is written by every game played in the
+    /// world, so it cannot say whether this one has been here.
+    fn last_visit(&self) -> Option<i64> {
+        let here = Some(id(self.location));
+        let mut scene = self.previous_scene;
+        while let Some(current) = scene {
+            if int(current, "location_id") == here {
+                if let Some(at) = int(current, "story_timestamp") {
+                    return Some(at);
+                }
+            }
+            scene = int(current, "previous_scene_id")
+                .and_then(|previous| self.records.find("scenes", previous));
+        }
+        None
+    }
+
     fn arrival_instructions(&self, at: f64) -> String {
-        match int(self.location, "last_protagonist_visit") {
+        match self.last_visit() {
             None => data::scene_generator("arrival_first").to_string(),
             Some(visit) => data::scene_generator("arrival_returning")
                 .replace("%{elapsed}", &distance_of_time_in_words(at - visit as f64)),
@@ -452,7 +471,37 @@ impl<'a> Arrival<'a> {
 
 #[cfg(test)]
 mod tests {
-    use super::distance_of_time_in_words;
+    use super::{distance_of_time_in_words, Arrival};
+    use crate::records::Records;
+    use serde_json::json;
+
+    /// This game's last visit is read off its own scenes, whatever another
+    /// game stamped on the room.
+    #[test]
+    fn a_visit_is_the_latest_scene_of_this_game_set_in_the_room() {
+        let records = Records::from_json(&json!({
+            "locations": [
+                {"id": 1, "last_protagonist_visit": 900},
+                {"id": 2, "last_protagonist_visit": 950}
+            ],
+            "scenes": [
+                {"id": 10, "location_id": 1, "story_timestamp": 100, "previous_scene_id": null},
+                {"id": 11, "location_id": 2, "story_timestamp": 160, "previous_scene_id": 10},
+                {"id": 12, "location_id": 1, "story_timestamp": 220, "previous_scene_id": 11},
+                {"id": 13, "location_id": 3, "story_timestamp": 280, "previous_scene_id": 12}
+            ]
+        }));
+        let arrival = |room: usize, from: usize| Arrival {
+            records: &records,
+            location: &records.table("locations")[room],
+            previous_scene: Some(&records.table("scenes")[from]),
+            game: None,
+            opening: false,
+        };
+        assert_eq!(arrival(0, 3).last_visit(), Some(220));
+        assert_eq!(arrival(1, 3).last_visit(), Some(160));
+        assert_eq!(arrival(1, 0).last_visit(), None);
+    }
 
     /// What Rails' helper says for the same spans, handed seconds, in UTC.
     #[test]
