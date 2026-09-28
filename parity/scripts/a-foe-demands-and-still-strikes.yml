@@ -1,0 +1,42 @@
+---
+story: A Lodge Inside the Gate
+steps:
+- id: the-keeper-demands-the-token
+  type: "/move The Toll Booth"
+  browser:
+    token: in
+    replies:
+    - purpose: arrival
+      content:
+        description: The toll keeper plants his staff across the doorway and holds
+          out his hand for your token.
+        summary: Wren comes into the toll booth and the keeper demands her token.
+      prompt_includes:
+      - "## As You Come In"
+      - Grist Harrow spoke up unasked and demanded toll token from Wren Adley. Nothing
+        changed hands.
+  expect:
+    location: The Toll Booth (realized)
+    present:
+    - Grist Harrow
+    foes:
+    - Grist Harrow
+    carrying:
+    - toll token
+    volitions: 1
+    acts: 1
+    blows: 0
+- id: the-blow-comes-on-the-next-line
+  type: "/examine toll token"
+  browser:
+    token: look
+    replies:
+    - purpose: narration
+      content: The token is warm from your hand.
+      prompt_excludes:
+      - Grist Harrow spoke up unasked
+  expect:
+    carrying:
+    - toll token
+    volitions: 0
+    blows: 1

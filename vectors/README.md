@@ -8,7 +8,7 @@ documents the format (version 1).
 **Two owners.** Most portions are rules the game's Ruby code still runs (world
 creation, seeding, repair, the doctor, the benches), so the game exports them
 from that code, and these are verbatim copies of its `test/engine_vectors/` at
-commit `e378eff701f6eb9100e7f0bd4f35bf5195cc9543`, the last to change any of
+commit `dfc1e1db75198730f848c45ecce1407c48a238e7`, the last to change any of
 them. The portions named in `ENGINE_OWNED` are this crate's: no Ruby code runs
 them any more but the game's Ruby turn loop, which no player plays, so the game
 no longer exports them. The five line-reading portions (`grammar`,
@@ -46,7 +46,8 @@ the builders the game's Ruby code no longer has are this crate's portions:
 `memory`, and `dialogue_requests`, the dialogue bench's cases that
 `kept_requests` held until then. `kept_requests` keeps the arrival and room
 writer's cases, whose Ruby builders still write a world's rooms and its
-opening arrival. Two `dialogue_requests` cases need what the rows do not
+opening arrival; its one case of the room reacting to an arrival names the
+rows its request tells (`reactions`). Two `dialogue_requests` cases need what the rows do not
 hold: the line the player typed and the character's stored answer. Those are
 in `tests/fixtures/dialogue_replay.json`, which names the files they come
 from. `speech_choices`, what a person may say unasked and the speech die

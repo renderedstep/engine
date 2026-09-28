@@ -23,6 +23,7 @@ pub const CAST: i128 = 8;
 pub const FALL: i128 = 9;
 pub const BREAK: i128 = 10;
 pub const SPEECH: i128 = 11;
+pub const REACTION: i128 = 12;
 
 /// The five parts of a seed. Unset parts are 0.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

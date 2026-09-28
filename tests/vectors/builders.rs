@@ -310,8 +310,13 @@ fn request_identity() {
 }
 
 /// The arrival stage's request: the game walks from where it stands into the
-/// other room, or, with no game, the story opens in its one room.
-fn arrival(records: &Records) -> Value {
+/// other room, or, with no game, the story opens in its one room. A case the
+/// people there reacted to names the rows they wrote (`reactions`).
+fn arrival(records: &Records, input: &Value) -> Value {
+    let reactions: Vec<i64> = input["reactions"]
+        .as_array()
+        .map(|rows| rows.iter().map(int).collect())
+        .unwrap_or_default();
     let game = records
         .table("playthroughs")
         .first()
@@ -328,6 +333,7 @@ fn arrival(records: &Records) -> Value {
         previous_scene: game.and_then(|game| game.current_scene()),
         game,
         opening: game.is_none(),
+        reactions: &reactions,
     }
     .request()
 }
@@ -388,7 +394,7 @@ fn kept_requests() {
     check("kept_requests", json!({}), |input| {
         let records = records(input);
         match input["set"].as_str().expect("a set") {
-            set if set.starts_with("arrival-") => arrival(&records),
+            set if set.starts_with("arrival-") => arrival(&records, input),
             set if set.starts_with("realization-") => realization(&records, &input["id"]),
             other => panic!("no builder for the kept set {other}"),
         }
@@ -546,7 +552,7 @@ fn kept_requests_on_the_live_path() {
         let input = crate::with_shared_records(&case["input"], cases);
         let records = records(&input);
         let request = match input["set"].as_str().expect("a set") {
-            set if set.starts_with("arrival-") => arrival(&records),
+            set if set.starts_with("arrival-") => arrival(&records, &input),
             set if set.starts_with("realization-") => realization(&records, &input["id"]),
             _ => dialogue_request(&records, &input),
         };

@@ -172,8 +172,9 @@ impl Report {
     }
 }
 
-/// One volition's result (`Playthrough::Volition::Result`).
+/// One volition's result (`Playthrough::Volition::Result`), and its row.
 struct Volition {
+    id: i64,
     status: String,
     fact: String,
 }
@@ -193,6 +194,14 @@ pub struct Mechanics<'s> {
     concluded: Option<Concluded>,
     /// Who spoke up unasked on this line, and so takes no act on it.
     spoke: Vec<i64>,
+    /// The volitions the people in the room the party walked into on this
+    /// line wrote as it came in: its reactions, which its arrival tells.
+    /// Whoever wrote one takes no act on the line either.
+    reactions: Vec<i64>,
+    /// The room the party is walking into, while the people in it react:
+    /// the party is counted as standing there before the move stands it
+    /// there.
+    arriving: Option<i64>,
 }
 
 /// `Playthrough::Arc::Concluded`: the ending a game reached, the outcome it
@@ -222,6 +231,8 @@ impl<'s> Mechanics<'s> {
             decided: false,
             concluded: None,
             spoke: Vec::new(),
+            reactions: Vec::new(),
+            arriving: None,
         })
     }
 
@@ -329,6 +340,7 @@ impl<'s> Mechanics<'s> {
     pub fn run(&mut self, command: &str) -> Result<Report, Error> {
         self.engine_refused = false;
         self.spoke.clear();
+        self.reactions.clear();
         if self.over() {
             let refusal = self.over_refusal(command);
             return Ok(Report::refuse(refusal.reason(), None));
@@ -516,9 +528,10 @@ impl<'s> Mechanics<'s> {
         let room = self.row("locations", destination)?;
         self.snapshot_room(Some(&room))?;
         self.on_arrival(&room, from.as_ref())?;
+        let reacted = self.reactions(&room)?;
         self.stand_the_party_in(destination)?;
         let stub = text(&room, "detail_level") == Some("stub");
-        Ok(Report::change(
+        let mut report = Report::change(
             format!(
                 "moved: {} -> {}{}",
                 from.as_ref().map_or("nowhere", |room| string(room, "name")),
@@ -530,7 +543,13 @@ impl<'s> Mechanics<'s> {
                 }
             ),
             understood,
-        ))
+        );
+        report.note = reacted
+            .iter()
+            .filter(|reaction| reaction.status == "applied")
+            .map(|reaction| format!("someone here: {}", reaction.fact))
+            .collect();
+        Ok(report)
     }
 
     /// `Location::Interior.way_in`: a laid-out place is walked into at its
@@ -2120,7 +2139,7 @@ impl<'s> Mechanics<'s> {
             if said.len() as i64 >= data::speech().max_speakers.turn {
                 break;
             }
-            if let Some(token) = self.speak(&who, location, data::speech().silent.turn) {
+            if let Some(token) = self.speak(&who, location) {
                 said.push(self.apply_speech(&who, location, &token)?);
                 self.spoke.push(id(&who));
             }
@@ -2130,10 +2149,16 @@ impl<'s> Mechanics<'s> {
 
     /// The speech die for one person, seeded off the story's time and who
     /// is speaking, apart from the act die, so an act it leaves alone rolls
-    /// as it did before anybody spoke.
-    fn speak(&self, character: &Row, location: &Row, silent: i64) -> Option<String> {
+    /// as it did before anybody spoke. On an arrival it throws over what may
+    /// be said to a party walking in, at the arrival's weight of silence.
+    fn speak(&self, character: &Row, location: &Row) -> Option<String> {
         let mut rng = self.generator(self.story_now(), id(character), roll::SPEECH);
-        volition::throw_speech(&self.game(), character, location, silent, &mut rng)
+        let game = self.game();
+        if self.arriving.is_some() {
+            return volition::throw_arrival_speech(&game, character, location, &mut rng);
+        }
+        let silent = data::speech().silent.turn;
+        volition::throw_speech(&game, character, location, silent, &mut rng)
     }
 
     /// What somebody said, if it is still theirs to say, and its record
@@ -2144,7 +2169,11 @@ impl<'s> Mechanics<'s> {
         location: &Row,
         chosen: &str,
     ) -> Result<Volition, Error> {
-        let offered = volition::speech_choices(&self.game(), character, location);
+        let offered = if self.arriving.is_some() {
+            volition::arrival_speech_choices(&self.game(), character, location)
+        } else {
+            volition::speech_choices(&self.game(), character, location)
+        };
         let Some((_, fact)) = offered.into_iter().find(|(token, _)| token == chosen) else {
             let fact = format!(
                 "{} was going to act and could not: the act is no longer available. \
@@ -2166,10 +2195,103 @@ impl<'s> Mechanics<'s> {
         )
     }
 
+    /// The people in the room the party is walking into react to it, before
+    /// its arrival is written, so the arrival tells what they did: each, in
+    /// id order, takes one throw of the speech die at the arrival's weight
+    /// of saying nothing, until as many have spoken as an arrival allows, and
+    /// whoever stays silent takes a turn on the act die instead, with a kind
+    /// of its own so it throws apart from any later act. The party is
+    /// counted as already standing in the room, so what needs the player
+    /// present is offered. Somebody fighting the party may only speak: a foe
+    /// swings, on the next line and from the riposte, and does not wander
+    /// off. The followers walking in with the party are still in the room
+    /// being left, so they do not react to it. Nothing here asks a model.
+    /// Returns every reaction, and remembers their rows, so the arrival
+    /// claims exactly those and nobody who reacted also acts on this line.
+    fn reactions(&mut self, destination: &Row) -> Result<Vec<Volition>, Error> {
+        self.reactions.clear();
+        if self.over() {
+            return Ok(Vec::new());
+        }
+        let (cast, fighting): (Vec<Row>, Vec<i64>) = {
+            let game = self.game();
+            let player = self.player_id();
+            let cast = game
+                .cast_in(Some(destination))
+                .into_iter()
+                .filter(|who| {
+                    Some(id(who)) != player
+                        && !flag(who, "is_protagonist")
+                        && (volition::speech_weights(text(who, "desire_pursuit")).is_some()
+                            || weights_for(text(who, "desire_pursuit")).is_some())
+                })
+                .cloned()
+                .collect();
+            let fighting = game
+                .foes_in(Some(destination))
+                .iter()
+                .map(|who| id(who))
+                .collect();
+            (cast, fighting)
+        };
+        self.arriving = Some(id(destination));
+        let reacted = self.react(&cast, &fighting, destination);
+        self.arriving = None;
+        let reacted = reacted?;
+        self.reactions = reacted.iter().map(|reaction| reaction.id).collect();
+        Ok(reacted)
+    }
+
+    fn react(
+        &mut self,
+        cast: &[Row],
+        fighting: &[i64],
+        destination: &Row,
+    ) -> Result<Vec<Volition>, Error> {
+        let mut reacted = Vec::new();
+        let mut speakers = 0;
+        for who in cast {
+            if self.over() {
+                break;
+            }
+            if speakers < data::speech().max_speakers.arrival {
+                if let Some(token) = self.speak(who, destination) {
+                    reacted.push(self.apply_speech(who, destination, &token)?);
+                    speakers += 1;
+                    continue;
+                }
+            }
+            if !fighting.contains(&id(who)) {
+                reacted.extend(self.decide(who, destination)?);
+            }
+        }
+        Ok(reacted)
+    }
+
+    /// Who reacted to the party walking in on this line.
+    fn reactors(&self) -> Vec<i64> {
+        self.reactions
+            .iter()
+            .filter_map(|row| self.records.find("playthrough_volitions", *row))
+            .filter_map(|row| int(row, "character_id"))
+            .collect()
+    }
+
+    /// The acts on offer to somebody, with the party where it stands, or,
+    /// while the people in the room it walks into react, already there.
+    fn acts_offered(&self, character: &Row, location: &Row) -> Vec<(String, String)> {
+        if self.arriving.is_some() {
+            volition::arrival_choices(&self.game(), character, location)
+        } else {
+            volition::choices(&self.game(), character, location)
+        }
+    }
+
     /// `Playthrough::Volition.run!`: everybody else in the room the turn
     /// began in takes a turn on volition's die. Nothing here asks a model,
-    /// so every decision is the die's. Whoever spoke up on this line has
-    /// made their one choice for it already.
+    /// so every decision is the die's. Whoever spoke up on this line, or
+    /// reacted to the party walking in, has made their one choice for it
+    /// already.
     fn volitions(&mut self, location: Option<&Row>) -> Result<Vec<Volition>, Error> {
         let Some(location) = location else {
             return Ok(Vec::new());
@@ -2177,6 +2299,7 @@ impl<'s> Mechanics<'s> {
         if self.over() {
             return Ok(Vec::new());
         }
+        let reacted = self.reactors();
         let cast: Vec<Row> = {
             let game = self.game();
             let fighting: Vec<i64> = game
@@ -2193,6 +2316,7 @@ impl<'s> Mechanics<'s> {
                         && !flag(who, "is_protagonist")
                         && !fighting.contains(&id(who))
                         && !self.spoke.contains(&id(who))
+                        && !reacted.contains(&id(who))
                         && weights_for(text(who, "desire_pursuit")).is_some()
                 })
                 .collect();
@@ -2214,7 +2338,7 @@ impl<'s> Mechanics<'s> {
         let Some(row) = weights_for(text(character, "desire_pursuit")) else {
             return Ok(None);
         };
-        let choices = volition::choices(&self.game(), character, location);
+        let choices = self.acts_offered(character, location);
         if choices.is_empty() {
             return Ok(None);
         }
@@ -2223,7 +2347,12 @@ impl<'s> Mechanics<'s> {
             .iter()
             .map(|(token, _)| base + weight_of(row, shape_of(token)))
             .collect();
-        let mut rng = self.generator(self.story_now(), id(character), roll::VOLITION);
+        let kind = if self.arriving.is_some() {
+            roll::REACTION
+        } else {
+            roll::VOLITION
+        };
+        let mut rng = self.generator(self.story_now(), id(character), kind);
         let chosen = choices[roll::weighted_one_of(choices.len(), &weights, &mut rng)]
             .0
             .clone();
@@ -2244,7 +2373,7 @@ impl<'s> Mechanics<'s> {
             let fact = format!("{who} stayed in {here} and changed nothing.");
             return self.record_volition(character, location, chosen, "none", fact, "none");
         }
-        let offered = volition::choices(&self.game(), character, location);
+        let offered = self.acts_offered(character, location);
         if !offered.iter().any(|(token, _)| token == chosen) {
             let fact = format!(
                 "{who} was going to act and could not: the act is no longer available. \
@@ -2307,7 +2436,9 @@ impl<'s> Mechanics<'s> {
             }
             ("follow", None) => {
                 let state = self.volition_state(character, location)?;
-                let party = int(self.game().row, "current_location_id");
+                let party = self
+                    .arriving
+                    .or_else(|| int(self.game().row, "current_location_id"));
                 self.update(
                     "playthrough_npc_states",
                     id(&state),
@@ -2361,7 +2492,7 @@ impl<'s> Mechanics<'s> {
         fact: String,
         serves: &str,
     ) -> Result<Volition, Error> {
-        self.insert(
+        let row = self.insert(
             "playthrough_volitions",
             vec![
                 ("playthrough_id", Value::from(self.playthrough)),
@@ -2376,6 +2507,7 @@ impl<'s> Mechanics<'s> {
             ],
         )?;
         Ok(Volition {
+            id: id(&row),
             status: status.to_string(),
             fact,
         })
