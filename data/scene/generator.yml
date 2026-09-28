@@ -18,5 +18,5 @@ arrival_returning: |-
 arrival_first: |-
   - The player has never been here. This is the first time they have set
     foot in it
-  - Narrate discovery: what catches them first on the way in, before they
+  - Narrate discovery: what catches them on the way in, before they
     have made sense of the rest

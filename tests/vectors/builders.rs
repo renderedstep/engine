@@ -327,7 +327,7 @@ fn kept_requests() {
     check("kept_requests", json!({}), |input| {
         let records = records(input);
         match input["set"].as_str().expect("a set") {
-            "arrival-branches" => arrival(&records),
+            set if set.starts_with("arrival-") => arrival(&records),
             set if set.starts_with("realization-") => realization(&records, &input["id"]),
             other => panic!("no builder for the kept set {other}"),
         }
@@ -485,7 +485,7 @@ fn kept_requests_on_the_live_path() {
         let input = crate::with_shared_records(&case["input"], cases);
         let records = records(&input);
         let request = match input["set"].as_str().expect("a set") {
-            "arrival-branches" => arrival(&records),
+            set if set.starts_with("arrival-") => arrival(&records),
             set if set.starts_with("realization-") => realization(&records, &input["id"]),
             _ => dialogue_request(&records, &input),
         };
