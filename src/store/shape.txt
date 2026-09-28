@@ -515,6 +515,7 @@ index location_connections (location_id)
 index location_connections (location_id, connected_location_id) unique
 index locations (parent_location_id)
 index locations (story_id)
+index locations (story_id, (expression)) unique
 index locations (story_id, detail_level)
 index locations_world_events (location_id)
 index locations_world_events (world_event_id)
