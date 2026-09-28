@@ -44,12 +44,14 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `refusal` | `Playthrough::Refusal` (with `DeathNotice` and `StoryOverNotice` sentences) | what the engine says when it will not play a line |
 | `slash_menu` | `Playthrough::SlashMenu` | the words offered after a slash and what each completes to |
 | `cascade` | `Playthrough::Classifier::Cascade`, `::State`, `::Request`, `SystemOneAgent::Answers` | the System One request for a line, and recorded answers composed into an intent or escalated. It sends nothing |
+| `classifier` | `Playthrough::Classifier#classify` | a line read over a room's records: System One first where it is on, then the classifier model's call, through whatever answers the two (`classifier::Reader`) |
 | `records` | the rows a builder reads | every row of every table, handed in as values; a query is a filter over a list |
 | `playthrough` | `Playthrough`'s readers, `Playthrough::Vitals::Condition`, `Playthrough::Toll#to_s` | who is in a room, how much is left of a body, who is fighting the party |
 | `ledger` | `Playthrough::Ledger` | what one person saw happen in one game, inside both of its bounds |
 | `memory` | `Playthrough::Memory` | which earlier exchanges come back into a prompt, ranked with Ruby's float arithmetic |
 | `plan` | `Location::Plan` | a room's size, storey and ways out, said in sentences |
 | `moment` | `Playthrough::Moment` | the narration context and a character's context for the moment the player stands in |
+| `narration` | `Scene::Narrator#prompt_for` | the narrator's request for a typed line, what the engine already did and the moment it happens in |
 | `volition` | `Playthrough::Volition#choices`, `::State`, `::SystemOne#request` | the acts a person may take and the System One request that asks which |
 | `schemas` | the `RubyLLM::Schema` classes a request carries | each schema's `to_json_schema` output, key for key |
 | `identity` | `Eval::RequestIdentity` | the canonical form of a set of requests and its 16-hex digest |
@@ -116,6 +118,15 @@ returns what a front end's panels show between turns and writes nothing, and
 `Engine::play_deciding` plays a line that talks to somebody with a fixed
 decision standing in for the answer a model would give, which is how the
 engine sweep plays its conversations.
+
+`Engine::submit_fixed` plays a submitted line with a fixed reading
+(`turn::Fixed`: an action and the name of its target) wherever the
+classifier would have been asked, and asks its models for everything else:
+a bench that measures what a turn does after its reading plays its cases
+this way. The request builders take rows rather than a database, so a
+caller holding a staged position's rows builds any request the turn
+would send, `turn::room_of` reads the room the grammar and the classifier
+read, and `classifier::read` reads a line as a turn does.
 
 `Engine::submit` plays a line the way every front end does
 (`Playthrough::Session#play` with a request token), asking a `model::Models`

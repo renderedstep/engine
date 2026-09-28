@@ -730,3 +730,112 @@ fn closing_the_engine_leaves_the_write_ahead_log_to_the_host() {
         let _ = std::fs::remove_file(scratch.0.with_extension(leftover));
     }
 }
+
+/// A line read as a fixed reading says, where the classifier would have been
+/// asked: the turn plays that reading, asks no classifier, and asks its
+/// models for the prose alone.
+#[test]
+fn a_fixed_reading_stands_in_for_the_classifier_and_nothing_else() {
+    use renderedstep_engine::model::{Replay, Reply};
+    use renderedstep_engine::turn::Fixed;
+    let (mut engine, playthrough) = gate();
+    let reply = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+        "prompt_includes": ["The player types: I would like that coin", "picked the red coin up"],
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![reply]);
+    let fixed = Fixed {
+        action: "take".into(),
+        target: Some("red coin".into()),
+    };
+    let submitted = engine
+        .submit_fixed(
+            playthrough,
+            "I would like that coin",
+            "fixed",
+            &fixed,
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert_eq!(replay.calls(), ["narration"], "no classifier call");
+    assert!(submitted
+        .state
+        .carrying
+        .iter()
+        .any(|thing| thing.name == "red coin"));
+    let scene = submitted.turned.scene.expect("the turn's scene");
+    assert_eq!(
+        engine
+            .store()
+            .connection()
+            .query_row(
+                "SELECT resolved_action || '|' || resolved_by FROM scenes WHERE id = ?1",
+                [scene],
+                |row| row.get::<_, String>(0)
+            )
+            .unwrap(),
+        "take|fixed"
+    );
+}
+
+/// The classifier's reading over rows, with no turn: System One composes
+/// what it can, and the model call answers what it escalates.
+#[test]
+fn a_line_is_read_over_rows_as_a_turn_reads_it() {
+    use renderedstep_engine::classifier::{self, Reader};
+    use renderedstep_engine::model::{Answer, Call, Failure, Unavailable};
+    use renderedstep_engine::turn::room_of;
+    use serde_json::{json, Value};
+
+    struct Answers {
+        system_one: bool,
+        asked: Vec<&'static str>,
+    }
+    impl Reader for Answers {
+        fn system_one(&self) -> bool {
+            self.system_one
+        }
+        fn questions(&mut self, _state: &Value, _questions: &Value) -> Result<Value, Unavailable> {
+            self.asked.push("system_one");
+            Err(Unavailable("timed out".into()))
+        }
+        fn classifier(&mut self, call: &Call) -> Result<Answer, Failure> {
+            self.asked.push("classifier");
+            assert!(call.user.ends_with("## The Player Types\ntake red coin\n"));
+            Ok(Answer {
+                content: json!({ "intent": "take", "target": "red coin", "also_named": "nothing" }),
+                model: None,
+            })
+        }
+    }
+
+    let (engine, playthrough) = gate();
+    let records = engine.store().load().unwrap();
+    let room = room_of(&records, playthrough);
+    let call = classifier::call(&records, &room, "take red coin");
+    for (system_one, path, asked) in [
+        (false, "model", vec!["classifier"]),
+        (
+            true,
+            "typed_model_unavailable",
+            vec!["system_one", "classifier"],
+        ),
+    ] {
+        let mut answers = Answers {
+            system_one,
+            asked: Vec::new(),
+        };
+        let reading = classifier::read(&room, &call, "take red coin", &mut answers).unwrap();
+        assert_eq!(reading.path, path);
+        assert_eq!(answers.asked, asked);
+        assert_eq!(reading.intent.action, "take");
+        assert_eq!(
+            reading.intent.subject().map(|record| record.label()),
+            Some("red coin".to_string())
+        );
+    }
+}

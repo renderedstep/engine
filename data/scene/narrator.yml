@@ -1,7 +1,37 @@
-# Read by Scene::Narrator through EngineData (app/models/engine_data.rb), which
-# declares this file's shape. Why each value says what it says is in the
-# header of Scene::Narrator, beside the constant that names it. Every byte here is
-# sent or rolled: an edit is a prompt change and needs a baseline (AGENTS.md).
+# The narrator's instructions, and the one line about what kind of turn it
+# is: read by this engine's `narration` module, and by the game through its
+# extension (`EngineData`, `Playthrough::PromptVersion`). Every byte here is
+# sent: an edit is a prompt change and needs a baseline (the game's AGENTS.md
+# and EVALUATION.md).
+#
+# DELIBERATELY UNSCHEMA'D. The narration is the one call with no structured
+# output, because structured output and token streaming are mutually
+# exclusive: with a schema the player would watch JSON arrive a character at a
+# time. Everything that populates a record stays schema'd. Do not "fix" it.
+#
+# `instructions` IS KEPT SHORT ON PURPOSE. A character's instructions inline
+# the whole universe (~3,200 tokens), and every token is time-to-first-token,
+# which the player experiences as dead air. The ways out, the people here and
+# what the player carries are facts in the prompt (the moment), so the rule
+# about exits points at them rather than at "what the player has been told".
+#
+# THE RULE ABOUT A CHANGE OF POSSESSION IS DELIBERATELY NOT HERE, which is a
+# measurement and not an oversight. A paragraph here saying a possession may
+# arrive this turn was written and measured on the prompt bench: it took
+# `take_denied` from 0.833 to 0.056 with the per-turn changes beside it, and
+# it took `item_not_held` from 0.054 to 0.123, REAL at p=0.0286 (take-fix-1,
+# 2026-09-05). The rise was in the shapes the rule is not about -- read turns
+# went from 1 flag to 9 over four repetitions -- because a sentence in the
+# system message is on every turn in the game, and most turns move nothing.
+# So the rule went where the change is: the taken and dropped facts say it,
+# on the turns that moved a row, and the moment marks the row it moved.
+#
+# `doing` IS ONE LINE, keyed on the intent the classifier resolved, for the
+# intents where the narrator's job changes. `examine` is the turn where
+# nothing is supposed to move, and it reached the narrator indistinguishable
+# from `other`. `use`: the physical-action corpus caught a consumed item read
+# as absent for no reason, so the line says this turn consumed it; the
+# receipt still owns state, and this sentence owns no guarantee.
 ---
 instructions: |
   You are the narrator of a text adventure. Write in the second person,

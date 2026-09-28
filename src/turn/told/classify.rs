@@ -1,43 +1,103 @@
-//! `Playthrough::Classifier#classify`: a line the grammar did not claim,
-//! read by System One first where it is on, and by the classifier model
-//! when System One is off, escalates, or is unavailable.
-//!
-//! System One is asked ten typed questions over the room's closed sets and
-//! the engine composes the answers into a reading
-//! ([`crate::cascade::compose`]). The model is asked for one intent and one
-//! target out of the same sets, at temperature zero, and its answer is
-//! resolved to records the same way ([`crate::intent::build_intent`]). A
+//! `Playthrough::Classifier#classify` inside a turn: the reading is
+//! [`crate::classifier::read`]'s, asked through the turn's models, and a
 //! reach that found nothing is counted (`Playthrough::Drift`), and so is a
 //! line that named two things (`Playthrough::Overreach`).
+//!
+//! A turn played with a fixed reading ([`Fixed`]) takes it in place of both
+//! calls, as a bench that measures what comes after the reading does
+//! (`Eval::Prompt::Bench::FixedClassifier`).
 
 use super::{model, Turn};
-use crate::cascade::{self, Escalation};
-use crate::data;
+use crate::classifier::{self, Reader};
 use crate::engine::Error;
 use crate::intent::{build_intent, Intent};
-use crate::model::{Agent, Book, Call};
-use crate::records::{int, string};
+use crate::model::{Agent, Answer, Book, Call, Failure, Filed, Models, Unavailable};
+use crate::records::{int, Records};
 use crate::room::{Record, Room};
-use crate::schemas;
+use crate::store::Store;
 use serde_json::Value;
 
-/// `Playthrough::Classifier::MODEL_PATHS`: the readings a model call made.
-pub(super) const MODEL_PATHS: [&str; 3] =
-    ["model", "typed_model_escalated", "typed_model_unavailable"];
+pub(super) use crate::classifier::MODEL_PATHS;
+
+/// `scenes.resolved_by` for a line read as a [`Fixed`] reading said.
+pub const FIXED: &str = "fixed";
+
+/// A reading decided before the turn, in place of the classifier's: an
+/// action out of the intent table and the name of its target, resolved
+/// against the room the way a model's answer is.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct Fixed {
+    pub action: String,
+    pub target: Option<String>,
+}
+
+/// The turn's models, as the classifier reads a line through them.
+struct Asking<'a, 'm> {
+    models: &'a mut (dyn Models + 'm),
+    store: &'a Store,
+    records: &'a mut Records,
+    filed: Filed,
+    agent: Option<Agent>,
+}
+
+impl Reader for Asking<'_, '_> {
+    fn system_one(&self) -> bool {
+        self.models.system_one()
+    }
+
+    fn questions(&mut self, state: &Value, questions: &Value) -> Result<Value, Unavailable> {
+        let mut book = Book {
+            store: self.store,
+            records: self.records,
+        };
+        self.models
+            .ask_questions(&mut book, &self.filed, state, questions)
+    }
+
+    fn classifier(&mut self, call: &Call) -> Result<Answer, Failure> {
+        let mut agent = Agent::new(self.filed.clone());
+        let mut book = Book {
+            store: self.store,
+            records: self.records,
+        };
+        let answer = self.models.ask(&mut book, &mut agent, call, None, None);
+        self.agent = Some(agent);
+        answer
+    }
+}
 
 impl Turn<'_, '_> {
     /// Reads `typed` and says which reader answered, keeping the classifier's
     /// conversation for the turn's scene to claim.
     pub(super) fn classify(&mut self, typed: &str) -> Result<(Intent, String), Error> {
         let room = self.m.room();
-        let (composed, path) = if self.models.system_one() {
-            self.cascaded(&room, typed)
-        } else {
-            (None, "model")
-        };
-        let intent = match composed {
-            Some(intent) => intent,
-            None => self.ask_the_model(&room, typed)?,
+        let (intent, path) = match self.fixed.clone() {
+            Some(fixed) => (
+                build_intent(
+                    &room,
+                    Some(&fixed.action),
+                    fixed.target.as_deref(),
+                    None,
+                    None,
+                ),
+                FIXED,
+            ),
+            None => {
+                let call = classifier::call(&self.m.records, &room, typed);
+                let filed = self.filed("classifier");
+                let mut asking = Asking {
+                    models: &mut *self.models,
+                    store: self.m.store,
+                    records: &mut self.m.records,
+                    filed,
+                    agent: None,
+                };
+                let reading = classifier::read(&room, &call, typed, &mut asking).map_err(model)?;
+                if asking.agent.is_some() {
+                    self.classifier = asking.agent;
+                }
+                (reading.intent, reading.path)
+            }
         };
         if intent.reached_for_nothing() {
             self.record_drift(&room, typed, &intent)?;
@@ -46,141 +106,6 @@ impl Turn<'_, '_> {
             self.record_overreach(typed, &intent)?;
         }
         Ok((intent, path.to_string()))
-    }
-
-    fn cascaded(&mut self, room: &Room, typed: &str) -> (Option<Intent>, &'static str) {
-        let state = cascade::State::new(room, typed);
-        let questions = cascade::request(&state);
-        let filed = self.filed("classifier");
-        let mut book = Book {
-            store: self.m.store,
-            records: &mut self.m.records,
-        };
-        let reply = self
-            .models
-            .ask_questions(&mut book, &filed, &state.to_json(), &questions);
-        let reply = reply.map_err(|unavailable| cascade::Unavailable(unavailable.0));
-        let outcome = cascade::compose(
-            &state,
-            &questions,
-            reply.as_ref().map_err(Clone::clone),
-            Escalation::On,
-        );
-        (outcome.intent, outcome.path)
-    }
-
-    fn ask_the_model(&mut self, room: &Room, typed: &str) -> Result<Intent, Error> {
-        let mut targets: Vec<String> = Vec::new();
-        targets.extend(room.exits.iter().map(|exit| exit.place.name.clone()));
-        for person in &room.cast {
-            targets.push(person.fullname.clone());
-            targets.extend(person.nickname.clone());
-        }
-        targets.extend(room.lying.iter().map(|thing| thing.name.clone()));
-        targets.extend(room.carried.iter().map(|thing| thing.name.clone()));
-        targets.extend(room.physical_actions().iter().map(|choice| choice.token()));
-        let names: Vec<&str> = targets.iter().map(String::as_str).collect();
-        let call = Call {
-            system: Some(data::classifier_instructions().to_string()),
-            schema: Some(schemas::intent(&names)),
-            ..Call::prompt(self.command_prompt(room, typed))
-        }
-        .with_temperature(0.0);
-        let mut agent = Agent::new(self.filed("classifier"));
-        let mut book = Book {
-            store: self.m.store,
-            records: &mut self.m.records,
-        };
-        let answer = self
-            .models
-            .ask(&mut book, &mut agent, &call, None, None)
-            .map_err(model)?;
-        self.classifier = Some(agent);
-        let field = |key: &str| {
-            answer
-                .content
-                .get(key)
-                .and_then(Value::as_str)
-                .map(str::to_string)
-        };
-        Ok(build_intent(
-            room,
-            field("intent").as_deref(),
-            field("target").as_deref(),
-            field("also_named").as_deref(),
-            field("thrown_at").as_deref(),
-        ))
-    }
-
-    /// `#command_prompt`.
-    fn command_prompt(&self, room: &Room, typed: &str) -> String {
-        let here = room
-            .here
-            .as_ref()
-            .map_or("Nowhere in particular.".to_string(), |place| {
-                place.name.clone()
-            });
-        let exits: Vec<String> = room
-            .exits
-            .iter()
-            .map(|exit| {
-                let note = self
-                    .m
-                    .records
-                    .find("location_connections", exit.edge)
-                    .map(|edge| {
-                        let barrier = match exit.barrier.as_str() {
-                            "open" => String::new(),
-                            "keyed" => "; locked, open before crossing".into(),
-                            _ => "; jammed, open before crossing".into(),
-                        };
-                        format!(
-                            " ({}, {}{barrier})",
-                            string(edge, "distance"),
-                            string(edge, "travel_method")
-                        )
-                    })
-                    .unwrap_or_default();
-                format!("- {}{note}", exit.place.name)
-            })
-            .collect();
-        let list = |lines: Vec<String>, empty: &str| {
-            if lines.is_empty() {
-                empty.to_string()
-            } else {
-                lines.join("\n")
-            }
-        };
-        let cast = room
-            .cast
-            .iter()
-            .map(
-                |person| match person.nickname.as_deref().filter(|n| !n.trim().is_empty()) {
-                    Some(nickname) => format!("- {} ({nickname})", person.fullname),
-                    None => format!("- {}", person.fullname),
-                },
-            )
-            .collect();
-        let things = |things: &[crate::room::Thing]| {
-            things
-                .iter()
-                .map(|thing| format!("- {}", thing.name))
-                .collect()
-        };
-        let physical: Vec<String> = room
-            .physical_actions()
-            .iter()
-            .map(|choice| format!("{}: {}", choice.token(), choice.name()))
-            .collect();
-        format!(
-            "## Where The Player Is\n{here}\n\n## Ways Out\n{}\n\n## Who Is Here\n{}\n\n## What Is Lying Here\n{}\n\n\
-             ## What The Player Is Carrying\n{}\n\n## Physical Actions (token: one attempt)\n{}\n\n## The Player Types\n{typed}\n",
-            list(exits, "None. The player cannot go anywhere from here."),
-            list(cast, "Nobody. There is no one here to talk to."),
-            list(things(&room.lying), "Nothing. There is nothing here to pick up."),
-            list(things(&room.carried), "Nothing. The player is carrying nothing at all."),
-            list(physical, "None are available."),
-        )
     }
 
     fn filed_row(&self) -> (Option<i64>, Option<i64>, i64) {
