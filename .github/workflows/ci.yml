@@ -37,7 +37,7 @@ jobs:
     env:
       # The game commit whose runner, scripts and judges this checkout is
       # held to (parity/README.md, "Changing a rule").
-      SERVER_COMMIT: a74e9c4c43b46ab61a0480240e611790178c7215
+      SERVER_COMMIT: 2b2b300e7f704a24c7086117512d22e732fe4285
     steps:
       # Side by side, not one inside the other: the game's extension is a
       # crate of its own, and inside this checkout cargo would read it as a
@@ -69,11 +69,11 @@ jobs:
         env:
           RAILS_ENV: test
         run: bin/rails db:schema:load
-      - name: every script through the game's runner, against this repository's goldens
-        run: engine/parity/runner.sh server engine/target/release/parity
       - name: build the game's extension against this checkout
         working-directory: server
         run: ENGINE_SOURCE="$GITHUB_WORKSPACE/engine" bin/rails engine:build
+      - name: every script through the game's runner, against this repository's goldens
+        run: engine/parity/runner.sh server engine/target/release/parity
       - name: the game's gates against this repository's goldens (the goldens as Ruby reads the rows, the invariants, the doctor and the audit)
         working-directory: server
         env:
