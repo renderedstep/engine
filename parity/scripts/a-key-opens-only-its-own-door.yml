@@ -42,7 +42,6 @@ steps:
     - cellar key
     changed: true
     refused: false
-    note: completed
 - id: the-opened-cellar-admits-a-move
   type: "/move Cellar"
   expect:
@@ -61,4 +60,3 @@ steps:
     - cellar key
     changed: true
     refused: false
-    note: completed
