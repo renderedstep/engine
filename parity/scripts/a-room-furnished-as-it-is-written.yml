@@ -10,9 +10,10 @@ steps:
     - purpose: location
       prompt_includes:
       - "## Already Here, Decided By The Game"
-      - 'Fixed in place: desk (unsearched), bookcase, windowsill.'
-      - 'On the desk: paperweight.'
-      - 'Loose, and could be picked up: chair, lamp, button, coin.'
+      - 'Fixed in place: desk (unsearched), bookcase.'
+      - 'On the desk: ledger.'
+      - 'On the bookcase: journal, atlas.'
+      - 'Loose, and could be picked up: chair, lamp, letter opener.'
       - Nobody has searched the desk yet, so do not say what is in it.
       content:
         description: A quiet room of books, a desk under the window.
@@ -34,26 +35,22 @@ steps:
     here:
     - desk
     - bookcase
-    - windowsill
     - chair
     - lamp
-    - paperweight
-    - bound volume
+    - ledger
     - journal
-    - candle stub
-    - dead fly
-    - button
-    - coin
+    - atlas
+    - letter opener
     - brass letter knife
     changed: true
     refused: false
-- id: a-paperweight-off-the-desk
-  type: take the paperweight
+- id: a-ledger-off-the-desk
+  type: take the ledger
   expect:
-    understood: take -> paperweight
+    understood: take -> ledger
     changed: true
     carrying:
-    - paperweight
+    - ledger
 - id: the-kits-desk-does-not-move
   type: take the desk
   expect:
@@ -73,15 +70,11 @@ steps:
     here:
     - desk
     - bookcase
-    - windowsill
     - chair
     - lamp
-    - bound volume
     - journal
-    - candle stub
-    - dead fly
-    - button
-    - coin
+    - atlas
+    - letter opener
     - brass letter knife
     carrying:
-    - paperweight
+    - ledger
