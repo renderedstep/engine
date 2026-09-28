@@ -18,7 +18,6 @@ steps:
     - Rowe Harker
     - Tamsin Gale
     volitions: 2
-    acts: 1
 - id: nothing-said-twice
   type: "/examine pawn ticket"
   browser:
@@ -39,26 +38,26 @@ steps:
     token: third
     replies:
     - purpose: narration
+      content: Tamsin taps the ticket book and says nothing.
+      prompt_excludes:
+      - spoke up unasked
+  expect:
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+    volitions: 2
+- id: the-other-one-speaks
+  type: "/examine pawn ticket"
+  browser:
+    token: fourth
+    replies:
+    - purpose: narration
       content: Rowe jerks his head at the door.
       prompt_includes:
       - Rowe Harker spoke up unasked and told Ansel Mott to leave The Pawn Counter.
         Nobody moved.
       prompt_excludes:
       - Tamsin Gale spoke up unasked
-  expect:
-    present:
-    - Rowe Harker
-    - Tamsin Gale
-    volitions: 2
-- id: both-wait
-  type: "/examine pawn ticket"
-  browser:
-    token: fourth
-    replies:
-    - purpose: narration
-      content: The shop is quiet.
-      prompt_excludes:
-      - spoke up unasked
   expect:
     present:
     - Rowe Harker

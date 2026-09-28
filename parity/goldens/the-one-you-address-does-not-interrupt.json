@@ -13,7 +13,13 @@
           "detail": "realized"
         },
         "storey": null,
-        "exits": [],
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
         "here": [],
         "carrying": [
           {

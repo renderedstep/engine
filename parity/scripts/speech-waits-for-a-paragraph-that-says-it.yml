@@ -14,7 +14,6 @@ steps:
     - brass tally
     - pawn ticket
     volitions: 2
-    acts: 1
 - id: the-next-paragraph-tells-it
   type: "/examine pawn ticket"
   browser:

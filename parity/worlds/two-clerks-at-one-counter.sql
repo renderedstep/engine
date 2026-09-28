@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_tool_calls" ("id" integer PRIMARY KEY AUTOI
 CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cache_read_cost" decimal(16,10), "cache_read_tokens" integer, "cache_write_cost" decimal(16,10), "cache_write_tokens" integer, "chat_id" integer NOT NULL, "chat_type" varchar NOT NULL, "created_at" datetime(6) NOT NULL, "input_cost" decimal(16,10), "input_tokens" integer, "message_id" integer, "message_type" varchar, "model" varchar NOT NULL, "operation" varchar NOT NULL, "output_cost" decimal(16,10), "output_tokens" integer, "provider" varchar NOT NULL, "status" varchar NOT NULL, "thinking_cost" decimal(16,10), "thinking_tokens" integer, "total_cost" decimal(16,10), "updated_at" datetime(6) NOT NULL, CONSTRAINT chk_rails_71abd85d6e CHECK (operation IN ('chat', 'embedding', 'moderation', 'image', 'speech', 'transcription', 'ocr', 'rerank')), CONSTRAINT chk_rails_f50895962a CHECK (status IN ('pending', 'succeeded', 'failed', 'cancelled')));
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("completed" boolean DEFAULT FALSE NOT NULL, "last_id" integer, "task" varchar NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text, "gravity" varchar);
-INSERT INTO universes VALUES(1000000001,'A town that pawns what it cannot sell.','2026-09-28 11:41:53.503147','Pledges, tickets and redemptions.','A pawnbroker''s counter.','The shop has changed hands twice and its counter never.','Ordinary physics.','The shop answers to the town''s licensing clerk.','The town keeps a quiet calendar.','Ledgers, lamps and a brass till.','2026-09-28 11:41:53.503147','Nothing anybody carries.',NULL);
+INSERT INTO universes VALUES(1000000001,'A town that pawns what it cannot sell.','2026-09-28 12:01:48.120294','Pledges, tickets and redemptions.','A pawnbroker''s counter.','The shop has changed hands twice and its counter never.','Ordinary physics.','The shop answers to the town''s licensing clerk.','The town keeps a quiet calendar.','Ledgers, lamps and a brass till.','2026-09-28 12:01:48.120294','Nothing anybody carries.',NULL);
 CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, CONSTRAINT "fk_rails_56a213cbe2"
 FOREIGN KEY ("race_id")
   REFERENCES "races" ("id")
@@ -25,9 +25,9 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO characters VALUES(1000000001,38,'A carter''s coat with straw on the shoulders.','A carter who pawned his late father''s watch and has come to get it back.','Ansel wants his father''s watch back across the counter before noon.','2026-09-28 11:41:53.646868',0,'obtain',12,'Being kept waiting at a counter.','Finding the watch already sold.','Ansel Mott',8,0,0,1,10,'A fair count.',NULL,'offer','Ansel','Quiet and determined.',1000000001,'Ansel needs to keep hold of the ticket, because it is the only proof he has.','male',1000000001,12,'Ansel wants somebody to tell him the pledge was not a betrayal.','Ansel needs to say out loud why he pawned it.','2026-09-28 11:41:53.646868',12,NULL,NULL);
-INSERT INTO characters VALUES(1000000002,29,'Ink on her cuffs and a pencil behind one ear.','The pawnbroker''s niece, who keeps the ticket book and wants every stub back in it.','Tamsin wants every pawn ticket back in the book, starting with the one in Ansel''s hand.','2026-09-28 11:41:53.722592',0,'obtain',12,'A stub that walks out of the shop.','Her uncle finding the book short.','Tamsin Gale',8,0,0,0,10,'A ticket book with no gaps in it.',1000000001,'attend','Tamsin','Quick, friendly and acquisitive.',1000000001,'Tamsin needs to keep the book square.','female',1000000001,12,'Tamsin wants to be trusted with the till.','Tamsin needs to let one pledge go without a fight.','2026-09-28 11:41:53.722592',12,NULL,NULL);
-INSERT INTO characters VALUES(1000000003,52,'A leather apron and a loupe on a cord.','The pawnbroker''s partner, who would rather close early than haggle.','Rowe wants the counter to himself and the door shut.','2026-09-28 11:41:53.740039',0,'keep',12,'Customers who lean on the counter.','Being made a fool of by a pledge.','Rowe Harker',8,0,0,0,10,'An empty shop at closing time.',1000000001,'withhold','Rowe','Gruff and territorial.',1000000001,'Rowe needs to keep the shop''s reputation.','male',1000000001,12,'Rowe wants somebody to ask his advice.','Rowe needs to admit the watch is already sold.','2026-09-28 11:41:53.740039',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000001,38,'A carter''s coat with straw on the shoulders.','A carter who pawned his late father''s watch and has come to get it back.','Ansel wants his father''s watch back across the counter before noon.','2026-09-28 12:01:48.262053',0,'obtain',12,'Being kept waiting at a counter.','Finding the watch already sold.','Ansel Mott',8,0,0,1,10,'A fair count.',NULL,'offer','Ansel','Quiet and determined.',1000000001,'Ansel needs to keep hold of the ticket, because it is the only proof he has.','male',1000000001,12,'Ansel wants somebody to tell him the pledge was not a betrayal.','Ansel needs to say out loud why he pawned it.','2026-09-28 12:01:48.262053',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000002,29,'Ink on her cuffs and a pencil behind one ear.','The pawnbroker''s niece, who keeps the ticket book and wants every stub back in it.','Tamsin wants every pawn ticket back in the book, starting with the one in Ansel''s hand.','2026-09-28 12:01:48.341270',0,'obtain',12,'A stub that walks out of the shop.','Her uncle finding the book short.','Tamsin Gale',8,0,0,0,10,'A ticket book with no gaps in it.',1000000001,'attend','Tamsin','Quick, friendly and acquisitive.',1000000001,'Tamsin needs to keep the book square.','female',1000000001,12,'Tamsin wants to be trusted with the till.','Tamsin needs to let one pledge go without a fight.','2026-09-28 12:01:48.341270',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000003,52,'A leather apron and a loupe on a cord.','The pawnbroker''s partner, who would rather close early than haggle.','Rowe wants the counter to himself and the door shut.','2026-09-28 12:01:48.357505',0,'keep',12,'Customers who lean on the counter.','Being made a fool of by a pledge.','Rowe Harker',8,0,0,0,10,'An empty shop at closing time.',1000000001,'withhold','Rowe','Gruff and territorial.',1000000001,'Rowe needs to keep the shop''s reputation.','male',1000000001,12,'Rowe wants somebody to ask his advice.','Rowe needs to admit the watch is already sold.','2026-09-28 12:01:48.357505',12,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cancelled" boolean DEFAULT FALSE NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "model_id_string" varchar, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "ruby_llm_model_id" integer, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -61,8 +61,8 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-28 11:41:53.597160','A brass counter-weight stamped with the shop''s mark.','intact',NULL,1000000001,'brass tally',NULL,'{}',0,NULL,'2026-09-28 11:41:53.597160','ordinary',NULL,NULL);
-INSERT INTO items VALUES(1000000002,'handy',1000000001,0,'2026-09-28 11:41:53.691587','A numbered stub with a date and a pledge written on it.','intact',NULL,NULL,'pawn ticket',NULL,'{}',0,NULL,'2026-09-28 11:41:53.691587','ordinary',NULL,NULL);
+INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-28 12:01:48.204880','A brass counter-weight stamped with the shop''s mark.','intact',NULL,1000000001,'brass tally',NULL,'{}',0,NULL,'2026-09-28 12:01:48.204880','ordinary',NULL,NULL);
+INSERT INTO items VALUES(1000000002,'handy',1000000001,0,'2026-09-28 12:01:48.312691','A numbered stub with a date and a pledge written on it.','intact',NULL,NULL,'pawn ticket',NULL,'{}',0,NULL,'2026-09-28 12:01:48.312691','ordinary',NULL,NULL);
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -85,6 +85,8 @@ FOREIGN KEY ("key_template_id")
 FOREIGN KEY ("connected_location_id")
   REFERENCES "locations" ("id")
 );
+INSERT INTO location_connections VALUES(1000000001,'open',1000000002,'2026-09-28 12:01:48.399661','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 12:01:48.399661');
+INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-28 12:01:48.408352','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-28 12:01:48.408352');
 CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
@@ -92,7 +94,8 @@ FOREIGN KEY ("parent_location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,'2026-09-28 11:41:53.549052','safe',NULL,'A long counter under a brass till, with shelves of pledges behind it.','realized',NULL,NULL,NULL,NULL,'The counter has been scrubbed so often the grain stands up like cord.',0,'The Pawn Counter',NULL,NULL,1000000001,'A pawnbroker''s counter.','2026-09-28 11:41:53.549052',NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000001,'2026-09-28 12:01:48.160824','safe',NULL,'A long counter under a brass till, with shelves of pledges behind it.','realized',NULL,NULL,NULL,NULL,'The counter has been scrubbed so often the grain stands up like cord.',0,'The Pawn Counter',NULL,NULL,1000000001,'A pawnbroker''s counter.','2026-09-28 12:01:48.160824',NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000002,'2026-09-28 12:01:48.213175','safe',NULL,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Street',NULL,'nobody',1000000001,'A street of shuttered shops.','2026-09-28 12:01:48.213175',NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -269,7 +272,7 @@ CREATE TABLE IF NOT EXISTS "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT N
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO races VALUES(1000000001,'2026-09-28 11:41:53.506943','Ordinary people of the town.',0,'Townsfolk',1000000001,'2026-09-28 11:41:53.506943');
+INSERT INTO races VALUES(1000000001,'2026-09-28 12:01:48.123294','Ordinary people of the town.',0,'Townsfolk',1000000001,'2026-09-28 12:01:48.123294');
 CREATE TABLE IF NOT EXISTS "relay_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_source" varchar, "cost_usd" decimal(12,6), "created_at" datetime(6) NOT NULL, "finished_at" datetime(6), "input_tokens" integer, "model" varchar NOT NULL, "output_tokens" integer, "player_id" integer NOT NULL, "reserved_usd" decimal(12,6) NOT NULL, "route" varchar NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "stream" boolean DEFAULT FALSE NOT NULL, "updated_at" datetime(6) NOT NULL, "upstream_status" integer, CONSTRAINT "fk_rails_deae27bd71"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -284,12 +287,12 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-28 11:41:53.893206','You stand at the pawnbroker''s counter with your ticket in hand. Tamsin and Rowe are both behind it.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-21 15:45:00','Ansel comes to the pawn counter to redeem a pledge.',NULL,'2026-09-28 11:41:53.893206');
+INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-28 12:01:48.526782','You stand at the pawnbroker''s counter with your ticket in hand. Tamsin and Rowe are both behind it.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-23 11:45:00','Ansel comes to the pawn counter to redeem a pledge.',NULL,'2026-09-28 12:01:48.526782');
 CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'2026-09-28 11:41:53.526449',NULL,'town adventure','Two people are behind the counter and both of them have noticed you.','2026-09-21 15:45:00','Ansel has come to redeem a pledge; Tamsin wants his ticket and Rowe wants him gone.','Two Clerks at One Counter (engine sweep)',1000000001,'2026-09-28 11:41:53.526449');
+INSERT INTO stories VALUES(1000000001,'2026-09-28 12:01:48.141052',NULL,'town adventure','Two people are behind the counter and both of them have noticed you.','2026-09-23 11:45:00','Ansel has come to redeem a pledge; Tamsin wants his ticket and Rowe wants him gone.','Two Clerks at One Counter (engine sweep)',1000000001,'2026-09-28 12:01:48.141052');
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -404,8 +407,8 @@ INSERT INTO sqlite_sequence VALUES('items',1000000002);
 INSERT INTO sqlite_sequence VALUES('lab_exits_judgements',1000000000);
 INSERT INTO sqlite_sequence VALUES('lab_exits_samples',1000000000);
 INSERT INTO sqlite_sequence VALUES('lab_realization_samples',1000000000);
-INSERT INTO sqlite_sequence VALUES('location_connections',1000000000);
-INSERT INTO sqlite_sequence VALUES('locations',1000000001);
+INSERT INTO sqlite_sequence VALUES('location_connections',1000000002);
+INSERT INTO sqlite_sequence VALUES('locations',1000000002);
 INSERT INTO sqlite_sequence VALUES('messages',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_beats',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_blows',1000000000);

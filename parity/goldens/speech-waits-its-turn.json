@@ -13,13 +13,14 @@
           "detail": "realized"
         },
         "storey": null,
-        "exits": [],
-        "here": [
+        "exits": [
           {
-            "id": 1000000004,
-            "name": "brass tally"
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
           }
         ],
+        "here": [],
         "carrying": [
           {
             "id": 1000000003,
@@ -61,7 +62,7 @@
         "hazards": 0,
         "quest": {},
         "volitions": 2,
-        "acts": 1,
+        "acts": 2,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
@@ -81,7 +82,13 @@
           "detail": "realized"
         },
         "storey": null,
-        "exits": [],
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
         "here": [],
         "carrying": [
           {
@@ -144,7 +151,13 @@
           "detail": "realized"
         },
         "storey": null,
-        "exits": [],
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
         "here": [],
         "carrying": [
           {
@@ -197,7 +210,7 @@
       }
     },
     {
-      "step": "step 4 both-wait",
+      "step": "step 4 the-other-one-speaks",
       "player": "first",
       "typed": "/examine pawn ticket",
       "dump": {
@@ -207,7 +220,13 @@
           "detail": "realized"
         },
         "storey": null,
-        "exits": [],
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
         "here": [],
         "carrying": [
           {

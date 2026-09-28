@@ -13,7 +13,13 @@
           "detail": "realized"
         },
         "storey": null,
-        "exits": [],
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
         "here": [],
         "carrying": [
           {
@@ -60,7 +66,7 @@
         "hazards": 0,
         "quest": {},
         "volitions": 2,
-        "acts": 1,
+        "acts": 2,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
@@ -80,7 +86,13 @@
           "detail": "realized"
         },
         "storey": null,
-        "exits": [],
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
         "here": [],
         "carrying": [
           {
