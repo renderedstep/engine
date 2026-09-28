@@ -1,0 +1,42 @@
+# The physics and item tables, owned by this engine and read by `src/data.rs`
+# (`physics()`), which declares this file's shape and refuses any other.
+# Every number here is one a die or a check is rolled against.
+#
+# `bulk` and `thrown_damage` are read today, by a throw. The other tables are
+# the starting calibration for falls, breakage and throwing range; nothing
+# reads them yet, so they change no game until a world supplies a gravity, a
+# fragility or a surface.
+---
+bulk:                    # items.bulk: the penalty taken off a thrower's strength
+  light: 0
+  handy: 2
+  heavy: 5
+  immovable:             # does not move at all
+thrown_damage:           # items.bulk: the die a thrown thing strikes for
+  light: 4
+  handy: 6
+  heavy: 8
+gravity:                 # universes.gravity: dice of fall_die per storey fallen
+  light: 1
+  ordinary: 2
+  heavy: 3
+fall_die: 6
+fall_save: dexterity     # a passed save halves the fall, rounded down
+throw_range:             # paces at ordinary gravity, by items.bulk; immovable has none
+  light: 12
+  handy: 8
+  heavy: 3
+throw_reach_per_strength: 1     # paces per point of strength over 10
+throw_reach_cap: 4              # and no more than this many
+fragility:               # items.fragility: the base share of break_die; sturdy never breaks
+  sturdy:
+  fragile: 2
+  brittle: 4
+break_die: 6
+height_step:             # added to the share by how the thing came down
+  dropped: 0
+  thrown: 1
+  fell: 2
+surface:                 # locations.surface: added to the share; nil adds nothing
+  soft: -2
+  hard: 1

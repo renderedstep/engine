@@ -212,3 +212,175 @@ pub fn weights() -> &'static Weights {
         Weights { base, table }
     })
 }
+
+const PHYSICS: &str = include_str!("../data/physics.yml");
+
+/// `data/physics.yml`: the physics and item tables. Each table keeps its
+/// file order; a `None` is a row the file leaves empty on purpose (a thing
+/// that does not move, a thing that never breaks).
+// The fall, breakage and range tables have no reader yet.
+#[allow(dead_code)]
+#[derive(Debug)]
+pub struct Physics {
+    pub bulk: Vec<(String, Option<i64>)>,
+    pub thrown_damage: Vec<(String, i64)>,
+    pub gravity: Vec<(String, i64)>,
+    pub fall_die: i64,
+    pub fall_save: String,
+    pub throw_range: Vec<(String, i64)>,
+    pub throw_reach_per_strength: i64,
+    pub throw_reach_cap: i64,
+    pub fragility: Vec<(String, Option<i64>)>,
+    pub break_die: i64,
+    pub height_step: Vec<(String, i64)>,
+    pub surface: Vec<(String, i64)>,
+}
+
+/// The file's shape: every top-level key, and nothing else.
+const PHYSICS_KEYS: &[&str] = &[
+    "bulk",
+    "thrown_damage",
+    "gravity",
+    "fall_die",
+    "fall_save",
+    "throw_range",
+    "throw_reach_per_strength",
+    "throw_reach_cap",
+    "fragility",
+    "break_die",
+    "height_step",
+    "surface",
+];
+
+pub fn physics() -> &'static Physics {
+    static TABLES: OnceLock<Physics> = OnceLock::new();
+    TABLES.get_or_init(|| read_physics(PHYSICS))
+}
+
+fn read_physics(source: &str) -> Physics {
+    let file = load("physics.yml", source);
+    let keys: Vec<String> = file
+        .as_hash()
+        .expect("physics.yml: a map")
+        .keys()
+        .map(|key| string(key, "physics.yml"))
+        .collect();
+    assert_eq!(keys, PHYSICS_KEYS, "physics.yml: its keys, in order");
+    let table = |key: &str, empty: bool| -> Vec<(String, Option<i64>)> {
+        let rows: Vec<(String, Option<i64>)> = file[key]
+            .as_hash()
+            .unwrap_or_else(|| panic!("physics.yml: {key} is not a map"))
+            .iter()
+            .map(|(row, value)| {
+                let row = string(row, key);
+                let value = match value {
+                    Yaml::Integer(value) => Some(*value),
+                    Yaml::Null if empty => None,
+                    _ => panic!("physics.yml: {key}.{row} is not a whole number"),
+                };
+                (row, value)
+            })
+            .collect();
+        assert!(!rows.is_empty(), "physics.yml: {key} is empty");
+        rows
+    };
+    let whole = |key: &str| -> Vec<(String, i64)> {
+        table(key, false)
+            .into_iter()
+            .map(|(row, value)| (row, value.expect("a whole number")))
+            .collect()
+    };
+    let number = |key: &str| {
+        file[key]
+            .as_i64()
+            .unwrap_or_else(|| panic!("physics.yml: {key} is not a whole number"))
+    };
+    let physics = Physics {
+        bulk: table("bulk", true),
+        thrown_damage: whole("thrown_damage"),
+        gravity: whole("gravity"),
+        fall_die: number("fall_die"),
+        fall_save: string(&file["fall_save"], "fall_save"),
+        throw_range: whole("throw_range"),
+        throw_reach_per_strength: number("throw_reach_per_strength"),
+        throw_reach_cap: number("throw_reach_cap"),
+        fragility: table("fragility", true),
+        break_die: number("break_die"),
+        height_step: whole("height_step"),
+        surface: whole("surface"),
+    };
+    // A thing that moves strikes for a die and flies a range; one that does
+    // not has neither.
+    let moving: Vec<&str> = physics
+        .bulk
+        .iter()
+        .filter(|(_, penalty)| penalty.is_some())
+        .map(|(bulk, _)| bulk.as_str())
+        .collect();
+    assert_eq!(
+        rows(&physics.thrown_damage),
+        moving,
+        "physics.yml: thrown_damage"
+    );
+    assert_eq!(
+        rows(&physics.throw_range),
+        moving,
+        "physics.yml: throw_range"
+    );
+    for die in [physics.fall_die, physics.break_die]
+        .into_iter()
+        .chain(physics.thrown_damage.iter().map(|(_, die)| *die))
+    {
+        assert!(die > 0, "physics.yml: a die of {die} sides");
+    }
+    physics
+}
+
+/// A table's rows, without their values.
+fn rows(rows: &[(String, i64)]) -> Vec<&str> {
+    rows.iter().map(|(row, _)| row.as_str()).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn physics_loads_with_the_throw_tables_the_engine_has_always_played() {
+        let physics = physics();
+        let bulk: Vec<(&str, Option<i64>)> = physics
+            .bulk
+            .iter()
+            .map(|(bulk, penalty)| (bulk.as_str(), *penalty))
+            .collect();
+        assert_eq!(
+            bulk,
+            [
+                ("light", Some(0)),
+                ("handy", Some(2)),
+                ("heavy", Some(5)),
+                ("immovable", None)
+            ]
+        );
+        let damage: Vec<(&str, i64)> = physics
+            .thrown_damage
+            .iter()
+            .map(|(bulk, die)| (bulk.as_str(), *die))
+            .collect();
+        assert_eq!(damage, [("light", 4), ("handy", 6), ("heavy", 8)]);
+        assert_eq!(physics.fall_save, "dexterity");
+        assert_eq!(physics.fragility[0], ("sturdy".to_string(), None));
+    }
+
+    #[test]
+    #[should_panic(expected = "its keys")]
+    fn physics_refuses_a_key_it_does_not_declare() {
+        read_physics(&format!("{PHYSICS}wind: 3\n"));
+    }
+
+    #[test]
+    #[should_panic(expected = "thrown_damage")]
+    fn physics_refuses_a_moving_bulk_with_no_damage_die() {
+        read_physics(&PHYSICS.replace("  heavy: 8\n", ""));
+    }
+}
