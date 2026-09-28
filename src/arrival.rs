@@ -165,6 +165,9 @@ pub struct Arrival<'a> {
     /// None for an arrival no game is standing in, such as a story's opening.
     pub game: Option<Game<'a>>,
     pub opening: bool,
+    /// The volitions the people here wrote as the party came in, by id: the
+    /// reactions this arrival tells. Empty for an arrival nobody reacted to.
+    pub reactions: &'a [i64],
 }
 
 impl<'a> Arrival<'a> {
@@ -414,6 +417,22 @@ impl<'a> Arrival<'a> {
         Some(parts)
     }
 
+    /// What the people here did as the party came in, in id order: the fact
+    /// of each reaction that went through. Silence wrote no row, and a
+    /// reaction that stayed put or could not be taken tells nothing.
+    pub fn reacted(&self) -> Vec<String> {
+        let mut rows: Vec<&Row> = self
+            .reactions
+            .iter()
+            .filter_map(|reaction| self.records.find("playthrough_volitions", *reaction))
+            .filter(|row| crate::records::text(row, "status") == Some("applied"))
+            .collect();
+        rows.sort_by_key(|row| id(row));
+        rows.iter()
+            .map(|row| string(row, "fact").to_string())
+            .collect()
+    }
+
     /// `#arrival_prompt`.
     pub fn prompt(&self) -> String {
         let story = self.story();
@@ -453,6 +472,17 @@ impl<'a> Arrival<'a> {
                  take precedence over its claims about people, items and wounds. Narrate the\n\
                  recorded crossing result as part of this arrival.\n{}\n",
                 facts.join("\n")
+            ));
+        }
+        let reacted = self.reacted();
+        if !reacted.is_empty() {
+            prompt.push_str(&format!(
+                "\n## As You Come In\n\
+                 These people reacted to your arrival, recorded by the game. Narrate each as \
+                 part of this arrival, in the order given. Anyone below who walked out is seen \
+                 leaving as you come in; add nobody else. Nothing anyone says changes what is \
+                 recorded above.\n{}\n",
+                reacted.join("\n")
             ));
         }
         prompt
@@ -497,6 +527,7 @@ mod tests {
             previous_scene: Some(&records.table("scenes")[from]),
             game: None,
             opening: false,
+            reactions: &[],
         };
         assert_eq!(arrival(0, 3).last_visit(), Some(220));
         assert_eq!(arrival(1, 3).last_visit(), Some(160));

@@ -87,8 +87,9 @@ pub struct Turned {
 }
 
 /// What an arrival is written from: the request, the story time it
-/// happens at, the cast, the facts on the way in and the untold tolls.
-type ArrivalInputs = (Value, i64, Vec<i64>, Vec<String>, Vec<i64>);
+/// happens at, the cast, the facts on the way in, the untold tolls and what
+/// the people there did as the party came in.
+type ArrivalInputs = (Value, i64, Vec<i64>, Vec<String>, Vec<i64>, Vec<String>);
 
 /// A scene a turn wrote, and what the turn knows about it beside the row.
 #[derive(Clone, Debug, PartialEq)]
@@ -96,10 +97,11 @@ struct Told {
     id: i64,
     /// The tolls its paragraph told, where it did not tell them all.
     tolls: Option<Vec<i64>>,
-    /// Whether its prompt carried the untold volitions. An arrival's does
-    /// not, nor do the engine's own words, so they wait for the next
+    /// The volitions its prompt stated, where it did not state every untold
+    /// one. An arrival's prompt states only the reactions to it, and the
+    /// engine's own words for a line none, so the rest wait for the next
     /// paragraph that tells them.
-    volitions: bool,
+    volitions: Option<Vec<i64>>,
     safety: bool,
     setup: bool,
 }
@@ -109,7 +111,7 @@ impl Told {
         Told {
             id,
             tolls: None,
-            volitions: true,
+            volitions: None,
             safety: false,
             setup: false,
         }
@@ -393,6 +395,8 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// `#play_serially`.
     fn play_serially(&mut self, command: &str) -> Result<Played, Error> {
+        self.m.spoke.clear();
+        self.m.reactions.clear();
         let ended = self.commit("already_over", |turn| {
             Ok(turn.m.over().then(|| turn.m.over_refusal(command)))
         })?;
@@ -455,6 +459,12 @@ impl<'s, 'm> Turn<'s, 'm> {
             turn.claim_volitions(scene.as_ref())
         })?;
         self.commit("riposte", |turn| turn.m.riposte(from.as_ref()).map(|_| ()))?;
+        if let Some(spoke) = self.saved::<Vec<i64>>("speech")? {
+            self.m.spoke = spoke;
+        }
+        if let Some(reactions) = self.saved::<Vec<i64>>("reactions")? {
+            self.m.reactions = reactions;
+        }
         self.commit("volition", |turn| {
             turn.m.volitions(from.as_ref()).map(|_| ())
         })?;
@@ -621,7 +631,7 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// `#claim_volitions!`.
     fn claim_volitions(&mut self, scene: Option<&Told>) -> Result<i64, Error> {
-        let Some(scene) = scene.filter(|scene| scene.volitions) else {
+        let Some(scene) = scene else {
             return Ok(0);
         };
         let acts: Vec<i64> = self
@@ -631,6 +641,12 @@ impl<'s, 'm> Turn<'s, 'm> {
             .into_iter()
             .filter(|act| int(act, "scene_id").is_none())
             .map(id)
+            .filter(|act| {
+                scene
+                    .volitions
+                    .as_ref()
+                    .is_none_or(|told| told.contains(act))
+            })
             .collect();
         for act in &acts {
             self.m.update(
@@ -880,7 +896,7 @@ impl<'s, 'm> Turn<'s, 'm> {
     }
 
     /// `#move_to`: the room realized, walked into at its way in, paid for,
-    /// and the arrival told.
+    /// reacted to by the people in it, and the arrival told.
     fn move_to(&mut self, destination: i64) -> Result<Told, Error> {
         if self.done("moved") {
             return self.saved("moved").map(|told| told.expect("a saved step"));
@@ -907,6 +923,14 @@ impl<'s, 'm> Turn<'s, 'm> {
             let from = turn.m.here();
             turn.m.on_arrival(&room, from.as_ref())
         })?;
+        // Kept by the journal, so a worker killed after it never throws the
+        // dice again, and the arrival it resumes into tells the same rows.
+        let reactions = self.commit("reactions", |turn| {
+            let room = turn.m.row("locations", destination)?;
+            turn.m.reactions(&room)?;
+            Ok(turn.m.reactions.clone())
+        })?;
+        self.m.reactions = reactions;
 
         let told = match self.arrive(destination) {
             Ok(told) => told,
@@ -948,6 +972,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             previous_scene: game.current_scene(),
             game: Some(game),
             opening: false,
+            reactions: &self.m.reactions,
         };
         let cast: Vec<i64> = arrival
             .characters_present()
@@ -967,6 +992,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             cast,
             facts,
             tolls,
+            arrival.reacted(),
         ))
     }
 
@@ -977,7 +1003,7 @@ impl<'s, 'm> Turn<'s, 'm> {
                 .saved("arrival")
                 .map(|told| told.expect("a saved step"));
         }
-        let (request, at, cast, facts, tolls) = self.arrival(destination)?;
+        let (request, at, cast, facts, tolls, _) = self.arrival(destination)?;
         let mut agent = Agent::new(self.filed("arrival"));
         let call = Call::from_request(&request);
         let mut book = Book {
@@ -1003,7 +1029,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             )?;
             Ok(Told {
                 tolls: Some(tolls),
-                volitions: false,
+                volitions: Some(turn.m.reactions.clone()),
                 ..Told::plain(scene)
             })
         })?;
@@ -1015,16 +1041,18 @@ impl<'s, 'm> Turn<'s, 'm> {
         Ok(told)
     }
 
-    /// `Scene::Generator#fallback!`: the arrival in the engine's own words.
+    /// `Scene::Generator#fallback!`: the arrival in the engine's own words,
+    /// and what the people there did as the party came in.
     fn arrive_without_prose(
         &mut self,
         destination: i64,
         failure: Option<Failure>,
     ) -> Result<Told, Error> {
-        let (_, at, cast, facts, tolls) = self.arrival(destination)?;
+        let (_, at, cast, facts, tolls, reacted) = self.arrival(destination)?;
         let name = string(&self.m.row("locations", destination)?, "name").to_string();
         let description = std::iter::once(format!("You arrive at {name}."))
             .chain(facts.iter().cloned())
+            .chain(reacted)
             .collect::<Vec<_>>()
             .join(" ");
         let safety = failure.as_ref().is_some_and(Failure::crisis);
@@ -1042,7 +1070,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(Told {
                 id: scene,
                 tolls: Some(tolls),
-                volitions: false,
+                volitions: Some(turn.m.reactions.clone()),
                 safety,
                 setup,
             })
@@ -1081,6 +1109,20 @@ impl<'s, 'm> Turn<'s, 'm> {
         self.m.write_scene(values, cast)
     }
 
+    /// Whoever speaks up unasked in the room the player stands in, before the
+    /// paragraph that tells it is asked for, so it is told on this turn.
+    /// Kept by the journal, so a worker killed after it never throws the
+    /// die again.
+    fn speak_up(&mut self, addressee: Option<i64>) -> Result<(), Error> {
+        let spoke = self.commit("speech", |turn| {
+            let here = turn.m.here();
+            turn.m.speech(here.as_ref(), addressee)?;
+            Ok(turn.m.spoke.clone())
+        })?;
+        self.m.spoke = spoke;
+        Ok(())
+    }
+
     /// `Scene::Narrator#narrate`: prose for the line, streamed as it comes,
     /// or the engine's own sentence when there is one and the call failed.
     fn narrate(
@@ -1094,6 +1136,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         if self.done("narrated") {
             return self.saved("narrated").map(Option::flatten);
         }
+        self.speak_up(None)?;
         let call = narration::call(self.m.game(), command, fact.as_deref(), doing, handled);
         let mut agent = Agent::new(self.filed("narration"));
         let asked = {
@@ -1147,7 +1190,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(Told {
                 id: scene,
                 tolls: used_fallback.then(Vec::new),
-                volitions: !used_fallback,
+                volitions: used_fallback.then(Vec::new),
                 safety,
                 setup,
             })

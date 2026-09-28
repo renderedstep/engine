@@ -1,38 +1,53 @@
 {
-  "script": "an-act-waits-out-the-engines-own-words",
-  "story": "A Clerk With Somewhere To Be",
+  "script": "speech-waits-its-turn",
+  "story": "Two Clerks at One Counter",
   "steps": [
     {
-      "step": "step 1 talk-to-the-clerk",
+      "step": "step 1 one-voice-on-a-turn",
       "player": "first",
-      "typed": "/talk Bell",
+      "typed": "/examine pawn ticket",
       "dump": {
         "location": {
           "id": 1000000001,
-          "name": "The Records Office",
+          "name": "The Pawn Counter",
           "detail": "realized"
         },
         "storey": null,
         "exits": [
           {
             "id": 1000000002,
-            "name": "The Landing",
-            "detail": "realized"
+            "name": "The Street",
+            "detail": "stub"
           }
         ],
-        "here": [],
-        "carrying": [],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
         "present": [
           {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
             "id": 1000000002,
-            "name": "Bell"
+            "name": "Tamsin Gale"
           }
         ],
         "foes": [],
         "inscription": [],
         "hp": 53,
         "hp_of": {
-          "Bell": 53
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
         },
         "abilities": {
           "strength": 12,
@@ -44,106 +59,69 @@
         "change": "The browser turn completed.",
         "refused": false,
         "offers": null,
-        "understood": "talk -> Bell",
+        "understood": "examine -> pawn ticket",
         "resolved_by": "grammar",
-        "note": "talk: completed",
+        "note": "first: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
         "quest": {},
-        "volitions": 1,
+        "volitions": 2,
         "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 10.0,
+        "elapsed_minutes": 5.0,
         "shown": null
       }
     },
     {
-      "step": "step 2 the-engine-answers-in-its-own-words",
+      "step": "step 2 the-one-who-spoke-waits",
       "player": "first",
-      "typed": "/talk Bell",
+      "typed": "/examine pawn ticket",
       "dump": {
         "location": {
           "id": 1000000001,
-          "name": "The Records Office",
+          "name": "The Pawn Counter",
           "detail": "realized"
         },
         "storey": null,
         "exits": [
           {
             "id": 1000000002,
-            "name": "The Landing",
-            "detail": "realized"
+            "name": "The Street",
+            "detail": "stub"
           }
         ],
-        "here": [],
-        "carrying": [],
-        "present": [],
-        "foes": [],
-        "inscription": [],
-        "hp": 53,
-        "hp_of": {},
-        "abilities": {
-          "strength": 12,
-          "dexterity": 12,
-          "will": 12
-        },
-        "dead": false,
-        "changed": true,
-        "change": "The browser turn completed.",
-        "refused": false,
-        "offers": null,
-        "understood": "talk -> Bell",
-        "resolved_by": "grammar",
-        "note": "unanswered: completed",
-        "drifts": 0,
-        "blows": 0,
-        "hazards": 0,
-        "quest": {},
-        "volitions": 1,
-        "acts": 1,
-        "ending": "none",
-        "ending_words": null,
-        "scheduled": 0,
-        "fired": 0,
-        "elapsed_minutes": 10.0,
-        "shown": null
-      }
-    },
-    {
-      "step": "step 3 follow-her-up",
-      "player": "first",
-      "typed": "/move The Landing",
-      "dump": {
-        "location": {
-          "id": 1000000002,
-          "name": "The Landing",
-          "detail": "realized"
-        },
-        "storey": null,
-        "exits": [
+        "here": [
           {
-            "id": 1000000001,
-            "name": "The Records Office",
-            "detail": "realized"
+            "id": 1000000004,
+            "name": "brass tally"
           }
         ],
-        "here": [],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
         "present": [
           {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
             "id": 1000000002,
-            "name": "Bell"
+            "name": "Tamsin Gale"
           }
         ],
         "foes": [],
         "inscription": [],
         "hp": 53,
         "hp_of": {
-          "Bell": 53
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
         },
         "abilities": {
           "strength": 12,
@@ -155,72 +133,162 @@
         "change": "The browser turn completed.",
         "refused": false,
         "offers": null,
-        "understood": "move -> The Landing",
+        "understood": "examine -> pawn ticket",
         "resolved_by": "grammar",
-        "note": "follow: completed",
+        "note": "second: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
         "quest": {},
-        "volitions": 1,
-        "acts": 0,
-        "ending": "none",
-        "ending_words": null,
-        "scheduled": 0,
-        "fired": 0,
-        "elapsed_minutes": 1.0,
-        "shown": null
-      }
-    },
-    {
-      "step": "step 4 the-act-is-told-here",
-      "player": "first",
-      "typed": "/talk Bell",
-      "dump": {
-        "location": {
-          "id": 1000000002,
-          "name": "The Landing",
-          "detail": "realized"
-        },
-        "storey": null,
-        "exits": [
-          {
-            "id": 1000000001,
-            "name": "The Records Office",
-            "detail": "realized"
-          }
-        ],
-        "here": [],
-        "carrying": [],
-        "present": [],
-        "foes": [],
-        "inscription": [],
-        "hp": 53,
-        "hp_of": {},
-        "abilities": {
-          "strength": 12,
-          "dexterity": 12,
-          "will": 12
-        },
-        "dead": false,
-        "changed": true,
-        "change": "The browser turn completed.",
-        "refused": false,
-        "offers": null,
-        "understood": "talk -> Bell",
-        "resolved_by": "grammar",
-        "note": "landing: completed",
-        "drifts": 0,
-        "blows": 0,
-        "hazards": 0,
-        "quest": {},
-        "volitions": 1,
+        "volitions": 2,
         "acts": 1,
         "ending": "none",
         "ending_words": null,
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 10.0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 both-wait",
+      "player": "first",
+      "typed": "/examine pawn ticket",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Pawn Counter",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
+            "id": 1000000002,
+            "name": "Tamsin Gale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "examine -> pawn ticket",
+        "resolved_by": "grammar",
+        "note": "third: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 2,
+        "acts": 2,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 both-wait-still",
+      "player": "first",
+      "typed": "/examine pawn ticket",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Pawn Counter",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          },
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
+            "id": 1000000002,
+            "name": "Tamsin Gale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "examine -> pawn ticket",
+        "resolved_by": "grammar",
+        "note": "fourth: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 2,
+        "acts": 1,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
         "shown": null
       }
     }

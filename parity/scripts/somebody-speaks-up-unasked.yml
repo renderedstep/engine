@@ -1,0 +1,41 @@
+---
+story: Two Clerks at One Counter
+steps:
+- id: tamsin-asks-for-the-ticket
+  type: "/take brass tally"
+  browser:
+    token: take
+    replies:
+    - purpose: narration
+      content: You lift the brass tally off the counter, and Tamsin holds out her
+        hand for your ticket.
+      prompt_includes:
+      - 'What else happened here, recorded by the game: Tamsin Gale spoke up unasked
+        and asked Ansel Mott for pawn ticket. Nothing changed hands.'
+      prompt_excludes:
+      - Rowe Harker spoke up unasked
+  expect:
+    changed: true
+    carrying:
+    - brass tally
+    - pawn ticket
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+    volitions: 2
+- id: the-next-paragraph-does-not-say-it-again
+  type: "/examine pawn ticket"
+  browser:
+    token: look
+    replies:
+    - purpose: narration
+      content: The ticket is creased where you have been holding it.
+      prompt_excludes:
+      - Tamsin Gale spoke up unasked
+  expect:
+    carrying:
+    - brass tally
+    - pawn ticket
+    present:
+    - Rowe Harker
+    - Tamsin Gale

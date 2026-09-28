@@ -800,7 +800,18 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         .story_titled(&format!("A Clerk With Somewhere To Be{TITLE_SUFFIX}"))
         .unwrap();
     let playthrough = engine.start(story).unwrap();
+    // Five minutes on, the speech die leaves Bell quiet on the take, so what
+    // she does is an act, after the paragraph.
+    engine
+        .store()
+        .connection()
+        .execute(
+            "UPDATE scenes SET story_timestamp = datetime(story_timestamp, '+300 seconds')",
+            [],
+        )
+        .unwrap();
     let untold = "SELECT COUNT(*) FROM playthrough_volitions WHERE scene_id IS NULL";
+    let spoken = "SELECT COUNT(*) FROM playthrough_volitions WHERE chosen LIKE 'speak:%'";
     let play = |engine: &mut Engine, line: &str, token: &str, reply: serde_json::Value| {
         let mut replay = Replay::new(vec![Reply::from_value(&reply).unwrap()]);
         engine
@@ -815,6 +826,7 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         "take",
         serde_json::json!({"purpose": "narration", "content": "You take the receipt."}),
     );
+    assert_eq!(count(&engine, spoken), 0, "the clerk says nothing");
     assert_eq!(count(&engine, untold), 1, "the clerk acts after the take");
 
     play(
@@ -824,7 +836,11 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         serde_json::json!({"purpose": "narration", "unavailable": true}),
     );
     assert_eq!(
-        count(&engine, untold),
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM playthrough_volitions WHERE id = (SELECT MIN(id) FROM \
+             playthrough_volitions) AND scene_id IS NULL"
+        ),
         1,
         "the engine's own words for the drop tell nobody's act"
     );

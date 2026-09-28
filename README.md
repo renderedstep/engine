@@ -54,7 +54,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `plan` | `Location::Plan` | a room's size, storey and ways out, said in sentences |
 | `moment` | `Playthrough::Moment` | the narration context and a character's context for the moment the player stands in |
 | `narration` | `Scene::Narrator#prompt_for` | the narrator's request for a typed line, what the engine already did and the moment it happens in |
-| `volition` | `Playthrough::Volition#choices`, `::State`, `::SystemOne#request` | the acts a person may take and the System One request that asks which |
+| `volition` | `Playthrough::Volition#choices`, `::State`, `::SystemOne#request` | the acts a person may take and the System One request that asks which; what they may say unasked, and the speech die thrown over it |
 | `schemas` | the `RubyLLM::Schema` classes a request carries | each schema's `to_json_schema` output, key for key |
 | `identity` | `Eval::RequestIdentity` | the canonical form of a set of requests and its 16-hex digest |
 | `arrival` | `Scene::Generator`, `Scene::ArrivalContext` | the arrival writer's request for walking into a place |
@@ -62,7 +62,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `dialogue` | `InteractionAgent`, `Character#interaction_instructions`, `Playthrough::NpcAction` | the character pass and narrator pass of one exchange |
 | `clock` | Rails' datetime columns | a stored time as whole seconds since the epoch, and back |
 | `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version and the shape of every table it touches checked, every table the loop reads loaded as records, a row inserted or updated |
-| `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
+| `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: who speaks up unasked, foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `glance` | `Playthrough::Glance`, `Playthrough::Availability`, `Playthrough::SlashMenu` | what a front end's panels show between turns: the room, its ways out, who and what is here, which verbs are open at what (each target one the turn plays, each closed verb closed in the refusal's words), the slash menu and the next beat |
 | `facts`, `prompt_version` | `Scene::Narrator#prompt_for`, `Playthrough::Turn`'s `_fact` builders, `Playthrough::PromptVersion::Scaffold` | what a turn hands the narrator as already done, and that scaffold rendered against fixed placeholders for the game's prompt version to digest |

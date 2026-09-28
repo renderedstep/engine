@@ -153,6 +153,7 @@ impl Turn<'_, '_> {
             })
         })?;
 
+        self.speak_up(Some(character))?;
         let reaction_map = reaction.as_object().cloned().unwrap_or_default();
         let request = {
             let game = Game::new(&self.m.records, playthrough);
@@ -237,7 +238,7 @@ impl Turn<'_, '_> {
             Ok(Told {
                 id: scene,
                 tolls: None,
-                volitions: !fallback,
+                volitions: fallback.then(Vec::new),
                 safety,
                 setup: false,
             })
