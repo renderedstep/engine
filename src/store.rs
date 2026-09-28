@@ -10,6 +10,7 @@
 use crate::clock;
 use crate::engine::Error;
 use crate::records::{Records, Row};
+use rusqlite::config::DbConfig;
 use rusqlite::types::{Value as Sql, ValueRef};
 use rusqlite::{params_from_iter, Connection, OpenFlags};
 use serde_json::{Map, Number, Value};
@@ -250,7 +251,18 @@ impl Store {
     }
 
     /// Takes over a connection already open, checking its schema.
+    ///
+    /// THE CONNECTION NEVER CHECKPOINTS WHEN IT CLOSES. The database is the
+    /// host's, and the host holds connections of its own to it, often in the
+    /// same process through a different copy of SQLite (a Ruby app's `sqlite3`
+    /// gem beside this crate's bundled one). Two copies in one process do not
+    /// see each other's locks, so on close this one would take itself for the
+    /// last connection, checkpoint the write-ahead log and delete it and its
+    /// index from under the host's still-open connection, whose next write
+    /// then lands in a file nobody else can see. The host's own connections
+    /// checkpoint as they always do.
     pub fn from_connection(conn: Connection) -> Result<Store, Error> {
+        conn.set_db_config(DbConfig::SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE, true)?;
         conn.busy_timeout(std::time::Duration::from_secs(5))?;
         conn.pragma_update(None, "foreign_keys", "ON")?;
         let found: Option<String> = conn

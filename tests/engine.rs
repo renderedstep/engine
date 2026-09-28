@@ -705,3 +705,28 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         "the engine's own words for the drop tell nobody's act"
     );
 }
+
+/// The engine is a guest on the host's database: closing it leaves the
+/// write-ahead log where it was for the host's own connections, which a
+/// second copy of SQLite in the host's process could not otherwise tell
+/// from nobody.
+#[test]
+fn closing_the_engine_leaves_the_write_ahead_log_to_the_host() {
+    let scratch = Scratch::new("wal", &world("the-quay-house"));
+    let host = rusqlite::Connection::open(&scratch.0).unwrap();
+    host.pragma_update(None, "journal_mode", "WAL").unwrap();
+    host.execute("UPDATE stories SET summary = summary", [])
+        .unwrap();
+    let engine = Engine::open(&scratch.0).expect("the database opens");
+    let conn = engine.store().connection();
+    assert!(conn
+        .db_config(rusqlite::config::DbConfig::SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE)
+        .unwrap());
+    drop(engine);
+    let wal = scratch.0.with_extension("sqlite3-wal");
+    assert!(wal.exists(), "the host's log is still there");
+    drop(host);
+    for leftover in ["sqlite3-wal", "sqlite3-shm"] {
+        let _ = std::fs::remove_file(scratch.0.with_extension(leftover));
+    }
+}
