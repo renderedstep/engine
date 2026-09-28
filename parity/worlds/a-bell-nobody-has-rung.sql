@@ -1,5 +1,80 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20260927152056');
+INSERT INTO schema_migrations VALUES('20260927031841');
+INSERT INTO schema_migrations VALUES('20260927031839');
+INSERT INTO schema_migrations VALUES('20260927031837');
+INSERT INTO schema_migrations VALUES('20260927031835');
+INSERT INTO schema_migrations VALUES('20260927031834');
+INSERT INTO schema_migrations VALUES('20260926195041');
+INSERT INTO schema_migrations VALUES('20260922141619');
+INSERT INTO schema_migrations VALUES('20260922141618');
+INSERT INTO schema_migrations VALUES('20260922141617');
+INSERT INTO schema_migrations VALUES('20260919202606');
+INSERT INTO schema_migrations VALUES('20260919202605');
+INSERT INTO schema_migrations VALUES('20260917133823');
+INSERT INTO schema_migrations VALUES('20260910041334');
+INSERT INTO schema_migrations VALUES('20260910025040');
+INSERT INTO schema_migrations VALUES('20260909030346');
+INSERT INTO schema_migrations VALUES('20260909023028');
+INSERT INTO schema_migrations VALUES('20260909023014');
+INSERT INTO schema_migrations VALUES('20260908203558');
+INSERT INTO schema_migrations VALUES('20260908155546');
+INSERT INTO schema_migrations VALUES('20260908120000');
+INSERT INTO schema_migrations VALUES('20260907150000');
+INSERT INTO schema_migrations VALUES('20260907140000');
+INSERT INTO schema_migrations VALUES('20260907120000');
+INSERT INTO schema_migrations VALUES('20260906130000');
+INSERT INTO schema_migrations VALUES('20260906120000');
+INSERT INTO schema_migrations VALUES('20260905150000');
+INSERT INTO schema_migrations VALUES('20260905140000');
+INSERT INTO schema_migrations VALUES('20260905130000');
+INSERT INTO schema_migrations VALUES('20260905120000');
+INSERT INTO schema_migrations VALUES('20260905110000');
+INSERT INTO schema_migrations VALUES('20260905100001');
+INSERT INTO schema_migrations VALUES('20260905100000');
+INSERT INTO schema_migrations VALUES('20260905090100');
+INSERT INTO schema_migrations VALUES('20260905090000');
+INSERT INTO schema_migrations VALUES('20260904190000');
+INSERT INTO schema_migrations VALUES('20260904180000');
+INSERT INTO schema_migrations VALUES('20260904170000');
+INSERT INTO schema_migrations VALUES('20260904160000');
+INSERT INTO schema_migrations VALUES('20260904120000');
+INSERT INTO schema_migrations VALUES('20260903170000');
+INSERT INTO schema_migrations VALUES('20260903120000');
+INSERT INTO schema_migrations VALUES('20260902120000');
+INSERT INTO schema_migrations VALUES('20260901170000');
+INSERT INTO schema_migrations VALUES('20260901160000');
+INSERT INTO schema_migrations VALUES('20260901120000');
+INSERT INTO schema_migrations VALUES('20260831140000');
+INSERT INTO schema_migrations VALUES('20260831130000');
+INSERT INTO schema_migrations VALUES('20260831120000');
+INSERT INTO schema_migrations VALUES('20260831000000');
+INSERT INTO schema_migrations VALUES('20260830220946');
+INSERT INTO schema_migrations VALUES('20260830220945');
+INSERT INTO schema_migrations VALUES('20260830210000');
+INSERT INTO schema_migrations VALUES('20260830200001');
+INSERT INTO schema_migrations VALUES('20260830200000');
+INSERT INTO schema_migrations VALUES('20260830192215');
+INSERT INTO schema_migrations VALUES('20260830192214');
+INSERT INTO schema_migrations VALUES('20250824193519');
+INSERT INTO schema_migrations VALUES('20250823024100');
+INSERT INTO schema_migrations VALUES('20250823024050');
+INSERT INTO schema_migrations VALUES('20250823024037');
+INSERT INTO schema_migrations VALUES('20250823024029');
+INSERT INTO schema_migrations VALUES('20250823024021');
+INSERT INTO schema_migrations VALUES('20250823024013');
+INSERT INTO schema_migrations VALUES('20250823023950');
+INSERT INTO schema_migrations VALUES('20250823023942');
+INSERT INTO schema_migrations VALUES('20250823023925');
+INSERT INTO schema_migrations VALUES('20250822184651');
+INSERT INTO schema_migrations VALUES('20250822184650');
+INSERT INTO schema_migrations VALUES('20250822184649');
+INSERT INTO schema_migrations VALUES('20260928020741');
+CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
+INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-28 02:07:50.785898','2026-09-28 02:07:50.787261');
+INSERT INTO ar_internal_metadata VALUES('schema_sha1','4a7d321b624b8c3c3fe5fc725bd19e62180b7292','2026-09-28 02:07:50.788844','2026-09-28 02:11:17.288500');
 CREATE TABLE IF NOT EXISTS "characters_scenes" ("character_id" integer NOT NULL, "scene_id" integer NOT NULL);
 INSERT INTO characters_scenes VALUES(1000000001,1000000001);
 INSERT INTO characters_scenes VALUES(1000000002,1000000001);
@@ -11,8 +86,8 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_models" ("id" integer PRIMARY KEY AUTOINCRE
 CREATE TABLE IF NOT EXISTS "ruby_llm_tool_calls" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "approval" varchar, "arguments" json DEFAULT '{}', "created_at" datetime(6) NOT NULL, "message_id" integer NOT NULL, "message_type" varchar NOT NULL, "name" varchar NOT NULL, "remote" boolean DEFAULT FALSE NOT NULL, "result_id" integer, "result_type" varchar, "thought_signature" text, "tool_call_id" varchar NOT NULL, "updated_at" datetime(6) NOT NULL);
 CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cache_read_cost" decimal(16,10), "cache_read_tokens" integer, "cache_write_cost" decimal(16,10), "cache_write_tokens" integer, "chat_id" integer NOT NULL, "chat_type" varchar NOT NULL, "created_at" datetime(6) NOT NULL, "input_cost" decimal(16,10), "input_tokens" integer, "message_id" integer, "message_type" varchar, "model" varchar NOT NULL, "operation" varchar NOT NULL, "output_cost" decimal(16,10), "output_tokens" integer, "provider" varchar NOT NULL, "status" varchar NOT NULL, "thinking_cost" decimal(16,10), "thinking_tokens" integer, "total_cost" decimal(16,10), "updated_at" datetime(6) NOT NULL, CONSTRAINT chk_rails_71abd85d6e CHECK (operation IN ('chat', 'embedding', 'moderation', 'image', 'speech', 'transcription', 'ocr', 'rerank')), CONSTRAINT chk_rails_f50895962a CHECK (status IN ('pending', 'succeeded', 'failed', 'cancelled')));
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("completed" boolean DEFAULT FALSE NOT NULL, "last_id" integer, "task" varchar NOT NULL);
-CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text);
-INSERT INTO universes VALUES(1000000001,'A small order of lay brothers.','2026-09-27 19:49:12.590172','The order trades honey for lamp oil.','A hill abbey and the valley below it.','The abbey bell has not rung in a generation.','Ordinary physics.','The prior settles every dispute.','The order keeps the hours by the bell.','Bells, candles and iron locks.','2026-09-27 19:49:12.590172','Walking staves.');
+CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text, "gravity" varchar);
+INSERT INTO universes VALUES(1000000001,'A small order of lay brothers.','2026-09-28 02:12:33.737470','The order trades honey for lamp oil.','A hill abbey and the valley below it.','The abbey bell has not rung in a generation.','Ordinary physics.','The prior settles every dispute.','The order keeps the hours by the bell.','Bells, candles and iron locks.','2026-09-28 02:12:33.737470','Walking staves.',NULL);
 CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, CONSTRAINT "fk_rails_56a213cbe2"
 FOREIGN KEY ("race_id")
   REFERENCES "races" ("id")
@@ -23,8 +98,8 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO characters VALUES(1000000001,27,'A mended wool cloak.','A bell-founder''s daughter from the valley.',NULL,'2026-09-27 19:49:12.776741',0,NULL,12,'Silence kept for its own sake.','Heights.','Ilse',8,0,0,1,5,'Clear tones.',NULL,NULL,'Ilse','Curious and stubborn.',1000000001,NULL,'female',1000000001,11,NULL,NULL,'2026-09-27 19:49:12.776741',13,NULL,NULL);
-INSERT INTO characters VALUES(1000000002,61,'A grey apron and a ring of keys.','The sexton, who has swept the hall for forty years.',NULL,'2026-09-27 19:49:12.809876',0,NULL,10,'Visitors who touch things.','The bell tower stair.','Oda',6,0,0,0,3,'A swept floor.',1000000001,NULL,'Oda','Patient and dry.',1000000001,NULL,'female',1000000001,9,NULL,NULL,'2026-09-27 19:49:12.809876',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000001,27,'A mended wool cloak.','A bell-founder''s daughter from the valley.',NULL,'2026-09-28 02:12:35.714266',0,NULL,12,'Silence kept for its own sake.','Heights.','Ilse',8,0,0,1,5,'Clear tones.',NULL,NULL,'Ilse','Curious and stubborn.',1000000001,NULL,'female',1000000001,11,NULL,NULL,'2026-09-28 02:12:35.714266',13,NULL,NULL);
+INSERT INTO characters VALUES(1000000002,61,'A grey apron and a ring of keys.','The sexton, who has swept the hall for forty years.',NULL,'2026-09-28 02:12:35.962850',0,NULL,10,'Visitors who touch things.','The bell tower stair.','Oda',6,0,0,0,3,'A swept floor.',1000000001,NULL,'Oda','Patient and dry.',1000000001,NULL,'female',1000000001,9,NULL,NULL,'2026-09-28 02:12:35.962850',12,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cancelled" boolean DEFAULT FALSE NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "model_id_string" varchar, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "ruby_llm_model_id" integer, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -58,8 +133,8 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-27 19:49:12.687085','A dented pewter cup.','intact',NULL,1000000001,'pewter cup',NULL,'{}',0,NULL,'2026-09-27 19:49:12.687085','ordinary',NULL,NULL);
-INSERT INTO items VALUES(1000000002,'handy',NULL,0,'2026-09-27 19:49:12.700508','A folded letter under a cracked wax seal.','intact',NULL,1000000001,'sealed letter',NULL,'{}',1,NULL,'2026-09-27 19:49:12.700508','ordinary',NULL,NULL);
+INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-28 02:12:34.762204','A dented pewter cup.','intact',NULL,1000000001,'pewter cup',NULL,'{}',0,NULL,'2026-09-28 02:12:34.762204','ordinary',NULL,NULL);
+INSERT INTO items VALUES(1000000002,'handy',NULL,0,'2026-09-28 02:12:34.880465','A folded letter under a cracked wax seal.','intact',NULL,1000000001,'sealed letter',NULL,'{}',1,NULL,'2026-09-28 02:12:34.880465','ordinary',NULL,NULL);
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -82,10 +157,10 @@ FOREIGN KEY ("key_template_id")
 FOREIGN KEY ("connected_location_id")
   REFERENCES "locations" ("id")
 );
-INSERT INTO location_connections VALUES(1000000001,'open',1000000002,'2026-09-27 19:49:12.850250','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-27 19:49:12.850250');
-INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-27 19:49:12.858391','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-27 19:49:12.858391');
-INSERT INTO location_connections VALUES(1000000003,'open',1000000003,'2026-09-27 19:49:12.864571','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-27 19:49:12.864571');
-INSERT INTO location_connections VALUES(1000000004,'open',1000000001,'2026-09-27 19:49:12.866630','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-27 19:49:12.866630');
+INSERT INTO location_connections VALUES(1000000001,'open',1000000002,'2026-09-28 02:12:36.216801','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 02:12:36.216801');
+INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-28 02:12:36.302484','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-28 02:12:36.302484');
+INSERT INTO location_connections VALUES(1000000003,'open',1000000003,'2026-09-28 02:12:36.359971','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 02:12:36.359971');
+INSERT INTO location_connections VALUES(1000000004,'open',1000000001,'2026-09-28 02:12:36.387295','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-28 02:12:36.387295');
 CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
@@ -93,9 +168,9 @@ FOREIGN KEY ("parent_location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,'2026-09-27 19:49:12.636316','safe',NULL,'A long stone hall with benches along both walls.','realized',NULL,NULL,NULL,NULL,'The brothers meet here each morning.',0,'Chapter Hall',NULL,NULL,1000000001,'The abbey''s chapter hall.','2026-09-27 19:49:12.636316',NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000002,'2026-09-27 19:49:12.707852','safe',NULL,'A squat gatehouse with a barred window.','realized',NULL,NULL,NULL,NULL,'Pilgrims once waited here for the bell.',0,'Gatehouse',NULL,NULL,1000000001,'The abbey gatehouse.','2026-09-27 19:49:12.707852',NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000003,'2026-09-27 19:49:12.718617','safe',NULL,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'Lower Cloister',NULL,'a person or two',1000000001,'A cloister below the hall, where the older brothers walk.','2026-09-27 19:49:12.718617',NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000001,'2026-09-28 02:12:33.998040','safe',NULL,'A long stone hall with benches along both walls.','realized',NULL,NULL,NULL,NULL,'The brothers meet here each morning.',0,'Chapter Hall',NULL,NULL,1000000001,'The abbey''s chapter hall.','2026-09-28 02:12:33.998040',NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000002,'2026-09-28 02:12:34.942006','safe',NULL,'A squat gatehouse with a barred window.','realized',NULL,NULL,NULL,NULL,'Pilgrims once waited here for the bell.',0,'Gatehouse',NULL,NULL,1000000001,'The abbey gatehouse.','2026-09-28 02:12:34.942006',NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000003,'2026-09-28 02:12:35.023776','safe',NULL,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'Lower Cloister',NULL,'a person or two',1000000001,'A cloister below the hall, where the older brothers walk.','2026-09-28 02:12:35.023776',NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -257,14 +332,14 @@ CREATE TABLE IF NOT EXISTS "quest_outcomes" ("id" integer PRIMARY KEY AUTOINCREM
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-INSERT INTO quest_outcomes VALUES(1000000001,NULL,'2026-09-27 19:49:12.981311',1,NULL,'rung',1000000001,NULL,NULL,'The bell rings over the valley for the first time in a generation.','2026-09-27 19:49:12.981311');
+INSERT INTO quest_outcomes VALUES(1000000001,NULL,'2026-09-28 02:12:37.044545',1,NULL,'rung',1000000001,NULL,NULL,'The bell rings over the valley for the first time in a generation.','2026-09-28 02:12:37.044545');
 CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-INSERT INTO quest_steps VALUES(1000000001,NULL,'2026-09-27 19:49:12.948890',NULL,1,1000000001,'Take up the brass censer the bell-keeper carried.',NULL,'brass censer',NULL,NULL,'hold_item','2026-09-27 19:49:12.948890');
-INSERT INTO quest_steps VALUES(1000000002,NULL,'2026-09-27 19:49:12.961043',NULL,2,1000000001,'Hear Brother Anselm out about the last time the bell rang.',NULL,'Brother Anselm',NULL,NULL,'speak_to','2026-09-27 19:49:12.961043');
-INSERT INTO quest_steps VALUES(1000000003,NULL,'2026-09-27 19:49:12.964493',NULL,3,1000000001,'Climb to the Bell Tower.',NULL,'the Bell Tower',NULL,'The tower stands over the cloister, its door long unlocked.','reach_location','2026-09-27 19:49:12.964493');
+INSERT INTO quest_steps VALUES(1000000001,NULL,'2026-09-28 02:12:36.889761',NULL,1,1000000001,'Take up the brass censer the bell-keeper carried.',NULL,'brass censer',NULL,NULL,'hold_item','2026-09-28 02:12:36.889761');
+INSERT INTO quest_steps VALUES(1000000002,NULL,'2026-09-28 02:12:36.993794',NULL,2,1000000001,'Hear Brother Anselm out about the last time the bell rang.',NULL,'Brother Anselm',NULL,NULL,'speak_to','2026-09-28 02:12:36.993794');
+INSERT INTO quest_steps VALUES(1000000003,NULL,'2026-09-28 02:12:37.001487',NULL,3,1000000001,'Climb to the Bell Tower.',NULL,'the Bell Tower',NULL,'The tower stands over the cloister, its door long unlocked.','reach_location','2026-09-28 02:12:37.001487');
 CREATE TABLE IF NOT EXISTS "quests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "contributes" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "origin" varchar DEFAULT 'seeded' NOT NULL, "parent_quest_id" integer, "premise" text NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "story_id" integer NOT NULL, "title" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a64954ae79"
 FOREIGN KEY ("parent_quest_id")
   REFERENCES "quests" ("id")
@@ -272,12 +347,12 @@ FOREIGN KEY ("parent_quest_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO quests VALUES(1000000001,1,'2026-09-27 19:49:12.885988','seeded',NULL,'Find out why the abbey bell no longer rings, and ring it.','open',1000000001,'The Silent Bell','2026-09-27 19:49:12.885988');
+INSERT INTO quests VALUES(1000000001,1,'2026-09-28 02:12:36.585313','seeded',NULL,'Find out why the abbey bell no longer rings, and ring it.','open',1000000001,'The Silent Bell','2026-09-28 02:12:36.585313');
 CREATE TABLE IF NOT EXISTS "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "description" text NOT NULL, "monstrous" boolean DEFAULT FALSE NOT NULL, "name" varchar NOT NULL, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_c25ac61605"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO races VALUES(1000000001,'2026-09-27 19:49:12.593295','Ordinary people of the valley.',0,'Valley folk',1000000001,'2026-09-27 19:49:12.593295');
+INSERT INTO races VALUES(1000000001,'2026-09-28 02:12:33.751226','Ordinary people of the valley.',0,'Valley folk',1000000001,'2026-09-28 02:12:33.751226');
 CREATE TABLE IF NOT EXISTS "relay_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_source" varchar, "cost_usd" decimal(12,6), "created_at" datetime(6) NOT NULL, "finished_at" datetime(6), "input_tokens" integer, "model" varchar NOT NULL, "output_tokens" integer, "player_id" integer NOT NULL, "reserved_usd" decimal(12,6) NOT NULL, "route" varchar NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "stream" boolean DEFAULT FALSE NOT NULL, "updated_at" datetime(6) NOT NULL, "upstream_status" integer, CONSTRAINT "fk_rails_deae27bd71"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -292,12 +367,12 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-27 19:49:13.061693','You stand in the chapter hall with Oda, the sexton.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-10 08:00:00','Ilse arrives at the abbey''s chapter hall.',NULL,'2026-09-27 19:49:13.061693');
+INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-28 02:12:37.643892','You stand in the chapter hall with Oda, the sexton.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-10 08:00:00','Ilse arrives at the abbey''s chapter hall.',NULL,'2026-09-28 02:12:37.643892');
 CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'2026-09-27 19:49:12.611651',NULL,'quiet mystery','The abbey bell has been silent since before you were born.','2026-09-10 08:00:00','Ilse climbs to the abbey to find out why its bell no longer rings.','A Bell Nobody Has Rung (engine sweep)',1000000001,'2026-09-27 19:49:12.611651');
+INSERT INTO stories VALUES(1000000001,'2026-09-28 02:12:33.846883',NULL,'quiet mystery','The abbey bell has been silent since before you were born.','2026-09-10 08:00:00','Ilse climbs to the abbey to find out why its bell no longer rings.','A Bell Nobody Has Rung (engine sweep)',1000000001,'2026-09-28 02:12:33.846883');
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -316,80 +391,6 @@ CREATE TABLE IF NOT EXISTS "world_mechanics" ("id" integer PRIMARY KEY AUTOINCRE
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
-INSERT INTO schema_migrations VALUES('20260927152056');
-INSERT INTO schema_migrations VALUES('20260927031841');
-INSERT INTO schema_migrations VALUES('20260927031839');
-INSERT INTO schema_migrations VALUES('20260927031837');
-INSERT INTO schema_migrations VALUES('20260927031835');
-INSERT INTO schema_migrations VALUES('20260927031834');
-INSERT INTO schema_migrations VALUES('20260926195041');
-INSERT INTO schema_migrations VALUES('20260922141619');
-INSERT INTO schema_migrations VALUES('20260922141618');
-INSERT INTO schema_migrations VALUES('20260922141617');
-INSERT INTO schema_migrations VALUES('20260919202606');
-INSERT INTO schema_migrations VALUES('20260919202605');
-INSERT INTO schema_migrations VALUES('20260917133823');
-INSERT INTO schema_migrations VALUES('20260910041334');
-INSERT INTO schema_migrations VALUES('20260910025040');
-INSERT INTO schema_migrations VALUES('20260909030346');
-INSERT INTO schema_migrations VALUES('20260909023028');
-INSERT INTO schema_migrations VALUES('20260909023014');
-INSERT INTO schema_migrations VALUES('20260908203558');
-INSERT INTO schema_migrations VALUES('20260908155546');
-INSERT INTO schema_migrations VALUES('20260908120000');
-INSERT INTO schema_migrations VALUES('20260907150000');
-INSERT INTO schema_migrations VALUES('20260907140000');
-INSERT INTO schema_migrations VALUES('20260907120000');
-INSERT INTO schema_migrations VALUES('20260906130000');
-INSERT INTO schema_migrations VALUES('20260906120000');
-INSERT INTO schema_migrations VALUES('20260905150000');
-INSERT INTO schema_migrations VALUES('20260905140000');
-INSERT INTO schema_migrations VALUES('20260905130000');
-INSERT INTO schema_migrations VALUES('20260905120000');
-INSERT INTO schema_migrations VALUES('20260905110000');
-INSERT INTO schema_migrations VALUES('20260905100001');
-INSERT INTO schema_migrations VALUES('20260905100000');
-INSERT INTO schema_migrations VALUES('20260905090100');
-INSERT INTO schema_migrations VALUES('20260905090000');
-INSERT INTO schema_migrations VALUES('20260904190000');
-INSERT INTO schema_migrations VALUES('20260904180000');
-INSERT INTO schema_migrations VALUES('20260904170000');
-INSERT INTO schema_migrations VALUES('20260904160000');
-INSERT INTO schema_migrations VALUES('20260904120000');
-INSERT INTO schema_migrations VALUES('20260903170000');
-INSERT INTO schema_migrations VALUES('20260903120000');
-INSERT INTO schema_migrations VALUES('20260902120000');
-INSERT INTO schema_migrations VALUES('20260901170000');
-INSERT INTO schema_migrations VALUES('20260901160000');
-INSERT INTO schema_migrations VALUES('20260901120000');
-INSERT INTO schema_migrations VALUES('20260831140000');
-INSERT INTO schema_migrations VALUES('20260831130000');
-INSERT INTO schema_migrations VALUES('20260831120000');
-INSERT INTO schema_migrations VALUES('20260831000000');
-INSERT INTO schema_migrations VALUES('20260830220946');
-INSERT INTO schema_migrations VALUES('20260830220945');
-INSERT INTO schema_migrations VALUES('20260830210000');
-INSERT INTO schema_migrations VALUES('20260830200001');
-INSERT INTO schema_migrations VALUES('20260830200000');
-INSERT INTO schema_migrations VALUES('20260830192215');
-INSERT INTO schema_migrations VALUES('20260830192214');
-INSERT INTO schema_migrations VALUES('20250824193519');
-INSERT INTO schema_migrations VALUES('20250823024100');
-INSERT INTO schema_migrations VALUES('20250823024050');
-INSERT INTO schema_migrations VALUES('20250823024037');
-INSERT INTO schema_migrations VALUES('20250823024029');
-INSERT INTO schema_migrations VALUES('20250823024021');
-INSERT INTO schema_migrations VALUES('20250823024013');
-INSERT INTO schema_migrations VALUES('20250823023950');
-INSERT INTO schema_migrations VALUES('20250823023942');
-INSERT INTO schema_migrations VALUES('20250823023925');
-INSERT INTO schema_migrations VALUES('20250822184651');
-INSERT INTO schema_migrations VALUES('20250822184650');
-INSERT INTO schema_migrations VALUES('20250822184649');
-CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
-INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-27 19:49:11.334512','2026-09-27 19:49:11.334516');
-INSERT INTO ar_internal_metadata VALUES('schema_sha1','ac751dcc86cc6d0c74a82f492cd96fec987af3be','2026-09-27 19:49:11.338478','2026-09-27 19:49:11.338481');
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;

@@ -4,7 +4,7 @@
 use crate::ledger;
 use crate::memory::{self, CONCLUSIONS};
 use crate::plan::Plan;
-use crate::playthrough::{toll_words, Game};
+use crate::playthrough::{got_clear, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::text::{is_blank, is_ruby_space, presence, ruby_strip, truncate};
 
@@ -113,7 +113,7 @@ pub fn one_toll(game: &Game, toll: &Row) -> String {
         game.character(int(toll, "character_id").unwrap()),
         "fullname",
     );
-    if flag(toll, "saved") {
+    if got_clear(toll) {
         return format!("{who} got clear of {place} and lost nothing.");
     }
     let damage = int(toll, "damage").unwrap();
@@ -125,7 +125,7 @@ pub fn one_toll(game: &Game, toll: &Row) -> String {
     format!(
         "{place} cost {who} {damage} hit point{} -- {}. {who} is {fate}.",
         if damage == 1 { "" } else { "s" },
-        toll_words(toll)
+        game.toll_words(toll)
     )
 }
 

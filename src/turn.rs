@@ -21,7 +21,7 @@ use crate::roll::{self, Seed};
 use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing};
 use crate::spot;
 use crate::store::Store;
-use crate::{data, outcome, plan, shuffle_connections, volition, world_mechanic};
+use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_mechanic};
 use serde_json::Value;
 
 mod told;
@@ -2312,11 +2312,50 @@ impl<'s> Mechanics<'s> {
         if let Some(edge) = self.walked(from, Some(destination)) {
             let save = text(&edge, "hazard")
                 .and_then(|hazard| DOORWAY_HAZARDS.iter().find(|(key, _)| *key == hazard));
-            if let (Some((hazard, save)), Some(die)) = (save, int(&edge, "hazard_die")) {
+            if text(&edge, "hazard") == Some(physics::FALL) {
+                self.fall(&edge, from, destination)?;
+            } else if let (Some((hazard, save)), Some(die)) = (save, int(&edge, "hazard_die")) {
                 self.take_toll(hazard, die, Some(save), destination, Some(id(&edge)))?;
             }
         }
         self.standing(destination, "on_arrival")
+    }
+
+    /// A fall through a doorway: the storeys between its two rooms at the
+    /// world's gravity, a dexterity save and then the dice, out of a
+    /// generator keyed on the doorway. Nothing is thrown or written in a
+    /// world with no gravity, or through a doorway that does not go down.
+    fn fall(&mut self, edge: &Row, from: Option<&Row>, room: &Row) -> Result<(), Error> {
+        let storeys = physics::storeys(from.and_then(|from| int(from, "z")), int(room, "z"));
+        let gravity = self.gravity();
+        let Some(dice) = storeys.and_then(|storeys| physics::dice(storeys, gravity.as_deref()))
+        else {
+            return Ok(());
+        };
+        let Some(who) = self.player() else {
+            return Ok(());
+        };
+        if self.over() {
+            return Ok(());
+        }
+        let mut rng = self.generator(self.story_now(), id(edge), roll::FALL);
+        let fall = physics::fall(dice, &who, &mut rng);
+        self.write_toll(
+            &who,
+            physics::FALL,
+            fall.saved(),
+            fall.damage,
+            room,
+            Some(id(edge)),
+        )
+    }
+
+    /// `universes.gravity`: how strongly things fall in this story's world,
+    /// or none.
+    fn gravity(&self) -> Option<String> {
+        let universe = int(self.game().story(), "universe_id")?;
+        let universe = self.records.find("universes", universe)?;
+        text(universe, "gravity").map(str::to_string)
     }
 
     /// `Playthrough::Hazards#standing`: a room's own hazard, at its moment.
@@ -2348,19 +2387,38 @@ impl<'s> Mechanics<'s> {
         if self.over() {
             return Ok(());
         }
-        let sequence = -(self.game().own("playthrough_tolls").len() as i64 + 1);
-        let mut rng = self.generator(self.story_now(), sequence, 0);
+        let mut rng = self.generator(self.story_now(), self.next_toll(), 0);
         let check = save.and_then(|save| check_ability(&who, save, 0, &mut rng));
         let saved = check.as_ref().is_some_and(Check::passed);
         let damage = if saved { 0 } else { roll::die(die, &mut rng) };
-        let Some(after) = self.harm(&who, damage)? else {
+        self.write_toll(&who, hazard, saved, damage, room, connection)
+    }
+
+    /// `Playthrough::Toll.next_sequence`: this game's tolls count down from -1.
+    fn next_toll(&self) -> i64 {
+        -(self.game().own("playthrough_tolls").len() as i64 + 1)
+    }
+
+    /// What a hazard took off the player, through the one hit-point writer,
+    /// and the toll that records it.
+    fn write_toll(
+        &mut self,
+        who: &Row,
+        hazard: &str,
+        saved: bool,
+        damage: i64,
+        room: &Row,
+        connection: Option<i64>,
+    ) -> Result<(), Error> {
+        let sequence = self.next_toll();
+        let Some(after) = self.harm(who, damage)? else {
             return Ok(());
         };
         self.insert(
             "playthrough_tolls",
             vec![
                 ("playthrough_id", Value::from(self.playthrough)),
-                ("character_id", Value::from(id(&who))),
+                ("character_id", Value::from(id(who))),
                 ("location_id", Value::from(id(room))),
                 (
                     "location_connection_id",

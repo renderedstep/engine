@@ -20,6 +20,7 @@ pub const FOOTPRINT: i128 = 5;
 pub const POPULATION: i128 = 6;
 pub const VOLITION: i128 = 7;
 pub const CAST: i128 = 8;
+pub const FALL: i128 = 9;
 
 /// The five parts of a seed. Unset parts are 0.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
