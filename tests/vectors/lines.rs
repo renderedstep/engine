@@ -60,6 +60,7 @@ fn thing(value: &Value, carried: bool) -> Thing {
         thing.use_kind = use_kind.into();
     }
     thing.combustible = value["combustible"].as_bool().unwrap_or(false);
+    thing.template = value["template"].as_i64();
     thing
 }
 
@@ -83,7 +84,7 @@ fn build(worlds: &Value, name: &Value) -> Built {
                 place: place(exit),
                 barrier: exit["barrier"].as_str().unwrap_or("open").to_string(),
                 edge: exit["id"].as_i64().expect("an exit's id"),
-                key: None,
+                key: exit["key"].as_i64(),
             })
             .collect(),
         cast: list(&world["cast"]).iter().map(person).collect(),
