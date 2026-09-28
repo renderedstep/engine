@@ -60,6 +60,8 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version and the shape of every table it touches checked, every table the loop reads loaded as records, a row inserted or updated |
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
+| `glance` | `Playthrough::Glance`, `Playthrough::Availability`, `Playthrough::SlashMenu` | what a front end's panels show between turns: the room, its ways out, who and what is here, which verbs are open at what (each target one the turn plays, each closed verb closed in the refusal's words), the slash menu and the next beat |
+| `facts`, `prompt_version` | `Scene::Narrator#prompt_for`, `Playthrough::Turn`'s `_fact` builders, `Playthrough::PromptVersion::Scaffold` | what a turn hands the narrator as already done, and that scaffold rendered against fixed placeholders for the game's prompt version to digest |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
 | `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!`, `Quest::Binder`, `Quest::Deadline`, `Scene::Ending`, `Item::Inscriber` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
 | `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
@@ -109,7 +111,8 @@ where the Rails app hands each whole turn to this engine in-process:
   comes back as `Error::Unsupported`, also rolled back.
 
 `Engine::start` begins a playthrough the way the browser does,
-`Engine::read` returns the records with nothing played, and
+`Engine::read` returns the records with nothing played, `Engine::glance`
+returns what a front end's panels show between turns and writes nothing, and
 `Engine::play_deciding` plays a line that talks to somebody with a fixed
 decision standing in for the answer a model would give, which is how the
 engine sweep plays its conversations.

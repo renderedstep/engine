@@ -147,11 +147,17 @@ impl<'a> Game<'a> {
     /// Story time now (`#story_now`): the current scene's, or the story's
     /// clock.
     pub fn story_now(&self) -> i64 {
+        self.story_time().expect("a story with a clock")
+    }
+
+    /// [`Game::story_now`], or none for a story with no scene and no start
+    /// time, which has no clock at all.
+    pub fn story_time(&self) -> Option<i64> {
         if let Some(at) = self
             .current_scene()
             .and_then(|scene| int(scene, "story_timestamp"))
         {
-            return at;
+            return Some(at);
         }
         let story = self.story_id();
         self.records
@@ -160,7 +166,6 @@ impl<'a> Game<'a> {
             .filter_map(|scene| int(scene, "story_timestamp"))
             .max()
             .or_else(|| int(self.story(), "start_time"))
-            .expect("a story with a clock")
     }
 
     fn vitals_row(&self, character: i64) -> Option<&'a Row> {
@@ -200,6 +205,15 @@ impl<'a> Game<'a> {
                 && int(blow, "target_id") == target
                 && id(blow) > after
         })
+    }
+
+    /// `#provoked?`: this game picked a fight with this body, and no
+    /// ceasefire with it holds.
+    pub fn provoked(&self, character: i64) -> bool {
+        !self.ceasefire_with(character)
+            && self
+                .vitals_row(character)
+                .is_some_and(|row| int(row, "provoked_at").is_some())
     }
 
     /// Whether this character's ceasefire with the player holds.

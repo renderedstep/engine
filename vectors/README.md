@@ -11,7 +11,10 @@ from that code, and these are verbatim copies of its `test/engine_vectors/` at
 commit `f121cd54da57673b17497cf7c94e156c002dedc8`, the last to change any of
 them. The portions named in `ENGINE_OWNED` are this crate's: no Ruby code runs
 them any more but the game's Ruby turn loop, which no player plays, so the game
-no longer exports them. They are blessed here from this crate's answers, as a
+no longer exports them. The five line-reading portions (`grammar`,
+`grammar_corpus`, `slash_menu`, `classifier_intent`, `refusal`) joined
+`shuffle_connections` there once the game read its panels, verbs and slash
+menu off this crate (`Engine::glance`). They are blessed here from this crate's answers, as a
 reviewed diff, and the game vendors them at the commit it pins, checked byte for
 byte there (`bin/rails engine:vendored`):
 

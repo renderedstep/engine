@@ -7,6 +7,7 @@
 //! boundary a host language calls through, where an unwinding Rust panic
 //! could not be rescued.
 
+use crate::glance::Glance;
 use crate::outcome::{Outcome, State};
 use crate::records::{flag, id, int, text};
 use crate::store::Store;
@@ -229,6 +230,16 @@ impl Engine {
                 },
                 state: State::read(mechanics.records(), playthrough),
             })
+        })
+    }
+
+    /// What a front end's panels show between turns, and which verbs are
+    /// open ([`Glance`]). Writes nothing.
+    pub fn glance(&self, playthrough: i64) -> Result<Glance, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let mechanics = Mechanics::new(store, playthrough)?;
+            Ok(Glance::read(&mechanics))
         })
     }
 
