@@ -130,7 +130,11 @@ impl Kept for Option<Row> {
 
 impl Kept for Told {
     fn encode(&self) -> Value {
-        encode::scene(self.id, self.tolls.as_deref(), self.safety, self.setup)
+        let mut value = encode::scene(self.id, self.tolls.as_deref(), self.safety, self.setup);
+        if !self.volitions {
+            value["volitions"] = Value::Bool(false);
+        }
+        value
     }
     fn decode(_: &Turn, value: &Value) -> Result<Told, Error> {
         let id = value["id"]
@@ -141,6 +145,7 @@ impl Kept for Told {
             tolls: value["tolls"]
                 .as_array()
                 .map(|tolls| tolls.iter().filter_map(Value::as_i64).collect()),
+            volitions: value["volitions"].as_bool().unwrap_or(true),
             safety: value["safety"].as_bool().unwrap_or(false),
             setup: value["setup"].as_bool().unwrap_or(false),
         })

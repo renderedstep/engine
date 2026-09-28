@@ -93,6 +93,9 @@ struct Told {
     id: i64,
     /// The tolls its paragraph told, where it did not tell them all.
     tolls: Option<Vec<i64>>,
+    /// Whether its prompt carried the untold volitions. An arrival's does
+    /// not, so they wait for the next paragraph that tells them.
+    volitions: bool,
     safety: bool,
     setup: bool,
 }
@@ -102,6 +105,7 @@ impl Told {
         Told {
             id,
             tolls: None,
+            volitions: true,
             safety: false,
             setup: false,
         }
@@ -574,7 +578,7 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// `#claim_volitions!`.
     fn claim_volitions(&mut self, scene: Option<&Told>) -> Result<i64, Error> {
-        let Some(scene) = scene else {
+        let Some(scene) = scene.filter(|scene| scene.volitions) else {
             return Ok(0);
         };
         let acts: Vec<i64> = self
@@ -945,6 +949,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             )?;
             Ok(Told {
                 tolls: Some(tolls),
+                volitions: false,
                 ..Told::plain(scene)
             })
         })?;
@@ -983,6 +988,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(Told {
                 id: scene,
                 tolls: Some(tolls),
+                volitions: false,
                 safety,
                 setup,
             })
@@ -1091,6 +1097,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(Told {
                 id: scene,
                 tolls: used_fallback.then(Vec::new),
+                volitions: true,
                 safety,
                 setup,
             })
