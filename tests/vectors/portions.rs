@@ -31,6 +31,7 @@ pub const NAMES: &[&str] = &[
     "classifier_request",
     "ledger",
     "kept_requests",
+    "dialogue_requests",
     "memory",
     "moment",
     "plan",

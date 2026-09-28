@@ -309,7 +309,7 @@ fn dialogue_request(records: &Records, input: &Value) -> Value {
     if int(&input["call"]) == 0 {
         return dialogue::character_request(&game, character, &line);
     }
-    let before = crate::load("kept_requests")
+    let before = crate::load("dialogue_requests")
         .cases
         .into_iter()
         .find(|other| other["input"]["id"] == case && other["input"]["call"] == 0)
@@ -324,15 +324,25 @@ fn dialogue_request(records: &Records, input: &Value) -> Value {
 
 #[test]
 fn kept_requests() {
-    check("kept_requests", json!({ "dialogue_cases": 3 }), |input| {
+    check("kept_requests", json!({}), |input| {
         let records = records(input);
         match input["set"].as_str().expect("a set") {
             "arrival-branches" => arrival(&records),
             set if set.starts_with("realization-") => realization(&records, &input["id"]),
-            set if set.starts_with("desires-dialogue-") => dialogue_request(&records, input),
             other => panic!("no builder for the kept set {other}"),
         }
     });
+}
+
+/// The dialogue bench's kept requests, which this engine owns: no Ruby code
+/// builds a character pass or its narration any more.
+#[test]
+fn dialogue_requests() {
+    check(
+        "dialogue_requests",
+        json!({ "dialogue_cases": 3 }),
+        |input| dialogue_request(&records(input), input),
+    );
 }
 
 /// The realization bench's request for the room a case stages: the one with
@@ -460,14 +470,19 @@ impl renderedstep_engine::model::http::Transport for Kept {
 #[test]
 fn kept_requests_on_the_live_path() {
     use renderedstep_engine::model::{Agent, Book, Call, Filed, Live, Models, Route, Secret};
-    let vectors = crate::load("kept_requests");
+    let kept = crate::load("kept_requests");
+    let dialogue = crate::load("dialogue_requests");
     let engine = renderedstep_engine::parity::open_world(include_str!(
         "../../parity/worlds/the-quay-house.sql"
     ))
     .expect("a database for the receipts");
     let mut checked = 0;
-    for case in &vectors.cases {
-        let input = crate::with_shared_records(&case["input"], &vectors.cases);
+    let portions = [&kept.cases, &dialogue.cases];
+    for (case, cases) in portions
+        .iter()
+        .flat_map(|cases| cases.iter().map(move |case| (case, *cases)))
+    {
+        let input = crate::with_shared_records(&case["input"], cases);
         let records = records(&input);
         let request = match input["set"].as_str().expect("a set") {
             "arrival-branches" => arrival(&records),

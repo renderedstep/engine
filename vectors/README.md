@@ -40,10 +40,16 @@ Commit `659ca6ad5d8246f2fd7edee4bbd1e728e8148f59` added the request-building por
 `volition_request`, `moment`, `ledger`, `memory`, `plan`, `request_identity`,
 `kept_requests`). Most of their cases hold every row the database held as a
 `records` input; `lib/engine_vectors/records.rb` in that repository documents
-the shape. Two `kept_requests` dialogue cases need what the rows do not hold:
-the line the player typed and the character's stored answer. Those are in
-`tests/fixtures/dialogue_replay.json`, copied from that commit, which
-names the files they come from.
+the shape. Since the game's benches build their requests through this crate,
+the builders the game's Ruby code no longer has are this crate's portions:
+`cascade`, `classifier_request`, `volition_request`, `moment`, `ledger`,
+`memory`, and `dialogue_requests`, the dialogue bench's cases that
+`kept_requests` held until then. `kept_requests` keeps the arrival and room
+writer's cases, whose Ruby builders still write a world's rooms and its
+opening arrival. Two `dialogue_requests` cases need what the rows do not
+hold: the line the player typed and the character's stored answer. Those are
+in `tests/fixtures/dialogue_replay.json`, which names the files they come
+from.
 
 Never edit the game's portions by hand. To refresh them, in the game's
 repository:
