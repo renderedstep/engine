@@ -37,6 +37,7 @@ pub use classify::Fixed;
 mod kept;
 mod realize;
 mod talk;
+mod typed;
 
 /// `Scene::Ending::PURPOSE`.
 const ENDING: &str = "ending";
@@ -137,6 +138,8 @@ pub struct Turn<'s, 'm> {
     stop_after: Option<String>,
     /// The reading every line takes in place of the classifier's.
     fixed: Option<Fixed>,
+    /// The line being played, as a typed volition request states it.
+    line: Option<String>,
 }
 
 fn model(failure: Failure) -> Error {
@@ -188,6 +191,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             classifier: None,
             stop_after: None,
             fixed: None,
+            line: None,
         })
     }
 
@@ -410,6 +414,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         })?;
 
         let typed = grammar::unslashed(command);
+        self.line = Some(typed.clone());
         let (intent, resolved_by) = self.remember("intent", |turn| turn.read_line(command))?;
 
         let refusal = self.commit("refusal", |turn| {
@@ -465,8 +470,15 @@ impl<'s, 'm> Turn<'s, 'm> {
         if let Some(reactions) = self.saved::<Vec<i64>>("reactions")? {
             self.m.reactions = reactions;
         }
+        let judgment = if self.done("volition") {
+            None
+        } else {
+            self.judged_acts(from.as_ref())
+        };
         self.commit("volition", |turn| {
-            turn.m.volitions(from.as_ref()).map(|_| ())
+            turn.m
+                .volitions(from.as_ref(), judgment.as_ref())
+                .map(|_| ())
         })?;
         self.commit("room_hazard", |turn| match &from {
             Some(room) => turn.m.standing(room, "every_turn"),
@@ -927,9 +939,14 @@ impl<'s, 'm> Turn<'s, 'm> {
         })?;
         // Kept by the journal, so a worker killed after it never throws the
         // dice again, and the arrival it resumes into tells the same rows.
+        let judgment = if self.done("reactions") {
+            None
+        } else {
+            self.judged_reactions(&room)
+        };
         let reactions = self.commit("reactions", |turn| {
             let room = turn.m.row("locations", destination)?;
-            turn.m.reactions(&room)?;
+            turn.m.reactions(&room, judgment.as_ref())?;
             Ok(turn.m.reactions.clone())
         })?;
         self.m.reactions = reactions;
@@ -1116,9 +1133,14 @@ impl<'s, 'm> Turn<'s, 'm> {
     /// Kept by the journal, so a worker killed after it never throws the
     /// die again.
     fn speak_up(&mut self, addressee: Option<i64>) -> Result<(), Error> {
+        let judgment = if self.done("speech") {
+            None
+        } else {
+            self.judged_speech(addressee)
+        };
         let spoke = self.commit("speech", |turn| {
             let here = turn.m.here();
-            turn.m.speech(here.as_ref(), addressee)?;
+            turn.m.speech(here.as_ref(), addressee, judgment.as_ref())?;
             Ok(turn.m.spoke.clone())
         })?;
         self.m.spoke = spoke;

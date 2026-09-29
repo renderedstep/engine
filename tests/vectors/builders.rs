@@ -119,8 +119,18 @@ fn volition_request() {
             .iter()
             .map(|who| game.character(int(who)))
             .collect();
+        let speakers: Vec<i64> = input["speakers"]
+            .as_array()
+            .map(|speakers| speakers.iter().map(int).collect())
+            .unwrap_or_default();
         let location = game.location(int(&input["location"]));
-        volition::request(&game, &characters, location, input["line"].as_str())
+        volition::request_asking(
+            &game,
+            &characters,
+            &speakers,
+            location,
+            input["line"].as_str(),
+        )
     });
 }
 

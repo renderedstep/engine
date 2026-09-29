@@ -53,7 +53,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `plan` | `Location::Plan` | a room's size, storey and ways out, said in sentences |
 | `moment` | `Playthrough::Moment` | the narration context and a character's context for the moment the player stands in |
 | `narration` | `Scene::Narrator#prompt_for` | the narrator's request for a typed line, what the engine already did and the moment it happens in |
-| `volition` | `Playthrough::Volition#choices`, `::State`, `::SystemOne#request` | the acts a person may take and the System One request that asks which; what they may say unasked, and the speech die thrown over it |
+| `volition` | `Playthrough::Volition#choices`, `::State`, `::SystemOne#request`, `::SystemOne#decisions` | the acts a person may take and the System One request that asks which, and what it answered read back to tokens; what they may say unasked, and the speech die thrown over it |
 | `schemas` | the `RubyLLM::Schema` classes a request carries | each schema's `to_json_schema` output, key for key |
 | `identity` | `Eval::RequestIdentity` | the canonical form of a set of requests and its 16-hex digest |
 | `arrival` | `Scene::Generator`, `Scene::ArrivalContext` | the arrival writer's request for walking into a place |
@@ -171,6 +171,18 @@ to somebody is `InteractionAgent`'s two calls: the person answers in their
 own conversation with this game, picked up again on the next talk, and
 picks one action the engine offered; the engine applies it, and the
 narrator writes the exchange from the reaction and the engine's receipt.
+
+Where System One is on, it also decides what the people in a room do on
+their own (`Playthrough::Volition::SystemOne`). The speech die still decides
+whether somebody speaks up unasked, and System One then chooses which of
+the things on offer they say, or that they say nothing after all; everybody
+else is asked their act, which replaces the die's only where the answer
+reads them pressured enough (`volition::PRESSURE_THRESHOLD`). The call is
+made before its slot's rows are written, one per slot: what the die let be
+said, before the paragraph; the acts of the room the line began in, after
+it; and on an arrival, both for the people reacting to it. Every row says
+who decided it (`decided_by`), and whatever the call could not answer is
+the die's own pick, with the reason on the row (`system_one_error`).
 
 Walking into a room nobody has written writes it first
 (`Location::Generator#realize!`): one call for its description, lore,

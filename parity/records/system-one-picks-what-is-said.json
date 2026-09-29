@@ -1,0 +1,518 @@
+{
+  "script": "system-one-picks-what-is-said",
+  "steps": [
+    {
+      "step": "step 1 tamsin-greets-as-system-one-chose",
+      "requests": [
+        {
+          "purpose": "system_one",
+          "state": {
+            "location": "The Pawn Counter",
+            "characters": {
+              "person_1": {
+                "name": "Tamsin Gale",
+                "conscious_desire": "Tamsin wants every pawn ticket back in the book, starting with the one in Ansel's hand.",
+                "unconscious_desire": "Tamsin wants to be trusted with the till.",
+                "recognized_need": "Tamsin needs to keep the book square.",
+                "unrecognized_need": "Tamsin needs to let one pledge go without a fight.",
+                "desire_pursuit": "obtain",
+                "need_pursuit": "attend",
+                "witnessed": []
+              }
+            },
+            "player_action": "take brass tally"
+          },
+          "questions": {
+            "person_1:speech": {
+              "type": "choice",
+              "instructions": "Choose one option.",
+              "criteria": {
+                "speech_1": "Say nothing.",
+                "speech_2": "Greet Ansel Mott.",
+                "speech_3": "Ask Ansel Mott for pawn ticket.",
+                "speech_4": "Ask Ansel Mott for brass tally.",
+                "speech_5": "Demand pawn ticket from Ansel Mott.",
+                "speech_6": "Demand brass tally from Ansel Mott.",
+                "speech_7": "Tell Ansel Mott to leave The Pawn Counter."
+              }
+            }
+          }
+        },
+        {
+          "purpose": "narration",
+          "system": "You are the narrator of a text adventure. Write in the second person,\npresent tense, addressing the player as \"you\". Describe what happens in\nresponse to what they did, in one or two short paragraphs of prose.\n\nNever break character, never offer the player a numbered menu, and never\nmention that you are an AI or a narrator. The ways out of here, the people\npresent and what the player carries are listed in the prompt: do not add a\nway out, a person or a possession that is not on those lists. If the\nplayer tries something impossible, narrate the failure rather than\nrefusing.\n",
+          "user": "Story: Two Clerks at One Counter (engine sweep) (town adventure)\n\nPremise: Ansel has come to redeem a pledge; Tamsin wants his ticket and Rowe wants him gone.\n\nThe player is in The Pawn Counter: A long counter under a brass till, with shelves of pledges behind it.\n\nWays out of here: The Street. There are no others.\n\nThe player is Ansel Mott.\n\nAnsel Mott is unhurt.\n\nAlso here: Tamsin Gale (Tamsin), Rowe Harker (Rowe). Nobody else is present.\n\nWhat else happened here, recorded by the game: Tamsin Gale spoke up unasked and greeted Ansel Mott.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: pawn ticket, brass tally (picked up just now, on this turn).\n\nWhat just happened: You stand at the pawnbroker's counter with your ticket in hand. Tamsin and Rowe are both behind it.\n\nWhat has ALREADY happened, recorded by the game: ON THIS TURN, and not before it, Ansel Mott picked the brass tally up. Until this turn it was NOT in their hands at all: it was lying in The Pawn Counter. Now they are carrying it -- A brass counter-weight stamped with the shop's mark.. The picking up is what has just happened and it is what to narrate. Do not write it as something they already had, already held, or turn out to be holding. The brass tally is the only thing that moved: nothing else was lifted, opened, drawn out or taken into anybody's hands.\nNarrate it as done. Do not contradict it and do not undo it.\n\n\nThe player types: take brass tally\n\nNarrate what happens.\n",
+          "schema": null
+        },
+        {
+          "purpose": "system_one",
+          "state": {
+            "location": "The Pawn Counter",
+            "characters": {
+              "person_1": {
+                "name": "Rowe Harker",
+                "conscious_desire": "Rowe wants the counter to himself and the door shut.",
+                "unconscious_desire": "Rowe wants somebody to ask his advice.",
+                "recognized_need": "Rowe needs to keep the shop's reputation.",
+                "unrecognized_need": "Rowe needs to admit the watch is already sold.",
+                "desire_pursuit": "keep",
+                "need_pursuit": "withhold",
+                "witnessed": []
+              }
+            },
+            "player_action": "take brass tally"
+          },
+          "questions": {
+            "person_1:act": {
+              "type": "choice",
+              "instructions": "Choose one option.",
+              "criteria": {
+                "act_1": "Stay where you are and change nothing.",
+                "act_2": "Walk out of The Pawn Counter to The Street.",
+                "act_3": "Accompany Ansel Mott when they leave this room."
+              }
+            },
+            "person_1:serves": {
+              "type": "choice",
+              "instructions": "Choose one option.",
+              "criteria": {
+                "conscious": "conscious",
+                "unconscious": "unconscious",
+                "recognized": "recognized",
+                "unrecognized": "unrecognized",
+                "none": "none"
+              }
+            },
+            "person_1:pressure": {
+              "type": "noul",
+              "instructions": "How strongly is this person pressured toward what they will not face?",
+              "criteria": {
+                "true": "This person is pressured toward what they will not face.",
+                "false": "Nothing here presses this person toward what they will not face."
+              }
+            }
+          }
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long counter under a brass till, with shelves of pledges behind it.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-24 19:10:00",
+              "lore": "The counter has been scrubbed so often the grain stands up like cord.",
+              "mobile": 0,
+              "name": "The Pawn Counter",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A pawnbroker's counter.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null,
+              "surface": null,
+              "kind": null,
+              "density": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A numbered stub with a date and a pledge written on it.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "pawn ticket",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy"
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A brass counter-weight stamped with the shop's mark.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "brass tally",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy"
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "You lift the brass tally off the counter, and Tamsin says good morning.",
+              "engine_fact": "ON THIS TURN, and not before it, Ansel Mott picked the brass tally up. Until this turn it was NOT in their hands at all: it was lying in The Pawn Counter. Now they are carrying it -- A brass counter-weight stamped with the shop's mark.. The picking up is what has just happened and it is what to narrate. Do not write it as something they already had, already held, or turn out to be holding. The brass tally is the only thing that moved: nothing else was lifted, opened, drawn out or taken into anybody's hands.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "take",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-24 19:10:00",
+              "summary": null,
+              "typed": "take brass tally"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 the-die-decides-when-system-one-is-down",
+      "requests": [
+        {
+          "purpose": "system_one",
+          "state": {
+            "location": "The Pawn Counter",
+            "characters": {
+              "person_1": {
+                "name": "Rowe Harker",
+                "conscious_desire": "Rowe wants the counter to himself and the door shut.",
+                "unconscious_desire": "Rowe wants somebody to ask his advice.",
+                "recognized_need": "Rowe needs to keep the shop's reputation.",
+                "unrecognized_need": "Rowe needs to admit the watch is already sold.",
+                "desire_pursuit": "keep",
+                "need_pursuit": "withhold",
+                "witnessed": [
+                  "You: Rowe Harker stayed in The Pawn Counter and changed nothing."
+                ]
+              }
+            },
+            "player_action": "examine pawn ticket"
+          },
+          "questions": {
+            "person_1:speech": {
+              "type": "choice",
+              "instructions": "Choose one option.",
+              "criteria": {
+                "speech_1": "Say nothing.",
+                "speech_2": "Greet Ansel Mott.",
+                "speech_3": "Ask Ansel Mott for pawn ticket.",
+                "speech_4": "Ask Ansel Mott for brass tally.",
+                "speech_5": "Demand pawn ticket from Ansel Mott.",
+                "speech_6": "Demand brass tally from Ansel Mott.",
+                "speech_7": "Tell Ansel Mott to leave The Pawn Counter."
+              }
+            }
+          }
+        },
+        {
+          "purpose": "narration",
+          "system": "You are the narrator of a text adventure. Write in the second person,\npresent tense, addressing the player as \"you\". Describe what happens in\nresponse to what they did, in one or two short paragraphs of prose.\n\nNever break character, never offer the player a numbered menu, and never\nmention that you are an AI or a narrator. The ways out of here, the people\npresent and what the player carries are listed in the prompt: do not add a\nway out, a person or a possession that is not on those lists. If the\nplayer tries something impossible, narrate the failure rather than\nrefusing.\n",
+          "user": "Story: Two Clerks at One Counter (engine sweep) (town adventure)\n\nPremise: Ansel has come to redeem a pledge; Tamsin wants his ticket and Rowe wants him gone.\n\nThe player is in The Pawn Counter: A long counter under a brass till, with shelves of pledges behind it.\n\nWays out of here: The Street. There are no others.\n\nThe player is Ansel Mott.\n\nAnsel Mott is unhurt.\n\nAlso here: Tamsin Gale (Tamsin), Rowe Harker (Rowe). Nobody else is present.\n\nWhat else happened here, recorded by the game: Rowe Harker spoke up unasked and told Ansel Mott to leave The Pawn Counter. Nobody moved.\n\nLying here, and takeable: nothing.\n\nThe player is carrying: pawn ticket, brass tally.\n\nWhat just happened: You lift the brass tally off the counter, and Tamsin says good morning.\n\nEarlier, in order:\nAnsel comes to the pawn counter to redeem a pledge.\n\n\nThe player types: examine pawn ticket\n\nNarrate what happens.\n",
+          "schema": null
+        },
+        {
+          "purpose": "system_one",
+          "state": {
+            "location": "The Pawn Counter",
+            "characters": {
+              "person_1": {
+                "name": "Tamsin Gale",
+                "conscious_desire": "Tamsin wants every pawn ticket back in the book, starting with the one in Ansel's hand.",
+                "unconscious_desire": "Tamsin wants to be trusted with the till.",
+                "recognized_need": "Tamsin needs to keep the book square.",
+                "unrecognized_need": "Tamsin needs to let one pledge go without a fight.",
+                "desire_pursuit": "obtain",
+                "need_pursuit": "attend",
+                "witnessed": [
+                  "You: Tamsin Gale spoke up unasked and greeted Ansel Mott."
+                ]
+              }
+            },
+            "player_action": "examine pawn ticket"
+          },
+          "questions": {
+            "person_1:act": {
+              "type": "choice",
+              "instructions": "Choose one option.",
+              "criteria": {
+                "act_1": "Stay where you are and change nothing.",
+                "act_2": "Walk out of The Pawn Counter to The Street.",
+                "act_3": "Accompany Ansel Mott when they leave this room."
+              }
+            },
+            "person_1:serves": {
+              "type": "choice",
+              "instructions": "Choose one option.",
+              "criteria": {
+                "conscious": "conscious",
+                "unconscious": "unconscious",
+                "recognized": "recognized",
+                "unrecognized": "unrecognized",
+                "none": "none"
+              }
+            },
+            "person_1:pressure": {
+              "type": "noul",
+              "instructions": "How strongly is this person pressured toward what they will not face?",
+              "criteria": {
+                "true": "This person is pressured toward what they will not face.",
+                "false": "Nothing here presses this person toward what they will not face."
+              }
+            }
+          }
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A long counter under a brass till, with shelves of pledges behind it.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-24 19:15:00",
+              "lore": "The counter has been scrubbed so often the grain stands up like cord.",
+              "mobile": 0,
+              "name": "The Pawn Counter",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A pawnbroker's counter.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null,
+              "surface": null,
+              "kind": null,
+              "density": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000003,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A numbered stub with a date and a pledge written on it.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "pawn ticket",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy"
+            },
+            {
+              "id": 1000000004,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A brass counter-weight stamped with the shop's mark.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "brass tally",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy"
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": 1000000004,
+              "acted_on_type": "Item",
+              "description": "You lift the brass tally off the counter, and Tamsin says good morning.",
+              "engine_fact": "ON THIS TURN, and not before it, Ansel Mott picked the brass tally up. Until this turn it was NOT in their hands at all: it was lying in The Pawn Counter. Now they are carrying it -- A brass counter-weight stamped with the shop's mark.. The picking up is what has just happened and it is what to narrate. Do not write it as something they already had, already held, or turn out to be holding. The brass tally is the only thing that moved: nothing else was lifted, opened, drawn out or taken into anybody's hands.",
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "take",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-24 19:10:00",
+              "summary": null,
+              "typed": "take brass tally"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": 1000000003,
+              "acted_on_type": "Item",
+              "description": "The ticket is creased where you have been holding it.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "examine",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-24 19:15:00",
+              "summary": null,
+              "typed": "examine pawn ticket"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000003
+            },
+            {
+              "character_id": 1000000003,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    }
+  ]
+}

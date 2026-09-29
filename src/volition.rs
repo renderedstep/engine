@@ -225,12 +225,12 @@ pub fn cooling(game: &Game, character: &Row) -> bool {
 /// pursuit has no speech row, or while they are cooling. Somebody fighting
 /// the party may only demand or dismiss.
 pub fn speech_choices(game: &Game, character: &Row, location: &Row) -> Vec<(String, String)> {
-    sayings(
+    facts(sayings(
         game,
         character,
         location,
         int(game.row, "current_location_id"),
-    )
+    ))
 }
 
 /// [`speech_choices`] for somebody in the room the party is walking into,
@@ -240,16 +240,55 @@ pub fn arrival_speech_choices(
     character: &Row,
     location: &Row,
 ) -> Vec<(String, String)> {
-    sayings(game, character, location, Some(id(location)))
+    facts(sayings(game, character, location, Some(id(location))))
 }
 
-/// What may be said with the party standing in `party`.
-fn sayings(
+/// What System One is offered to say for somebody the speech die let speak:
+/// token => the option it reads, in [`speech_choices`]' order. The option
+/// that says nothing is not among them; [`typed_request`] puts it first.
+pub fn speech_options(game: &Game, character: &Row, location: &Row) -> Vec<(String, String)> {
+    options(sayings(
+        game,
+        character,
+        location,
+        int(game.row, "current_location_id"),
+    ))
+}
+
+/// [`speech_options`] for somebody in the room the party is walking into,
+/// with the party counted as already in `location`.
+pub fn arrival_speech_options(
     game: &Game,
     character: &Row,
     location: &Row,
-    party: Option<i64>,
 ) -> Vec<(String, String)> {
+    options(sayings(game, character, location, Some(id(location))))
+}
+
+/// One thing a person may say unasked: its token, the fact the narrator is
+/// told when it is said, and the option System One reads for it.
+struct Saying {
+    token: String,
+    fact: String,
+    option: String,
+}
+
+fn facts(sayings: Vec<Saying>) -> Vec<(String, String)> {
+    sayings
+        .into_iter()
+        .map(|saying| (saying.token, saying.fact))
+        .collect()
+}
+
+fn options(sayings: Vec<Saying>) -> Vec<(String, String)> {
+    sayings
+        .into_iter()
+        .map(|saying| (saying.token, saying.option))
+        .collect()
+}
+
+/// What may be said with the party standing in `party`.
+fn sayings(game: &Game, character: &Row, location: &Row, party: Option<i64>) -> Vec<Saying> {
     let mut offered = Vec::new();
     let Some(player) = game.protagonist() else {
         return offered;
@@ -279,23 +318,32 @@ fn sayings(
                 && room.is_none_or(|room| int(row, "location_id") == Some(room))
         })
     };
+    let mut say = |token: String, fact: String, option: String| {
+        offered.push(Saying {
+            token,
+            fact,
+            option,
+        })
+    };
     let mut foes = game.foes_in(Some(location));
     foes.sort_by_key(|foe| id(foe));
     let hostile = foes.iter().any(|foe| id(foe) == id(character));
     let carried = game.carried();
     if !hostile {
         if !said("speak:greet", None) && !dialogue::spoken_with(game, character) {
-            offered.push((
+            say(
                 "speak:greet".to_string(),
                 format!("{who} spoke up unasked and greeted {name}."),
-            ));
+                format!("Greet {name}."),
+            );
         }
         if let Some(hazard) = text(location, "hazard") {
             if !said("speak:warn:here", Some(id(location))) {
-                offered.push((
+                say(
                     "speak:warn:here".to_string(),
                     format!("{who} spoke up unasked and warned {name} that {here} is {hazard}."),
-                ));
+                    format!("Warn {name} that {here} is {hazard}."),
+                );
             }
         }
         let mut ways: Vec<(&Row, &str)> = game
@@ -313,50 +361,53 @@ fn sayings(
         for (way, hazard) in ways {
             let token = format!("speak:warn:way:{}", id(way));
             if !said(&token, None) {
-                offered.push((
+                let way = string(way, "name");
+                say(
                     token,
                     format!(
-                        "{who} spoke up unasked and warned {name} about the {hazard} on the way to {}.",
-                        string(way, "name")
+                        "{who} spoke up unasked and warned {name} about the {hazard} on the way to {way}."
                     ),
-                ));
+                    format!("Warn {name} about the {hazard} on the way to {way}."),
+                );
             }
         }
         for foe in &foes {
             let token = format!("speak:warn:foe:{}", id(foe));
             if !said(&token, None) {
-                offered.push((
+                let foe = string(foe, "fullname");
+                say(
                     token,
-                    format!(
-                        "{who} spoke up unasked and warned {name} to beware of {}.",
-                        string(foe, "fullname")
-                    ),
-                ));
+                    format!("{who} spoke up unasked and warned {name} to beware of {foe}."),
+                    format!("Warn {name} to beware of {foe}."),
+                );
             }
         }
         for item in &carried {
-            offered.push((
+            let item_name = string(item, "name");
+            say(
                 format!("speak:ask:{}", id(item)),
                 format!(
-                    "{who} spoke up unasked and asked {name} for {}. Nothing changed hands.",
-                    string(item, "name")
+                    "{who} spoke up unasked and asked {name} for {item_name}. Nothing changed hands."
                 ),
-            ));
+                format!("Ask {name} for {item_name}."),
+            );
         }
     }
     for item in &carried {
-        offered.push((
+        let item_name = string(item, "name");
+        say(
             format!("speak:demand:{}", id(item)),
             format!(
-                "{who} spoke up unasked and demanded {} from {name}. Nothing changed hands.",
-                string(item, "name")
+                "{who} spoke up unasked and demanded {item_name} from {name}. Nothing changed hands."
             ),
-        ));
+            format!("Demand {item_name} from {name}."),
+        );
     }
-    offered.push((
+    say(
         "speak:dismiss".to_string(),
         format!("{who} spoke up unasked and told {name} to leave {here}. Nobody moved."),
-    ));
+        format!("Tell {name} to leave {here}."),
+    );
     offered
 }
 
@@ -436,11 +487,66 @@ fn choice(criteria: Map<String, Value>) -> Value {
 }
 
 /// `Volition::SystemOne#request`: `{state, questions}` for these people, in
-/// the order they are handed in.
+/// the order they are handed in, each asked their act.
 pub fn request(game: &Game, characters: &[&Row], location: &Row, line: Option<&str>) -> Value {
+    request_asking(game, characters, &[], location, line)
+}
+
+/// [`request`], and `speakers` among them are asked what they say, too, as
+/// though the speech die had let them speak: the request an arrival sends
+/// for the people who react to it, and the one the volition bench measures.
+/// Somebody with nothing to say is asked no speech question.
+pub fn request_asking(
+    game: &Game,
+    characters: &[&Row],
+    speakers: &[i64],
+    location: &Row,
+    line: Option<&str>,
+) -> Value {
+    let asked: Vec<Asked> = characters
+        .iter()
+        .map(|character| Asked {
+            character: (*character).clone(),
+            acts: Some(choices(game, character, location)),
+            speech: speakers
+                .contains(&id(character))
+                .then(|| speech_options(game, character, location)),
+        })
+        .collect();
+    typed_request(game, &asked, location, line)
+}
+
+/// The option that says nothing, offered first to everybody asked what they
+/// say.
+pub const SAY_NOTHING: &str = "Say nothing.";
+
+/// Somebody a typed volition request asks about: the acts on offer to them,
+/// when their act is asked, and what they may say (token => option), when
+/// the speech die let them speak.
+#[derive(Clone, Debug)]
+pub struct Asked {
+    pub character: Row,
+    pub acts: Option<Vec<(String, String)>>,
+    pub speech: Option<Vec<(String, String)>>,
+}
+
+impl Asked {
+    /// Whether this person is asked what they say.
+    fn speaks(&self) -> bool {
+        self.speech
+            .as_ref()
+            .is_some_and(|offered| !offered.is_empty())
+    }
+}
+
+/// `{state, questions}` for these people, in the order they are handed in:
+/// each person's desires and what they witnessed, then, where it is asked,
+/// their act (`act`, `serves`, `pressure`) and what they say (`speech`).
+pub fn typed_request(game: &Game, asked: &[Asked], location: &Row, line: Option<&str>) -> Value {
     let mut people = Map::new();
     let mut questions = Map::new();
-    for (offset, character) in characters.iter().enumerate() {
+    for (offset, person) in asked.iter().enumerate() {
+        let character = &person.character;
         let key = format!("person_{}", offset + 1);
         let mut entry = Map::new();
         entry.insert("name".into(), json!(string(character, "fullname")));
@@ -453,22 +559,33 @@ pub fn request(game: &Game, characters: &[&Row], location: &Row, line: Option<&s
         );
         people.insert(key.clone(), Value::Object(entry));
 
-        let acts: Map<String, Value> = choices(game, character, location)
-            .into_iter()
-            .enumerate()
-            .map(|(index, (_, sentence))| (format!("act_{}", index + 1), json!(sentence)))
-            .collect();
-        questions.insert(format!("{key}:act"), choice(acts));
-        let serves: Map<String, Value> = SERVES.iter().map(|s| (s.to_string(), json!(s))).collect();
-        questions.insert(format!("{key}:serves"), choice(serves));
-        questions.insert(
-            format!("{key}:pressure"),
-            json!({
-                "type": "noul",
-                "instructions": PRESSURE,
-                "criteria": { "true": PRESSURE_TRUE, "false": PRESSURE_FALSE },
-            }),
-        );
+        if let Some(acts) = &person.acts {
+            let acts: Map<String, Value> = acts
+                .iter()
+                .enumerate()
+                .map(|(index, (_, sentence))| (format!("act_{}", index + 1), json!(sentence)))
+                .collect();
+            questions.insert(format!("{key}:act"), choice(acts));
+            let serves: Map<String, Value> =
+                SERVES.iter().map(|s| (s.to_string(), json!(s))).collect();
+            questions.insert(format!("{key}:serves"), choice(serves));
+            questions.insert(
+                format!("{key}:pressure"),
+                json!({
+                    "type": "noul",
+                    "instructions": PRESSURE,
+                    "criteria": { "true": PRESSURE_TRUE, "false": PRESSURE_FALSE },
+                }),
+            );
+        }
+        if let Some(offered) = person.speech.as_ref().filter(|_| person.speaks()) {
+            let options: Map<String, Value> = std::iter::once(SAY_NOTHING)
+                .chain(offered.iter().map(|(_, option)| option.as_str()))
+                .enumerate()
+                .map(|(index, option)| (format!("speech_{}", index + 1), json!(option)))
+                .collect();
+            questions.insert(format!("{key}:speech"), choice(options));
+        }
     }
     json!({
         "state": {
@@ -478,6 +595,99 @@ pub fn request(game: &Game, characters: &[&Row], location: &Row, line: Option<&s
         },
         "questions": questions,
     })
+}
+
+/// What System One answered about one person (`Volition::SystemOne#decisions`).
+#[derive(Clone, Debug, PartialEq)]
+pub struct Judged {
+    pub character: i64,
+    /// The act that replaces the die's, when the answer was pressured enough
+    /// to; none leaves the act to the die, and an error says why the answer
+    /// could not be read. None when the act was not asked.
+    pub act: Option<Result<Option<String>, String>>,
+    /// What they say: a token, or none for saying nothing, or why the answer
+    /// could not be read. None when they were not asked.
+    pub speech: Option<Result<Option<String>, String>>,
+}
+
+/// A typed volition request's outcome, for the rows it decides.
+#[derive(Clone, Debug, PartialEq)]
+pub enum Judgment {
+    /// The call did not answer, and the die decides everything it asked.
+    Failed(String),
+    /// Every person asked about, in the order asked.
+    Answered(Vec<Judged>),
+}
+
+impl Judgment {
+    /// What was answered about somebody, if they were asked about.
+    pub fn of(&self, character: i64) -> Option<&Judged> {
+        match self {
+            Judgment::Failed(_) => None,
+            Judgment::Answered(people) => people.iter().find(|who| who.character == character),
+        }
+    }
+}
+
+/// Reads System One's reply to [`typed_request`]'s `questions` about
+/// `asked`, mapping each answer back to the token it was offered for. An
+/// act replaces the die's only at [`PRESSURE_THRESHOLD`] or over; what is
+/// said is taken as answered, because the die already decided that the
+/// person speaks.
+pub fn judge(
+    asked: &[Asked],
+    questions: &Value,
+    reply: Result<&Value, &crate::model::Unavailable>,
+) -> Judgment {
+    let body = match reply {
+        Ok(body) => body,
+        Err(failure) => return Judgment::Failed(failure.0.clone()),
+    };
+    let answers = match crate::cascade::Answers::new(body, questions) {
+        Ok(answers) => answers,
+        Err(failure) => return Judgment::Failed(failure.0),
+    };
+    let label = |id: &str, prefix: &str| -> Result<usize, String> {
+        let chosen = answers.choice(id).map_err(|failure| failure.0)?;
+        chosen
+            .strip_prefix(prefix)
+            .and_then(|at| at.parse::<usize>().ok())
+            .ok_or_else(|| format!("{id} answered {chosen:?}, which names no option"))
+    };
+    let people = asked
+        .iter()
+        .enumerate()
+        .map(|(offset, person)| {
+            let key = format!("person_{}", offset + 1);
+            let act = person.acts.as_ref().map(|acts| {
+                let pressure = answers
+                    .noul(&format!("{key}:pressure"))
+                    .map_err(|failure| failure.0)?;
+                if pressure < PRESSURE_THRESHOLD {
+                    return Ok(None);
+                }
+                let at = label(&format!("{key}:act"), "act_")?;
+                Ok(acts.get(at.wrapping_sub(1)).map(|(token, _)| token.clone()))
+            });
+            let speech = person
+                .speech
+                .as_ref()
+                .filter(|_| person.speaks())
+                .map(|offered| {
+                    let at = label(&format!("{key}:speech"), "speech_")?;
+                    Ok(at
+                        .checked_sub(2)
+                        .and_then(|at| offered.get(at))
+                        .map(|(token, _)| token.clone()))
+                });
+            Judged {
+                character: id(&person.character),
+                act,
+                speech,
+            }
+        })
+        .collect();
+    Judgment::Answered(people)
 }
 
 #[cfg(test)]
@@ -745,6 +955,97 @@ mod tests {
             data::speech().silent.turn,
             &mut rng,
         )
+    }
+
+    /// The speech question goes only to somebody asked it, offers saying
+    /// nothing first and then what is on offer in the order it is offered,
+    /// and its answer reads back to the token offered under that label; an
+    /// act replaces the die's only when the person reads pressured enough.
+    #[test]
+    fn the_speech_question_offers_silence_first_and_reads_back_to_a_token() {
+        let records = office(&["quarter receipt"]);
+        let game = Game::new(&records, GAME);
+        let (bell, room) = (game.character(BELL), game.location(OFFICE));
+        assert_eq!(
+            request_asking(&game, &[bell], &[], room, Some("look"))["questions"],
+            request(&game, &[bell], room, Some("look"))["questions"],
+            "nobody asked to speak is the act request, byte for byte"
+        );
+        let asked = [Asked {
+            character: bell.clone(),
+            acts: Some(choices(&game, bell, room)),
+            speech: Some(speech_options(&game, bell, room)),
+        }];
+        let built = typed_request(&game, &asked, room, Some("look"));
+        let questions = &built["questions"];
+        assert_eq!(
+            questions.as_object().unwrap().keys().collect::<Vec<_>>(),
+            [
+                "person_1:act",
+                "person_1:serves",
+                "person_1:pressure",
+                "person_1:speech"
+            ]
+        );
+        assert_eq!(
+            questions["person_1:speech"],
+            json!({
+                "type": "choice",
+                "instructions": "Choose one option.",
+                "criteria": {
+                    "speech_1": "Say nothing.",
+                    "speech_2": "Greet Wick.",
+                    "speech_3": "Ask Wick for quarter receipt.",
+                    "speech_4": "Demand quarter receipt from Wick.",
+                    "speech_5": "Tell Wick to leave The Records Office.",
+                },
+            })
+        );
+
+        let answered = |answers: Value| {
+            let body = json!({ "answers": answers });
+            judge(&asked, questions, Ok(&body))
+        };
+        let choice = |label: &str| json!({ "type": "choice", "choice": label });
+        let noul = |p: f64| json!({ "type": "noul", "noul": p });
+        let judged = answered(json!({
+            "person_1:act": choice("act_1"), "person_1:serves": choice("none"),
+            "person_1:pressure": noul(0.2), "person_1:speech": choice("speech_4"),
+        }));
+        assert_eq!(
+            judged,
+            Judgment::Answered(vec![Judged {
+                character: BELL,
+                act: Some(Ok(None)),
+                speech: Some(Ok(Some("speak:demand:30".into()))),
+            }]),
+            "below the pressure the act is the die's"
+        );
+        let judged = answered(json!({
+            "person_1:act": choice("act_2"), "person_1:serves": choice("none"),
+            "person_1:pressure": noul(0.5), "person_1:speech": choice("speech_1"),
+        }));
+        assert_eq!(
+            judged,
+            Judgment::Answered(vec![Judged {
+                character: BELL,
+                act: Some(Ok(Some("move:21".into()))),
+                speech: Some(Ok(None)),
+            }]),
+            "at the pressure the act is System One's, and speech_1 says nothing"
+        );
+        let Judgment::Answered(people) = answered(json!({
+            "person_1:act": choice("act_9"), "person_1:serves": choice("none"),
+            "person_1:pressure": noul(0.9), "person_1:speech": choice("speech_9"),
+        })) else {
+            panic!("answered");
+        };
+        assert!(matches!(people[0].act, Some(Err(_))), "{people:?}");
+        assert!(matches!(people[0].speech, Some(Err(_))), "{people:?}");
+        assert!(matches!(
+            answered(json!({ "person_1:act": choice("act_1") })),
+            Judgment::Failed(_)
+        ));
     }
 
     /// The same seed throws the same, and carrying six things picks asking
