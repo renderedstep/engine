@@ -38,7 +38,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `world_mechanic` | `WorldMechanic` | the cadence boundaries a mechanic has to run for |
 | `deadline` | `Quest::Deadline` | the hops walk and the anchor room an overdue step is placed from |
 | `cast` | `Character::Registry`, `Character::Generator` | the seeded race, age, sex and background of new people |
-| `physics` | none: it was written here | a fall through a doorway: the storeys it drops, the dice the world's gravity throws for them, the save that halves them, and what the toll says it was; and whether a thing that came down on a floor broke: its fragility, how it came down and the floor's surface, as a share of one die |
+| `physics` | none: it was written here | a fall through a doorway: the storeys it drops, the dice the world's gravity throws for them, the save that halves them, and what the toll says it was; and whether a thing that came down on a floor broke: its fragility, how it came down and the floor's surface, as a share of one die; and how far a thrown thing carries: its bulk, the thrower's strength and the world's gravity, the paces to what it was thrown at in a laid-out room, and where it comes down when it falls short |
 | `room` | `Playthrough::Classifier`'s closed sets, `Playthrough::PhysicalAction#choices` | the ways out, the cast, the floor, the hands and the physical attempts of one room |
 | `grammar` | `Playthrough::Grammar` | a typed line read without a model: a slashed line claimed, names resolved, refusals written |
 | `intent` | `Playthrough::Classifier::Intent`, `Playthrough::Classifier#build_intent` | what a line was read as, whether it is refused, and a model's answer resolved to records |

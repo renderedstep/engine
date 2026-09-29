@@ -18,6 +18,7 @@ use crate::engine::Error;
 use crate::facts::{self, Throw};
 use crate::model::receipts::{self, Filed};
 use crate::model::{Agent, Book, Call, Failure};
+use crate::physics::Reach;
 use crate::playthrough::Game;
 use crate::records::{id, int, string, text};
 use crate::room::Record;
@@ -262,6 +263,11 @@ impl Turn<'_, '_> {
     ) -> Result<Option<Told>, Error> {
         let row = self.m.row("items", item)?;
         let thrower = self.m.player();
+        let here_name = self
+            .m
+            .here()
+            .map(|here| string(&here, "name").to_string())
+            .unwrap_or_default();
         let report = self.commit("throw", |turn| turn.m.throw_it(item, at, None))?;
         if report.refusal.is_some() {
             return self.narrate(command, None, None, None, None);
@@ -270,7 +276,27 @@ impl Turn<'_, '_> {
         let who = thrower.as_ref().map(|who| string(who, "fullname"));
         let bulk = text(&row, "bulk").unwrap_or_default();
         let broke = broken(&self.m.row("items", item)?);
+        let short = report.reach.filter(Reach::short);
         let (outcome, words) = match (&report.change, at) {
+            (Some(landed), Some(Record::Person(person))) if short.is_some() => (
+                Throw::ShortOf {
+                    target: &person.fullname,
+                    range: short.map_or(0, |reach| reach.range),
+                    distance: short.and_then(|reach| reach.distance).unwrap_or_default(),
+                    broke,
+                },
+                landed.clone(),
+            ),
+            (Some(landed), Some(Record::Place(place))) if short.is_some() => (
+                Throw::ShortOfTheWayOut {
+                    into: &place.name,
+                    here: &here_name,
+                    range: short.map_or(0, |reach| reach.range),
+                    distance: short.and_then(|reach| reach.distance).unwrap_or_default(),
+                    broke,
+                },
+                landed.clone(),
+            ),
             (Some(landed), Some(Record::Person(person))) => (
                 Throw::Struck {
                     target: &person.fullname,
@@ -306,7 +332,16 @@ impl Turn<'_, '_> {
                 }
             }
         };
-        let fact = facts::thrown(who, &thing, bulk, outcome);
+        let mut fact = facts::thrown(who, &thing, bulk, outcome);
+        if let Some(Reach {
+            range,
+            distance: None,
+        }) = report.reach
+        {
+            if matches!(outcome, Throw::Struck { .. } | Throw::Thrown { .. }) {
+                fact = format!("{fact} {}", facts::carries(&thing, bulk, range));
+            }
+        }
         let fallback = format!("Your throw of the {thing}: {words}.");
         self.narrate(command, Some(fact), None, None, Some(fallback))
     }
