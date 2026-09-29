@@ -2917,7 +2917,65 @@ impl<'s> Mechanics<'s> {
                 sorted.sort();
                 positions != sorted
             }
+            Some("while_alive") => self.alive_at_beat(outcome),
             _ => false,
+        }
+    }
+
+    /// `Playthrough::Arc#alive_at_beat?`: whether the outcome's `character`
+    /// was still alive when this game reached the beat at its
+    /// `step_position`. The blow or the toll that took their last hit point
+    /// is the record of when they died; a blow is stamped with the minute its
+    /// turn began and a beat with the minute its turn ended, so a death
+    /// strictly before the beat is a death before it. A body at zero with no
+    /// such record died at a moment nobody can read, and does not count.
+    fn alive_at_beat(&self, outcome: &Row) -> bool {
+        let (Some(quest), Some(position), Some(character)) = (
+            int(outcome, "quest_id").and_then(|quest| self.records.find("quests", quest)),
+            int(outcome, "step_position"),
+            int(outcome, "character_id"),
+        ) else {
+            return false;
+        };
+        let Some(step) = outcome::steps(&self.records, quest)
+            .into_iter()
+            .find(|step| int(step, "position") == Some(position))
+        else {
+            return false;
+        };
+        let Some(reached) = self
+            .game()
+            .own("playthrough_beats")
+            .into_iter()
+            .find(|beat| int(beat, "quest_step_id") == Some(id(step)))
+            .and_then(|beat| int(beat, "reached_at"))
+        else {
+            return false;
+        };
+        let killing = |table: &str, column: &str| {
+            self.game()
+                .own(table)
+                .into_iter()
+                .filter(|row| {
+                    int(row, column) == Some(character) && int(row, "hp_after") == Some(0)
+                })
+                .filter_map(|row| int(row, "story_timestamp"))
+                .min()
+        };
+        let died = [
+            killing("playthrough_blows", "target_id"),
+            killing("playthrough_tolls", "character_id"),
+        ]
+        .into_iter()
+        .flatten()
+        .min();
+        match died {
+            Some(died) => died >= reached,
+            None => !self
+                .records
+                .find("characters", character)
+                .and_then(|who| self.game().vitals_for(who))
+                .is_some_and(|condition| condition.dead()),
         }
     }
 
