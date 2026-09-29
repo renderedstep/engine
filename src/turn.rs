@@ -396,15 +396,8 @@ impl<'s> Mechanics<'s> {
 
     /// `Playthrough::Refusal.over`, out of `Playthrough::EndNotice`.
     fn over_refusal(&self, command: &str) -> Refusal {
-        let game = self.playthrough;
-        let concluded = self
-            .records
-            .first("playthrough_endings", |row| {
-                int(row, "playthrough_id") == Some(game)
-            })
-            .is_some();
         let person = self.player().map(|row| person_of(&row));
-        Refusal::over(concluded, person.as_ref(), command)
+        Refusal::over(self.game().ended(), person.as_ref(), command)
     }
 
     /// The room as the grammar reads it: the classifier's four closed sets.

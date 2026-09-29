@@ -36,6 +36,16 @@ pub fn max_hp(character: &Row) -> Option<i64> {
     Some(hit_die + (level - 1) * (hit_die.div_euclid(2) + 1))
 }
 
+/// `Playthrough::EndNotice#reason`: why a finished game is over, off records.
+/// An ending row means the story concluded, a protagonist at zero means death,
+/// and neither means the game stopped with no reason recorded.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Ended {
+    Concluded,
+    Died,
+    Unrecorded,
+}
+
 /// `Playthrough::Vitals::Condition`: how much is left of one body.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Condition {
@@ -116,6 +126,22 @@ impl<'a> Game<'a> {
     /// The player (`playthrough.character`).
     pub fn protagonist(&self) -> Option<&'a Row> {
         int(self.row, "character_id").map(|id| self.character(id))
+    }
+
+    /// `Playthrough::EndNotice#reason`, asked of a game that is over.
+    pub fn ended(&self) -> Ended {
+        if !self.own("playthrough_endings").is_empty() {
+            return Ended::Concluded;
+        }
+        let dead = self
+            .protagonist()
+            .and_then(|who| self.vitals_for(who))
+            .is_some_and(|condition| condition.dead());
+        if dead {
+            Ended::Died
+        } else {
+            Ended::Unrecorded
+        }
     }
 
     pub fn current_location(&self) -> Option<&'a Row> {
