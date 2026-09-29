@@ -9,6 +9,7 @@ use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::schemas;
 use crate::text::{is_blank, presence};
+use crate::volition;
 use serde_json::{json, Map, Value};
 
 /// How many recent exchanges the durable chat replays verbatim
@@ -445,8 +446,44 @@ pub fn character_request_offering(
     })
 }
 
+/// Who besides `character` spoke up unasked and has not been told yet, by
+/// full name as their facts name them, in id order. The moment hands the
+/// exchange's narrator what they said ("What else happened here"); this is
+/// whom the narrator is asked to tell it of.
+fn bystanders_who_spoke<'a>(game: &Game<'a>, character: &Row) -> Vec<&'a str> {
+    let mut speakers: Vec<i64> = game
+        .own("playthrough_volitions")
+        .into_iter()
+        .filter(|row| {
+            int(row, "scene_id").is_none()
+                && text(row, "status") == Some("applied")
+                && string(row, "chosen").starts_with(volition::SPEAK)
+        })
+        .filter_map(|row| int(row, "character_id"))
+        .filter(|speaker| *speaker != id(character))
+        .collect();
+    speakers.sort_unstable();
+    speakers.dedup();
+    speakers
+        .into_iter()
+        .filter_map(|speaker| game.records.find("characters", speaker))
+        .map(|speaker| string(speaker, "fullname"))
+        .collect()
+}
+
+/// "A", "A and B", "A, B and C".
+fn and_list(names: &[&str]) -> String {
+    match names {
+        [] => String::new(),
+        [only] => only.to_string(),
+        [rest @ .., last] => format!("{} and {last}", rest.join(", ")),
+    }
+}
+
 /// The narrator pass's request, for the reaction the character answered
-/// with and the engine's receipt for what it applied.
+/// with and the engine's receipt for what it applied. Somebody else who
+/// spoke up unasked is the exchange's to tell as well, in a paragraph of
+/// the instructions that is there only when somebody did.
 pub fn narrator_request(
     game: &Game,
     character: &Row,
@@ -468,6 +505,16 @@ pub fn narrator_request(
     let addressee = addressee_name(records, character);
     let (subject, determiner) = (forms.subject, forms.determiner);
     let says = if forms.plural { "say" } else { "says" };
+    let bystanders = and_list(&bystanders_who_spoke(game, character));
+    let bystander = if bystanders.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "{bystanders} also spoke up unasked, as \"What else happened here\" above records. \
+             Narrate that too, as part of this exchange, in a sentence or two of its own. \
+             Nothing {bystanders} said changes what is recorded above.\n\n"
+        )
+    };
     let user = format!(
         "{moment}\n## The exchange\n\
          {addressee} says or does: {line}\n\
@@ -478,7 +525,7 @@ pub fn narrator_request(
          Refer to the character as {name}. Refer to {fullname} as {}. Use those pronouns and no others.\n\
          The exchange is the subject and the place above is where it happens: use it for what the character\n\
          does with {determiner} hands and eyes, not for a tour. Add nobody who is not listed above.\n\n\
-         Everything you know about {name} is the reaction above and the exchange itself. Render the thoughts\n\
+         {bystander}Everything you know about {name} is the reaction above and the exchange itself. Render the thoughts\n\
          and feelings as what they look like from outside -- a pause, a glance, a change of tone -- and put\n\
          the speech in {name}'s mouth as written. Do not add facts about {name}, do not narrate what\n\
          {subject} will do next, and do not answer for the player.\n\n\

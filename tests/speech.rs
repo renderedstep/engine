@@ -442,20 +442,21 @@ fn a_kept_scene_claims_the_volitions_its_prompt_stated() {
 
 /// Test 9: the person spoken to answers in their exchange and does not
 /// speak up over it; somebody else in the room may, and the exchange's
-/// narrator is told.
+/// narrator is told it and asked to narrate it, which it is not asked when
+/// nobody else spoke.
 #[test]
 fn the_one_you_address_does_not_interrupt() {
     let steps = when(true, &[BELL, ROWE], |thrown| {
         thrown[0].is_some() && thrown[1].is_none()
     });
     let (mut engine, playthrough) = office(true, steps);
-    submit(
-        &mut engine,
-        playthrough,
-        "/talk Bell",
-        "talk",
-        talk("Bell looks up."),
-    );
+    let mut replies = talk("Bell looks up.");
+    replies[1] = reply(json!({
+        "purpose": "interaction-narration",
+        "content": "Bell looks up.",
+        "prompt_excludes": ["also spoke up unasked"],
+    }));
+    submit(&mut engine, playthrough, "/talk Bell", "talk", replies);
     assert!(
         speech(&engine).iter().all(|act| act.1 != BELL),
         "Bell does not interrupt her own exchange"
@@ -467,7 +468,12 @@ fn the_one_you_address_does_not_interrupt() {
     replies[1] = reply(json!({
         "purpose": "interaction-narration",
         "content": "Bell looks up, and Rowe says something.",
-        "prompt_includes": ["What else happened here, recorded by the game: Rowe spoke up unasked"],
+        "prompt_includes": [
+            "What else happened here, recorded by the game: Rowe spoke up unasked",
+            "Rowe also spoke up unasked, as \"What else happened here\" above records. \
+             Narrate that too, as part of this exchange, in a sentence or two of its own. \
+             Nothing Rowe said changes what is recorded above.",
+        ],
     }));
     submit(&mut engine, playthrough, "/talk Bell", "talk", replies);
     let said = speech(&engine);
