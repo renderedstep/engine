@@ -165,8 +165,13 @@ fn a_finished_game_closes_every_verb_in_the_end_notice_words() {
         .unwrap();
     let glance = engine.glance(playthrough).unwrap();
     assert!(glance.over, "{name}");
+    // Marked over with no ending row and nobody at zero: the records say
+    // neither that the story ended nor that anybody died.
     let ended = glance.ended.clone().expect("the end notice's sentence");
-    assert!(ended.contains("this playthrough is over"), "{ended}");
+    assert!(
+        ended.contains("stopped before it reached an ending"),
+        "{ended}"
+    );
     for verb in &glance.verbs {
         assert!(!verb.available(), "{}", verb.name);
         assert!(verb.targets.is_empty(), "{}", verb.name);
