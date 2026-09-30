@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_tool_calls" ("id" integer PRIMARY KEY AUTOI
 CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cache_read_cost" decimal(16,10), "cache_read_tokens" integer, "cache_write_cost" decimal(16,10), "cache_write_tokens" integer, "chat_id" integer NOT NULL, "chat_type" varchar NOT NULL, "created_at" datetime(6) NOT NULL, "input_cost" decimal(16,10), "input_tokens" integer, "message_id" integer, "message_type" varchar, "model" varchar NOT NULL, "operation" varchar NOT NULL, "output_cost" decimal(16,10), "output_tokens" integer, "provider" varchar NOT NULL, "status" varchar NOT NULL, "thinking_cost" decimal(16,10), "thinking_tokens" integer, "total_cost" decimal(16,10), "updated_at" datetime(6) NOT NULL, CONSTRAINT chk_rails_71abd85d6e CHECK (operation IN ('chat', 'embedding', 'moderation', 'image', 'speech', 'transcription', 'ocr', 'rerank')), CONSTRAINT chk_rails_f50895962a CHECK (status IN ('pending', 'succeeded', 'failed', 'cancelled')));
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("completed" boolean DEFAULT FALSE NOT NULL, "last_id" integer, "task" varchar NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text, "gravity" varchar);
-INSERT INTO universes VALUES(1000000001,'A town that charges for its gate.','2026-09-28 13:56:42.759311','Tokens, tolls and porterage.','A walled town''s gate.','The gate has been tolled since the wall was built.','Ordinary physics.','The gatewarden answers to the town council.','The town keeps a quiet calendar.','Lanterns, ledgers and a toll bar on a chain.','2026-09-28 13:56:42.759311','A porter''s cudgel and a keeper''s staff.',NULL);
+INSERT INTO universes VALUES(1000000001,'A town that charges for its gate.','2026-09-29 03:22:49.700459','Tokens, tolls and porterage.','A walled town''s gate.','The gate has been tolled since the wall was built.','Ordinary physics.','The gatewarden answers to the town council.','The town keeps a quiet calendar.','Lanterns, ledgers and a toll bar on a chain.','2026-09-29 03:22:49.700459','A porter''s cudgel and a keeper''s staff.',NULL);
 CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, CONSTRAINT "fk_rails_56a213cbe2"
 FOREIGN KEY ("race_id")
   REFERENCES "races" ("id")
@@ -23,10 +23,10 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO characters VALUES(1000000001,31,'A drover''s cloak and mud to the knee.','A drover who sold her flock outside the wall and has come in to pay her way through.','Wren wants to get through the gate and into the town before the market bell.','2026-09-28 13:56:42.941759',0,'reach',12,'Paying twice for one gate.','Being turned back at the wall.','Wren Adley',8,0,0,1,10,'A clear road.',NULL,'withhold','Wren','Patient and watchful.',1000000001,'Wren needs to keep the token until somebody entitled to it asks.','female',1000000001,12,'Wren wants somebody in town to know her name.','Wren needs to ask for help once.','2026-09-28 13:56:42.941759',12,NULL,NULL);
-INSERT INTO characters VALUES(1000000002,44,'A porter''s sash and a ring of lodge keys.','The head porter, who has met every traveller through this gate for twenty years.','Mabry wants to see every traveller in and settled before they reach the market.','2026-09-28 13:56:43.003371',0,'attend',12,'A cold lodge.','Letting the wrong person through.','Mabry Quill',8,0,0,0,10,'A traveller with news.',1000000002,'keep','Mabry','Warm and nosy.',1000000001,'Mabry needs to keep the lodge book.','female',1000000001,12,'Mabry wants to be thanked.','Mabry needs to let someone pass without questions.','2026-09-28 13:56:43.003371',12,NULL,NULL);
-INSERT INTO characters VALUES(1000000003,23,'A sash too big for him and ink on one thumb.','The under-porter, who took the post to be left alone and has not been.','Osric wants to be anywhere but the lodge when a traveller comes in.','2026-09-28 13:56:43.007781',0,'avoid',12,'Being looked at.','Being asked a question he cannot answer.','Osric Venn',8,0,0,0,10,'The back stair when nobody is on it.',1000000002,'withhold','Osric','Shy and restless.',1000000001,'Osric needs to answer the door.','male',1000000001,12,'Osric wants to be good at the post.','Osric needs to stay in the room.','2026-09-28 13:56:43.007781',12,NULL,NULL);
-INSERT INTO characters VALUES(1000000004,57,'A keeper''s coat and an iron-shod staff.','The toll keeper, who has decided every traveller is trying to cheat the bar.','Grist wants the booth to himself and every token in his box.','2026-09-28 13:56:43.049597',0,'keep',12,'Travellers who come into the booth.','Being short at the count.','Grist Harrow',8,1,0,0,10,'A full toll box.',1000000003,'withhold','Grist','Suspicious and quick with a staff.',1000000001,'Grist needs to keep the count true.','male',1000000001,12,'Grist wants to be trusted with the gate.','Grist needs to let one traveller through for nothing.','2026-09-28 13:56:43.049597',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000001,31,'A drover''s cloak and mud to the knee.','A drover who sold her flock outside the wall and has come in to pay her way through.','Wren wants to get through the gate and into the town before the market bell.','2026-09-29 03:22:49.853027',0,'reach',12,'Paying twice for one gate.','Being turned back at the wall.','Wren Adley',8,0,0,1,10,'A clear road.',NULL,'withhold','Wren','Patient and watchful.',1000000001,'Wren needs to keep the token until somebody entitled to it asks.','female',1000000001,12,'Wren wants somebody in town to know her name.','Wren needs to ask for help once.','2026-09-29 03:22:49.853027',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000002,44,'A porter''s sash and a ring of lodge keys.','The head porter, who has met every traveller through this gate for twenty years.','Mabry wants to see every traveller in and settled before they reach the market.','2026-09-29 03:22:49.909298',0,'attend',12,'A cold lodge.','Letting the wrong person through.','Mabry Quill',8,0,0,0,10,'A traveller with news.',1000000002,'keep','Mabry','Warm and nosy.',1000000001,'Mabry needs to keep the lodge book.','female',1000000001,12,'Mabry wants to be thanked.','Mabry needs to let someone pass without questions.','2026-09-29 03:22:49.909298',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000003,23,'A sash too big for him and ink on one thumb.','The under-porter, who took the post to be left alone and has not been.','Osric wants to be anywhere but the lodge when a traveller comes in.','2026-09-29 03:22:49.912659',0,'avoid',12,'Being looked at.','Being asked a question he cannot answer.','Osric Venn',8,0,0,0,10,'The back stair when nobody is on it.',1000000002,'withhold','Osric','Shy and restless.',1000000001,'Osric needs to answer the door.','male',1000000001,12,'Osric wants to be good at the post.','Osric needs to stay in the room.','2026-09-29 03:22:49.912659',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000004,57,'A keeper''s coat and an iron-shod staff.','The toll keeper, who has decided every traveller is trying to cheat the bar.','Grist wants the booth to himself and every token in his box.','2026-09-29 03:22:49.922901',0,'keep',12,'Travellers who come into the booth.','Being short at the count.','Grist Harrow',8,1,0,0,10,'A full toll box.',1000000003,'withhold','Grist','Suspicious and quick with a staff.',1000000001,'Grist needs to keep the count true.','male',1000000001,12,'Grist wants to be trusted with the gate.','Grist needs to let one traveller through for nothing.','2026-09-29 03:22:49.922901',12,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cancelled" boolean DEFAULT FALSE NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "model_id_string" varchar, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "ruby_llm_model_id" integer, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -60,8 +60,8 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-28 13:56:42.860385','A ledger of every traveller through the gate, open on its stand.','intact',NULL,1000000002,'lodge book',NULL,'{}',0,NULL,'2026-09-28 13:56:42.860385','ordinary',NULL,NULL,'sturdy');
-INSERT INTO items VALUES(1000000002,'handy',1000000001,0,'2026-09-28 13:56:42.982984','A brass token stamped with the gate''s mark, good for one passage.','intact',NULL,NULL,'toll token',NULL,'{}',0,NULL,'2026-09-28 13:56:42.982984','ordinary',NULL,NULL,'sturdy');
+INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-29 03:22:49.784179','A ledger of every traveller through the gate, open on its stand.','intact',NULL,1000000002,'lodge book',NULL,'{}',0,NULL,'2026-09-29 03:22:49.784179','ordinary',NULL,NULL,'sturdy');
+INSERT INTO items VALUES(1000000002,'handy',1000000001,0,'2026-09-29 03:22:49.890270','A brass token stamped with the gate''s mark, good for one passage.','intact',NULL,NULL,'toll token',NULL,'{}',0,NULL,'2026-09-29 03:22:49.890270','ordinary',NULL,NULL,'sturdy');
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -84,12 +84,12 @@ FOREIGN KEY ("key_template_id")
 FOREIGN KEY ("connected_location_id")
   REFERENCES "locations" ("id")
 );
-INSERT INTO location_connections VALUES(1000000001,'open',1000000002,'2026-09-28 13:56:43.093295','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 13:56:43.093295');
-INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-28 13:56:43.097967','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-28 13:56:43.097967');
-INSERT INTO location_connections VALUES(1000000003,'open',1000000003,'2026-09-28 13:56:43.101593','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 13:56:43.101593');
-INSERT INTO location_connections VALUES(1000000004,'open',1000000001,'2026-09-28 13:56:43.103475','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-28 13:56:43.103475');
-INSERT INTO location_connections VALUES(1000000005,'open',1000000004,'2026-09-28 13:56:43.104765','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-28 13:56:43.104765');
-INSERT INTO location_connections VALUES(1000000006,'open',1000000002,'2026-09-28 13:56:43.106583','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-28 13:56:43.106583');
+INSERT INTO location_connections VALUES(1000000001,'open',1000000002,'2026-09-29 03:22:49.958351','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-29 03:22:49.958351');
+INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-29 03:22:49.961315','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-29 03:22:49.961315');
+INSERT INTO location_connections VALUES(1000000003,'open',1000000003,'2026-09-29 03:22:49.964224','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-29 03:22:49.964224');
+INSERT INTO location_connections VALUES(1000000004,'open',1000000001,'2026-09-29 03:22:49.965247','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-29 03:22:49.965247');
+INSERT INTO location_connections VALUES(1000000005,'open',1000000004,'2026-09-29 03:22:49.966261','adjacent',NULL,NULL,NULL,1000000002,'about a minute','walking','2026-09-29 03:22:49.966261');
+INSERT INTO location_connections VALUES(1000000006,'open',1000000002,'2026-09-29 03:22:49.967735','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-29 03:22:49.967735');
 CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, "surface" varchar, "kind" varchar, "density" varchar, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
@@ -97,10 +97,10 @@ FOREIGN KEY ("parent_location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,'2026-09-28 13:56:42.803940','safe',NULL,'A vaulted passage under the town gate, with a lodge door on one side and a booth door on the other.','realized',NULL,NULL,NULL,NULL,'The vault is black with a century of lantern smoke.',0,'The Gate Passage',NULL,NULL,1000000001,'The passage under the gate.','2026-09-28 13:56:42.803940',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000002,'2026-09-28 13:56:42.816390','safe',NULL,'A warm room with a lodge book on a stand and a stove in the corner.','realized',NULL,NULL,NULL,NULL,'Every traveller through the gate is written in the lodge book.',0,'The Porters'' Lodge',NULL,NULL,1000000001,'The porters'' lodge.','2026-09-28 13:56:42.816390',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000003,'2026-09-28 13:56:42.866927','safe',NULL,'A cramped booth with a toll box bolted to the wall and a staff rack by the door.','realized',NULL,NULL,NULL,NULL,'The toll box has been emptied at dusk every day since the wall was built.',0,'The Toll Booth',NULL,NULL,1000000001,'The toll booth.','2026-09-28 13:56:42.866927',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000004,'2026-09-28 13:56:42.885584','safe',NULL,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Back Stair',NULL,'nobody',1000000001,'A narrow stair behind the lodge.','2026-09-28 13:56:42.885584',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000001,'2026-09-29 03:22:49.737765','safe',NULL,'A vaulted passage under the town gate, with a lodge door on one side and a booth door on the other.','realized',NULL,NULL,NULL,NULL,'The vault is black with a century of lantern smoke.',0,'The Gate Passage',NULL,NULL,1000000001,'The passage under the gate.','2026-09-29 03:22:49.737765',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000002,'2026-09-29 03:22:49.747562','safe',NULL,'A warm room with a lodge book on a stand and a stove in the corner.','realized',NULL,NULL,NULL,NULL,'Every traveller through the gate is written in the lodge book.',0,'The Porters'' Lodge',NULL,NULL,1000000001,'The porters'' lodge.','2026-09-29 03:22:49.747562',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000003,'2026-09-29 03:22:49.789417','safe',NULL,'A cramped booth with a toll box bolted to the wall and a staff rack by the door.','realized',NULL,NULL,NULL,NULL,'The toll box has been emptied at dusk every day since the wall was built.',0,'The Toll Booth',NULL,NULL,1000000001,'The toll booth.','2026-09-29 03:22:49.789417',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000004,'2026-09-29 03:22:49.804241','safe',NULL,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Back Stair',NULL,'nobody',1000000001,'A narrow stair behind the lodge.','2026-09-29 03:22:49.804241',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -258,7 +258,7 @@ FOREIGN KEY ("player_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-CREATE TABLE IF NOT EXISTS "quest_outcomes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "condition" varchar, "created_at" datetime(6) NOT NULL, "is_default" boolean DEFAULT FALSE NOT NULL, "minutes" integer, "name" varchar NOT NULL, "quest_id" integer NOT NULL, "ramification_minutes" integer, "ramification_summary" text, "summary" text NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_acf8ece7c5"
+CREATE TABLE IF NOT EXISTS "quest_outcomes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "character_id" integer, "condition" varchar, "created_at" datetime(6) NOT NULL, "is_default" boolean DEFAULT FALSE NOT NULL, "minutes" integer, "name" varchar NOT NULL, "quest_id" integer NOT NULL, "ramification_minutes" integer, "ramification_summary" text, "step_position" integer, "summary" text NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_acf8ece7c5"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT N
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO races VALUES(1000000001,'2026-09-28 13:56:42.762679','Ordinary people of the town.',0,'Townsfolk',1000000001,'2026-09-28 13:56:42.762679');
+INSERT INTO races VALUES(1000000001,'2026-09-29 03:22:49.703231','Ordinary people of the town.',0,'Townsfolk',1000000001,'2026-09-29 03:22:49.703231');
 CREATE TABLE IF NOT EXISTS "relay_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_source" varchar, "cost_usd" decimal(12,6), "created_at" datetime(6) NOT NULL, "finished_at" datetime(6), "input_tokens" integer, "model" varchar NOT NULL, "output_tokens" integer, "player_id" integer NOT NULL, "reserved_usd" decimal(12,6) NOT NULL, "route" varchar NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "stream" boolean DEFAULT FALSE NOT NULL, "updated_at" datetime(6) NOT NULL, "upstream_status" integer, CONSTRAINT "fk_rails_deae27bd71"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -292,12 +292,12 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-28 13:56:43.190531','You stand in the vaulted passage under the gate, a toll token in your hand. A door opens either side.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-25 07:40:00','Wren comes in under the town gate.',NULL,'2026-09-28 13:56:43.190531');
+INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-29 03:22:50.033089','You stand in the vaulted passage under the gate, a toll token in your hand. A door opens either side.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-25 07:40:00','Wren comes in under the town gate.',NULL,'2026-09-29 03:22:50.033089');
 CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'2026-09-28 13:56:42.781533',NULL,'town adventure','The gate is open, and somebody on either side of the passage has seen you.','2026-09-25 07:40:00','Wren has come through the town gate with a toll token and must pass the lodge or the booth.','A Lodge Inside the Gate (engine sweep)',1000000001,'2026-09-28 13:56:42.781533');
+INSERT INTO stories VALUES(1000000001,'2026-09-29 03:22:49.719253',NULL,'town adventure','The gate is open, and somebody on either side of the passage has seen you.','2026-09-25 07:40:00','Wren has come through the town gate with a toll token and must pass the lodge or the booth.','A Lodge Inside the Gate (engine sweep)',1000000001,'2026-09-29 03:22:49.719253');
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -317,6 +317,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20260929023507');
 INSERT INTO schema_migrations VALUES('20260928102823');
 INSERT INTO schema_migrations VALUES('20260928035434');
 INSERT INTO schema_migrations VALUES('20260928035429');
@@ -394,8 +395,8 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
-INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-28 13:53:15.536425','2026-09-28 13:53:15.536427');
-INSERT INTO ar_internal_metadata VALUES('schema_sha1','a170d373ac9b94fbbf2c0335a10f091d790c8412','2026-09-28 13:53:15.540274','2026-09-28 13:53:15.540275');
+INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-29 03:22:36.954487','2026-09-29 03:22:36.954491');
+INSERT INTO ar_internal_metadata VALUES('schema_sha1','44ac57b5453b4ce34163740cf0aa1602e28dcc32','2026-09-29 03:22:36.958588','2026-09-29 03:22:36.958590');
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -564,6 +565,7 @@ CREATE INDEX "index_playthroughs_on_current_scene_id" ON "playthroughs" ("curren
 CREATE INDEX "index_playthroughs_on_player_id" ON "playthroughs" ("player_id");
 CREATE INDEX "index_playthroughs_on_story_id" ON "playthroughs" ("story_id");
 CREATE UNIQUE INDEX "index_playthroughs_on_token" ON "playthroughs" ("token");
+CREATE INDEX "index_quest_outcomes_on_character_id" ON "quest_outcomes" ("character_id");
 CREATE UNIQUE INDEX "index_quest_outcomes_on_quest_id_and_name" ON "quest_outcomes" ("quest_id", "name");
 CREATE INDEX "index_quest_outcomes_on_quest_id" ON "quest_outcomes" ("quest_id");
 CREATE UNIQUE INDEX "index_quest_steps_on_quest_id_and_position" ON "quest_steps" ("quest_id", "position");

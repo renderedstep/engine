@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_tool_calls" ("id" integer PRIMARY KEY AUTOI
 CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cache_read_cost" decimal(16,10), "cache_read_tokens" integer, "cache_write_cost" decimal(16,10), "cache_write_tokens" integer, "chat_id" integer NOT NULL, "chat_type" varchar NOT NULL, "created_at" datetime(6) NOT NULL, "input_cost" decimal(16,10), "input_tokens" integer, "message_id" integer, "message_type" varchar, "model" varchar NOT NULL, "operation" varchar NOT NULL, "output_cost" decimal(16,10), "output_tokens" integer, "provider" varchar NOT NULL, "status" varchar NOT NULL, "thinking_cost" decimal(16,10), "thinking_tokens" integer, "total_cost" decimal(16,10), "updated_at" datetime(6) NOT NULL, CONSTRAINT chk_rails_71abd85d6e CHECK (operation IN ('chat', 'embedding', 'moderation', 'image', 'speech', 'transcription', 'ocr', 'rerank')), CONSTRAINT chk_rails_f50895962a CHECK (status IN ('pending', 'succeeded', 'failed', 'cancelled')));
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("completed" boolean DEFAULT FALSE NOT NULL, "last_id" integer, "task" varchar NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text, "gravity" varchar);
-INSERT INTO universes VALUES(1000000001,'A port that has never been anything else.','2026-09-28 12:00:31.343551','Paid in salt weight, settled in coin when the assessor is watching.','One quay, one custom house standing on it, and the water at the end of both.','Three hundred years of the same tide.','Ordinary physics, and a tide that keeps to its table.','The harbourmaster, and whoever is owed money by the harbourmaster.','The tide table, read aloud.','Rope, tar, lamp oil and a ledger.','2026-09-28 12:00:31.343551','A gaff hook, and whatever is nearest the door.',NULL);
+INSERT INTO universes VALUES(1000000001,'A port that has never been anything else.','2026-09-29 03:23:04.413368','Paid in salt weight, settled in coin when the assessor is watching.','One quay, one custom house standing on it, and the water at the end of both.','Three hundred years of the same tide.','Ordinary physics, and a tide that keeps to its table.','The harbourmaster, and whoever is owed money by the harbourmaster.','The tide table, read aloud.','Rope, tar, lamp oil and a ledger.','2026-09-29 03:23:04.413368','A gaff hook, and whatever is nearest the door.',NULL);
 CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, CONSTRAINT "fk_rails_56a213cbe2"
 FOREIGN KEY ("race_id")
   REFERENCES "races" ("id")
@@ -23,7 +23,7 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO characters VALUES(1000000001,38,'Salt at the cuff, whatever she is wearing.','Kept the quay''s books for eleven years without once being asked to.',NULL,'2026-09-28 12:00:31.650985',0,NULL,13,'A door found open','Being the last one to know','Nell Cawsand',8,0,0,1,3,'A tide that comes in on the table',1000000001,NULL,'Nell','Unhurried, and counts things twice.',1000000001,NULL,'female',1000000001,11,NULL,NULL,'2026-09-28 12:00:31.650985',12,NULL,NULL);
+INSERT INTO characters VALUES(1000000001,38,'Salt at the cuff, whatever she is wearing.','Kept the quay''s books for eleven years without once being asked to.',NULL,'2026-09-29 03:23:04.764702',0,NULL,13,'A door found open','Being the last one to know','Nell Cawsand',8,0,0,1,3,'A tide that comes in on the table',1000000001,NULL,'Nell','Unhurried, and counts things twice.',1000000001,NULL,'female',1000000001,11,NULL,NULL,'2026-09-29 03:23:04.764702',12,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cancelled" boolean DEFAULT FALSE NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "model_id_string" varchar, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "ruby_llm_model_id" integer, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -57,7 +57,7 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-28 12:00:31.466508','A quarto ledger of broken seals, one line to a cargo and the last line wet.','intact',NULL,1000000003,'seal ledger',NULL,NULL,0,NULL,'2026-09-28 12:00:31.466508','ordinary',6,2,'sturdy');
+INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-09-29 03:23:04.549094','A quarto ledger of broken seals, one line to a cargo and the last line wet.','intact',NULL,1000000003,'seal ledger',NULL,NULL,0,NULL,'2026-09-29 03:23:04.549094','ordinary',6,2,'sturdy');
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -80,42 +80,42 @@ FOREIGN KEY ("key_template_id")
 FOREIGN KEY ("connected_location_id")
   REFERENCES "locations" ("id")
 );
-INSERT INTO location_connections VALUES(1000000001,'open',1000000014,'2026-09-28 12:00:31.748130','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 12:00:31.748130');
-INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-28 12:00:31.753148','adjacent',NULL,NULL,NULL,1000000014,'about a minute','walking','2026-09-28 12:00:31.753148');
-INSERT INTO location_connections VALUES(1000000003,'open',1000000015,'2026-09-28 12:00:31.755689','adjacent',NULL,NULL,NULL,1000000014,'about a minute','walking','2026-09-28 12:00:31.755689');
-INSERT INTO location_connections VALUES(1000000004,'open',1000000014,'2026-09-28 12:00:31.759084','adjacent',NULL,NULL,NULL,1000000015,'about a minute','walking','2026-09-28 12:00:31.759084');
-INSERT INTO location_connections VALUES(1000000005,'open',1000000016,'2026-09-28 12:00:31.760082','adjacent',NULL,NULL,NULL,1000000014,'about a minute','taking stairs','2026-09-28 12:00:31.760082');
-INSERT INTO location_connections VALUES(1000000006,'open',1000000014,'2026-09-28 12:00:31.761306','adjacent',NULL,NULL,NULL,1000000016,'about a minute','taking stairs','2026-09-28 12:00:31.761306');
-INSERT INTO location_connections VALUES(1000000007,'open',1000000017,'2026-09-28 12:00:31.762361','adjacent',NULL,NULL,NULL,1000000015,'about a minute','taking stairs','2026-09-28 12:00:31.762361');
-INSERT INTO location_connections VALUES(1000000008,'open',1000000015,'2026-09-28 12:00:31.763139','adjacent',NULL,NULL,NULL,1000000017,'about a minute','taking stairs','2026-09-28 12:00:31.763139');
-INSERT INTO location_connections VALUES(1000000009,'open',1000000018,'2026-09-28 12:00:31.764127','adjacent',NULL,NULL,NULL,1000000015,'about a minute','taking stairs','2026-09-28 12:00:31.764127');
-INSERT INTO location_connections VALUES(1000000010,'open',1000000015,'2026-09-28 12:00:31.765781','adjacent',NULL,NULL,NULL,1000000018,'about a minute','taking stairs','2026-09-28 12:00:31.765781');
-INSERT INTO location_connections VALUES(1000000011,'open',1000000019,'2026-09-28 12:00:31.766531','adjacent',NULL,NULL,NULL,1000000015,'about a minute','taking stairs','2026-09-28 12:00:31.766531');
-INSERT INTO location_connections VALUES(1000000012,'open',1000000015,'2026-09-28 12:00:31.767474','adjacent',NULL,NULL,NULL,1000000019,'about a minute','taking stairs','2026-09-28 12:00:31.767474');
-INSERT INTO location_connections VALUES(1000000013,'open',1000000017,'2026-09-28 12:00:31.768650','adjacent',NULL,NULL,NULL,1000000016,'about a minute','walking','2026-09-28 12:00:31.768650');
-INSERT INTO location_connections VALUES(1000000014,'open',1000000016,'2026-09-28 12:00:31.772707','adjacent',NULL,NULL,NULL,1000000017,'about a minute','walking','2026-09-28 12:00:31.772707');
-INSERT INTO location_connections VALUES(1000000015,'open',1000000019,'2026-09-28 12:00:31.774815','adjacent',NULL,NULL,NULL,1000000018,'about a minute','walking','2026-09-28 12:00:31.774815');
-INSERT INTO location_connections VALUES(1000000016,'open',1000000018,'2026-09-28 12:00:31.775933','adjacent',NULL,NULL,NULL,1000000019,'about a minute','walking','2026-09-28 12:00:31.775933');
-INSERT INTO location_connections VALUES(1000000017,'open',1000000003,'2026-09-28 12:00:31.777419','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-28 12:00:31.777419');
-INSERT INTO location_connections VALUES(1000000018,'open',1000000001,'2026-09-28 12:00:31.779906','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-28 12:00:31.779906');
-INSERT INTO location_connections VALUES(1000000019,'open',1000000004,'2026-09-28 12:00:31.784877','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-28 12:00:31.784877');
-INSERT INTO location_connections VALUES(1000000020,'open',1000000003,'2026-09-28 12:00:31.786616','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-28 12:00:31.786616');
-INSERT INTO location_connections VALUES(1000000021,'open',1000000007,'2026-09-28 12:00:31.788613','adjacent',NULL,NULL,NULL,1000000003,'about a minute','taking stairs','2026-09-28 12:00:31.788613');
-INSERT INTO location_connections VALUES(1000000022,'open',1000000003,'2026-09-28 12:00:31.789526','adjacent',NULL,NULL,NULL,1000000007,'about a minute','taking stairs','2026-09-28 12:00:31.789526');
-INSERT INTO location_connections VALUES(1000000023,'open',1000000005,'2026-09-28 12:00:31.790442','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-28 12:00:31.790442');
-INSERT INTO location_connections VALUES(1000000024,'open',1000000004,'2026-09-28 12:00:31.792352','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-28 12:00:31.792352');
-INSERT INTO location_connections VALUES(1000000025,'open',1000000006,'2026-09-28 12:00:31.793242','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-28 12:00:31.793242');
-INSERT INTO location_connections VALUES(1000000026,'open',1000000005,'2026-09-28 12:00:31.794031','adjacent',NULL,NULL,NULL,1000000006,'about a minute','walking','2026-09-28 12:00:31.794031');
-INSERT INTO location_connections VALUES(1000000027,'open',1000000008,'2026-09-28 12:00:31.794882','adjacent',NULL,NULL,NULL,1000000007,'about a minute','walking','2026-09-28 12:00:31.794882');
-INSERT INTO location_connections VALUES(1000000028,'open',1000000007,'2026-09-28 12:00:31.796259','adjacent',NULL,NULL,NULL,1000000008,'about a minute','walking','2026-09-28 12:00:31.796259');
-INSERT INTO location_connections VALUES(1000000029,'open',1000000009,'2026-09-28 12:00:31.803530','adjacent',NULL,NULL,NULL,1000000008,'about a minute','walking','2026-09-28 12:00:31.803530');
-INSERT INTO location_connections VALUES(1000000030,'open',1000000008,'2026-09-28 12:00:31.804692','adjacent',NULL,NULL,NULL,1000000009,'about a minute','walking','2026-09-28 12:00:31.804692');
-INSERT INTO location_connections VALUES(1000000031,'open',1000000010,'2026-09-28 12:00:31.805993','adjacent',NULL,NULL,NULL,1000000009,'about a minute','walking','2026-09-28 12:00:31.805993');
-INSERT INTO location_connections VALUES(1000000032,'open',1000000009,'2026-09-28 12:00:31.806800','adjacent',NULL,NULL,NULL,1000000010,'about a minute','walking','2026-09-28 12:00:31.806800');
-INSERT INTO location_connections VALUES(1000000033,'open',1000000011,'2026-09-28 12:00:31.808344','adjacent',NULL,NULL,NULL,1000000010,'about a minute','walking','2026-09-28 12:00:31.808344');
-INSERT INTO location_connections VALUES(1000000034,'open',1000000010,'2026-09-28 12:00:31.809269','adjacent',NULL,NULL,NULL,1000000011,'about a minute','walking','2026-09-28 12:00:31.809269');
-INSERT INTO location_connections VALUES(1000000035,'open',1000000012,'2026-09-28 12:00:31.809976','adjacent',NULL,NULL,NULL,1000000011,'about a minute','walking','2026-09-28 12:00:31.809976');
-INSERT INTO location_connections VALUES(1000000036,'open',1000000011,'2026-09-28 12:00:31.810638','adjacent',NULL,NULL,NULL,1000000012,'about a minute','walking','2026-09-28 12:00:31.810638');
+INSERT INTO location_connections VALUES(1000000001,'open',1000000014,'2026-09-29 03:23:04.881056','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-29 03:23:04.881056');
+INSERT INTO location_connections VALUES(1000000002,'open',1000000001,'2026-09-29 03:23:04.886486','adjacent',NULL,NULL,NULL,1000000014,'about a minute','walking','2026-09-29 03:23:04.886486');
+INSERT INTO location_connections VALUES(1000000003,'open',1000000015,'2026-09-29 03:23:04.889868','adjacent',NULL,NULL,NULL,1000000014,'about a minute','walking','2026-09-29 03:23:04.889868');
+INSERT INTO location_connections VALUES(1000000004,'open',1000000014,'2026-09-29 03:23:04.895549','adjacent',NULL,NULL,NULL,1000000015,'about a minute','walking','2026-09-29 03:23:04.895549');
+INSERT INTO location_connections VALUES(1000000005,'open',1000000016,'2026-09-29 03:23:04.897380','adjacent',NULL,NULL,NULL,1000000014,'about a minute','taking stairs','2026-09-29 03:23:04.897380');
+INSERT INTO location_connections VALUES(1000000006,'open',1000000014,'2026-09-29 03:23:04.898742','adjacent',NULL,NULL,NULL,1000000016,'about a minute','taking stairs','2026-09-29 03:23:04.898742');
+INSERT INTO location_connections VALUES(1000000007,'open',1000000017,'2026-09-29 03:23:04.900280','adjacent',NULL,NULL,NULL,1000000015,'about a minute','taking stairs','2026-09-29 03:23:04.900280');
+INSERT INTO location_connections VALUES(1000000008,'open',1000000015,'2026-09-29 03:23:04.901775','adjacent',NULL,NULL,NULL,1000000017,'about a minute','taking stairs','2026-09-29 03:23:04.901775');
+INSERT INTO location_connections VALUES(1000000009,'open',1000000018,'2026-09-29 03:23:04.903205','adjacent',NULL,NULL,NULL,1000000015,'about a minute','taking stairs','2026-09-29 03:23:04.903205');
+INSERT INTO location_connections VALUES(1000000010,'open',1000000015,'2026-09-29 03:23:04.904892','adjacent',NULL,NULL,NULL,1000000018,'about a minute','taking stairs','2026-09-29 03:23:04.904892');
+INSERT INTO location_connections VALUES(1000000011,'open',1000000019,'2026-09-29 03:23:04.906155','adjacent',NULL,NULL,NULL,1000000015,'about a minute','taking stairs','2026-09-29 03:23:04.906155');
+INSERT INTO location_connections VALUES(1000000012,'open',1000000015,'2026-09-29 03:23:04.907483','adjacent',NULL,NULL,NULL,1000000019,'about a minute','taking stairs','2026-09-29 03:23:04.907483');
+INSERT INTO location_connections VALUES(1000000013,'open',1000000017,'2026-09-29 03:23:04.909103','adjacent',NULL,NULL,NULL,1000000016,'about a minute','walking','2026-09-29 03:23:04.909103');
+INSERT INTO location_connections VALUES(1000000014,'open',1000000016,'2026-09-29 03:23:04.913712','adjacent',NULL,NULL,NULL,1000000017,'about a minute','walking','2026-09-29 03:23:04.913712');
+INSERT INTO location_connections VALUES(1000000015,'open',1000000019,'2026-09-29 03:23:04.915445','adjacent',NULL,NULL,NULL,1000000018,'about a minute','walking','2026-09-29 03:23:04.915445');
+INSERT INTO location_connections VALUES(1000000016,'open',1000000018,'2026-09-29 03:23:04.916723','adjacent',NULL,NULL,NULL,1000000019,'about a minute','walking','2026-09-29 03:23:04.916723');
+INSERT INTO location_connections VALUES(1000000017,'open',1000000003,'2026-09-29 03:23:04.918051','adjacent',NULL,NULL,NULL,1000000001,'about a minute','walking','2026-09-29 03:23:04.918051');
+INSERT INTO location_connections VALUES(1000000018,'open',1000000001,'2026-09-29 03:23:04.920343','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-29 03:23:04.920343');
+INSERT INTO location_connections VALUES(1000000019,'open',1000000004,'2026-09-29 03:23:04.925408','adjacent',NULL,NULL,NULL,1000000003,'about a minute','walking','2026-09-29 03:23:04.925408');
+INSERT INTO location_connections VALUES(1000000020,'open',1000000003,'2026-09-29 03:23:04.926958','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-29 03:23:04.926958');
+INSERT INTO location_connections VALUES(1000000021,'open',1000000007,'2026-09-29 03:23:04.928727','adjacent',NULL,NULL,NULL,1000000003,'about a minute','taking stairs','2026-09-29 03:23:04.928727');
+INSERT INTO location_connections VALUES(1000000022,'open',1000000003,'2026-09-29 03:23:04.929459','adjacent',NULL,NULL,NULL,1000000007,'about a minute','taking stairs','2026-09-29 03:23:04.929459');
+INSERT INTO location_connections VALUES(1000000023,'open',1000000005,'2026-09-29 03:23:04.930333','adjacent',NULL,NULL,NULL,1000000004,'about a minute','walking','2026-09-29 03:23:04.930333');
+INSERT INTO location_connections VALUES(1000000024,'open',1000000004,'2026-09-29 03:23:04.932095','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-29 03:23:04.932095');
+INSERT INTO location_connections VALUES(1000000025,'open',1000000006,'2026-09-29 03:23:04.932784','adjacent',NULL,NULL,NULL,1000000005,'about a minute','walking','2026-09-29 03:23:04.932784');
+INSERT INTO location_connections VALUES(1000000026,'open',1000000005,'2026-09-29 03:23:04.933462','adjacent',NULL,NULL,NULL,1000000006,'about a minute','walking','2026-09-29 03:23:04.933462');
+INSERT INTO location_connections VALUES(1000000027,'open',1000000008,'2026-09-29 03:23:04.934334','adjacent',NULL,NULL,NULL,1000000007,'about a minute','walking','2026-09-29 03:23:04.934334');
+INSERT INTO location_connections VALUES(1000000028,'open',1000000007,'2026-09-29 03:23:04.935748','adjacent',NULL,NULL,NULL,1000000008,'about a minute','walking','2026-09-29 03:23:04.935748');
+INSERT INTO location_connections VALUES(1000000029,'open',1000000009,'2026-09-29 03:23:04.942641','adjacent',NULL,NULL,NULL,1000000008,'about a minute','walking','2026-09-29 03:23:04.942641');
+INSERT INTO location_connections VALUES(1000000030,'open',1000000008,'2026-09-29 03:23:04.943466','adjacent',NULL,NULL,NULL,1000000009,'about a minute','walking','2026-09-29 03:23:04.943466');
+INSERT INTO location_connections VALUES(1000000031,'open',1000000010,'2026-09-29 03:23:04.944558','adjacent',NULL,NULL,NULL,1000000009,'about a minute','walking','2026-09-29 03:23:04.944558');
+INSERT INTO location_connections VALUES(1000000032,'open',1000000009,'2026-09-29 03:23:04.945463','adjacent',NULL,NULL,NULL,1000000010,'about a minute','walking','2026-09-29 03:23:04.945463');
+INSERT INTO location_connections VALUES(1000000033,'open',1000000011,'2026-09-29 03:23:04.947045','adjacent',NULL,NULL,NULL,1000000010,'about a minute','walking','2026-09-29 03:23:04.947045');
+INSERT INTO location_connections VALUES(1000000034,'open',1000000010,'2026-09-29 03:23:04.947760','adjacent',NULL,NULL,NULL,1000000011,'about a minute','walking','2026-09-29 03:23:04.947760');
+INSERT INTO location_connections VALUES(1000000035,'open',1000000012,'2026-09-29 03:23:04.948451','adjacent',NULL,NULL,NULL,1000000011,'about a minute','walking','2026-09-29 03:23:04.948451');
+INSERT INTO location_connections VALUES(1000000036,'open',1000000011,'2026-09-29 03:23:04.949099','adjacent',NULL,NULL,NULL,1000000012,'about a minute','walking','2026-09-29 03:23:04.949099');
 CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, "surface" varchar, "kind" varchar, "density" varchar, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
@@ -123,25 +123,25 @@ FOREIGN KEY ("parent_location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,'2026-09-28 12:00:31.387967','safe',NULL,'Wet stone, a bollard worn smooth, and the custom house shut against the weather.','realized',NULL,NULL,NULL,NULL,'Every cargo that ever came ashore here was counted twice before it left.',0,'The Quay',NULL,NULL,1000000001,'The water at one end and the custom house at the other.','2026-09-28 12:00:31.387967',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000002,'2026-09-28 12:00:31.399396','safe',10,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House',NULL,NULL,1000000001,'Two floors of ledgers with the door standing open.','2026-09-28 12:00:31.399396',14,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000003,'2026-09-28 12:00:31.415343','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 1',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 4 paces on storey 0.','2026-09-28 12:00:31.572591',7,0,0,0,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000004,'2026-09-28 12:00:31.481971','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 2',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 4 paces on storey 0.','2026-09-28 12:00:31.575235',7,7,0,0,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000005,'2026-09-28 12:00:31.497527','dangerous',6,unistr('The back office, 7 by 6 paces of bare boards on storey 0. A door in the north wall\u000agoes through to the counting room, and one in the west wall stands half open on the\u000adark. Nothing else opens anywhere.'),'realized',NULL,NULL,NULL,NULL,'The room where the tallies were settled when the assessor was not watching.',0,'The Custom House room 3',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 6 paces on storey 0.','2026-09-28 12:00:31.576505',7,7,4,0,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000006,'2026-09-28 12:00:31.506425','uneasy',6,unistr('A dead end of 7 by 6 paces on storey 0, with one door in the east wall and no other\u000away out of it at all.'),'realized',NULL,NULL,NULL,NULL,'Storage, until somebody put a cot in it and stopped saying so.',0,'The Custom House room 4',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 6 paces on storey 0.','2026-09-28 12:00:31.577140',7,0,4,0,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000007,'2026-09-28 12:00:31.510980','uneasy',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 5',1000000002,NULL,1000000001,'A room inside The Custom House, 6 by 6 paces on storey 1.','2026-09-28 12:00:31.577962',6,0,0,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000008,'2026-09-28 12:00:31.525788','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 6',1000000002,NULL,1000000001,'A room inside The Custom House, 6 by 4 paces on storey 1.','2026-09-28 12:00:31.578517',6,0,6,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000009,'2026-09-28 12:00:31.532985','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 7',1000000002,NULL,1000000001,'A room inside The Custom House, 5 by 4 paces on storey 1.','2026-09-28 12:00:31.582299',5,6,6,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000010,'2026-09-28 12:00:31.535250','dangerous',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 8',1000000002,NULL,1000000001,'A room inside The Custom House, 5 by 6 paces on storey 1.','2026-09-28 12:00:31.591081',5,6,0,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000011,'2026-09-28 12:00:31.540433','safe',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 9',1000000002,NULL,1000000001,'A room inside The Custom House, 3 by 6 paces on storey 1.','2026-09-28 12:00:31.591953',3,11,0,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000012,'2026-09-28 12:00:31.542642','uneasy',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 10',1000000002,NULL,1000000001,'A room inside The Custom House, 3 by 4 paces on storey 1.','2026-09-28 12:00:31.592718',3,11,6,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000013,'2026-09-28 12:00:31.545052','safe',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar',NULL,NULL,1000000001,'A sealed door in the quay wall, and the stair behind it going down.','2026-09-28 12:00:31.545052',8,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000014,'2026-09-28 12:00:31.547177','safe',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 1',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 4 by 6 paces on storey 0.','2026-09-28 12:00:31.593389',4,0,0,0,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000015,'2026-09-28 12:00:31.549038','uneasy',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 2',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 4 by 6 paces on storey 0.','2026-09-28 12:00:31.593855',4,4,0,0,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000016,'2026-09-28 12:00:31.554054','uneasy',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 3',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey 1.','2026-09-28 12:00:31.594291',8,0,0,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000017,'2026-09-28 12:00:31.557438','dangerous',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 4',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey 1.','2026-09-28 12:00:31.595576',8,0,3,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000018,'2026-09-28 12:00:31.559655','uneasy',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 5',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey -1.','2026-09-28 12:00:31.596465',8,0,0,-1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000019,'2026-09-28 12:00:31.566684','dangerous',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 6',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey -1.','2026-09-28 12:00:31.596929',8,0,3,-1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000001,'2026-09-29 03:23:04.459650','safe',NULL,'Wet stone, a bollard worn smooth, and the custom house shut against the weather.','realized',NULL,NULL,NULL,NULL,'Every cargo that ever came ashore here was counted twice before it left.',0,'The Quay',NULL,NULL,1000000001,'The water at one end and the custom house at the other.','2026-09-29 03:23:04.459650',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000002,'2026-09-29 03:23:04.472327','safe',10,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House',NULL,NULL,1000000001,'Two floors of ledgers with the door standing open.','2026-09-29 03:23:04.472327',14,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000003,'2026-09-29 03:23:04.491479','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 1',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 4 paces on storey 0.','2026-09-29 03:23:04.678432',7,0,0,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000004,'2026-09-29 03:23:04.566453','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 2',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 4 paces on storey 0.','2026-09-29 03:23:04.681277',7,7,0,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000005,'2026-09-29 03:23:04.584332','dangerous',6,unistr('The back office, 7 by 6 paces of bare boards on storey 0. A door in the north wall\u000agoes through to the counting room, and one in the west wall stands half open on the\u000adark. Nothing else opens anywhere.'),'realized',NULL,NULL,NULL,NULL,'The room where the tallies were settled when the assessor was not watching.',0,'The Custom House room 3',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 6 paces on storey 0.','2026-09-29 03:23:04.682688',7,7,4,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000006,'2026-09-29 03:23:04.594631','uneasy',6,unistr('A dead end of 7 by 6 paces on storey 0, with one door in the east wall and no other\u000away out of it at all.'),'realized',NULL,NULL,NULL,NULL,'Storage, until somebody put a cot in it and stopped saying so.',0,'The Custom House room 4',1000000002,NULL,1000000001,'A room inside The Custom House, 7 by 6 paces on storey 0.','2026-09-29 03:23:04.683371',7,0,4,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000007,'2026-09-29 03:23:04.600389','uneasy',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 5',1000000002,NULL,1000000001,'A room inside The Custom House, 6 by 6 paces on storey 1.','2026-09-29 03:23:04.684244',6,0,0,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000008,'2026-09-29 03:23:04.616906','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 6',1000000002,NULL,1000000001,'A room inside The Custom House, 6 by 4 paces on storey 1.','2026-09-29 03:23:04.684907',6,0,6,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000009,'2026-09-29 03:23:04.626331','safe',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 7',1000000002,NULL,1000000001,'A room inside The Custom House, 5 by 4 paces on storey 1.','2026-09-29 03:23:04.688985',5,6,6,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000010,'2026-09-29 03:23:04.629747','dangerous',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 8',1000000002,NULL,1000000001,'A room inside The Custom House, 5 by 6 paces on storey 1.','2026-09-29 03:23:04.698244',5,6,0,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000011,'2026-09-29 03:23:04.637106','safe',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 9',1000000002,NULL,1000000001,'A room inside The Custom House, 3 by 6 paces on storey 1.','2026-09-29 03:23:04.699317',3,11,0,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000012,'2026-09-29 03:23:04.640303','uneasy',4,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Custom House room 10',1000000002,NULL,1000000001,'A room inside The Custom House, 3 by 4 paces on storey 1.','2026-09-29 03:23:04.700236',3,11,6,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000013,'2026-09-29 03:23:04.643376','safe',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar',NULL,NULL,1000000001,'A sealed door in the quay wall, and the stair behind it going down.','2026-09-29 03:23:04.643376',8,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000014,'2026-09-29 03:23:04.645978','safe',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 1',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 4 by 6 paces on storey 0.','2026-09-29 03:23:04.701036',4,0,0,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000015,'2026-09-29 03:23:04.648395','uneasy',6,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 2',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 4 by 6 paces on storey 0.','2026-09-29 03:23:04.701659',4,4,0,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000016,'2026-09-29 03:23:04.654432','uneasy',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 3',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey 1.','2026-09-29 03:23:04.702213',8,0,0,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000017,'2026-09-29 03:23:04.659136','dangerous',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 4',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey 1.','2026-09-29 03:23:04.703786',8,0,3,1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000018,'2026-09-29 03:23:04.662702','uneasy',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 5',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey -1.','2026-09-29 03:23:04.704860',8,0,0,-1,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000019,'2026-09-29 03:23:04.671997','dangerous',3,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'The Bonded Cellar room 6',1000000013,NULL,1000000001,'A room inside The Bonded Cellar, 8 by 3 paces on storey -1.','2026-09-29 03:23:04.705496',8,0,3,-1,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -299,7 +299,7 @@ FOREIGN KEY ("player_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-CREATE TABLE IF NOT EXISTS "quest_outcomes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "condition" varchar, "created_at" datetime(6) NOT NULL, "is_default" boolean DEFAULT FALSE NOT NULL, "minutes" integer, "name" varchar NOT NULL, "quest_id" integer NOT NULL, "ramification_minutes" integer, "ramification_summary" text, "summary" text NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_acf8ece7c5"
+CREATE TABLE IF NOT EXISTS "quest_outcomes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "character_id" integer, "condition" varchar, "created_at" datetime(6) NOT NULL, "is_default" boolean DEFAULT FALSE NOT NULL, "minutes" integer, "name" varchar NOT NULL, "quest_id" integer NOT NULL, "ramification_minutes" integer, "ramification_summary" text, "step_position" integer, "summary" text NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_acf8ece7c5"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
@@ -318,7 +318,7 @@ CREATE TABLE IF NOT EXISTS "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT N
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO races VALUES(1000000001,'2026-09-28 12:00:31.347093','Born to the water line, and unimpressed by anybody who was not.',0,'Harbourfolk',1000000001,'2026-09-28 12:00:31.347093');
+INSERT INTO races VALUES(1000000001,'2026-09-29 03:23:04.416864','Born to the water line, and unimpressed by anybody who was not.',0,'Harbourfolk',1000000001,'2026-09-29 03:23:04.416864');
 CREATE TABLE IF NOT EXISTS "relay_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_source" varchar, "cost_usd" decimal(12,6), "created_at" datetime(6) NOT NULL, "finished_at" datetime(6), "input_tokens" integer, "model" varchar NOT NULL, "output_tokens" integer, "player_id" integer NOT NULL, "reserved_usd" decimal(12,6) NOT NULL, "route" varchar NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "stream" boolean DEFAULT FALSE NOT NULL, "updated_at" datetime(6) NOT NULL, "upstream_status" integer, CONSTRAINT "fk_rails_deae27bd71"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -333,12 +333,12 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-28 12:00:31.920783','The tide is out and the custom house door is standing open, which it has no business doing.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-06 19:00:00','The story opens on the quay with the custom house standing open.',NULL,'2026-09-28 12:00:31.920783');
+INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-09-29 03:23:05.065408','The tide is out and the custom house door is standing open, which it has no business doing.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-06 19:00:00','The story opens on the quay with the custom house standing open.',NULL,'2026-09-29 03:23:05.065408');
 CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'2026-09-28 12:00:31.365386',NULL,'harbour mystery','The custom house has been locked since noon and the seal on the door is broken.','2026-09-06 19:00:00','Somebody was inside the custom house when the whole quay says it was empty.','The Quay House (engine sweep)',1000000001,'2026-09-28 12:00:31.365386');
+INSERT INTO stories VALUES(1000000001,'2026-09-29 03:23:04.435317',NULL,'harbour mystery','The custom house has been locked since noon and the seal on the door is broken.','2026-09-06 19:00:00','Somebody was inside the custom house when the whole quay says it was empty.','The Quay House (engine sweep)',1000000001,'2026-09-29 03:23:04.435317');
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -358,6 +358,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20260929023507');
 INSERT INTO schema_migrations VALUES('20260928102823');
 INSERT INTO schema_migrations VALUES('20260928035434');
 INSERT INTO schema_migrations VALUES('20260928035429');
@@ -435,8 +436,8 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
-INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-28 12:00:28.658342','2026-09-28 12:00:28.658345');
-INSERT INTO ar_internal_metadata VALUES('schema_sha1','a170d373ac9b94fbbf2c0335a10f091d790c8412','2026-09-28 12:00:28.662888','2026-09-28 12:00:28.662890');
+INSERT INTO ar_internal_metadata VALUES('environment','test','2026-09-29 03:22:36.954487','2026-09-29 03:22:36.954491');
+INSERT INTO ar_internal_metadata VALUES('schema_sha1','44ac57b5453b4ce34163740cf0aa1602e28dcc32','2026-09-29 03:22:36.958588','2026-09-29 03:22:36.958590');
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -605,6 +606,7 @@ CREATE INDEX "index_playthroughs_on_current_scene_id" ON "playthroughs" ("curren
 CREATE INDEX "index_playthroughs_on_player_id" ON "playthroughs" ("player_id");
 CREATE INDEX "index_playthroughs_on_story_id" ON "playthroughs" ("story_id");
 CREATE UNIQUE INDEX "index_playthroughs_on_token" ON "playthroughs" ("token");
+CREATE INDEX "index_quest_outcomes_on_character_id" ON "quest_outcomes" ("character_id");
 CREATE UNIQUE INDEX "index_quest_outcomes_on_quest_id_and_name" ON "quest_outcomes" ("quest_id", "name");
 CREATE INDEX "index_quest_outcomes_on_quest_id" ON "quest_outcomes" ("quest_id");
 CREATE UNIQUE INDEX "index_quest_steps_on_quest_id_and_position" ON "quest_steps" ("quest_id", "position");

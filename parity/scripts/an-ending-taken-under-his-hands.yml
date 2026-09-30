@@ -1,0 +1,131 @@
+---
+story: The Lunar Cartographer
+steps:
+- id: up-the-stairs
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+- id: the-one-fixed-point
+  type: go to the bell
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    foes:
+    - Marek Sollen
+    quest:
+      1: reached
+    ending: none
+- id: the-book-under-his-hands
+  type: take the bearing book
+  expect:
+    changed: true
+    carrying:
+    - climbers' bearing book
+    foes:
+    - Marek Sollen
+    blows: 1
+    quest:
+      1: reached
+      2: bound
+      3: reached
+    ending: none
+- id: patched-up-0
+  type: mend 20
+  expect:
+    dead: false
+- id: round-1
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-1
+  type: mend 20
+  expect:
+    dead: false
+- id: round-2
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-2
+  type: mend 20
+  expect:
+    dead: false
+- id: round-3
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-3
+  type: mend 20
+  expect:
+    dead: false
+- id: round-4
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-4
+  type: mend 20
+  expect:
+    dead: false
+- id: round-5
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-5
+  type: mend 20
+  expect:
+    dead: false
+- id: round-6
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-6
+  type: mend 20
+  expect:
+    dead: false
+- id: round-7
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-7
+  type: mend 20
+  expect:
+    dead: false
+- id: round-8
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-8
+  type: mend 20
+  expect:
+    dead: false
+- id: round-9
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-9
+  type: mend 20
+  expect:
+    dead: false
+- id: round-10
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-10
+  type: mend 20
+  expect:
+    dead: false
+- id: the-tally-off-his-body
+  type: take the tally
+  expect:
+    changed: true
+    carrying:
+    - climbers' bearing book
+    - bell-rope tally
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    ending: taken-under-his-hands
+    ending_words:
+    - while the Ringer was still standing over the rope
+    dead: true
