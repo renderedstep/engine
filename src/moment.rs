@@ -238,6 +238,9 @@ impl<'a> Moment<'a> {
         } else {
             format!("Also here: {}. Nobody else is present.", name_list(&others))
         });
+        if self.ending.is_some() {
+            parts.extend(self.dead_here());
+        }
         parts.extend(self.conditions_of_others());
         parts.extend(self.struck_fact());
         parts.extend(self.toll_fact());
@@ -362,6 +365,40 @@ impl<'a> Moment<'a> {
             .into_iter()
             .filter(|who| Some(id(who)) != player)
             .collect()
+    }
+
+    /// The dead lying in this room, on the ending's pass alone: the last
+    /// paragraph is written once with nothing after it to correct it, and
+    /// the room's own description and the ending's sentence may still speak
+    /// of them standing. A nickname goes in brackets, because that is what
+    /// the world's prose may call them. Never the player, who is "you" and
+    /// has a condition line of their own. The arrival's sentence, otherwise.
+    fn dead_here(&self) -> Option<String> {
+        let location = self.location()?;
+        let player = self.protagonist().map(id);
+        let dead: Vec<String> = self
+            .game
+            .characters_located_in(location)
+            .into_iter()
+            .filter(|who| Some(id(who)) != player)
+            .filter(|who| self.game.vitals_for(who).is_some_and(|c| c.dead()))
+            .map(|who| {
+                let name = string(who, "fullname");
+                match presence(text(who, "nickname")).map(ruby_strip) {
+                    Some(nickname) if !is_blank(nickname) && nickname != name => {
+                        format!("{name} ({nickname})")
+                    }
+                    _ => name.to_string(),
+                }
+            })
+            .collect();
+        if dead.is_empty() {
+            return None;
+        }
+        Some(format!(
+            "Dead here: {}. They cannot speak or act.",
+            dead.join(", ")
+        ))
     }
 
     fn conditions_of_others(&self) -> Vec<String> {
