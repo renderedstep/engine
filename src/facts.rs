@@ -125,6 +125,24 @@ pub enum Throw<'a> {
     /// It went through the way out into the room named, and broke where it
     /// landed if `broke`.
     Thrown { into: &'a str, broke: bool },
+    /// It carried only `range` paces of the `distance` to the person named
+    /// and hit nobody, and broke where it landed if `broke`.
+    ShortOf {
+        target: &'a str,
+        range: i64,
+        distance: i64,
+        broke: bool,
+    },
+    /// It carried only `range` paces of the `distance` to the way out into
+    /// `into`, and came down in `here`, the room it was thrown in, and broke
+    /// there if `broke`.
+    ShortOfTheWayOut {
+        into: &'a str,
+        here: &'a str,
+        range: i64,
+        distance: i64,
+        broke: bool,
+    },
     /// It does not move for anybody, so no die was thrown.
     Immovable,
     /// The lift failed; `carried` says whether it is still in the party's
@@ -162,6 +180,54 @@ pub fn thrown(thrower: Option<&str>, thing: &str, bulk: &str, outcome: Throw) ->
              {thing} is NO LONGER CARRIED and is not lying anywhere, in this room or in {into}: it is \
              broken and gone, and nobody can pick it up, carry it or use it again."
         ),
+        Throw::ShortOf {
+            target,
+            range,
+            distance,
+            broke,
+        } => format!(
+            "{who} threw the {thing} at {target} and it FELL SHORT: the {thing} is {bulk} and carries \
+             only {}, and {target} was {} away. {}",
+            paces(range),
+            paces(distance),
+            if broke {
+                format!(
+                    "It hit nobody, and it BROKE where it landed. The {thing} is NO LONGER CARRIED and is \
+                     not lying anywhere: it is broken and gone, and nobody can pick it up, carry it or \
+                     use it again."
+                )
+            } else {
+                format!(
+                    "It hit nobody. The {thing} is NO LONGER CARRIED: it is lying on the floor between \
+                     them, where it stays until somebody picks it up."
+                )
+            }
+        ),
+        Throw::ShortOfTheWayOut {
+            into,
+            here,
+            range,
+            distance,
+            broke,
+        } => format!(
+            "{who} threw the {thing} at the way out into {into} and it FELL SHORT: the {thing} is {bulk} \
+             and carries only {}, and the way out was {} away. {}",
+            paces(range),
+            paces(distance),
+            if broke {
+                format!(
+                    "It did not go through, and it BROKE where it landed. The {thing} is NO LONGER \
+                     CARRIED and is not lying anywhere, in {here} or in {into}: it is broken and gone, \
+                     and nobody can pick it up, carry it or use it again."
+                )
+            } else {
+                format!(
+                    "It did not go through, and it is not in {into}. The {thing} is NO LONGER CARRIED: \
+                     it is lying on the floor of {here}, short of the way out, where it stays until \
+                     somebody picks it up."
+                )
+            }
+        ),
         Throw::Immovable => format!(
             "{who} could not throw the {thing} at all: it is {bulk} and does not move. Nothing happened."
         ),
@@ -175,5 +241,23 @@ pub fn thrown(thrower: Option<&str>, thing: &str, bulk: &str, outcome: Throw) ->
                 "is still lying exactly where it was"
             }
         ),
+    }
+}
+
+/// How far a thrown thing carries, told where the room gives nothing to
+/// hold it against; it follows the sentence [`thrown`] gives a throw that
+/// hit or went through.
+pub fn carries(thing: &str, bulk: &str, range: i64) -> String {
+    format!(
+        "The {thing} is {bulk}; a throw of it carries about {}.",
+        paces(range)
+    )
+}
+
+fn paces(count: i64) -> String {
+    if count == 1 {
+        "1 pace".to_string()
+    } else {
+        format!("{count} paces")
     }
 }

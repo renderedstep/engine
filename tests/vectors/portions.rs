@@ -41,6 +41,7 @@ pub const NAMES: &[&str] = &[
     "speech_choices",
     "physics",
     "breakage",
+    "range",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -678,5 +679,60 @@ fn breakage() {
         .generator();
         let rolled = physics::break_roll(share, &mut rng);
         json!({ "share": share, "die": rolled.die, "broke": rolled.broke })
+    });
+}
+
+#[test]
+fn range() {
+    use renderedstep_engine::physics;
+    let (per_strength, cap) = physics::throw_reach();
+    let constants = json!({
+        "throw_range": physics::throw_ranges(),
+        "throw_reach_per_strength": per_strength,
+        "throw_reach_cap": cap,
+        "gravity": physics::gravities(),
+    });
+    check("range", constants, |input| {
+        let spot = |value: &Value| Spot {
+            x: int(&value["x"]),
+            y: int(&value["y"]),
+        };
+        let Some(range) = physics::range(
+            input["bulk"].as_str(),
+            int(&input["strength"]),
+            input["gravity"].as_str(),
+        ) else {
+            return json!({ "range": null });
+        };
+        let measured = (!input["room"].is_null()).then(|| {
+            let room = box_of(&input["room"]);
+            let from = spot(&input["from"]);
+            let at = &input["at"];
+            if !at["person"].is_null() {
+                Some((spot(&at["person"]), 0))
+            } else if !at["way_out"].is_null() {
+                physics::by_the_way_out(&room, &box_of(&at["way_out"]), from)
+                    .map(|beside| (beside, 1))
+            } else {
+                None
+            }
+            .map(|(to, through)| (from, to, physics::paces(from, to) + through))
+        });
+        let Some((from, to, distance)) = measured.flatten() else {
+            return json!({ "range": range, "distance": null });
+        };
+        let reach = physics::Reach {
+            range,
+            distance: Some(distance),
+        };
+        json!({
+            "range": range,
+            "distance": distance,
+            "short": reach.short(),
+            "landed": reach.short().then(|| {
+                let landed = spot::along(from, to, range);
+                json!({ "x": landed.x, "y": landed.y })
+            }),
+        })
     });
 }

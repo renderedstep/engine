@@ -268,6 +268,7 @@ column playthroughs.player_id integer pk=0
 column playthroughs.story_id integer not null pk=0
 column playthroughs.token varchar not null pk=0
 column playthroughs.updated_at datetime(6) not null pk=0
+column quest_outcomes.character_id integer pk=0
 column quest_outcomes.condition varchar pk=0
 column quest_outcomes.created_at datetime(6) not null pk=0
 column quest_outcomes.id integer not null pk=1
@@ -277,6 +278,7 @@ column quest_outcomes.name varchar not null pk=0
 column quest_outcomes.quest_id integer not null pk=0
 column quest_outcomes.ramification_minutes integer pk=0
 column quest_outcomes.ramification_summary text pk=0
+column quest_outcomes.step_position integer pk=0
 column quest_outcomes.summary text not null pk=0
 column quest_outcomes.updated_at datetime(6) not null pk=0
 column quest_steps.bound_at datetime(6) pk=0
@@ -589,6 +591,7 @@ index playthroughs (current_scene_id)
 index playthroughs (player_id)
 index playthroughs (story_id)
 index playthroughs (token) unique
+index quest_outcomes (character_id)
 index quest_outcomes (quest_id)
 index quest_outcomes (quest_id, name) unique
 index quest_steps (quest_id)

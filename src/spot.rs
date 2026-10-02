@@ -53,3 +53,36 @@ pub fn place(
     .generator();
     Some(inside(room, &mut rng))
 }
+
+/// `Placement.along`: where a thing thrown from `from` at `to` comes down
+/// when it carries only `paces`, along the line between them, rounded
+/// towards where it was thrown from. The one spot that is computed rather
+/// than rolled. A throw that carries as far as `to` lands there.
+pub fn along(from: Spot, to: Spot, paces: i64) -> Spot {
+    let distance = crate::physics::paces(from, to);
+    if paces >= distance {
+        return to;
+    }
+    let step = |start: i64, end: i64| start + (end - start) * paces.max(0) / distance;
+    Spot {
+        x: step(from.x, to.x),
+        y: step(from.y, to.y),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_short_throw_lands_its_paces_along_the_line_and_a_long_one_where_it_was_aimed() {
+        let from = Spot { x: 1, y: 1 };
+        let to = Spot { x: 7, y: 3 };
+        assert_eq!(along(from, to, 4), Spot { x: 4, y: 2 });
+        assert_eq!(along(from, to, 3), Spot { x: 3, y: 1 });
+        assert_eq!(along(from, to, 8), to);
+        assert_eq!(along(from, to, 20), to);
+        assert_eq!(along(to, from, 4), Spot { x: 4, y: 2 });
+        assert_eq!(along(from, from, 3), from);
+    }
+}

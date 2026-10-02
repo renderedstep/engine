@@ -324,11 +324,10 @@ fn sheet(character: &Row) -> Vec<String> {
 /// `Playthrough::EndNotice#sentence`, as a refusal of a line typed into the
 /// finished game says it.
 fn over_refusal(game: &Game) -> Refusal {
-    let concluded = !game.own("playthrough_endings").is_empty();
     let character = int(game.row, "character_id")
         .and_then(|who| game.records.find("characters", who))
         .map(person_of);
-    Refusal::over(concluded, character.as_ref(), "")
+    Refusal::over(game.ended(), character.as_ref(), "")
 }
 
 fn verbs(mechanics: &Mechanics, room: &Room, game: &Game) -> Vec<Verb> {

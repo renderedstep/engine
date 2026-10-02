@@ -6,6 +6,7 @@ use crate::check_rooms;
 use renderedstep_engine::cascade::{self, Escalation, State, Unavailable};
 use renderedstep_engine::grammar::{self, Grammar, Reading, HELP};
 use renderedstep_engine::intent::{build_intent, Intent};
+use renderedstep_engine::playthrough::Ended;
 use renderedstep_engine::refusal::{Refusal, KINDS, UNCHANGED};
 use renderedstep_engine::room::{Exit, Person, Place, Record, Room, Thing, INTENTS, NOTHING};
 use renderedstep_engine::slash_menu::{SlashMenu, HINTS, PHYSICAL_HINTS};
@@ -395,7 +396,11 @@ fn refusal() {
                 Some(Refusal::dead(&typed, person))
             }
             Some("over") => Some(Refusal::over(
-                input["ending"] == "concluded",
+                match input["ending"].as_str() {
+                    Some("concluded") => Ended::Concluded,
+                    Some("died") => Ended::Died,
+                    _ => Ended::Unrecorded,
+                },
                 built.room.protagonist.as_ref(),
                 &typed,
             )),

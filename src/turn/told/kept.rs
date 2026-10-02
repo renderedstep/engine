@@ -6,6 +6,7 @@ use super::{Played, Told, Turn};
 use crate::command::encode;
 use crate::engine::Error;
 use crate::intent::Intent;
+use crate::physics::{self, Break, Reach};
 use crate::records::{id, int, string, text, Row};
 use crate::refusal::Refusal;
 use crate::room::{Choice, Exit, Place, Record};
@@ -324,6 +325,48 @@ fn ruby_hash(value: &Value) -> Value {
     }
 }
 
+/// The break die thrown for a thing that came down on a floor, or nothing
+/// where none was: its sides, the face it came up, the share it broke on and
+/// whether it broke. The one record of a break that held.
+impl Kept for Option<Break> {
+    fn encode(&self) -> Value {
+        self.map_or(Value::Null, |rolled| {
+            encode::data(
+                "Physics::Break",
+                vec![
+                    ("sides", Value::from(physics::break_die())),
+                    ("die", Value::from(rolled.die)),
+                    ("share", Value::from(rolled.share)),
+                    ("broke", Value::from(rolled.broke)),
+                ],
+            )
+        })
+    }
+    fn decode(_: &Turn, value: &Value) -> Result<Option<Break>, Error> {
+        if value.is_null() {
+            return Ok(None);
+        }
+        break_of(value).map(Some)
+    }
+}
+
+fn break_of(value: &Value) -> Result<Break, Error> {
+    let map = fields(value)?;
+    let number = |key: &str| {
+        map.get(key)
+            .and_then(Value::as_i64)
+            .ok_or_else(|| unreadable("a break", value))
+    };
+    Ok(Break {
+        share: number("share")?,
+        die: number("die")?,
+        broke: map
+            .get("broke")
+            .and_then(Value::as_bool)
+            .ok_or_else(|| unreadable("a break", value))?,
+    })
+}
+
 /// A throw, as the report the offline writer gives of it.
 impl Kept for Report {
     fn encode(&self) -> Value {
@@ -342,7 +385,22 @@ impl Kept for Report {
                     "note",
                     encode::array(self.note.iter().map(|n| Value::from(n.as_str())).collect()),
                 ),
-            ],
+            ]
+            .into_iter()
+            .chain(
+                self.break_roll
+                    .map(|rolled| ("break", Some(rolled).encode())),
+            )
+            .chain(self.reach.map(|reach| {
+                (
+                    "reach",
+                    encode::hash(vec![
+                        ("range", Value::from(reach.range)),
+                        ("distance", reach.distance.map_or(Value::Null, Value::from)),
+                    ]),
+                )
+            }))
+            .collect(),
         )
     }
     fn decode(_: &Turn, value: &Value) -> Result<Report, Error> {
@@ -356,10 +414,19 @@ impl Kept for Report {
             .iter()
             .filter_map(|n| n.as_str().map(str::to_string))
             .collect();
+        let reach = map.get("reach").map(plain).and_then(|reach| {
+            Some(Reach {
+                range: reach["range"].as_i64()?,
+                distance: reach["distance"].as_i64(),
+            })
+        });
+        let break_roll = map.get("break").map(break_of).transpose()?;
         Ok(Report {
             change: text("change"),
             refusal: text("refusal"),
             note,
+            reach,
+            break_roll,
             ..Report::default()
         })
     }

@@ -5,9 +5,10 @@
 # `bulk` and `thrown_damage` are read by a throw; `gravity`, `fall_die` and
 # `fall_save` by a fall through a doorway, which throws nothing in a world
 # with no gravity; and `fragility`, `break_die`, `height_step` and `surface`
-# by a thing coming down on a floor, which throws nothing for a sturdy thing
-# (all in `src/physics.rs`). The range tables are the starting calibration for
-# throwing range; nothing reads them yet.
+# by a thing coming down on a floor, which throws nothing for a sturdy thing;
+# and `throw_range`, `throw_reach_per_strength` and `throw_reach_cap` by a
+# throw's range, which holds nothing against a throw in a world with no
+# gravity (all in `src/physics.rs`).
 ---
 bulk:                    # items.bulk: the penalty taken off a thrower's strength
   light: 0

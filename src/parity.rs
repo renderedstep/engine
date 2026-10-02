@@ -580,6 +580,8 @@ fn play_browser(
         resolved_by: scene
             .and_then(|scene| text(scene, "resolved_by"))
             .map(str::to_string),
+        reach: None,
+        break_roll: None,
     };
     let outcome = Outcome {
         report,

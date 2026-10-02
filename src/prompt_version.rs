@@ -112,6 +112,44 @@ pub fn scaffold() -> String {
                 broke: true,
             },
         ),
+        (
+            "heavy",
+            Throw::ShortOf {
+                target: WHO,
+                range: 3,
+                distance: 5,
+                broke: false,
+            },
+        ),
+        (
+            "heavy",
+            Throw::ShortOf {
+                target: WHO,
+                range: 3,
+                distance: 5,
+                broke: true,
+            },
+        ),
+        (
+            "heavy",
+            Throw::ShortOfTheWayOut {
+                into: WHERE,
+                here: WHERE,
+                range: 3,
+                distance: 5,
+                broke: false,
+            },
+        ),
+        (
+            "heavy",
+            Throw::ShortOfTheWayOut {
+                into: WHERE,
+                here: WHERE,
+                range: 3,
+                distance: 5,
+                broke: true,
+            },
+        ),
         ("heavy", Throw::Immovable),
     ];
     texts.extend(
@@ -120,6 +158,7 @@ pub fn scaffold() -> String {
             .map(|(bulk, outcome)| facts::thrown(Some(WHO), &bare, bulk, *outcome)),
     );
     texts.push(facts::thrown(None, &bare, throws[0].0, throws[0].1));
+    texts.push(facts::carries(&bare, "light", 12));
     texts.extend(
         [Direction::Taken, Direction::Dropped]
             .into_iter()
@@ -165,6 +204,11 @@ mod tests {
             "put the <item> down, and it BROKE on the floor of <where>",
             "and it hit them, and it BROKE",
             "and it BROKE where it landed",
+            "and it FELL SHORT: the <item> is heavy and carries only 3 paces",
+            "It hit nobody, and it BROKE where it landed",
+            "at the way out into <where> and it FELL SHORT",
+            "It did not go through, and it BROKE where it landed",
+            "a throw of it carries about 12 paces",
             "could not throw the <item> at all: it is heavy",
             "picked up just now, on this turn",
             "put down just now, on this turn",
