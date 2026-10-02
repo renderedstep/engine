@@ -1,0 +1,160 @@
+---
+story: The Lunar Cartographer
+steps:
+- id: up-the-stairs
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+- id: into-the-tower
+  type: go to the bell
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    present:
+    - Marek Sollen
+    foes:
+    - Marek Sollen
+- id: round-1
+  type: attack Marek Sollen
+  expect:
+    understood: attack -> Marek Sollen
+    blows: 2
+    dead: false
+- id: patched-up-1
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-2
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-2
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-3
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-3
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-4
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-4
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-5
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-5
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-6
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-6
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-7
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-7
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-8
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-8
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-9
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-9
+  type: mend 20
+  expect:
+    hp: 18
+- id: round-10
+  type: attack Marek Sollen
+  expect:
+    dead: false
+- id: patched-up-10
+  type: mend 20
+  expect:
+    hp: 18
+- id: he-is-dead-and-out-of-the-cast
+  type: look
+  expect:
+    present: []
+    foes: []
+    dead: false
+- id: looking-round-the-room-the-turn-after
+  type: "/examine climbers' bearing book"
+  browser:
+    token: look-round
+    replies:
+    - purpose: narration
+      content: You kneel by the bearing book under the south louvre.
+      prompt_includes:
+      - Nobody else is alive here.
+      - 'Dead here: Marek Sollen (the Ringer), killed by Isbet Marrow'
+  expect:
+    changed: true
+    present: []
+- id: the-body-a-turn-later
+  type: "/inspect mareks body"
+  browser:
+    token: the-body
+    replies:
+    - purpose: classifier
+      content:
+        intent: examine
+        target: nothing
+        also_named: nothing
+    - purpose: narration
+      content: Marek Sollen lies where he fell by the rope.
+      prompt_includes:
+      - Nobody else is alive here.
+      - 'Dead here: Marek Sollen (the Ringer), killed by Isbet Marrow'
+  expect:
+    resolved_by: model
+    changed: true
+    present: []
+- id: out-to-the-stair
+  type: go to the hallway
+  expect:
+    changed: true
+    location: Grenn's Boarding House hallway (stub)
+- id: back-in-to-the-body
+  type: "/go The Bell of Saint Aravel"
+  browser:
+    token: back-in
+    replies:
+    - purpose: arrival
+      content:
+        description: The bell chamber is as you left it, and Marek Sollen lies where
+          he fell by the rope.
+        summary: The player comes back up into the bell chamber, where Marek Sollen
+          lies dead.
+      prompt_includes:
+      - Nobody else is alive here.
+      - 'Dead here: Marek Sollen, killed by Isbet Marrow'
+  expect:
+    changed: true
+    location: The Bell of Saint Aravel (realized)
+    present: []

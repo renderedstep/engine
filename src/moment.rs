@@ -1,6 +1,7 @@
 //! `Playthrough::Moment`: what the prompts are told about the moment the
 //! player is standing in, built out of the records and nothing else.
 
+use crate::arrival::distance_of_time_in_words;
 use crate::ledger;
 use crate::memory::{self, CONCLUSIONS};
 use crate::plan::Plan;
@@ -129,6 +130,37 @@ pub fn one_toll(game: &Game, toll: &Row) -> String {
     )
 }
 
+/// A body's name for the dead line, with a nickname in brackets because
+/// that is what the world's prose may call them.
+fn dead_name(who: &Row) -> String {
+    let name = string(who, "fullname");
+    match presence(text(who, "nickname")).map(ruby_strip) {
+        Some(nickname) if !is_blank(nickname) && nickname != name => {
+            format!("{name} ({nickname})")
+        }
+        _ => name.to_string(),
+    }
+}
+
+/// "killed by <attacker> <how long> ago", off the last recorded blow that
+/// took `body` to nothing, measured to `now`. None when no blow did: a body
+/// a hazard killed, or one a world was written with.
+pub fn killed_by(game: &Game, body: &Row, now: Option<i64>) -> Option<String> {
+    let blow = game
+        .own("playthrough_blows")
+        .into_iter()
+        .filter(|blow| int(blow, "target_id") == Some(id(body)) && int(blow, "hp_after") == Some(0))
+        .max_by_key(|blow| (int(blow, "sequence"), id(blow)))?;
+    let killer = string(game.character(int(blow, "attacker_id")?), "fullname");
+    Some(match (now, int(blow, "story_timestamp")) {
+        (Some(now), Some(at)) => format!(
+            "killed by {killer} {} ago",
+            distance_of_time_in_words((now - at) as f64)
+        ),
+        _ => format!("killed by {killer}"),
+    })
+}
+
 /// `Scene.recap_line`: a scene's summary, or its first sentence.
 pub fn recap_line(scene: &Row) -> Option<String> {
     if let Some(summary) = presence(text(scene, "summary")) {
@@ -233,14 +265,22 @@ impl<'a> Moment<'a> {
             }
         }
         let others = self.others();
-        parts.push(if others.is_empty() {
-            "Nobody else is here.".into()
-        } else {
-            format!("Also here: {}. Nobody else is present.", name_list(&others))
+        let dead = match self.ending {
+            Some(_) => self.dead_here(),
+            None => self.dead_fact(),
+        };
+        // The ending's pass keeps its own words: its sets were bought on them.
+        let alive = dead.is_some() && self.ending.is_none();
+        parts.push(match (others.is_empty(), alive) {
+            (true, false) => "Nobody else is here.".into(),
+            (true, true) => "Nobody else is alive here.".into(),
+            (false, false) => format!("Also here: {}. Nobody else is present.", name_list(&others)),
+            (false, true) => format!(
+                "Also here: {}. Nobody else is alive here.",
+                name_list(&others)
+            ),
         });
-        if self.ending.is_some() {
-            parts.extend(self.dead_here());
-        }
+        parts.extend(dead);
         parts.extend(self.conditions_of_others());
         parts.extend(self.struck_fact());
         parts.extend(self.toll_fact());
@@ -374,24 +414,7 @@ impl<'a> Moment<'a> {
     /// the world's prose may call them. Never the player, who is "you" and
     /// has a condition line of their own. The arrival's sentence, otherwise.
     fn dead_here(&self) -> Option<String> {
-        let location = self.location()?;
-        let player = self.protagonist().map(id);
-        let dead: Vec<String> = self
-            .game
-            .characters_located_in(location)
-            .into_iter()
-            .filter(|who| Some(id(who)) != player)
-            .filter(|who| self.game.vitals_for(who).is_some_and(|c| c.dead()))
-            .map(|who| {
-                let name = string(who, "fullname");
-                match presence(text(who, "nickname")).map(ruby_strip) {
-                    Some(nickname) if !is_blank(nickname) && nickname != name => {
-                        format!("{name} ({nickname})")
-                    }
-                    _ => name.to_string(),
-                }
-            })
-            .collect();
+        let dead: Vec<String> = self.dead_bodies().into_iter().map(dead_name).collect();
         if dead.is_empty() {
             return None;
         }
@@ -399,6 +422,45 @@ impl<'a> Moment<'a> {
             "Dead here: {}. They cannot speak or act.",
             dead.join(", ")
         ))
+    }
+
+    /// The same sentence on every pass but the ending's, each body with the
+    /// blow that killed it where the game recorded one: who struck it, and
+    /// how long ago. The blows are told on the turn they land and the
+    /// fight's closing scene on the turn after; from then on the fight is a
+    /// recap line that names the dead and not the killer, and this is what
+    /// still says it.
+    fn dead_fact(&self) -> Option<String> {
+        let now = self.game.story_time();
+        let dead: Vec<String> = self
+            .dead_bodies()
+            .into_iter()
+            .map(|body| match killed_by(&self.game, body, now) {
+                Some(clause) => format!("{}, {clause}", dead_name(body)),
+                None => dead_name(body),
+            })
+            .collect();
+        if dead.is_empty() {
+            return None;
+        }
+        Some(format!(
+            "Dead here: {}. They cannot speak or act.",
+            dead.join("; ")
+        ))
+    }
+
+    /// The dead lying in this room, never the player.
+    fn dead_bodies(&self) -> Vec<&'a Row> {
+        let Some(location) = self.location() else {
+            return Vec::new();
+        };
+        let player = self.protagonist().map(id);
+        self.game
+            .characters_located_in(location)
+            .into_iter()
+            .filter(|who| Some(id(who)) != player)
+            .filter(|who| self.game.vitals_for(who).is_some_and(|c| c.dead()))
+            .collect()
     }
 
     fn conditions_of_others(&self) -> Vec<String> {
