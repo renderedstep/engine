@@ -436,9 +436,17 @@ impl<'a> Realization<'a> {
                 taken.join(", ")
             )
         };
+        // `#besides_already_here`: the floor list's first line in a furnished
+        // room, and nothing in any other.
+        let besides = if self.already_here().is_empty() {
+            ""
+        } else {
+            ", besides the ones Already Here above: those are written already, \
+             and a thing named again is not a new one"
+        };
         format!(
             "## What Is Lying Here\n\
-             List AT MOST {allowance} portable thing{} a player could pick up and carry away.\n\
+             List AT MOST {allowance} portable thing{} a player could pick up and carry away{besides}.\n\
              - Nothing is the right answer for most rooms. An empty list is a complete answer\n\
              - Only loose, portable things. Not the door, not the floor, not the machinery\n  \
              bolted to it -- something a person could put in a pocket or under an arm\n\
