@@ -14,7 +14,9 @@ fn open(world: &str, title: &str) -> (Engine, i64) {
     )
     .expect("the world fixture");
     let mut engine = open_world(&sql).unwrap();
-    let story = engine.story_titled(&format!("{title}{TITLE_SUFFIX}")).unwrap();
+    let story = engine
+        .story_titled(&format!("{title}{TITLE_SUFFIX}"))
+        .unwrap();
     let playthrough = engine.start(story).unwrap();
     (engine, playthrough)
 }
@@ -48,7 +50,10 @@ fn a_furnished_room_tells_its_fixed_pieces_apart_from_what_lies_in_it() {
 
 #[test]
 fn a_room_with_nothing_fixed_in_it_has_no_line_for_it() {
-    let (mut engine, playthrough) = open("a-clerk-with-somewhere-to-be", "A Clerk With Somewhere To Be");
+    let (mut engine, playthrough) = open(
+        "a-clerk-with-somewhere-to-be",
+        "A Clerk With Somewhere To Be",
+    );
     narrate(
         &mut engine,
         playthrough,
