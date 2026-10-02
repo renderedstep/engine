@@ -21,6 +21,9 @@ steps:
       prompt_includes:
       - 'What else happened here, recorded by the game: Rowe Harker spoke up unasked
         and demanded pawn ticket from Ansel Mott. Nothing changed hands.'
+      - Rowe Harker also spoke up unasked, as "What else happened here" above records.
+        Narrate that too, as part of this exchange, in a sentence or two of its own.
+        Nothing Rowe Harker said changes what is recorded above.
       prompt_excludes:
       - Tamsin Gale spoke up unasked
   expect:
