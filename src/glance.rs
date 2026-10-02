@@ -83,6 +83,33 @@ pub struct Person {
 pub struct Thing {
     pub id: i64,
     pub name: String,
+    /// The fixture it lies on or in, for a thing lying here on one.
+    pub on: Option<String>,
+}
+
+/// Something fixed in place here: what it holds, whether it is shut, and
+/// what lies on or in it, in the order the lists are written.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Fixture {
+    pub id: i64,
+    pub name: String,
+    /// `Item::HOLDS`: `nothing`, `top`, `hollow` or `closed`.
+    pub holds: String,
+    /// `shut` for a closed fixture, none for one with no inside.
+    pub state: Option<String>,
+    /// Whether this game has looked inside a closed fixture; none for one
+    /// with no inside.
+    pub searched: Option<bool>,
+    pub on: Vec<String>,
+}
+
+/// How much the room shows, and how much of it nobody has looked in.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Counts {
+    /// The fixtures and the things lying here, together.
+    pub visible: usize,
+    /// The closed fixtures this game has not searched.
+    pub unsearched: usize,
 }
 
 /// One target a verb can take: a record by id and the name it answers to,
@@ -125,7 +152,12 @@ pub struct Glance {
     /// In the order the turn offers them, as are the other lists here.
     pub exits: Vec<Exit>,
     pub people: Vec<Person>,
+    /// What stands here fixed in place, never among `lying_here`.
+    pub fixtures: Vec<Fixture>,
+    /// What lies here and may be picked up: on the floor, or on or in a
+    /// fixture.
     pub lying_here: Vec<Thing>,
+    pub counts: Counts,
     pub carrying: Vec<Thing>,
     /// The player's condition in words; none without a stat block.
     pub condition: Option<String>,
@@ -182,15 +214,55 @@ impl Glance {
                 provoked: game.provoked(id(who)),
             })
             .collect();
-        let things = |records: Vec<Record>| -> Vec<Thing> {
-            records
+        let row = |id: i64| records.find("items", id);
+        let fixed =
+            |id: i64| row(id).and_then(|item| text(item, "tier")) == Some(crate::kit::FIXTURE);
+        let things = |listed: Vec<Record>| -> Vec<Thing> {
+            listed
                 .iter()
                 .filter_map(Record::thing)
+                .filter(|thing| !fixed(thing.id))
                 .map(|thing| Thing {
                     id: thing.id,
                     name: thing.name.clone(),
+                    on: row(thing.id)
+                        .and_then(|item| int(item, "within_id"))
+                        .and_then(row)
+                        .map(|within| string(within, "name").to_string()),
                 })
                 .collect()
+        };
+        let lying_here = things(room.items_here());
+        let fixtures: Vec<Fixture> = room
+            .items_here()
+            .iter()
+            .filter_map(Record::thing)
+            .filter_map(|thing| row(thing.id).filter(|_| fixed(thing.id)))
+            .map(|item| {
+                let holds = text(item, "holds").unwrap_or("nothing").to_string();
+                let closed = holds == "closed";
+                Fixture {
+                    id: id(item),
+                    name: string(item, "name").to_string(),
+                    on: lying_here
+                        .iter()
+                        .filter(|thing| {
+                            row(thing.id).and_then(|t| int(t, "within_id")) == Some(id(item))
+                        })
+                        .map(|thing| thing.name.clone())
+                        .collect(),
+                    holds,
+                    state: closed.then(|| "shut".to_string()),
+                    searched: closed.then_some(false),
+                }
+            })
+            .collect();
+        let counts = Counts {
+            visible: fixtures.len() + lying_here.len(),
+            unsearched: fixtures
+                .iter()
+                .filter(|f| f.searched == Some(false))
+                .count(),
         };
         let player = game.protagonist();
 
@@ -202,7 +274,9 @@ impl Glance {
             }),
             exits,
             people,
-            lying_here: things(room.items_here()),
+            fixtures,
+            lying_here,
+            counts,
             carrying: things(room.items_carried()),
             condition: player
                 .and_then(|who| game.vitals_for(who))
