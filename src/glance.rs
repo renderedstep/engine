@@ -227,7 +227,7 @@ impl Glance {
                     name: thing.name.clone(),
                     on: row(thing.id)
                         .and_then(|item| int(item, "within_id"))
-                        .and_then(&row)
+                        .and_then(row)
                         .map(|within| string(within, "name").to_string()),
                 })
                 .collect()
