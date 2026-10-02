@@ -1,6 +1,7 @@
 # The sweep scripts this engine plays exactly as the Ruby engine does, step
 # for step. `cargo test` and `parity --check parity` fail when one of these
 # diverges, and when a script agrees and is not listed here.
+a-body-says-who-killed-it
 a-building-dealt-its-rooms
 a-building-with-two-floors
 a-cellar-below-the-way-in
