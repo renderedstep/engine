@@ -3,7 +3,7 @@
 //! sends nothing.
 
 use crate::data;
-use crate::moment::one_toll;
+use crate::moment::{killed_by, one_toll};
 use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, Records, Row};
 use crate::schemas;
@@ -389,10 +389,27 @@ impl<'a> Arrival<'a> {
             .filter(|who| game.vitals_for(who).is_some_and(|c| c.dead()))
             .collect();
         if !dead.is_empty() {
-            parts.push(format!(
-                "Dead here: {}. They cannot speak or act.",
+            // Who killed each, where a blow did: the room may still be
+            // described as if they stood in it, and nothing else on the way
+            // in says how they came to lie there.
+            let now = Some(self.story_timestamp() as i64);
+            let killed: Vec<Option<String>> = dead
+                .iter()
+                .map(|body| killed_by(&game, body, now))
+                .collect();
+            let told = if killed.iter().all(Option::is_none) {
                 names(&dead)
-            ));
+            } else {
+                dead.iter()
+                    .zip(&killed)
+                    .map(|(body, clause)| match clause {
+                        Some(clause) => format!("{}, {clause}", string(body, "fullname")),
+                        None => string(body, "fullname").to_string(),
+                    })
+                    .collect::<Vec<_>>()
+                    .join("; ")
+            };
+            parts.push(format!("Dead here: {told}. They cannot speak or act."));
         }
         let items = |items: Vec<&Row>| {
             let names: Vec<&str> = items.iter().map(|item| string(item, "name")).collect();
