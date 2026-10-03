@@ -610,6 +610,8 @@ impl<'s> Mechanics<'s> {
                 ("location_id", Value::Null),
                 ("x", Value::Null),
                 ("y", Value::Null),
+                ("within_id", Value::Null),
+                ("how", Value::Null),
             ],
         )?;
         let taker = self
@@ -1142,6 +1144,8 @@ impl<'s> Mechanics<'s> {
                 ("location_id", Value::Null),
                 ("x", Value::Null),
                 ("y", Value::Null),
+                ("within_id", Value::Null),
+                ("how", Value::Null),
             ],
         )
     }
@@ -1407,6 +1411,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!(
@@ -1424,6 +1430,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!("{who} gave {name} to {party}; the player now carries it.")
@@ -2534,6 +2542,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!("{who} picked up {name} in {here} and now holds it.")
@@ -2548,6 +2558,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!("{who} handed {name} to {player}; the player now carries it.")
@@ -3410,7 +3422,18 @@ impl<'s> Mechanics<'s> {
             .iter()
             .filter_map(|item| int(item, "template_id"))
             .collect();
-        for (template, into) in candidates {
+        // A room's fixtures first, so a thing lying on one finds this game's
+        // copy of it already there.
+        let mut wanted: Vec<(i64, Into)> = candidates
+            .into_iter()
+            .filter(|(template, _)| !copied.contains(template))
+            .collect();
+        wanted.sort_by_key(|(template, _)| {
+            self.records
+                .find("items", *template)
+                .is_none_or(|row| text(row, "tier") != Some(crate::kit::FIXTURE))
+        });
+        for (template, into) in wanted {
             if copied.contains(&template) {
                 continue;
             }
@@ -3418,7 +3441,9 @@ impl<'s> Mechanics<'s> {
             let source = self.row("items", template)?;
             let mut values: Vec<(&str, Value)> = source
                 .iter()
-                .filter(|(column, _)| !NOT_COPIED.contains(&column.as_str()))
+                .filter(|(column, _)| {
+                    !NOT_COPIED.contains(&column.as_str()) && !WITHIN.contains(&column.as_str())
+                })
                 .map(|(column, value)| (column_name(column), value.clone()))
                 .collect();
             values.push(("playthrough_id", Value::from(game)));
@@ -3428,9 +3453,32 @@ impl<'s> Mechanics<'s> {
                 Into::Room(room) => values.push(("location_id", Value::from(room))),
                 Into::Person(who) => values.push(("character_id", Value::from(who))),
             }
+            let within = self.copy_within(&source, into);
+            values.push(("within_id", within.map_or(Value::Null, Value::from)));
+            values.push(("how", within.map_or(Value::Null, |_| source["how"].clone())));
             self.insert("items", values)?;
         }
         Ok(())
+    }
+
+    /// `Item::Snapshot#within_for`: this game's copy of the fixture a
+    /// template lies on or in, standing in the room its copy goes to, or the
+    /// floor.
+    fn copy_within(&self, source: &Row, into: Into) -> Option<i64> {
+        let fixture = int(source, "within_id")?;
+        let Into::Room(room) = into else {
+            return None;
+        };
+        let game = self.playthrough;
+        self.records
+            .first("items", |item| {
+                int(item, "playthrough_id") == Some(game)
+                    && int(item, "template_id") == Some(fixture)
+                    && int(item, "location_id") == Some(room)
+                    && int(item, "character_id").is_none()
+                    && text(item, "disposition") == Some("intact")
+            })
+            .map(id)
     }
 }
 
@@ -3502,18 +3550,25 @@ const NOT_COPIED: [&str; 7] = [
     "updated_at",
 ];
 
+/// The two columns a copy translates rather than brings along: the fixture a
+/// thing lies on or in is this game's copy of it.
+const WITHIN: [&str; 2] = ["within_id", "how"];
+
 /// A column name as a `'static` string, for the columns an item copies.
 fn column_name(column: &str) -> &'static str {
-    const COLUMNS: [&str; 12] = [
+    const COLUMNS: [&str; 15] = [
         "bulk",
         "combustible",
         "description",
         "disposition",
         "fragility",
+        "holds",
         "inscription",
+        "kit_key",
         "name",
         "properties",
         "readable",
+        "tier",
         "use_kind",
         "x",
         "y",

@@ -3,8 +3,9 @@
 //! a model picks from and a table a building's rooms are dealt their words
 //! out of, all read from `data/location/kind.yml`, which the game reads too.
 //!
-//! Nothing plays on these words yet: a stub keeps the ones its exits answer
-//! picked, and a room of a building keeps the one it was dealt.
+//! A stub keeps the words its exits answer picked, and a room of a building
+//! keeps the one it was dealt; `kit` furnishes the room from them when it is
+//! realized.
 
 use crate::data;
 
