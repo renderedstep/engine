@@ -285,7 +285,21 @@ impl<'a> Moment<'a> {
         parts.extend(self.struck_fact());
         parts.extend(self.toll_fact());
         parts.extend(self.volition_fact());
-        let floor = self.item_list(&self.game.items_lying_in(self.location()));
+        // A fixed piece is not a thing lying here: it is told on a line of its
+        // own, only when the room has one, so a room with none is asked for in
+        // exactly the words it was before any room was furnished.
+        let (fixed, loose): (Vec<&Row>, Vec<&Row>) = self
+            .game
+            .items_lying_in(self.location())
+            .into_iter()
+            .partition(|item| text(item, "tier") == Some(crate::kit::FIXTURE));
+        if !fixed.is_empty() {
+            parts.push(format!(
+                "Fixed here, and not takeable: {}.",
+                self.item_list(&fixed)
+            ));
+        }
+        let floor = self.item_list(&loose);
         parts.push(format!(
             "Lying here, and takeable: {}.",
             if floor.is_empty() { "nothing" } else { &floor }

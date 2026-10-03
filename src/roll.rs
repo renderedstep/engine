@@ -24,6 +24,9 @@ pub const FALL: i128 = 9;
 pub const BREAK: i128 = 10;
 pub const SPEECH: i128 = 11;
 pub const REACTION: i128 = 12;
+/// `Roll::KIT`: what stands in a room and what lies about in it, by the
+/// room's name.
+pub const KIT: i128 = 13;
 
 /// The five parts of a seed. Unset parts are 0.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

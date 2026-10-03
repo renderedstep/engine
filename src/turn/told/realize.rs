@@ -22,6 +22,7 @@ use crate::dialogue::sanitize;
 use crate::engine::Error;
 use crate::interior::{self, Place};
 use crate::kind;
+use crate::kit;
 use crate::model::{Agent, Book, Call, Failure, Filed};
 use crate::parameters::Parameters;
 use crate::plan::box_of;
@@ -408,6 +409,7 @@ impl Turn<'_, '_> {
     fn write_detail(&mut self, location: i64, agent: &mut Agent) -> Result<(), Error> {
         let row = self.location(location)?;
         if checkpoint(&row).is_empty() {
+            self.furnish(location)?;
             let slots = if Self::is_place(&row) {
                 Vec::new()
             } else {
@@ -487,6 +489,80 @@ impl Turn<'_, '_> {
             let row = self.location(location)?;
             if self.no_exits_call(&row) {
                 self.finish(location)?;
+            }
+            Ok(())
+        })();
+        match written {
+            Ok(()) => self.m.store.release(),
+            Err(error) => {
+                self.m.store.rollback_to();
+                Err(error)
+            }
+        }
+    }
+
+    /// `Location::Generator#furnish!` and `Item::Kit#furnish!`: what stands
+    /// in a room and lies about in it, rolled from its kind and density and
+    /// written as the world's own rows before the room is described, once --
+    /// never for a place, and never twice for a room that holds a kit row.
+    fn furnish(&mut self, location: i64) -> Result<(), Error> {
+        let row = self.location(location)?;
+        let furnished = self
+            .m
+            .records
+            .first("items", |item| {
+                int(item, "location_id") == Some(location)
+                    && int(item, "playthrough_id").is_none()
+                    && text(item, "kit_key").is_some()
+            })
+            .is_some();
+        if Self::is_place(&row) || furnished {
+            return Ok(());
+        }
+        let things = kit::roll(
+            string(&row, "name"),
+            text(&row, "kind"),
+            text(&row, "density"),
+        );
+        if things.is_empty() {
+            return Ok(());
+        }
+        self.m.store.savepoint()?;
+        let written = (|| {
+            let mut rows: Vec<(i64, String)> = Vec::new();
+            for thing in &things {
+                let within = thing.within.map(|index| &rows[index]);
+                let description = kit::description(thing, within.map(|(_, name)| name.as_str()));
+                let row = self.m.insert(
+                    "items",
+                    vec![
+                        ("location_id", Value::from(location)),
+                        ("name", Value::from(thing.name.as_str())),
+                        ("description", Value::from(description)),
+                        ("tier", Value::from(thing.tier)),
+                        (
+                            "holds",
+                            thing.holds.as_deref().map_or(Value::Null, Value::from),
+                        ),
+                        ("bulk", Value::from(thing.bulk.as_str())),
+                        (
+                            "within_id",
+                            within.map_or(Value::Null, |(id, _)| Value::from(*id)),
+                        ),
+                        ("how", thing.how.map_or(Value::Null, Value::from)),
+                        ("kit_key", Value::from(thing.kit_key.as_str())),
+                        ("use_kind", Value::from(thing.use_kind())),
+                        ("combustible", Value::Bool(thing.combustible())),
+                        ("readable", Value::Bool(thing.readable())),
+                    ],
+                )?;
+                if within.is_none() {
+                    let placed = self.placement(location, spot::Record::Item(id(&row)));
+                    if !placed.is_empty() {
+                        self.m.update("items", id(&row), placed)?;
+                    }
+                }
+                rows.push((id(&row), thing.name.clone()));
             }
             Ok(())
         })();
@@ -690,19 +766,26 @@ impl Turn<'_, '_> {
         for attributes in candidates.and_then(Value::as_array).into_iter().flatten() {
             let name = sanitize(&value_text(&attributes["name"]));
             let description = sanitize(&value_text(&attributes["description"]));
-            let lying = self
-                .m
-                .records
-                .select("items", |item| {
-                    int(item, "location_id") == Some(location)
-                        && int(item, "character_id").is_none()
-                        && int(item, "playthrough_id").is_none()
-                        && text(item, "disposition") == Some("intact")
-                })
-                .len() as i64;
+            let here: Vec<&Row> = self.m.records.select("items", |item| {
+                int(item, "location_id") == Some(location)
+                    && int(item, "character_id").is_none()
+                    && int(item, "playthrough_id").is_none()
+                    && text(item, "disposition") == Some("intact")
+            });
+            let lying = here
+                .iter()
+                .filter(|item| realization::bespoke(item))
+                .count() as i64;
+            let in_room: Vec<String> = here
+                .iter()
+                .map(|item| ruby_downcase(string(item, "name")))
+                .collect();
             let templates = self.templates();
-            let mut distinct: Vec<&str> =
-                templates.iter().map(|item| string(item, "name")).collect();
+            let mut distinct: Vec<&str> = templates
+                .iter()
+                .filter(|item| realization::bespoke(item))
+                .map(|item| string(item, "name"))
+                .collect();
             distinct.sort();
             distinct.dedup();
             let lowered = ruby_downcase(&name);
@@ -711,9 +794,11 @@ impl Turn<'_, '_> {
                 || lying >= realization::ITEMS_PER_ROOM
                 || distinct.len() as i64 >= realization::ITEMS_PER_STORY
                 || created.iter().any(|made| ruby_downcase(made) == lowered)
-                || templates
-                    .iter()
-                    .any(|item| ruby_downcase(string(item, "name")) == lowered)
+                || templates.iter().any(|item| {
+                    text(item, "kit_key").is_none()
+                        && ruby_downcase(string(item, "name")) == lowered
+                })
+                || in_room.contains(&lowered)
                 || self.named_by_a_person(&name)
                 || self.named_by_a_place(&name);
             if refused {

@@ -1,0 +1,473 @@
+# What stands in a room of each sort, what lies on top of it, and what small
+# stuff lies about: the tables a room is furnished from as it is written,
+# keyed on its kind and its density (`location/kind.yml`). Owned by this
+# engine and read by `src/kit.rs`, and by the game's `Item::Kit` through its
+# extension, which declares this file's shape. Every name here becomes a
+# record and is stated to the room writer before it describes the room: an
+# edit is a prompt change and needs a baseline (the game's AGENTS.md).
+#
+# The names are meant for any setting a story may have, as the kinds are: a
+# desk, a locker and a pipe run are a desk, a locker and a pipe run in a
+# walled town, a modern city or a ship between planets.
+#
+# `kit_die` is thrown once for every piece a kind lists, and the piece is
+# there when it comes up at or under the piece's share: a share of 6 is always
+# there, 3 is a coin toss. `visible` is the most a kit may put in one room --
+# the pieces, what lies on them and the small stuff, together -- so the room
+# stays under the game's cap on what one room shows once its writer has added
+# its own few things.
+#
+# `density` is how many small things lie about in a room of each word, one of
+# the list drawn; a room with no word has none. `kinds` lists each sort's
+# pieces with their shares, in the order they are thrown, and the small stuff
+# that may lie about in it, drawn without a name twice.
+#
+# `pieces` says what each piece is. Fixed in place: `closed` with a shut
+# inside nobody has looked in, `top` with things lying on it, `hollow` with
+# things lying in it in plain view, or `nothing` holding neither. Or a bulk
+# (`light`, `handy`, `heavy`) for a piece that stands here and can be carried
+# off. `holding` names what lies on or in a fixed piece in plain view -- a
+# closed piece may have a top too -- and `pools` each one's count and the
+# names it is drawn from, never a name twice in one room.
+#
+# `readable` names the things with words on them: born with none, written
+# once the first time somebody reads one. `use_kinds` gives a thing a use
+# other than `ordinary`, and `combustible` names what a firestarter burns.
+---
+kit_die: 6
+visible: 21
+density:
+  sparse: [0, 0, 1]
+  lived-in: [1, 2, 2, 3]
+  cluttered: [3, 4, 5, 6]
+kinds:
+  corridor:
+    pieces: {wall lamps: 5, bench: 3, notice board: 3, hooks: 3, windowsill: 3, cupboard: 2, chair: 1}
+    loose: [button, coin, glove, scrap of paper, bootlace, hairpin]
+  common room:
+    pieces: {table: 6, benches: 4, hearth: 2, shelves: 4, windowsill: 4, cupboard: 3, notice board: 2, chair: 4, armchair: 2}
+    loose: [cup, deck of cards, pair of dice, coin, glove, spoon, cushion, crumpled page]
+  assembly hall:
+    pieces: {long table: 5, benches: 5, dais: 4, lectern: 3, banners: 3, hearth: 2, windowsill: 3, chair: 3}
+    loose: [cup, coin, glove, sheet of notes, ribbon, button, handbill]
+  kitchen:
+    pieces: {stove: 5, table: 6, shelves: 5, cupboard: 4, basin: 4, hooks: 3, hearth: 2, barrel: 3, pantry: 2, stool: 3}
+    loose: [onion, wooden spoon, cloth, knife, heel of bread, eggshell, cup, apple]
+  sleeping quarters:
+    pieces: {bed: 6, bedside table: 4, chest: 3, wardrobe: 3, locker: 2, washbasin: 3, windowsill: 3, chair: 3, lamp: 3}
+    loose: [sock, hairpin, comb, coin, book, button, handkerchief, candle stub]
+  washroom:
+    pieces: {washbasin: 6, latrine: 4, mirror: 4, towel rail: 4, bath: 3, shelves: 3, shower: 2, bucket: 2}
+    loose: [bar of soap, towel, comb, sponge, razor, hairpin, empty bottle]
+  study:
+    pieces: {desk: 6, bookcase: 5, hearth: 3, windowsill: 4, cabinet: 2, chair: 4, armchair: 3, lamp: 4, globe: 1}
+    loose: [candle stub, pen, crumpled page, coin, button, ribbon, letter opener]
+  library:
+    pieces: {bookcase: 6, reading table: 5, lectern: 3, catalogue cabinet: 3, windowsill: 3, ladder: 3, chair: 4, lamp: 3}
+    loose: [bookmark, pencil, loose page, pamphlet, spectacles, coin]
+  office:
+    pieces: {desk: 6, filing cabinet: 5, shelves: 4, windowsill: 4, hooks: 3, notice board: 3, safe: 2, stove: 1, chair: 5}
+    loose: [pencil stub, pin, docket, rubber stamp, coin, receipt, button, crumpled page]
+  classroom:
+    pieces: {school desks: 6, blackboard: 5, desk: 4, shelves: 3, cupboard: 3, windowsill: 4, globe: 2, chair: 3}
+    loose: [chalk, pencil, ruler, exercise book, eraser, marble, folded paper]
+  laboratory:
+    pieces: {lab bench: 6, shelves: 5, glass cabinet: 4, basin: 3, cabinet: 2, cold store: 2, stool: 4, lamp: 3}
+    loose: [test tube, glass stopper, notebook, pencil, rag, broken flask, specimen jar]
+  infirmary:
+    pieces: {sickbed: 6, medicine cabinet: 5, washbasin: 4, screen: 3, table: 3, windowsill: 3, stretcher: 2, stool: 3}
+    loose: [bandage, cup, spoon, bowl, empty vial, cloth]
+  workshop:
+    pieces: {workbench: 6, tool rack: 5, crate: 4, vice: 3, shelves: 3, anvil: 2, forge: 2, lathe: 2, stool: 3}
+    loose: [nail, wood shaving, rag, bolt, stub of chalk, rivet, offcut]
+  machine room:
+    pieces: {pipes: 5, pump: 4, valve wheel: 4, drive shaft: 3, gear train: 3, boiler: 3, workbench: 3, tool rack: 3, oil drum: 3}
+    loose: [rag, bolt, washer, spanner, rivet, length of wire, tin of grease]
+  control room:
+    pieces: {console: 6, chart table: 4, signal board: 3, screens: 3, helm: 2, speaking tube: 2, locker: 3, chair: 4}
+    loose: [cup, pencil, headset, stylus, crumpled page, coin, spare fuse]
+  storeroom:
+    pieces: {shelves: 6, crate: 5, barrel: 4, rack: 4, cupboard: 2, sack: 4, ladder: 2}
+    loose: [cork, straw, nail, candle stub, coin, length of twine, broken lid]
+  shop:
+    pieces: {counter: 6, shelves: 6, display case: 4, till: 3, sign: 3, crate: 3, scales: 3, stool: 2}
+    loose: [coin, receipt, button, paper of pins, length of string, price card, ribbon]
+  shrine:
+    pieces: {altar: 6, candle stand: 5, offering bowl: 4, statue: 4, niche: 3, bench: 3, banners: 2}
+    loose: [spent candle, coin, dried petal, bead, prayer card, feather, ribbon]
+  auditorium:
+    pieces: {stage: 6, rows of seats: 6, curtain: 4, stage lamps: 3, lectern: 3, windowsill: 1}
+    loose: [ticket, playbill, glove, coin, fan, handkerchief, hat]
+  cell:
+    pieces: {cot: 6, bucket: 5, barred window: 3, chain ring: 3, drain: 3, bench: 2}
+    loose: [straw, tin cup, crust of bread, rag, bone, pebble, button]
+  stable:
+    pieces: {stalls: 6, manger: 5, hay rack: 4, water trough: 4, saddle rack: 3, hooks: 3, barrel: 2}
+    loose: [horseshoe, straw, brush, rope halter, nail, feather]
+  hangar:
+    pieces: {workbench: 5, crate: 5, crane: 4, fuel pump: 4, tool rack: 4, locker: 3, loading ramp: 3, oil drum: 3}
+    loose: [rag, bolt, spanner, length of cable, washer, empty canister, glove]
+  airlock:
+    pieces: {pressure gauge: 5, suit locker: 5, bench: 4, warning sign: 4, handholds: 4, equipment rack: 3}
+    loose: [glove, tether clip, empty canister, rag, roll of tape, washer]
+  garden:
+    pieces: {flower bed: 6, bench: 4, tree: 4, hedge: 4, fountain: 3, trellis: 3, sundial: 2, water butt: 2, wheelbarrow: 2}
+    loose: [trowel, flower, pebble, feather, snail shell, glove, stick]
+  courtyard:
+    pieces: {well: 4, bench: 4, water trough: 3, cart: 3, planters: 3, lamp post: 3, tree: 3, barrel: 2}
+    loose: [pebble, coin, feather, rag, bottle, broken tile]
+  rooftop:
+    pieces: {parapet: 6, chimney: 5, water tank: 3, skylight: 3, weather vane: 2}
+    loose: [feather, broken tile, nail, bottle, pebble]
+  street:
+    pieces: {lamp post: 5, gutter: 5, doorstep: 4, notice board: 3, bench: 2, cart: 2, water trough: 2}
+    loose: [coin, handbill, shard of glass, nail, rag, button, glove]
+  road:
+    pieces: {ditch: 5, signpost: 4, milestone: 4, fence: 4, tree: 3, boulder: 2, cart: 1}
+    loose: [stone, bent nail, feather, stick, rag, button]
+  square:
+    pieces: {bench: 5, fountain: 4, statue: 4, lamp post: 4, notice board: 4, well: 2, cart: 2}
+    loose: [coin, handbill, feather, button, ribbon, pebble, crust of bread]
+  market:
+    pieces: {market stall: 6, awning: 5, crate: 5, barrow: 4, basket: 4, scales: 3, sign: 3, stool: 3}
+    loose: [bruised apple, onion, coin, twist of paper, cabbage leaf, straw, length of string]
+  crossing:
+    pieces: {railing: 6, lamp post: 3, mooring post: 3, marker stone: 3, toll box: 2}
+    loose: [pebble, feather, coin, ribbon, length of fishing line, bottle]
+  field:
+    pieces: {hedge: 5, fence: 5, haystack: 3, stile: 3, tree: 3, scarecrow: 2, water trough: 2, boulder: 2}
+    loose: [stone, feather, stick, scrap of wool, snail shell, hay]
+  forest:
+    pieces: {old tree: 6, undergrowth: 5, fallen log: 4, stump: 4, boulder: 3, stream: 2, fire ring: 2}
+    loose: [pine cone, acorn, feather, stick, snail shell, stone, mushroom]
+  shore:
+    pieces: {strandline: 6, boulder: 4, driftwood log: 4, tide pool: 3, mooring post: 3, upturned boat: 2}
+    loose: [shell, smooth stone, driftwood, fish bone, sea glass, tangle of rope, cork float]
+  mountainside:
+    pieces: {boulder: 5, scree: 5, ledge: 4, cairn: 3, stunted tree: 3, crevice: 3, spring: 2}
+    loose: [stone, feather, bone, scrap of wool, stick, old rope end]
+  desert:
+    pieces: {rock outcrop: 5, sand drift: 5, boulder: 3, dead tree: 3, cairn: 2, dry well: 2}
+    loose: [bleached bone, stone, snake skin, shard of pottery, scrap of cloth, dried thorn]
+  cave:
+    pieces: {rock shelf: 5, rubble: 5, stalagmite: 4, pool: 3, ledge: 3, crack: 3}
+    loose: [stone, bone, candle stub, shard of pottery, old rope end, pebble]
+  ruin:
+    pieces: {broken wall: 6, rubble: 5, column stump: 4, lintel: 3, fallen statue: 3, cistern: 2}
+    loose: [shard of pottery, coin, nail, bone, stone, carved fragment, rusted hinge]
+pieces:
+  # fixed in place, with a shut inside
+  desk: closed
+  cabinet: closed
+  cupboard: closed
+  wardrobe: closed
+  locker: closed
+  chest: closed
+  filing cabinet: closed
+  safe: closed
+  medicine cabinet: closed
+  glass cabinet: closed
+  catalogue cabinet: closed
+  display case: closed
+  till: closed
+  crate: closed
+  barrel: closed
+  pantry: closed
+  cold store: closed
+  suit locker: closed
+  oil drum: closed
+  toll box: closed
+  cistern: closed
+  crack: closed
+  crevice: closed
+  undergrowth: closed
+  sand drift: closed
+  # fixed in place, things lie on top of it
+  table: top
+  long table: top
+  reading table: top
+  bedside table: top
+  chart table: top
+  workbench: top
+  lab bench: top
+  counter: top
+  market stall: top
+  bed: top
+  cot: top
+  sickbed: top
+  shelves: top
+  rack: top
+  bookcase: top
+  tool rack: top
+  equipment rack: top
+  saddle rack: top
+  towel rail: top
+  hooks: top
+  hearth: top
+  stove: top
+  washbasin: top
+  windowsill: top
+  notice board: top
+  lectern: top
+  school desks: top
+  console: top
+  altar: top
+  candle stand: top
+  stage: top
+  doorstep: top
+  parapet: top
+  railing: top
+  fence: top
+  haystack: top
+  fallen log: top
+  driftwood log: top
+  upturned boat: top
+  stump: top
+  boulder: top
+  strandline: top
+  ledge: top
+  rock shelf: top
+  rock outcrop: top
+  cairn: top
+  column stump: top
+  # fixed in place, things lie in it in plain view
+  basin: hollow
+  offering bowl: hollow
+  niche: hollow
+  manger: hollow
+  hay rack: hollow
+  cart: hollow
+  barrow: hollow
+  gutter: hollow
+  ditch: hollow
+  fire ring: hollow
+  flower bed: hollow
+  planters: hollow
+  rubble: hollow
+  scree: hollow
+  # fixed in place, holding nothing
+  barred window: nothing
+  wall lamps: nothing
+  bench: nothing
+  benches: nothing
+  rows of seats: nothing
+  dais: nothing
+  banners: nothing
+  statue: nothing
+  fallen statue: nothing
+  mirror: nothing
+  bath: nothing
+  shower: nothing
+  latrine: nothing
+  blackboard: nothing
+  screen: nothing
+  screens: nothing
+  curtain: nothing
+  stage lamps: nothing
+  signal board: nothing
+  helm: nothing
+  speaking tube: nothing
+  pipes: nothing
+  pump: nothing
+  valve wheel: nothing
+  drive shaft: nothing
+  gear train: nothing
+  boiler: nothing
+  forge: nothing
+  anvil: nothing
+  vice: nothing
+  lathe: nothing
+  crane: nothing
+  fuel pump: nothing
+  loading ramp: nothing
+  pressure gauge: nothing
+  warning sign: nothing
+  handholds: nothing
+  sign: nothing
+  awning: nothing
+  chain ring: nothing
+  drain: nothing
+  stalls: nothing
+  water trough: nothing
+  well: nothing
+  dry well: nothing
+  fountain: nothing
+  tree: nothing
+  old tree: nothing
+  stunted tree: nothing
+  dead tree: nothing
+  hedge: nothing
+  trellis: nothing
+  sundial: nothing
+  water butt: nothing
+  water tank: nothing
+  lamp post: nothing
+  signpost: nothing
+  milestone: nothing
+  marker stone: nothing
+  chimney: nothing
+  skylight: nothing
+  weather vane: nothing
+  mooring post: nothing
+  scarecrow: nothing
+  stile: nothing
+  stream: nothing
+  spring: nothing
+  pool: nothing
+  tide pool: nothing
+  stalagmite: nothing
+  broken wall: nothing
+  lintel: nothing
+  # standing here, and can be carried off
+  chair: heavy
+  armchair: heavy
+  ladder: heavy
+  stretcher: heavy
+  sack: heavy
+  wheelbarrow: heavy
+  stool: handy
+  lamp: handy
+  globe: handy
+  bucket: handy
+  scales: handy
+  basket: handy
+holding:
+  desk: desk
+  table: table
+  long table: table
+  reading table: reading table
+  bedside table: bedside table
+  chart table: chart table
+  workbench: workbench
+  lab bench: lab bench
+  counter: counter
+  market stall: market stall
+  barrow: barrow
+  bed: bed
+  cot: bed
+  sickbed: sickbed
+  shelves: shelf
+  rack: rack
+  bookcase: bookcase
+  tool rack: tool rack
+  equipment rack: equipment rack
+  saddle rack: saddle rack
+  hay rack: hay rack
+  towel rail: towel rail
+  hooks: hooks
+  hearth: hearth
+  stove: stove
+  basin: basin
+  washbasin: washbasin
+  windowsill: sill
+  notice board: notice board
+  lectern: lectern
+  school desks: school desks
+  console: console
+  altar: altar
+  candle stand: candle stand
+  offering bowl: offering bowl
+  niche: niche
+  stage: stage
+  manger: manger
+  flower bed: flower bed
+  planters: flower bed
+  cart: cart
+  gutter: gutter
+  doorstep: doorstep
+  parapet: parapet
+  railing: railing
+  fence: fence
+  haystack: haystack
+  ditch: ditch
+  fallen log: log
+  driftwood log: log
+  upturned boat: upturned boat
+  stump: stump
+  boulder: boulder
+  fire ring: fire ring
+  strandline: strandline
+  ledge: ledge
+  rock shelf: rock shelf
+  rock outcrop: rock outcrop
+  cairn: cairn
+  scree: scree
+  rubble: rubble
+  column stump: column stump
+pools:
+  desk: {count: [1, 2, 2, 3], from: [pen, sheaf of papers, paperweight, folded note, ledger, cup, pencil, magnifying glass, letter]}
+  table: {count: [0, 1, 2, 3], from: [cup, plate, knife, jug, cloth, bowl, spoon, heel of bread, deck of cards, candle]}
+  reading table: {count: [1, 2, 3], from: [bound volume, pamphlet, pencil, magnifying glass, sheet of notes]}
+  bedside table: {count: [1, 2], from: [book, cup, candle stub, spectacles, pocket watch]}
+  chart table: {count: [1, 2, 3], from: [chart, pair of dividers, logbook, ruler, pencil]}
+  workbench: {count: [1, 2, 3], from: [hammer, chisel, file, rag, box of nails, coil of wire, pliers, tin of grease]}
+  lab bench: {count: [1, 2, 3], from: [flask, test tube, notebook, magnifying glass, jar of powder, tongs]}
+  counter: {count: [1, 2, 3], from: [ledger, hand bell, coin tray, receipt, price card, roll of twine]}
+  market stall: {count: [2, 3, 4], from: [apple, bunch of onions, twist of salt, wedge of cheese, jar of pickles, loaf, bundle of herbs, turnip, cabbage]}
+  barrow: {count: [1, 2, 3], from: [apple, turnip, bundle of herbs, cabbage, loaf]}
+  bed: {count: [0, 1, 2], from: [blanket, pillow, book, folded shirt]}
+  sickbed: {count: [0, 1, 2], from: [blanket, pillow, bandage, cup]}
+  shelf: {count: [1, 2, 3, 4], from: [jar, tin, bottle, box, folded cloth, spool of thread, bowl]}
+  rack: {count: [1, 2, 3], from: [bottle, dusty jar, coil of rope, lantern, crowbar]}
+  bookcase: {count: [2, 3, 4], from: [bound volume, pamphlet, bookend, bundle of letters, atlas, journal]}
+  tool rack: {count: [1, 2, 3], from: [hammer, saw, pliers, wrench, crowbar, mallet, coil of wire]}
+  equipment rack: {count: [1, 2], from: [breathing mask, safety line, helmet lamp, canteen]}
+  saddle rack: {count: [1, 2], from: [saddle, bridle, saddle blanket]}
+  hay rack: {count: [1, 2], from: [hay, halter]}
+  towel rail: {count: [1, 2], from: [towel, bathrobe]}
+  hooks: {count: [0, 1, 2, 3], from: [coat, cap, apron, scarf, bag, lantern]}
+  hearth: {count: [0, 1, 2], from: [poker, tongs, kettle, log, tinderbox]}
+  stove: {count: [0, 1, 2], from: [kettle, pan, pot, trivet]}
+  basin: {count: [0, 1, 2], from: [scrubbing brush, cup, dish, rag, bar of soap]}
+  washbasin: {count: [1, 2, 3], from: [bar of soap, towel, comb, razor, cup]}
+  sill: {count: [0, 1, 1, 2], from: [dead fly, pebble, potted plant, candle stub, feather]}
+  notice board: {count: [1, 2, 3], from: [notice, handbill, timetable, map]}
+  lectern: {count: [1], from: [open book, sheet of notes]}
+  school desks: {count: [1, 2, 3], from: [slate, pencil, exercise book, ruler, eraser]}
+  console: {count: [0, 1, 2], from: [logbook, headset, cup, stylus, manual]}
+  altar: {count: [1, 2, 3], from: [candle, dried flowers, carved token, prayer card, small bell]}
+  candle stand: {count: [1, 2], from: [candle, candle stub]}
+  offering bowl: {count: [1, 2, 3], from: [coin, bead, dried petal, ribbon]}
+  niche: {count: [0, 1, 2], from: [small statue, candle, coin, scrap of cloth]}
+  stage: {count: [0, 1, 2], from: [script, mask, hat, coil of rope, wooden sword]}
+  manger: {count: [0, 1, 2], from: [hay, turnip, carrot]}
+  flower bed: {count: [0, 1, 2], from: [trowel, flower, pebble, garden fork]}
+  cart: {count: [1, 2, 3], from: [sack of grain, coil of rope, tarpaulin, straw, wooden box]}
+  gutter: {count: [0, 1, 2], from: [coin, rag, button, bent nail, shard of glass]}
+  doorstep: {count: [0, 1], from: [jug, handbill, doormat]}
+  parapet: {count: [0, 1, 2], from: [pebble, feather, bottle, rusted nail]}
+  railing: {count: [0, 1], from: [ribbon, padlock, length of fishing line]}
+  fence: {count: [0, 1], from: [scrap of wool, feather, rusted nail]}
+  haystack: {count: [1, 2], from: [pitchfork, hay]}
+  ditch: {count: [0, 1, 2], from: [stone, rag, bottle, bent nail]}
+  log: {count: [0, 1, 2], from: [moss, mushroom, snail shell, pine cone]}
+  upturned boat: {count: [0, 1], from: [oar, coil of rope]}
+  stump: {count: [0, 1, 2], from: [mushroom, pebble, acorn]}
+  boulder: {count: [0, 1], from: [feather, pebble, bird skull]}
+  fire ring: {count: [1, 2, 3], from: [charcoal, burnt stick, blackened pot, ash]}
+  strandline: {count: [1, 2, 3, 4], from: [shell, smooth stone, driftwood, fish bone, sea glass, tangle of rope, cork float]}
+  ledge: {count: [0, 1], from: [bone, feather, old rope end]}
+  rock shelf: {count: [0, 1, 2], from: [bone, pebble, candle stub, bat skull]}
+  rock outcrop: {count: [0, 1], from: [bleached bone, snake skin, stone]}
+  cairn: {count: [0, 1, 2], from: [carved stone, ribbon, coin]}
+  scree: {count: [0, 1], from: [stone, bone]}
+  rubble: {count: [0, 1, 2], from: [rusted hinge, coin, shard of pottery, bone]}
+  column stump: {count: [0, 1], from: [bird's nest, coin, carved fragment]}
+readable: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, sign, warning sign, signpost, milestone, marker stone, blackboard]
+use_kinds:
+  apple: food
+  bruised apple: food
+  heel of bread: food
+  crust of bread: food
+  loaf: food
+  wedge of cheese: food
+  jar of pickles: food
+  turnip: food
+  carrot: food
+  onion: food
+  bunch of onions: food
+  cabbage: food
+  canteen: drink
+  crowbar: lever
+  tinderbox: firestarter
+combustible: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, scrap of paper, folded paper, twist of paper, twist of salt, bookmark, deck of cards, rag, cloth, folded cloth, scrap of cloth, blanket, saddle blanket, pillow, cushion, towel, bathrobe, folded shirt, coat, cap, hat, apron, scarf, sock, glove, handkerchief, scrap of wool, straw, hay, sack of grain, tarpaulin, candle, candle stub, spent candle, log, driftwood, stick, burnt stick, offcut, wood shaving, wooden spoon, wooden sword, pine cone, moss, bird's nest, dried flowers, dried petal, dried thorn, ribbon, bootlace, coil of rope, tangle of rope, old rope end, rope halter, length of twine, length of string, roll of twine, bundle of herbs, basket]
