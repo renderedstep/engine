@@ -1,0 +1,56 @@
+---
+story: Two Clerks at One Counter
+steps:
+- id: tamsin-greets-as-system-one-chose
+  type: "/take brass tally"
+  browser:
+    token: take
+    replies:
+    - purpose: system_one
+      content:
+        person_1:speech: speech_2
+    - purpose: narration
+      content: You lift the brass tally off the counter, and Tamsin says good morning.
+      prompt_includes:
+      - 'What else happened here, recorded by the game: Tamsin Gale spoke up unasked
+        and greeted Ansel Mott.'
+      prompt_excludes:
+      - Tamsin Gale spoke up unasked and asked
+      - Rowe Harker spoke up unasked
+    - purpose: system_one
+      content:
+        person_1:act: act_1
+        person_1:pressure: 0.9
+  expect:
+    changed: true
+    carrying:
+    - brass tally
+    - pawn ticket
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+    volitions: 2
+    acts: 1
+- id: the-die-decides-when-system-one-is-down
+  type: "/examine pawn ticket"
+  browser:
+    token: look
+    replies:
+    - purpose: system_one
+      unavailable: true
+    - purpose: narration
+      content: The ticket is creased where you have been holding it.
+      prompt_includes:
+      - Rowe Harker spoke up unasked
+      prompt_excludes:
+      - Tamsin Gale spoke up unasked
+    - purpose: system_one
+      unavailable: true
+  expect:
+    carrying:
+    - brass tally
+    - pawn ticket
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+    volitions: 2

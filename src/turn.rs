@@ -25,6 +25,7 @@ use crate::roll::{self, Seed};
 use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing};
 use crate::spot;
 use crate::store::Store;
+use crate::volition::{Asked, Judgment};
 use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_mechanic};
 use serde_json::Value;
 
@@ -208,6 +209,47 @@ pub struct Mechanics<'s> {
     /// the party is counted as standing there before the move stands it
     /// there.
     arriving: Option<i64>,
+    /// Who decides the volition rows being written: the die, unless a typed
+    /// judgment is being applied or failed.
+    decider: Decider,
+}
+
+/// `playthrough_volitions.decided_by`: the seeded die, a typed System One
+/// answer, or the die because the System One call failed, and why.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(crate) enum Decider {
+    #[default]
+    Die,
+    SystemOne,
+    DieAfterFailure(String),
+}
+
+impl Decider {
+    /// The die, after a typed answer that could not be read, or none.
+    fn failed(reason: Option<&str>) -> Decider {
+        reason.map_or(Decider::Die, |reason| {
+            Decider::DieAfterFailure(reason.to_string())
+        })
+    }
+
+    /// The die, where a typed answer did not replace it.
+    fn after(judged: Option<&Result<Option<String>, String>>, failure: Option<&str>) -> Decider {
+        match (judged, failure) {
+            (Some(Err(reason)), _) => Decider::failed(Some(reason)),
+            (_, failure) => Decider::failed(failure),
+        }
+    }
+}
+
+/// A System One failure as `system_one_error` keeps it
+/// (`String#truncate(255)`).
+fn truncated_reason(reason: &str) -> String {
+    if reason.chars().count() <= 255 {
+        return reason.to_string();
+    }
+    let mut kept: String = reason.chars().take(252).collect();
+    kept.push_str("...");
+    kept
 }
 
 /// `Playthrough::Arc::Concluded`: the ending a game reached, the outcome it
@@ -239,6 +281,7 @@ impl<'s> Mechanics<'s> {
             spoke: Vec::new(),
             reactions: Vec::new(),
             arriving: None,
+            decider: Decider::Die,
         })
     }
 
@@ -527,7 +570,7 @@ impl<'s> Mechanics<'s> {
         let room = self.row("locations", destination)?;
         self.snapshot_room(Some(&room))?;
         self.on_arrival(&room, from.as_ref())?;
-        let reacted = self.reactions(&room)?;
+        let reacted = self.reactions(&room, None)?;
         self.stand_the_party_in(destination)?;
         let stub = text(&room, "detail_level") == Some("stub");
         let mut report = Report::change(
@@ -2089,10 +2132,10 @@ impl<'s> Mechanics<'s> {
         let mut volitions = Vec::new();
         if tells(intent) {
             let here = self.here();
-            volitions.extend(self.speech(here.as_ref(), addressee(intent))?);
+            volitions.extend(self.speech(here.as_ref(), addressee(intent), None)?);
         }
         let blows = self.riposte(from)?;
-        volitions.extend(self.volitions(from)?);
+        volitions.extend(self.volitions(from, None)?);
         if let Some(room) = from {
             self.standing(room, "every_turn")?;
         }
@@ -2232,19 +2275,57 @@ impl<'s> Mechanics<'s> {
     /// before the paragraph that tells it is written: each person there, in
     /// id order, takes one throw of the speech die until as many have spoken
     /// as one turn allows. The person the player is talking to does not
-    /// interrupt their own exchange. Nothing here asks a model. Returns what
-    /// was said, and remembers who said it, so that nobody who spoke also
-    /// acts on this line.
+    /// interrupt their own exchange. The die decides whether somebody
+    /// speaks; with a typed `judgment` of what [`Mechanics::speakers`] named,
+    /// System One decides what, or that they say nothing after all, and a
+    /// failed one leaves it to the die. Returns what was said, and remembers
+    /// who said it, so that nobody who spoke also acts on this line.
     fn speech(
         &mut self,
         location: Option<&Row>,
         addressee: Option<i64>,
+        judgment: Option<&Judgment>,
     ) -> Result<Vec<Volition>, Error> {
         let Some(location) = location else {
             return Ok(Vec::new());
         };
+        let mut said = Vec::new();
+        for (who, thrown) in self.speakers(Some(location), addressee) {
+            let (token, decider) = match judgment {
+                None => (Some(thrown), Decider::Die),
+                Some(Judgment::Failed(reason)) => (Some(thrown), Decider::failed(Some(reason))),
+                Some(judgment) => match judgment.of(id(&who)).and_then(|j| j.speech.as_ref()) {
+                    Some(Ok(typed)) => (typed.clone(), Decider::SystemOne),
+                    Some(Err(reason)) => (Some(thrown), Decider::failed(Some(reason))),
+                    None => (Some(thrown), Decider::Die),
+                },
+            };
+            // Saying nothing writes nothing, and leaves them their act.
+            let Some(token) = token else {
+                continue;
+            };
+            let spoken = self.deciding(decider, |m| m.apply_speech(&who, location, &token))?;
+            said.push(spoken);
+            self.spoke.push(id(&who));
+        }
+        Ok(said)
+    }
+
+    /// Who the speech die lets speak up unasked in the room the player
+    /// stands in on this line, in id order and no more than one turn allows,
+    /// with what the die would have each say. Nothing is written: saying
+    /// something moves nothing, so what one says changes nobody else's
+    /// throw. Nothing here asks a model.
+    pub(crate) fn speakers(
+        &self,
+        location: Option<&Row>,
+        addressee: Option<i64>,
+    ) -> Vec<(Row, String)> {
+        let Some(location) = location else {
+            return Vec::new();
+        };
         if self.over() {
-            return Ok(Vec::new());
+            return Vec::new();
         }
         let cast: Vec<Row> = {
             let player = self.player_id();
@@ -2260,17 +2341,24 @@ impl<'s> Mechanics<'s> {
                 .cloned()
                 .collect()
         };
-        let mut said = Vec::new();
+        let mut admitted = Vec::new();
         for who in cast {
-            if said.len() as i64 >= data::speech().max_speakers.turn {
+            if admitted.len() as i64 >= data::speech().max_speakers.turn {
                 break;
             }
             if let Some(token) = self.speak(&who, location) {
-                said.push(self.apply_speech(&who, location, &token)?);
-                self.spoke.push(id(&who));
+                admitted.push((who, token));
             }
         }
-        Ok(said)
+        admitted
+    }
+
+    /// Writes the volition rows `body` writes as decided by `decider`.
+    fn deciding<T>(&mut self, decider: Decider, body: impl FnOnce(&mut Self) -> T) -> T {
+        self.decider = decider;
+        let done = body(self);
+        self.decider = Decider::Die;
+        done
     }
 
     /// The speech die for one person, seeded off the story's time and who
@@ -2331,41 +2419,103 @@ impl<'s> Mechanics<'s> {
     /// present is offered. Somebody fighting the party may only speak: a foe
     /// swings, on the next line and from the riposte, and does not wander
     /// off. The followers walking in with the party are still in the room
-    /// being left, so they do not react to it. Nothing here asks a model.
-    /// Returns every reaction, and remembers their rows, so the arrival
-    /// claims exactly those and nobody who reacted also acts on this line.
-    fn reactions(&mut self, destination: &Row) -> Result<Vec<Volition>, Error> {
+    /// being left, so they do not react to it. With a typed `judgment` of
+    /// what [`Mechanics::arrival_asked`] asked, System One decides what the
+    /// die let somebody say and, pressured enough, what anybody does; a
+    /// failed one leaves every reaction to the die. Returns every reaction,
+    /// and remembers their rows, so the arrival claims exactly those and
+    /// nobody who reacted also acts on this line.
+    fn reactions(
+        &mut self,
+        destination: &Row,
+        judgment: Option<&Judgment>,
+    ) -> Result<Vec<Volition>, Error> {
         self.reactions.clear();
         if self.over() {
             return Ok(Vec::new());
         }
-        let (cast, fighting): (Vec<Row>, Vec<i64>) = {
-            let game = self.game();
-            let player = self.player_id();
-            let cast = game
-                .cast_in(Some(destination))
-                .into_iter()
-                .filter(|who| {
-                    Some(id(who)) != player
-                        && !flag(who, "is_protagonist")
-                        && (volition::speech_weights(text(who, "desire_pursuit")).is_some()
-                            || weights_for(text(who, "desire_pursuit")).is_some())
-                })
-                .cloned()
-                .collect();
-            let fighting = game
-                .foes_in(Some(destination))
-                .iter()
-                .map(|who| id(who))
-                .collect();
-            (cast, fighting)
-        };
+        let (cast, fighting) = self.reaction_cast(destination);
         self.arriving = Some(id(destination));
-        let reacted = self.react(&cast, &fighting, destination);
+        let reacted = match judgment {
+            Some(judgment @ Judgment::Answered(_)) => {
+                self.react_as_judged(&cast, &fighting, destination, judgment)
+            }
+            Some(Judgment::Failed(reason)) => {
+                let decider = Decider::failed(Some(reason));
+                self.deciding(decider, |m| m.react(&cast, &fighting, destination))
+            }
+            None => self.react(&cast, &fighting, destination),
+        };
         self.arriving = None;
         let reacted = reacted?;
         self.reactions = reacted.iter().map(|reaction| reaction.id).collect();
         Ok(reacted)
+    }
+
+    /// Who may react to the party walking into `destination`, in id order,
+    /// and which of them are fighting it.
+    fn reaction_cast(&self, destination: &Row) -> (Vec<Row>, Vec<i64>) {
+        let game = self.game();
+        let player = self.player_id();
+        let cast = game
+            .cast_in(Some(destination))
+            .into_iter()
+            .filter(|who| {
+                Some(id(who)) != player
+                    && !flag(who, "is_protagonist")
+                    && (volition::speech_weights(text(who, "desire_pursuit")).is_some()
+                        || weights_for(text(who, "desire_pursuit")).is_some())
+            })
+            .cloned()
+            .collect();
+        let fighting = game
+            .foes_in(Some(destination))
+            .iter()
+            .map(|who| id(who))
+            .collect();
+        (cast, fighting)
+    }
+
+    /// What a typed judgment of the party walking into `destination` asks
+    /// about each person who may react, in id order: the acts on offer to
+    /// anybody not fighting it, and what may be said by whoever the speech
+    /// die lets speak, no more than an arrival allows. The die is thrown on
+    /// the room as the party finds it, before anybody reacts. Nothing is
+    /// written.
+    pub(crate) fn arrival_asked(&mut self, destination: &Row) -> Vec<Asked> {
+        if self.over() {
+            return Vec::new();
+        }
+        let (cast, fighting) = self.reaction_cast(destination);
+        self.arriving = Some(id(destination));
+        let mut speakers = 0;
+        let mut asked = Vec::new();
+        for who in cast {
+            let speech = if speakers < data::speech().max_speakers.arrival
+                && self.speak(&who, destination).is_some()
+            {
+                speakers += 1;
+                Some(volition::arrival_speech_options(
+                    &self.game(),
+                    &who,
+                    destination,
+                ))
+            } else {
+                None
+            };
+            let acts = (!fighting.contains(&id(&who))
+                && weights_for(text(&who, "desire_pursuit")).is_some())
+            .then(|| volition::arrival_choices(&self.game(), &who, destination));
+            if acts.is_some() || speech.is_some() {
+                asked.push(Asked {
+                    character: who,
+                    acts,
+                    speech,
+                });
+            }
+        }
+        self.arriving = None;
+        asked
     }
 
     fn react(
@@ -2394,6 +2544,66 @@ impl<'s> Mechanics<'s> {
         Ok(reacted)
     }
 
+    /// [`Mechanics::react`] as a typed judgment answered it: whoever the die
+    /// let speak says what System One chose, or, saying nothing, acts; an
+    /// answer that could not be read is the die's. Everybody else not
+    /// fighting the party acts, as System One chose where it was pressured
+    /// enough to, and as the die throws where it was not.
+    fn react_as_judged(
+        &mut self,
+        cast: &[Row],
+        fighting: &[i64],
+        destination: &Row,
+        judgment: &Judgment,
+    ) -> Result<Vec<Volition>, Error> {
+        let mut reacted = Vec::new();
+        for who in cast {
+            if self.over() {
+                break;
+            }
+            let judged = judgment.of(id(who));
+            let speech = match judged.and_then(|judged| judged.speech.as_ref()) {
+                Some(Ok(Some(token))) => Some((token.clone(), Decider::SystemOne)),
+                Some(Err(reason)) => self
+                    .speak(who, destination)
+                    .map(|token| (token, Decider::failed(Some(reason)))),
+                Some(Ok(None)) | None => None,
+            };
+            if let Some((token, decider)) = speech {
+                let spoken =
+                    self.deciding(decider, |m| m.apply_speech(who, destination, &token))?;
+                reacted.push(spoken);
+                continue;
+            }
+            if !fighting.contains(&id(who)) {
+                let act = judged.and_then(|judged| judged.act.as_ref());
+                reacted.extend(self.decide_as_judged(who, destination, act, None)?);
+            }
+        }
+        Ok(reacted)
+    }
+
+    /// One person's act, as System One chose it where it answered pressured
+    /// enough to, and otherwise the die's, saying why where it failed.
+    fn decide_as_judged(
+        &mut self,
+        character: &Row,
+        location: &Row,
+        act: Option<&Result<Option<String>, String>>,
+        failure: Option<&str>,
+    ) -> Result<Option<Volition>, Error> {
+        if let Some(Ok(Some(token))) = act {
+            let token = token.clone();
+            return self
+                .deciding(Decider::SystemOne, |m| {
+                    m.apply_volition(character, location, &token)
+                })
+                .map(Some);
+        }
+        let decider = Decider::after(act, failure);
+        self.deciding(decider, |m| m.decide(character, location))
+    }
+
     /// Who reacted to the party walking in on this line.
     fn reactors(&self) -> Vec<i64> {
         self.reactions
@@ -2414,48 +2624,69 @@ impl<'s> Mechanics<'s> {
     }
 
     /// `Playthrough::Volition.run!`: everybody else in the room the turn
-    /// began in takes a turn on volition's die. Nothing here asks a model,
-    /// so every decision is the die's. Whoever spoke up on this line, or
-    /// reacted to the party walking in, has made their one choice for it
-    /// already.
-    fn volitions(&mut self, location: Option<&Row>) -> Result<Vec<Volition>, Error> {
+    /// began in takes a turn on volition's die. With a typed `judgment` of
+    /// what [`Mechanics::volition_cast`] named, the act System One chose
+    /// replaces the die's wherever it read the person pressured enough, and
+    /// a failed one leaves every act to the die, saying why on each row.
+    /// Whoever spoke up on this line, or reacted to the party walking in,
+    /// has made their one choice for it already.
+    fn volitions(
+        &mut self,
+        location: Option<&Row>,
+        judgment: Option<&Judgment>,
+    ) -> Result<Vec<Volition>, Error> {
         let Some(location) = location else {
             return Ok(Vec::new());
         };
-        if self.over() {
-            return Ok(Vec::new());
-        }
-        let reacted = self.reactors();
-        let cast: Vec<Row> = {
-            let game = self.game();
-            let fighting: Vec<i64> = game
-                .foes_in(Some(location))
-                .iter()
-                .map(|who| id(who))
-                .collect();
-            let player = self.player_id();
-            let mut cast: Vec<&Row> = game
-                .cast_in(Some(location))
-                .into_iter()
-                .filter(|who| {
-                    Some(id(who)) != player
-                        && !flag(who, "is_protagonist")
-                        && !fighting.contains(&id(who))
-                        && !self.spoke.contains(&id(who))
-                        && !reacted.contains(&id(who))
-                        && weights_for(text(who, "desire_pursuit")).is_some()
-                })
-                .collect();
-            cast.sort_by_key(|who| id(who));
-            cast.into_iter().cloned().collect()
+        let failure = match judgment {
+            Some(Judgment::Failed(reason)) => Some(reason.as_str()),
+            _ => None,
         };
         let mut results = Vec::new();
-        for who in cast {
-            if let Some(result) = self.decide(&who, location)? {
+        for who in self.volition_cast(Some(location)) {
+            let act = judgment
+                .and_then(|judgment| judgment.of(id(&who)))
+                .and_then(|judged| judged.act.as_ref());
+            if let Some(result) = self.decide_as_judged(&who, location, act, failure)? {
                 results.push(result);
             }
         }
         Ok(results)
+    }
+
+    /// Who takes a turn on volition's die in the room the turn began in, in
+    /// id order: everybody there with a pursuit but the player, anybody
+    /// fighting the party, and whoever already made their choice for this
+    /// line.
+    pub(crate) fn volition_cast(&self, location: Option<&Row>) -> Vec<Row> {
+        let Some(location) = location else {
+            return Vec::new();
+        };
+        if self.over() {
+            return Vec::new();
+        }
+        let reacted = self.reactors();
+        let game = self.game();
+        let fighting: Vec<i64> = game
+            .foes_in(Some(location))
+            .iter()
+            .map(|who| id(who))
+            .collect();
+        let player = self.player_id();
+        let mut cast: Vec<&Row> = game
+            .cast_in(Some(location))
+            .into_iter()
+            .filter(|who| {
+                Some(id(who)) != player
+                    && !flag(who, "is_protagonist")
+                    && !fighting.contains(&id(who))
+                    && !self.spoke.contains(&id(who))
+                    && !reacted.contains(&id(who))
+                    && weights_for(text(who, "desire_pursuit")).is_some()
+            })
+            .collect();
+        cast.sort_by_key(|who| id(who));
+        cast.into_iter().cloned().collect()
     }
 
     /// `Playthrough::Volition#decide!`: one weighted draw over the acts on
@@ -2622,20 +2853,26 @@ impl<'s> Mechanics<'s> {
         fact: String,
         serves: &str,
     ) -> Result<Volition, Error> {
-        let row = self.insert(
-            "playthrough_volitions",
-            vec![
-                ("playthrough_id", Value::from(self.playthrough)),
-                ("character_id", Value::from(id(character))),
-                ("location_id", Value::from(id(location))),
-                ("chosen", Value::from(chosen)),
-                ("status", Value::from(status)),
-                ("fact", Value::from(fact.clone())),
-                ("serves", Value::from(serves)),
-                ("round", Value::from(self.round)),
-                ("decided_by", Value::from("die")),
-            ],
-        )?;
+        let decided_by = match &self.decider {
+            Decider::Die => "die",
+            Decider::SystemOne => "system_one",
+            Decider::DieAfterFailure(_) => "die_after_system_one_failed",
+        };
+        let mut values = vec![
+            ("playthrough_id", Value::from(self.playthrough)),
+            ("character_id", Value::from(id(character))),
+            ("location_id", Value::from(id(location))),
+            ("chosen", Value::from(chosen)),
+            ("status", Value::from(status)),
+            ("fact", Value::from(fact.clone())),
+            ("serves", Value::from(serves)),
+            ("round", Value::from(self.round)),
+            ("decided_by", Value::from(decided_by)),
+        ];
+        if let Decider::DieAfterFailure(reason) = &self.decider {
+            values.push(("system_one_error", Value::from(truncated_reason(reason))));
+        }
+        let row = self.insert("playthrough_volitions", values)?;
         Ok(Volition {
             id: id(&row),
             status: status.to_string(),
