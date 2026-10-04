@@ -17,6 +17,12 @@ use serde_json::{json, Value};
 pub const ITEMS_PER_ROOM: i64 = 3;
 pub const ITEMS_PER_STORY: i64 = 60;
 
+/// `Item.bespoke`: a thing the caps count -- portable, and written by the
+/// room writer or a world file rather than a kit.
+pub fn bespoke(item: &Row) -> bool {
+    text(item, "tier") != Some(crate::kit::FIXTURE) && text(item, "kit_key").is_none()
+}
+
 /// `Character::PURSUITS`: each label a desire is pursued by, and what it
 /// means.
 pub const PURSUITS: [(&str, &str); 7] = [
@@ -288,20 +294,119 @@ impl<'a> Realization<'a> {
         )
     }
 
-    fn items_instructions(&self) -> String {
+    /// The world's own things lying in this room, in the order they were
+    /// written (`Item.lying_in(location).templates.order(:id)`).
+    fn lying_here(&self) -> Vec<&'a Row> {
         let here = Some(id(self.location));
-        let lying = self
-            .records
-            .select("items", |item| {
-                text(item, "disposition") == Some("intact")
-                    && int(item, "location_id") == here
-                    && int(item, "character_id").is_none()
-                    && int(item, "playthrough_id").is_none()
+        let mut rows = self.records.select("items", |item| {
+            text(item, "disposition") == Some("intact")
+                && int(item, "location_id") == here
+                && int(item, "character_id").is_none()
+                && int(item, "playthrough_id").is_none()
+        });
+        rows.sort_by_key(|item| id(item));
+        rows
+    }
+
+    /// `#already_here`: what the game has already put in the room, read off
+    /// the records, or nothing for a room that holds none of it.
+    fn already_here(&self) -> String {
+        let here = self.lying_here();
+        let fixture = |item: &Row| text(item, "tier") == Some(crate::kit::FIXTURE);
+        let fixed: Vec<&Row> = here.iter().copied().filter(|item| fixture(item)).collect();
+        let loose: Vec<&Row> = here
+            .iter()
+            .copied()
+            .filter(|item| {
+                !fixture(item)
+                    && int(item, "within_id").is_none()
+                    && text(item, "kit_key").is_some()
             })
-            .len() as i64;
+            .collect();
+        if fixed.is_empty() && loose.is_empty() {
+            return String::new();
+        }
+        let definite = |item: &Row| crate::turn::thing_of(item, false).definite_name();
+        let closed = |item: &Row| text(item, "holds") == Some("closed");
+        let mut lines: Vec<String> = vec![
+            "## Already Here, Decided By The Game".into(),
+            "The game's own records of what is in this room, already decided and not yours".into(),
+            "to change, and it will tell the player so. Write the room around them, and do".into(),
+            "not add another piece of furniture or fixed thing a player could reach for.".into(),
+        ];
+        if !fixed.is_empty() {
+            let names: Vec<String> = fixed
+                .iter()
+                .map(|item| {
+                    if closed(item) {
+                        format!("{} (unsearched)", string(item, "name"))
+                    } else {
+                        string(item, "name").to_string()
+                    }
+                })
+                .collect();
+            lines.push(format!("Fixed in place: {}.", names.join(", ")));
+        }
+        for piece in &fixed {
+            let resting: Vec<&Row> = here
+                .iter()
+                .copied()
+                .filter(|item| int(item, "within_id") == Some(id(piece)))
+                .collect();
+            let Some(first) = resting.first() else {
+                continue;
+            };
+            let names: Vec<&str> = resting.iter().map(|item| string(item, "name")).collect();
+            lines.push(format!(
+                "{} {}: {}.",
+                if text(first, "how") == Some("in") {
+                    "In"
+                } else {
+                    "On"
+                },
+                definite(piece),
+                names.join(", ")
+            ));
+        }
+        if !loose.is_empty() {
+            let names: Vec<&str> = loose.iter().map(|item| string(item, "name")).collect();
+            lines.push(format!(
+                "Loose, and could be picked up: {}.",
+                names.join(", ")
+            ));
+        }
+        let shut: Vec<String> = fixed
+            .iter()
+            .filter(|item| closed(item))
+            .map(|item| definite(item))
+            .collect();
+        if let Some((last, rest)) = shut.split_last() {
+            let (them, it) = if rest.is_empty() {
+                (last.clone(), "it")
+            } else {
+                (format!("{} or {last}", rest.join(", ")), "them")
+            };
+            lines.push(format!(
+                "Nobody has searched {them} yet, so do not say what is in {it}."
+            ));
+        }
+        lines.push("Do not list any of them again as a thing lying here.".into());
+        format!("\n{}", lines.join("\n"))
+    }
+
+    fn items_instructions(&self) -> String {
+        let lying = self
+            .lying_here()
+            .into_iter()
+            .filter(|item| bespoke(item))
+            .count() as i64;
         let room = (ITEMS_PER_ROOM - lying).max(0);
         let items = self.story_items();
-        let mut names: Vec<&str> = items.iter().filter_map(|item| text(item, "name")).collect();
+        let mut names: Vec<&str> = items
+            .iter()
+            .filter(|item| bespoke(item))
+            .filter_map(|item| text(item, "name"))
+            .collect();
         names.sort();
         names.dedup();
         let world = (ITEMS_PER_STORY - names.len() as i64).max(0);
@@ -315,7 +420,13 @@ impl<'a> Realization<'a> {
             .take(20)
             .filter_map(|who| text(who, "fullname"))
             .collect();
-        taken.extend(items.iter().take(20).filter_map(|item| text(item, "name")));
+        taken.extend(
+            items
+                .iter()
+                .filter(|item| text(item, "kit_key").is_none())
+                .take(20)
+                .filter_map(|item| text(item, "name")),
+        );
         taken.retain(|name| !is_blank(name));
         let known = if taken.is_empty() {
             String::new()
@@ -325,9 +436,17 @@ impl<'a> Realization<'a> {
                 taken.join(", ")
             )
         };
+        // `#besides_already_here`: the floor list's first line in a furnished
+        // room, and nothing in any other.
+        let besides = if self.already_here().is_empty() {
+            ""
+        } else {
+            ", besides the ones Already Here above: those are written already, \
+             and a thing named again is not a new one"
+        };
         format!(
             "## What Is Lying Here\n\
-             List AT MOST {allowance} portable thing{} a player could pick up and carry away.\n\
+             List AT MOST {allowance} portable thing{} a player could pick up and carry away{besides}.\n\
              - Nothing is the right answer for most rooms. An empty list is a complete answer\n\
              - Only loose, portable things. Not the door, not the floor, not the machinery\n  \
              bolted to it -- something a person could put in a pocket or under an arm\n\
@@ -414,7 +533,7 @@ impl<'a> Realization<'a> {
             );
         }
         format!(
-            "{}\n\n{place}{}\n## Instructions\n\
+            "{}\n\n{place}{}{}\n## Instructions\n\
              Write this place out in full.\n\
              - The description is what the player reads on arrival. Address them as \"you\"\n\
              - Describe what is here now, not the history -- the history is the lore\n\
@@ -422,6 +541,7 @@ impl<'a> Realization<'a> {
              - Respect the stated length of each field{}\n\n{}\n\n{}\n",
             self.story_context(),
             self.geometry_facts(),
+            self.already_here(),
             self.name_instruction(),
             self.items_instructions(),
             self.people_instructions()

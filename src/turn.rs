@@ -439,15 +439,8 @@ impl<'s> Mechanics<'s> {
 
     /// `Playthrough::Refusal.over`, out of `Playthrough::EndNotice`.
     fn over_refusal(&self, command: &str) -> Refusal {
-        let game = self.playthrough;
-        let concluded = self
-            .records
-            .first("playthrough_endings", |row| {
-                int(row, "playthrough_id") == Some(game)
-            })
-            .is_some();
         let person = self.player().map(|row| person_of(&row));
-        Refusal::over(concluded, person.as_ref(), command)
+        Refusal::over(self.game().ended(), person.as_ref(), command)
     }
 
     /// The room as the grammar reads it: the classifier's four closed sets.
@@ -660,6 +653,8 @@ impl<'s> Mechanics<'s> {
                 ("location_id", Value::Null),
                 ("x", Value::Null),
                 ("y", Value::Null),
+                ("within_id", Value::Null),
+                ("how", Value::Null),
             ],
         )?;
         let taker = self
@@ -1192,6 +1187,8 @@ impl<'s> Mechanics<'s> {
                 ("location_id", Value::Null),
                 ("x", Value::Null),
                 ("y", Value::Null),
+                ("within_id", Value::Null),
+                ("how", Value::Null),
             ],
         )
     }
@@ -1457,6 +1454,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!(
@@ -1474,6 +1473,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!("{who} gave {name} to {party}; the player now carries it.")
@@ -2772,6 +2773,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!("{who} picked up {name} in {here} and now holds it.")
@@ -2786,6 +2789,8 @@ impl<'s> Mechanics<'s> {
                         ("location_id", Value::Null),
                         ("x", Value::Null),
                         ("y", Value::Null),
+                        ("within_id", Value::Null),
+                        ("how", Value::Null),
                     ],
                 )?;
                 format!("{who} handed {name} to {player}; the player now carries it.")
@@ -3154,7 +3159,65 @@ impl<'s> Mechanics<'s> {
                 sorted.sort();
                 positions != sorted
             }
+            Some("while_alive") => self.alive_at_beat(outcome),
             _ => false,
+        }
+    }
+
+    /// `Playthrough::Arc#alive_at_beat?`: whether the outcome's `character`
+    /// was still alive when this game reached the beat at its
+    /// `step_position`. The blow or the toll that took their last hit point
+    /// is the record of when they died; a blow is stamped with the minute its
+    /// turn began and a beat with the minute its turn ended, so a death
+    /// strictly before the beat is a death before it. A body at zero with no
+    /// such record died at a moment nobody can read, and does not count.
+    fn alive_at_beat(&self, outcome: &Row) -> bool {
+        let (Some(quest), Some(position), Some(character)) = (
+            int(outcome, "quest_id").and_then(|quest| self.records.find("quests", quest)),
+            int(outcome, "step_position"),
+            int(outcome, "character_id"),
+        ) else {
+            return false;
+        };
+        let Some(step) = outcome::steps(&self.records, quest)
+            .into_iter()
+            .find(|step| int(step, "position") == Some(position))
+        else {
+            return false;
+        };
+        let Some(reached) = self
+            .game()
+            .own("playthrough_beats")
+            .into_iter()
+            .find(|beat| int(beat, "quest_step_id") == Some(id(step)))
+            .and_then(|beat| int(beat, "reached_at"))
+        else {
+            return false;
+        };
+        let killing = |table: &str, column: &str| {
+            self.game()
+                .own(table)
+                .into_iter()
+                .filter(|row| {
+                    int(row, column) == Some(character) && int(row, "hp_after") == Some(0)
+                })
+                .filter_map(|row| int(row, "story_timestamp"))
+                .min()
+        };
+        let died = [
+            killing("playthrough_blows", "target_id"),
+            killing("playthrough_tolls", "character_id"),
+        ]
+        .into_iter()
+        .flatten()
+        .min();
+        match died {
+            Some(died) => died >= reached,
+            None => !self
+                .records
+                .find("characters", character)
+                .and_then(|who| self.game().vitals_for(who))
+                .is_some_and(|condition| condition.dead()),
         }
     }
 
@@ -3596,7 +3659,18 @@ impl<'s> Mechanics<'s> {
             .iter()
             .filter_map(|item| int(item, "template_id"))
             .collect();
-        for (template, into) in candidates {
+        // A room's fixtures first, so a thing lying on one finds this game's
+        // copy of it already there.
+        let mut wanted: Vec<(i64, Into)> = candidates
+            .into_iter()
+            .filter(|(template, _)| !copied.contains(template))
+            .collect();
+        wanted.sort_by_key(|(template, _)| {
+            self.records
+                .find("items", *template)
+                .is_none_or(|row| text(row, "tier") != Some(crate::kit::FIXTURE))
+        });
+        for (template, into) in wanted {
             if copied.contains(&template) {
                 continue;
             }
@@ -3604,7 +3678,9 @@ impl<'s> Mechanics<'s> {
             let source = self.row("items", template)?;
             let mut values: Vec<(&str, Value)> = source
                 .iter()
-                .filter(|(column, _)| !NOT_COPIED.contains(&column.as_str()))
+                .filter(|(column, _)| {
+                    !NOT_COPIED.contains(&column.as_str()) && !WITHIN.contains(&column.as_str())
+                })
                 .map(|(column, value)| (column_name(column), value.clone()))
                 .collect();
             values.push(("playthrough_id", Value::from(game)));
@@ -3614,9 +3690,32 @@ impl<'s> Mechanics<'s> {
                 Into::Room(room) => values.push(("location_id", Value::from(room))),
                 Into::Person(who) => values.push(("character_id", Value::from(who))),
             }
+            let within = self.copy_within(&source, into);
+            values.push(("within_id", within.map_or(Value::Null, Value::from)));
+            values.push(("how", within.map_or(Value::Null, |_| source["how"].clone())));
             self.insert("items", values)?;
         }
         Ok(())
+    }
+
+    /// `Item::Snapshot#within_for`: this game's copy of the fixture a
+    /// template lies on or in, standing in the room its copy goes to, or the
+    /// floor.
+    fn copy_within(&self, source: &Row, into: Into) -> Option<i64> {
+        let fixture = int(source, "within_id")?;
+        let Into::Room(room) = into else {
+            return None;
+        };
+        let game = self.playthrough;
+        self.records
+            .first("items", |item| {
+                int(item, "playthrough_id") == Some(game)
+                    && int(item, "template_id") == Some(fixture)
+                    && int(item, "location_id") == Some(room)
+                    && int(item, "character_id").is_none()
+                    && text(item, "disposition") == Some("intact")
+            })
+            .map(id)
     }
 }
 
@@ -3688,18 +3787,25 @@ const NOT_COPIED: [&str; 7] = [
     "updated_at",
 ];
 
+/// The two columns a copy translates rather than brings along: the fixture a
+/// thing lies on or in is this game's copy of it.
+const WITHIN: [&str; 2] = ["within_id", "how"];
+
 /// A column name as a `'static` string, for the columns an item copies.
 fn column_name(column: &str) -> &'static str {
-    const COLUMNS: [&str; 12] = [
+    const COLUMNS: [&str; 15] = [
         "bulk",
         "combustible",
         "description",
         "disposition",
         "fragility",
+        "holds",
         "inscription",
+        "kit_key",
         "name",
         "properties",
         "readable",
+        "tier",
         "use_kind",
         "x",
         "y",

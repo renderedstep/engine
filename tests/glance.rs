@@ -135,12 +135,23 @@ fn the_panels_are_the_room_the_turn_reads() {
         };
         let exits = glance.exits.iter().map(|exit| exit.name.clone()).collect();
         assert_eq!(completes("go"), names(exits), "{name}");
-        let lying = glance
+        // The take set still holds what stands here, as it holds an
+        // immovable thing: a take of the desk is refused in the engine's own
+        // words, never read as a take of nothing.
+        let mut here: Vec<(i64, String)> = glance
             .lying_here
             .iter()
-            .map(|thing| thing.name.clone())
+            .map(|thing| (thing.id, thing.name.clone()))
+            .chain(glance.fixtures.iter().map(|f| (f.id, f.name.clone())))
             .collect();
+        here.sort();
+        let lying = here.into_iter().map(|(_, name)| name).collect();
         assert_eq!(completes("take"), names(lying), "{name}");
+        assert_eq!(
+            glance.counts.visible,
+            glance.lying_here.len() + glance.fixtures.len(),
+            "{name}"
+        );
         assert_eq!(glance.over, glance.state.dead, "{name}");
         assert_eq!(
             glance.here.as_ref().map(|here| here.name.clone()),
@@ -165,8 +176,13 @@ fn a_finished_game_closes_every_verb_in_the_end_notice_words() {
         .unwrap();
     let glance = engine.glance(playthrough).unwrap();
     assert!(glance.over, "{name}");
+    // Marked over with no ending row and nobody at zero: the records say
+    // neither that the story ended nor that anybody died.
     let ended = glance.ended.clone().expect("the end notice's sentence");
-    assert!(ended.contains("this playthrough is over"), "{ended}");
+    assert!(
+        ended.contains("stopped before it reached an ending"),
+        "{ended}"
+    );
     for verb in &glance.verbs {
         assert!(!verb.available(), "{}", verb.name);
         assert!(verb.targets.is_empty(), "{}", verb.name);

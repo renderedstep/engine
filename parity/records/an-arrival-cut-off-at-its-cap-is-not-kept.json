@@ -93,7 +93,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             }
           ],
           "removed": []
@@ -282,7 +287,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             }
           ],
           "removed": []

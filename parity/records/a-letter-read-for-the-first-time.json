@@ -93,7 +93,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000003,
@@ -112,7 +117,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000004,
@@ -131,7 +141,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             }
           ],
           "removed": []
@@ -265,7 +280,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000003,
@@ -284,7 +304,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000004,
@@ -303,7 +328,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             }
           ],
           "removed": []
@@ -462,7 +492,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000003,
@@ -481,7 +516,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000004,
@@ -500,7 +540,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000005,
@@ -519,7 +564,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             },
             {
               "id": 1000000006,
@@ -538,7 +588,12 @@
               "use_kind": "ordinary",
               "x": null,
               "y": null,
-              "fragility": "sturdy"
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null
             }
           ],
           "removed": []

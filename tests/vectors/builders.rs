@@ -640,7 +640,7 @@ fn kept_requests_on_the_live_path() {
 
 /// `rake eval:realization_digest`'s branch requests, built here: every
 /// staged case of the realization bench, digested as the bench names them.
-/// The Ruby engine prints `d42b00683af7921a` at the commit `parity/README.md`
+/// The Ruby engine prints `abe79ab4faf3bea5` at the commit `parity/README.md`
 /// names, and the stored baseline carries the same identity.
 #[test]
 fn realization_branch_requests_digest_as_the_bench_names_them() {
@@ -666,6 +666,6 @@ fn realization_branch_requests_digest_as_the_bench_names_them() {
     );
     assert_eq!(
         identity,
-        json!({ "version": 1, "digest": "d42b00683af7921a" })
+        json!({ "version": 1, "digest": "abe79ab4faf3bea5" })
     );
 }

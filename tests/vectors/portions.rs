@@ -5,7 +5,7 @@ use crate::check;
 use renderedstep_engine::boxes::{Box, Spot};
 use renderedstep_engine::parameters::{self, Parameters};
 use renderedstep_engine::random::Random;
-use renderedstep_engine::{danger, population, roll, spot, stat_block};
+use renderedstep_engine::{danger, kit, population, roll, spot, stat_block};
 use serde_json::{json, Value};
 
 pub const NAMES: &[&str] = &[
@@ -14,6 +14,7 @@ pub const NAMES: &[&str] = &[
     "spot",
     "placement",
     "population",
+    "kits",
     "danger",
     "parameters",
     "box",
@@ -250,6 +251,43 @@ fn population() {
             "key": population::key_for(name),
             "label": label,
             "count": count,
+        })
+    });
+}
+
+#[test]
+fn kits() {
+    let tables = renderedstep_engine::data::kits();
+    let constants = json!({
+        "kit_die": tables.kit_die,
+        "visible": tables.visible,
+        "roll_kind": roll::KIT as i64,
+    });
+    check("kits", constants, |input| {
+        let name = input["name"].as_str().expect("a name");
+        let things = kit::roll(name, input["kind"].as_str(), input["density"].as_str());
+        let listed: Vec<Value> = things
+            .iter()
+            .map(|thing| {
+                let within = thing.within.map(|index| things[index].name.as_str());
+                json!({
+                    "name": thing.name,
+                    "tier": thing.tier,
+                    "holds": thing.holds,
+                    "bulk": thing.bulk,
+                    "within": thing.within,
+                    "how": thing.how,
+                    "kit_key": thing.kit_key,
+                    "use_kind": thing.use_kind(),
+                    "combustible": thing.combustible(),
+                    "readable": thing.readable(),
+                    "description": kit::description(thing, within),
+                })
+            })
+            .collect();
+        json!({
+            "key": renderedstep_engine::text::crc32(renderedstep_engine::text::natural_key(name).as_bytes()),
+            "things": listed,
         })
     });
 }

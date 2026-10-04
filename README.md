@@ -34,6 +34,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `boxes` | `Location::Box` | walls, shared ground, bearings and distances between rooms |
 | `interior` | `Location::Interior` | a building's rooms and doorways, returned rather than written |
 | `kind` | `Location::Kind` | what sort of place a room may be and how cluttered, and the sort each room of a building is dealt |
+| `kit` | `Item::Kit` | what stands in a room of a kind and what lies about in it, rolled on the room's name from `data/item/kits.yml` |
 | `shuffle_connections` | `WorldMechanic::ShuffleConnections` | how a shuffle rearranges the mobile rooms' doorways |
 | `world_mechanic` | `WorldMechanic` | the cadence boundaries a mechanic has to run for |
 | `deadline` | `Quest::Deadline` | the hops walk and the anchor room an overdue step is placed from |
@@ -66,7 +67,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `glance` | `Playthrough::Glance`, `Playthrough::Availability`, `Playthrough::SlashMenu` | what a front end's panels show between turns: the room, its ways out, who and what is here, which verbs are open at what (each target one the turn plays, each closed verb closed in the refusal's words), the slash menu and the next beat |
 | `facts`, `prompt_version` | `Scene::Narrator#prompt_for`, `Playthrough::Turn`'s `_fact` builders, `Playthrough::PromptVersion::Scaffold` | what a turn hands the narrator as already done, and that scaffold rendered against fixed placeholders for the game's prompt version to digest |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
-| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!`, `Quest::Binder`, `Quest::Deadline`, `Scene::Ending`, `Item::Inscriber` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
+| `turn::Turn` | `Playthrough::Turn#play` with a request token, `Playthrough::Classifier#classify`, `InteractionAgent`, `Scene::Narrator`, `Scene::Generator`, `Location::Generator#realize!` with `Item::Kit#furnish!`, `Item::Registry`, `Character::Registry`, `Location::RoomName` and `Location::Interior.lay_out!`, `Quest::Binder`, `Quest::Deadline`, `Scene::Ending`, `Item::Inscriber` | a submitted line read, refused or played through the models, told in prose or in the engine's own words, and answered by the world |
 | `engine` | `Playthrough::Session`'s place at the switch | a line in, the outcome out, one transaction per line, every failure a value |
 | `parity` | `EngineSweep::Walk`, `EngineSweep::Dump`, `EngineSweep::Parity` | a sweep script played through this engine, dumped step by step and compared |
 | `model` | `BaseAgent`, `BaseAgent::Refusal`, `SystemOneAgent`, RubyLLM's OpenRouter provider and its `chats`/`messages` receipts, `EngineSweep::BrowserTurn`'s fixed replies | where a model call goes, the body it sends, whether an answer is kept, the model rotation, and what a call leaves in the database |

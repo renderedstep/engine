@@ -1,6 +1,7 @@
 # The sweep scripts this engine plays exactly as the Ruby engine does, step
 # for step. `cargo test` and `parity --check parity` fail when one of these
 # diverges, and when a script agrees and is not listed here.
+a-body-says-who-killed-it
 a-building-dealt-its-rooms
 a-building-with-two-floors
 a-cellar-below-the-way-in
@@ -8,6 +9,7 @@ a-chamber-of-one-room
 a-check-against-an-ability
 a-deadline-places-what-the-arc-waits-for
 a-departure-reaches-a-later-paragraph
+a-desk-and-what-lies-on-it
 a-fight-that-kills-the-player
 a-fight-the-player-wins
 a-foe-demands-and-still-strikes
@@ -23,9 +25,12 @@ an-arc-that-ends-the-other-way
 an-arrival-cut-off-at-its-cap-is-not-kept
 an-earlier-line-still-goes-first
 an-ending-kept-when-the-narrator-fails
+an-ending-taken-under-his-hands
+an-ending-the-ringer-did-not-stand-for
 an-ending-with-words
 an-offer-taken-through-the-models
 a-one-way-hazard-on-a-door
+a-room-furnished-as-it-is-written
 a-room-written-while-the-arc-waits
 a-scheduled-event-comes-due
 a-second-game-arrives-for-the-first-time

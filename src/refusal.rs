@@ -3,6 +3,7 @@
 //! own words, built from records it already holds.
 
 use crate::intent::Intent;
+use crate::playthrough::Ended;
 use crate::room::{Person, Record};
 use crate::text::upcase_first;
 
@@ -14,10 +15,11 @@ pub const KINDS: &[&str] = &[
     "unplayable",
     "dead",
     "concluded",
+    "stopped",
 ];
 
 /// The kinds that are a state of the game rather than a reading of a line.
-const GAME_OVER: &[&str] = &["dead", "concluded"];
+const GAME_OVER: &[&str] = &["dead", "concluded", "stopped"];
 
 /// Said on every shape that leaves the player another line to type.
 pub const UNCHANGED: &str = "Nothing has changed.";
@@ -244,13 +246,14 @@ impl Refusal {
         Refusal::of("dead", typed, death_sentence(character), None)
     }
 
-    /// A line typed into a finished game. It concluded when the game reached
-    /// an ending; otherwise the player died.
-    pub fn over(concluded: bool, character: Option<&Person>, typed: &str) -> Refusal {
-        if concluded {
-            Refusal::of("concluded", typed, story_over_sentence(character), None)
-        } else {
-            Refusal::dead(typed, character)
+    /// A line typed into a finished game, in the words for why it is over.
+    pub fn over(ended: Ended, character: Option<&Person>, typed: &str) -> Refusal {
+        match ended {
+            Ended::Concluded => {
+                Refusal::of("concluded", typed, story_over_sentence(character), None)
+            }
+            Ended::Died => Refusal::dead(typed, character),
+            Ended::Unrecorded => Refusal::of("stopped", typed, stopped_sentence(character), None),
         }
     }
 
@@ -319,5 +322,17 @@ pub fn story_over_sentence(character: Option<&Person>) -> String {
     format!(
         "{whose} is over, and this playthrough with it. Nothing you type can change how it \
          ended. Start a new playthrough to play this world again."
+    )
+}
+
+/// What a player whose game stopped with neither an ending nor a death is told.
+pub fn stopped_sentence(character: Option<&Person>) -> String {
+    let whose = match present_name(character) {
+        Some(name) => format!("{name}'s story"),
+        None => "Your story".to_string(),
+    };
+    format!(
+        "{whose} stopped before it reached an ending, and this playthrough with it. Nothing \
+         you type can change it. Start a new playthrough to play this world again."
     )
 }
