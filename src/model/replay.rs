@@ -14,6 +14,16 @@
 //! A System One reply names only the answers it cares about. Every other
 //! question is answered with the uninteresting answer: `nothing` for a
 //! choice, 0.0 for a noul.
+//!
+//! A chat reply may fail the call instead, in any of the ways a provider
+//! fails one (`failure:`, a `Failure` kind): so the notice a front end shows
+//! for a crisis, a missing model or a refused key can be tested on a replayed
+//! turn.
+//!
+//! A reply in words to a call that streams is streamed, a word at a time
+//! with the space after it, the way a provider streams its tokens: so a front
+//! end playing a replayed turn receives its prose as it would live, and what
+//! it does with the chunks can be tested without a model.
 
 use super::{Agent, Answer, Book, Call, Failure, Filed, Models, Unavailable, Verify};
 use serde_json::{json, Map, Value};
@@ -32,6 +42,9 @@ pub struct Reply {
     /// What the provider answers; none for an unavailable one.
     pub content: Option<Value>,
     pub unavailable: bool,
+    /// How the call fails instead of answering, as `Failure::named` reads a
+    /// kind (`crisis`, `no_model`, `unauthorized`, ...); none for a reply.
+    pub failure: Option<(String, String)>,
     pub prompt_includes: Vec<String>,
     pub prompt_excludes: Vec<String>,
 }
@@ -61,6 +74,14 @@ impl Reply {
                 .filter(|content| !content.is_null())
                 .cloned(),
             unavailable: reply["unavailable"].as_bool().unwrap_or(false),
+            failure: reply.get("failure").and_then(|failure| match failure {
+                Value::String(kind) => Some((kind.clone(), String::new())),
+                Value::Object(_) => Some((
+                    failure["kind"].as_str()?.to_string(),
+                    failure["message"].as_str().unwrap_or_default().to_string(),
+                )),
+                _ => None,
+            }),
             prompt_includes: strings(&reply["prompt_includes"]),
             prompt_excludes: strings(&reply["prompt_excludes"]),
         })
@@ -72,6 +93,7 @@ impl Reply {
             purpose: purpose.to_string(),
             content: None,
             unavailable: true,
+            failure: None,
             prompt_includes: Vec::new(),
             prompt_excludes: Vec::new(),
         }
@@ -179,6 +201,26 @@ fn inspect_list(items: &[String]) -> String {
     )
 }
 
+/// `words`, a word at a time, each with the whitespace that follows it.
+fn stream(words: &str, on_chunk: &mut (dyn FnMut(&str) + '_)) {
+    let mut start = None;
+    let mut in_space = false;
+    for (index, character) in words.char_indices() {
+        match (start, character.is_whitespace()) {
+            (None, false) => start = Some(index),
+            (Some(from), false) if in_space => {
+                on_chunk(&words[from..index]);
+                start = Some(index);
+            }
+            _ => {}
+        }
+        in_space = character.is_whitespace();
+    }
+    if let Some(from) = start {
+        on_chunk(&words[from..]);
+    }
+}
+
 /// One answer as a provider writes it.
 fn answer(value: &Value) -> Value {
     if value.is_number() {
@@ -200,7 +242,7 @@ impl Models for Replay {
         agent: &mut Agent,
         call: &Call,
         verify: Option<Verify>,
-        _on_chunk: Option<&mut (dyn FnMut(&str) + '_)>,
+        on_chunk: Option<&mut (dyn FnMut(&str) + '_)>,
     ) -> Result<Answer, Failure> {
         self.sent.push(json!({
             "purpose": agent.purpose(),
@@ -215,11 +257,17 @@ impl Models for Replay {
                 "the sweep's provider is unavailable".into(),
             ));
         }
+        if let Some((kind, message)) = &reply.failure {
+            return Err(Failure::named(kind, message.clone()));
+        }
         let content = reply.content.clone().ok_or_else(|| {
             Failure::Unexpected(format!("a {} reply with no content", reply.purpose))
         })?;
         if let Some(check) = verify {
             check(&content).map_err(Failure::Rejected)?;
+        }
+        if let (Some(on_chunk), Some(words)) = (on_chunk, content.as_str()) {
+            stream(words, on_chunk);
         }
         Ok(Answer {
             content,
@@ -275,5 +323,53 @@ impl Models for Replay {
         _scene: i64,
     ) -> Result<(), crate::engine::Error> {
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{stream, Reply};
+    use crate::model::Failure;
+    use serde_json::json;
+
+    #[test]
+    fn a_reply_may_fail_its_call_in_any_way_a_provider_fails_one() {
+        let named = Reply::from_value(&json!({
+            "purpose": "narration",
+            "failure": { "kind": "crisis", "message": "a crisis line" }
+        }))
+        .expect("a reply");
+        let (kind, message) = named.failure.clone().expect("a failure");
+        assert_eq!(
+            Failure::named(&kind, message),
+            Failure::Crisis("a crisis line".into())
+        );
+
+        let bare = Reply::from_value(&json!({ "purpose": "classifier", "failure": "no_model" }))
+            .expect("a reply");
+        let (kind, message) = bare.failure.clone().expect("a failure");
+        assert_eq!(Failure::named(&kind, message), Failure::NoModel);
+
+        let answered = Reply::from_value(&json!({ "purpose": "narration", "content": "Words." }))
+            .expect("a reply");
+        assert_eq!(answered.failure, None);
+    }
+
+    fn chunks(words: &str) -> Vec<String> {
+        let mut seen = Vec::new();
+        stream(words, &mut |chunk: &str| seen.push(chunk.to_string()));
+        seen
+    }
+
+    #[test]
+    fn a_reply_streams_a_word_at_a_time_with_the_space_after_it() {
+        assert_eq!(
+            chunks("The ledger  falls\nopen."),
+            vec!["The ", "ledger  ", "falls\n", "open."]
+        );
+        assert_eq!(chunks("one"), vec!["one"]);
+        assert_eq!(chunks("trailing "), vec!["trailing "]);
+        assert!(chunks("").is_empty());
+        assert!(chunks("   ").is_empty());
     }
 }

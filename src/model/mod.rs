@@ -134,6 +134,23 @@ pub enum Failure {
 }
 
 impl Failure {
+    /// The failure a kind names, as the extension reports one (`no_model`,
+    /// `unauthorized`, `crisis`, `refused`, `schema_ignored`, `rejected`,
+    /// `provider`, `unavailable`); anything else is unexpected.
+    pub fn named(kind: &str, message: String) -> Failure {
+        match kind {
+            "no_model" => Failure::NoModel,
+            "unauthorized" => Failure::Unauthorized(message),
+            "crisis" => Failure::Crisis(message),
+            "refused" => Failure::Refused(message),
+            "schema_ignored" => Failure::SchemaIgnored(message),
+            "rejected" => Failure::Rejected(message),
+            "provider" => Failure::Provider(message),
+            "unavailable" => Failure::Unavailable(message),
+            _ => Failure::Unexpected(message),
+        }
+    }
+
     /// `BaseAgent::UnusableResponseError`: text that must never be kept.
     pub fn unusable(&self) -> bool {
         matches!(self, Failure::Refused(_) | Failure::Crisis(_))
