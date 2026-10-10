@@ -421,7 +421,7 @@ impl<'a> Arrival<'a> {
         };
         parts.push(format!(
             "Lying here: {}.",
-            items(game.items_lying_in(Some(self.location)))
+            items(game.items_noticed_in(Some(self.location)))
         ));
         parts.push(format!("You are carrying: {}.", items(game.carried())));
         for toll in game

@@ -342,6 +342,19 @@ impl Engine {
         })
     }
 
+    /// What the game's doctor reports about the noticed records of a story's
+    /// games ([`crate::noticed::findings`]). Writes nothing.
+    pub fn noticed_findings(&self, story: i64) -> Result<Vec<crate::noticed::Finding>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let records = store.load()?;
+            if records.find("stories", story).is_none() {
+                return Err(Error::NoSuchStory(format!("#{story}")));
+            }
+            Ok(crate::noticed::findings(&records, story))
+        })
+    }
+
     /// Keeps the player's paragraph for a scene a turn the game chose was
     /// answered with, beside the scene and never in it, and returns its row's
     /// id. A second paragraph for the same scene replaces the first, and
@@ -487,6 +500,9 @@ impl Engine {
             let here =
                 opening.and_then(|room| mechanics.records().find("locations", room).cloned());
             mechanics.snapshot_room(here.as_ref())?;
+            if let Some(room) = &here {
+                mechanics.notice_on_arrival(room)?;
+            }
             Ok(playthrough)
         })
     }

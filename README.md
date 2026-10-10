@@ -64,8 +64,9 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version and the shape of every table it touches checked, every table the loop reads loaded as records, a row inserted or updated |
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: who speaks up unasked, foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
-| `turn::chooser` | none: it was written here | the protagonist's act in a game the player narrates: the glance's targets for move, examine, take, drop and use, weighed by the protagonist's own pursuit, boosted toward the arc's next beat, with a line already played on this visit weighing nothing and a thing the arc asks the player to hold never let go of, and one `Roll::CHOICE` over them |
+| `turn::chooser` | none: it was written here | the protagonist's act in a game the player narrates: the glance's targets for move, examine (a look around the room among them, in a game that notices), take, drop and use, weighed by the protagonist's own pursuit, boosted toward the arc's next beat, with a line already played on this visit weighing nothing and a thing the arc asks the player to hold never let go of, and one `Roll::CHOICE` over them |
 | `narrates` | none: it was written here | a game the player narrates: the facts card the player writes from, the scene waiting for their paragraph, and the paragraph kept beside the scene, never read |
+| `noticed` | none: it was written here | what a game the player narrates has noticed of a room (`noticed_at` on its copy of each thing and its state for a person), the tiers that notice it (`turn::notice`), the refusal of a line naming a thing not noticed, and the doctor's findings |
 | `glance` | `Playthrough::Glance`, `Playthrough::Availability`, `Playthrough::SlashMenu` | what a front end's panels show between turns: the room, its ways out, who and what is here, which verbs are open at what (each target one the turn plays, each closed verb closed in the refusal's words), the slash menu and the next beat |
 | `facts`, `prompt_version` | `Scene::Narrator#prompt_for`, `Playthrough::Turn`'s `_fact` builders, `Playthrough::PromptVersion::Scaffold` | what a turn hands the narrator as already done, and that scaffold rendered against fixed placeholders for the game's prompt version to digest |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
@@ -150,6 +151,19 @@ narrated. In a game the player narrates:
   for each turn instead.
 - `Engine::candidates` lists every act the game could choose now and what
   the die would weigh it at, and throws nothing.
+- The room is revealed in tiers (`noticed`), each stamping `noticed_at` on
+  this game's copy of a thing: on the way in, the people, the ways out,
+  every fixed piece and a rolled few loose things, larger bulk first
+  (`Roll::NOTICE`); on a look (`examine` with no target, offered as the
+  `look` target of `examine` while one would show something), the rest in
+  plain sight, up to `noticed::MAX_VISIBLE_PER_ROOM`; and on each turn spent
+  in the room, one more (`Roll::NOTICE`). What was noticed stays noticed.
+  `turn::room_of` holds only noticed things, so the closed sets, the
+  glance, the read-out, the chooser and the card follow the record, and a
+  line naming a thing lying here unnoticed is refused in the engine's words.
+  What lies inside a hollow or a closed fixture waits for the search.
+  `Engine::noticed_findings` is what the game's doctor reports about it. A
+  narrated game is never stamped and lists everything.
 
 `Engine::submit_fixed` plays a submitted line with a fixed reading
 (`turn::Fixed`: an action and the name of its target) wherever the
@@ -158,7 +172,8 @@ a bench that measures what a turn does after its reading plays its cases
 this way. The request builders take rows rather than a database, so a
 caller holding a staged position's rows builds any request the turn
 would send, `turn::room_of` reads the room the grammar and the classifier
-read, and `classifier::read` reads a line as a turn does.
+read (`turn::whole_room_of` with every thing lying there, noticed or not),
+and `classifier::read` reads a line as a turn does.
 
 `Engine::submit` plays a line the way every front end does
 (`Playthrough::Session#play` with a request token), asking a `model::Models`

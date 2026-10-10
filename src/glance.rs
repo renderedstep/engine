@@ -12,11 +12,17 @@
 //! the turn accepts, by construction rather than by a second copy of its
 //! rules. The reason a verb is closed is the refusal's own words.
 //!
+//! IN A GAME THE PLAYER NARRATES, THE PANELS ARE WHAT IT HAS NOTICED. The
+//! room those closed sets come from holds only noticed things
+//! ([`crate::noticed`]), so every list here does too, and `examine` offers a
+//! look around the room for as long as one would show something.
+//!
 //! It reads records only: it writes nothing, calls no model and rolls no
 //! die.
 
 use crate::grammar::{self, Grammar};
 use crate::intent::{slot_for, Intent};
+use crate::noticed;
 use crate::outcome::State;
 use crate::playthrough::{Game, Mode};
 use crate::records::{id, int, string, text, Records, Row};
@@ -85,6 +91,9 @@ pub struct Thing {
     pub name: String,
     /// The fixture it lies on or in, for a thing lying here on one.
     pub on: Option<String>,
+    /// Story time when a game the player narrates noticed it; none in any
+    /// other game.
+    pub noticed_at: Option<i64>,
 }
 
 /// Something fixed in place here: what it holds, whether it is shut, and
@@ -101,6 +110,9 @@ pub struct Fixture {
     /// with no inside.
     pub searched: Option<bool>,
     pub on: Vec<String>,
+    /// Story time when a game the player narrates noticed it; none in any
+    /// other game.
+    pub noticed_at: Option<i64>,
 }
 
 /// How much the room shows, and how much of it nobody has looked in.
@@ -110,17 +122,22 @@ pub struct Counts {
     pub visible: usize,
     /// The closed fixtures this game has not searched.
     pub unsearched: usize,
+    /// In a game the player narrates, the things in plain sight here it
+    /// has not noticed yet, which a look would show; 0 in any other game.
+    pub unnoticed: usize,
 }
 
 /// One target a verb can take: a record by id and the name it answers to,
-/// or, for `use`, one whole attempt by its token.
+/// or, for `use`, one whole attempt by its token, or, for `examine` in a game
+/// the player narrates, a look around the room it stands in (kind `look`,
+/// named for the room).
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Target {
     pub id: Option<i64>,
     pub name: String,
     /// An attempt's `use:` token.
     pub token: Option<String>,
-    /// An attempt's own word.
+    /// An attempt's own word, or `look` for a look around the room.
     pub kind: Option<String>,
     /// The line that plays this attempt, or none where no line the grammar
     /// reads plays this one rather than another.
@@ -234,6 +251,7 @@ impl Glance {
                         .and_then(|item| int(item, "within_id"))
                         .and_then(row)
                         .map(|within| string(within, "name").to_string()),
+                    noticed_at: row(thing.id).and_then(|item| int(item, "noticed_at")),
                 })
                 .collect()
         };
@@ -259,6 +277,7 @@ impl Glance {
                     holds,
                     state: closed.then(|| "shut".to_string()),
                     searched: closed.then_some(false),
+                    noticed_at: int(item, "noticed_at"),
                 }
             })
             .collect();
@@ -268,6 +287,7 @@ impl Glance {
                 .iter()
                 .filter(|f| f.searched == Some(false))
                 .count(),
+            unnoticed: noticed::unnoticed_in(&game, location).len(),
         };
         let player = game.protagonist();
 
@@ -406,19 +426,36 @@ fn verbs(mechanics: &Mechanics, room: &Room, game: &Game) -> Vec<Verb> {
                     (targets, None)
                 }
             };
+            let mut targets: Vec<Target> = targets
+                .iter()
+                .map(|record| target(record, &grammar))
+                .collect();
+            if name == "examine" {
+                targets.extend(look(game));
+            }
             let reason = targets.is_empty().then(|| blocked(name, game));
             Verb {
                 name: name.to_string(),
-                targets: targets
-                    .iter()
-                    .map(|record| target(record, &grammar))
-                    .collect(),
+                targets,
                 aims: aims.map(|aims| aims.iter().map(|record| target(record, &grammar)).collect()),
                 reason,
                 word,
             }
         })
         .collect()
+}
+
+/// In a game the player narrates, a look around the room it stands in, for
+/// as long as a look would show something there.
+fn look(game: &Game) -> Option<Target> {
+    let here = game.current_location();
+    noticed::worth_a_look(game, here).then(|| Target {
+        id: None,
+        name: here.map_or("", |room| string(room, "name")).to_string(),
+        token: None,
+        kind: Some(noticed::LOOK.to_string()),
+        line: Some(noticed::LOOK_LINE.to_string()),
+    })
 }
 
 fn target(record: &Record, grammar: &Grammar) -> Target {

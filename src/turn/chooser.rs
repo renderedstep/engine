@@ -23,6 +23,9 @@
 //! - **Novelty.** A line already played on this visit to the room weighs
 //!   nothing, so the die does not inspect one slate four times. When every
 //!   candidate weighs nothing, the die is even over them all.
+//! - **A look.** In a game the player narrates, `examine` also offers a
+//!   look around the room while one would show something unnoticed there
+//!   ([`crate::noticed`]); it weighs as a wait, and serves no beat.
 //! - **The arc's things.** A thing an open arc asks the player to hold is
 //!   never dropped, burned or eaten by the chooser, as nobody else may pick
 //!   one up (`volition::arc_item_ids`).
@@ -37,6 +40,7 @@ use crate::data;
 use crate::glance::Glance;
 use crate::grammar;
 use crate::intent::{slot_for, Intent};
+use crate::noticed;
 use crate::records::{id, int, text};
 use crate::room::{Record, Room};
 use crate::{roll, volition};
@@ -130,6 +134,24 @@ pub fn candidates(mechanics: &Mechanics, unwritten: bool) -> Vec<Candidate> {
     {
         let offered = room.offered_for(&verb.name);
         for target in &verb.targets {
+            if target.kind.as_deref() == Some(noticed::LOOK) {
+                let line = noticed::LOOK_LINE.to_string();
+                let pursued = pursuit.map_or(1, |row| base + weight_of(row, shape(&verb.name)));
+                let repeated = played.contains(&grammar::unslashed(&line));
+                found.push(Candidate {
+                    verb: verb.name.clone(),
+                    target: target.name.clone(),
+                    id: None,
+                    token: None,
+                    line,
+                    pursued,
+                    arc: false,
+                    repeated,
+                    weight: if repeated { 0 } else { pursued },
+                    intent: Intent::new("examine"),
+                });
+                continue;
+            }
             let matching = |record: &&Record| match (&target.token, record.attempt()) {
                 (Some(token), Some(choice)) => choice.token() == *token,
                 (None, None) => record.id() == target.id,

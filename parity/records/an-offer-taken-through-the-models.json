@@ -41,7 +41,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -65,7 +66,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -241,7 +243,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -265,7 +268,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -415,7 +419,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -439,7 +444,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -661,7 +667,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -685,7 +692,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []

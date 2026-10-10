@@ -113,7 +113,7 @@ impl State {
             .into_iter()
             .filter(|who| Some(id(who)) != story_protagonist)
             .collect();
-        let lying = game.items_lying_in(here);
+        let lying = game.items_noticed_in(here);
         let carried = game.carried();
 
         let mut exits: Vec<Room> = if here.is_some() {

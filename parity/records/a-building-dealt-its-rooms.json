@@ -1181,7 +1181,8 @@
               "holds": "top",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/workbench"
+              "kit_key": "workshop/workbench",
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -1205,7 +1206,8 @@
               "holds": "top",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/tool rack"
+              "kit_key": "workshop/tool rack",
+              "noticed_at": null
             },
             {
               "id": 1000000003,
@@ -1229,7 +1231,8 @@
               "holds": "closed",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/crate"
+              "kit_key": "workshop/crate",
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -1253,7 +1256,8 @@
               "holds": "nothing",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/forge"
+              "kit_key": "workshop/forge",
+              "noticed_at": null
             },
             {
               "id": 1000000005,
@@ -1277,7 +1281,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/stool"
+              "kit_key": "workshop/stool",
+              "noticed_at": null
             },
             {
               "id": 1000000006,
@@ -1301,7 +1306,8 @@
               "holds": null,
               "within_id": 1000000001,
               "how": "on",
-              "kit_key": "workshop/workbench/tin of grease"
+              "kit_key": "workshop/workbench/tin of grease",
+              "noticed_at": null
             },
             {
               "id": 1000000007,
@@ -1325,7 +1331,8 @@
               "holds": null,
               "within_id": 1000000002,
               "how": "on",
-              "kit_key": "workshop/tool rack/coil of wire"
+              "kit_key": "workshop/tool rack/coil of wire",
+              "noticed_at": null
             },
             {
               "id": 1000000008,
@@ -1349,7 +1356,8 @@
               "holds": null,
               "within_id": 1000000002,
               "how": "on",
-              "kit_key": "workshop/tool rack/mallet"
+              "kit_key": "workshop/tool rack/mallet",
+              "noticed_at": null
             },
             {
               "id": 1000000009,
@@ -1373,7 +1381,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/wood shaving"
+              "kit_key": "workshop/loose/wood shaving",
+              "noticed_at": null
             },
             {
               "id": 1000000010,
@@ -1397,7 +1406,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/rag"
+              "kit_key": "workshop/loose/rag",
+              "noticed_at": null
             },
             {
               "id": 1000000011,
@@ -1421,7 +1431,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/stub of chalk"
+              "kit_key": "workshop/loose/stub of chalk",
+              "noticed_at": null
             },
             {
               "id": 1000000012,
@@ -1445,7 +1456,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/nail"
+              "kit_key": "workshop/loose/nail",
+              "noticed_at": null
             },
             {
               "id": 1000000013,
@@ -1469,7 +1481,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/rivet"
+              "kit_key": "workshop/loose/rivet",
+              "noticed_at": null
             },
             {
               "id": 1000000014,
@@ -1493,7 +1506,8 @@
               "holds": "top",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/workbench"
+              "kit_key": "workshop/workbench",
+              "noticed_at": null
             },
             {
               "id": 1000000015,
@@ -1517,7 +1531,8 @@
               "holds": "top",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/tool rack"
+              "kit_key": "workshop/tool rack",
+              "noticed_at": null
             },
             {
               "id": 1000000016,
@@ -1541,7 +1556,8 @@
               "holds": "closed",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/crate"
+              "kit_key": "workshop/crate",
+              "noticed_at": null
             },
             {
               "id": 1000000017,
@@ -1565,7 +1581,8 @@
               "holds": "nothing",
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/forge"
+              "kit_key": "workshop/forge",
+              "noticed_at": null
             },
             {
               "id": 1000000018,
@@ -1589,7 +1606,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/stool"
+              "kit_key": "workshop/stool",
+              "noticed_at": null
             },
             {
               "id": 1000000019,
@@ -1613,7 +1631,8 @@
               "holds": null,
               "within_id": 1000000014,
               "how": "on",
-              "kit_key": "workshop/workbench/tin of grease"
+              "kit_key": "workshop/workbench/tin of grease",
+              "noticed_at": null
             },
             {
               "id": 1000000020,
@@ -1637,7 +1656,8 @@
               "holds": null,
               "within_id": 1000000015,
               "how": "on",
-              "kit_key": "workshop/tool rack/coil of wire"
+              "kit_key": "workshop/tool rack/coil of wire",
+              "noticed_at": null
             },
             {
               "id": 1000000021,
@@ -1661,7 +1681,8 @@
               "holds": null,
               "within_id": 1000000015,
               "how": "on",
-              "kit_key": "workshop/tool rack/mallet"
+              "kit_key": "workshop/tool rack/mallet",
+              "noticed_at": null
             },
             {
               "id": 1000000022,
@@ -1685,7 +1706,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/wood shaving"
+              "kit_key": "workshop/loose/wood shaving",
+              "noticed_at": null
             },
             {
               "id": 1000000023,
@@ -1709,7 +1731,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/rag"
+              "kit_key": "workshop/loose/rag",
+              "noticed_at": null
             },
             {
               "id": 1000000024,
@@ -1733,7 +1756,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/stub of chalk"
+              "kit_key": "workshop/loose/stub of chalk",
+              "noticed_at": null
             },
             {
               "id": 1000000025,
@@ -1757,7 +1781,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/nail"
+              "kit_key": "workshop/loose/nail",
+              "noticed_at": null
             },
             {
               "id": 1000000026,
@@ -1781,7 +1806,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": "workshop/loose/rivet"
+              "kit_key": "workshop/loose/rivet",
+              "noticed_at": null
             }
           ],
           "removed": []

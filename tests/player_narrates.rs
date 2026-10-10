@@ -4,15 +4,23 @@
 //! while anything new is on offer, a thing the arc asks the player to hold
 //! is never let go of, a resumed turn plays the pick its journal kept, and
 //! the player's paragraph is kept beside the scene and read by no prompt.
+//!
+//! The room is revealed in tiers ([`noticed`]): every turn checks that the
+//! panels, the closed sets and the picks hold only what the game has noticed,
+//! that what was noticed stays noticed, that each turn noticed what its tier
+//! says (an arrival every fixed piece and a rolled few, a look everything in
+//! plain sight, a turn in the room one more), that the card names what the
+//! turn noticed, and that the doctor finds nothing out of line.
 
-use renderedstep_engine::engine::{Engine, Error};
+use renderedstep_engine::engine::{Engine, Error, Submitted};
 use renderedstep_engine::glance::Glance;
 use renderedstep_engine::grammar::unslashed;
 use renderedstep_engine::model::Replay;
 use renderedstep_engine::narration;
+use renderedstep_engine::noticed;
 use renderedstep_engine::parity::{open_world, TITLE_SUFFIX};
 use renderedstep_engine::playthrough::{Game, Mode};
-use renderedstep_engine::records::{int, text};
+use renderedstep_engine::records::{int, text, Records, Row};
 use renderedstep_engine::turn::chooser::{self, Candidate};
 use serde_json::Value;
 use std::path::Path;
@@ -79,6 +87,97 @@ fn listed(glance: &Glance, candidate: &Candidate) -> bool {
     })
 }
 
+/// This game's things, by id, and when each was noticed.
+fn stamps(engine: &Engine, playthrough: i64) -> Vec<(i64, Option<i64>)> {
+    let records = engine.store().load().unwrap();
+    Game::new(&records, playthrough)
+        .own("items")
+        .iter()
+        .map(|item| (int(item, "id").unwrap(), int(item, "noticed_at")))
+        .collect()
+}
+
+fn noticed_ids(engine: &Engine, playthrough: i64) -> Vec<i64> {
+    stamps(engine, playthrough)
+        .into_iter()
+        .filter_map(|(item, at)| at.map(|_| item))
+        .collect()
+}
+
+fn story_of(engine: &Engine, playthrough: i64) -> i64 {
+    let records = engine.store().load().unwrap();
+    Game::new(&records, playthrough).story_id()
+}
+
+/// The panels, the read-out and every verb's targets hold only what the game
+/// has noticed or carries, and the count of what a look would show is the
+/// records' own.
+fn shows_only_what_is_noticed(world: &str, engine: &Engine, playthrough: i64, glance: &Glance) {
+    let records = engine.store().load().unwrap();
+    let game = Game::new(&records, playthrough);
+    let noticed = noticed_ids(engine, playthrough);
+    let carried: Vec<i64> = game
+        .carried()
+        .iter()
+        .map(|item| int(item, "id").unwrap())
+        .collect();
+    let items: Vec<i64> = game
+        .own("items")
+        .iter()
+        .map(|item| int(item, "id").unwrap())
+        .collect();
+    let shown = |item: i64| noticed.contains(&item) || carried.contains(&item);
+    for thing in &glance.lying_here {
+        assert!(
+            noticed.contains(&thing.id),
+            "{world}: {} is listed unnoticed",
+            thing.name
+        );
+        assert!(thing.noticed_at.is_some());
+    }
+    for fixture in &glance.fixtures {
+        assert!(
+            noticed.contains(&fixture.id),
+            "{world}: {} is listed unnoticed",
+            fixture.name
+        );
+    }
+    for named in &glance.state.here {
+        assert!(
+            noticed.contains(&named.id),
+            "{world}: the read-out lists {}",
+            named.name
+        );
+    }
+    for verb in &glance.verbs {
+        for target in verb.targets.iter().chain(verb.aims.iter().flatten()) {
+            if let Some(item) = target.id.filter(|id| items.contains(id)) {
+                assert!(
+                    shown(item),
+                    "{world}: {} offers {}, unnoticed",
+                    verb.name,
+                    target.name
+                );
+            }
+        }
+    }
+    let here = game.current_location();
+    assert_eq!(
+        glance.counts.unnoticed,
+        noticed::unnoticed_in(&game, here).len()
+    );
+    let looks = glance
+        .verbs
+        .iter()
+        .flat_map(|verb| verb.targets.iter())
+        .any(|target| target.kind.as_deref() == Some(noticed::LOOK));
+    assert_eq!(
+        looks,
+        noticed::worth_a_look(&game, here),
+        "{world}: the look is offered wrongly"
+    );
+}
+
 /// What one walk saw on each turn: the line picked, and whether the game
 /// ended on it.
 struct Walked {
@@ -91,13 +190,21 @@ struct Walked {
 fn walk(world: &str, title: &str, turns: usize) -> Walked {
     let (mut engine, playthrough) = open(world, title, Mode::PlayerNarrates);
     let arc = arc_items(&engine);
+    let story = story_of(&engine, playthrough);
     let mut picks = Vec::new();
     for turn in 0..turns {
         let glance = engine.glance(playthrough).unwrap();
         assert_eq!(glance.mode, Mode::PlayerNarrates);
+        shows_only_what_is_noticed(world, &engine, playthrough, &glance);
+        assert_eq!(
+            engine.noticed_findings(story).unwrap(),
+            Vec::new(),
+            "{world}: the doctor finds a noticed record out of line before turn {turn}"
+        );
         if glance.over {
             return Walked { picks, over: true };
         }
+        let before = noticed_ids(&engine, playthrough);
         let candidates = engine.candidates(playthrough, false).unwrap();
         assert!(
             !candidates.is_empty(),
@@ -181,6 +288,39 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
             );
         }
 
+        let after = noticed_ids(&engine, playthrough);
+        assert!(
+            before.iter().all(|item| after.contains(item)),
+            "{world}: something noticed was forgotten on turn {turn}"
+        );
+        let records = engine.store().load().unwrap();
+        let newly: Vec<i64> = after
+            .iter()
+            .copied()
+            .filter(|item| !before.contains(item))
+            .filter(|item| {
+                !Game::new(&records, playthrough)
+                    .carried()
+                    .iter()
+                    .any(|held| int(held, "id") == Some(*item))
+            })
+            .collect();
+        let tier = if pick.verb == "move" {
+            Tier::Arrival
+        } else if pick.line == noticed::LOOK_LINE {
+            Tier::Look
+        } else {
+            Tier::Time
+        };
+        noticed_by_its_tier(
+            world,
+            &records,
+            playthrough,
+            tier,
+            &newly,
+            glance.counts.unnoticed,
+        );
+
         let glance = engine.glance(playthrough).unwrap();
         assert_eq!(
             glance.waiting,
@@ -196,6 +336,16 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
             !card.act.is_empty(),
             "{world}: the card says what the game did"
         );
+        let mut named = card.noticed.clone();
+        named.sort();
+        let mut expected = noticed::names(&records, &newly);
+        expected.sort();
+        if !matches!(text(&row, "resolved_action"), Some("conclude" | "ending")) {
+            assert_eq!(
+                named, expected,
+                "{world}: the card names what the turn noticed"
+            );
+        }
         let words = format!("PLAYER-WRITTEN PARAGRAPH {turn}.");
         engine.write_paragraph(playthrough, scene, &words).unwrap();
         assert_eq!(engine.glance(playthrough).unwrap().waiting, None);
@@ -229,6 +379,79 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
     }
     let over = engine.glance(playthrough).unwrap().over;
     Walked { picks, over }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+enum Tier {
+    Arrival,
+    Look,
+    Time,
+}
+
+/// What a turn noticed is what its tier holds.
+fn noticed_by_its_tier(
+    world: &str,
+    records: &Records,
+    playthrough: i64,
+    tier: Tier,
+    newly: &[i64],
+    unnoticed_before: usize,
+) {
+    let game = Game::new(records, playthrough);
+    let here = game.current_location();
+    let row = |item: &i64| records.find("items", *item).unwrap();
+    let fixed = |item: &Row| text(item, "tier") == Some("fixture");
+    match tier {
+        Tier::Arrival => {
+            for item in game.items_lying_in(here) {
+                if fixed(item) && !noticed::concealed(item) {
+                    assert!(
+                        noticed::stamped(item),
+                        "{world}: {} is fixed here and was not noticed on the way in",
+                        text(item, "name").unwrap_or_default()
+                    );
+                }
+            }
+            let loose = newly.iter().filter(|item| !fixed(row(item))).count();
+            assert!(
+                loose as i64 <= noticed::ON_ARRIVAL,
+                "{world}: {loose} loose things were noticed on the way in"
+            );
+            let lying: Vec<i64> = game
+                .items_lying_in(here)
+                .iter()
+                .map(|item| int(item, "id").unwrap())
+                .collect();
+            assert!(newly
+                .iter()
+                .all(|item| lying.contains(item) || !fixed(row(item))));
+        }
+        Tier::Look => {
+            assert!(
+                noticed::unnoticed_in(&game, here).is_empty()
+                    || noticed::room_left(&game, here) == 0,
+                "{world}: a look left something in plain sight unnoticed"
+            );
+        }
+        Tier::Time => {
+            assert!(
+                newly.len() <= 1,
+                "{world}: a turn in the room noticed {newly:?}"
+            );
+            assert!(newly.iter().all(|item| !noticed::concealed(row(item))));
+            if unnoticed_before > 0 && noticed::room_left(&game, here) > 0 {
+                assert_eq!(
+                    newly.len(),
+                    1,
+                    "{world}: a turn in the room noticed nothing"
+                );
+            }
+        }
+    }
+    assert!(
+        newly.iter().all(|item| !noticed::concealed(row(item))),
+        "{world}: something inside a fixture was noticed with no search"
+    );
 }
 
 #[test]
@@ -473,4 +696,409 @@ fn the_line_that_lets_the_game_act_is_a_typed_line_in_a_narrated_game() {
         outcome.report.resolved_by.as_deref(),
         Some(chooser::RESOLVED_BY)
     );
+}
+
+/// The Furnished Rooms with `loose` more things lying in plain sight in its
+/// first room, the Clerk's Study, and a folded note shut in its desk, then
+/// a game started in `mode`.
+fn furnished(loose: &[(&str, &str)], mode: Mode) -> (Engine, i64) {
+    let sql = std::fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("parity/worlds/the-furnished-rooms.sql"),
+    )
+    .expect("the world fixture");
+    let mut engine = open_world(&sql).unwrap();
+    let story = engine
+        .story_titled(&format!("The Furnished Rooms{TITLE_SUFFIX}"))
+        .unwrap();
+    let row = |name: &str, bulk: &str, within: Option<(i64, &str)>| {
+        let mut values = vec![
+            ("name", Value::from(name)),
+            ("bulk", Value::from(bulk)),
+            ("location_id", Value::from(STUDY)),
+            ("description", Value::from(format!("A {name}."))),
+        ];
+        if let Some((fixture, how)) = within {
+            values.push(("within_id", Value::from(fixture)));
+            values.push(("how", Value::from(how)));
+        }
+        engine.store().insert("items", &values).unwrap();
+    };
+    for (name, bulk) in loose {
+        row(name, bulk, None);
+    }
+    row("folded note", "light", Some((DESK, "in")));
+    let playthrough = engine.start_in(story, mode).unwrap();
+    (engine, playthrough)
+}
+
+const STUDY: i64 = 1_000_000_001;
+const DESK: i64 = 1_000_000_001;
+
+const LOOSE: [(&str, &str); 6] = [
+    ("brass button", "light"),
+    ("iron kettle", "heavy"),
+    ("ledger", "handy"),
+    ("coil of string", "light"),
+    ("heavy bookend", "heavy"),
+    ("pewter mug", "handy"),
+];
+
+/// This game's copies lying in the room it stands in, each with whether it
+/// is noticed.
+fn lying_here(engine: &Engine, playthrough: i64) -> Vec<Row> {
+    let records = engine.store().load().unwrap();
+    let game = Game::new(&records, playthrough);
+    game.items_lying_in(game.current_location())
+        .into_iter()
+        .cloned()
+        .collect()
+}
+
+fn named<'r>(rows: &'r [Row], name: &str) -> &'r Row {
+    rows.iter()
+        .find(|row| text(row, "name") == Some(name))
+        .unwrap_or_else(|| panic!("no {name} here"))
+}
+
+fn submit(engine: &mut Engine, playthrough: i64, line: &str, token: &str) -> Submitted {
+    let mut replay = Replay::new(Vec::new());
+    let submitted = engine
+        .submit(playthrough, line, token, &mut replay, &mut |_| {})
+        .unwrap();
+    replay.finish().unwrap();
+    assert!(replay.sent().is_empty(), "{line:?} asked a model");
+    submitted
+}
+
+#[test]
+fn arriving_notices_every_fixed_piece_and_a_rolled_few_heaviest_first() {
+    let (engine, playthrough) = furnished(&LOOSE, Mode::PlayerNarrates);
+    let here = lying_here(&engine, playthrough);
+    let fixed = |row: &&Row| text(row, "tier") == Some("fixture");
+    assert!(here.iter().filter(fixed).all(noticed::stamped));
+    let loose: Vec<&Row> = here
+        .iter()
+        .filter(|row| !fixed(row) && !noticed::concealed(row))
+        .collect();
+    let (seen, unseen): (Vec<&Row>, Vec<&Row>) =
+        loose.iter().partition(|row| noticed::stamped(row));
+    assert!(
+        (1..=noticed::ON_ARRIVAL as usize).contains(&seen.len()),
+        "{} loose things were noticed on the way in",
+        seen.len()
+    );
+    let rank = |row: &Row| noticed::bulk_rank(text(row, "bulk").unwrap_or("handy"));
+    let lightest_seen = seen.iter().map(|row| rank(row)).min().unwrap();
+    assert!(
+        unseen.iter().all(|row| rank(row) <= lightest_seen),
+        "a lighter thing was noticed before a heavier one"
+    );
+    for hidden in ["folded note", "lump of coal"] {
+        assert!(
+            !noticed::stamped(named(&here, hidden)),
+            "{hidden} is shut away"
+        );
+    }
+    let glance = engine.glance(playthrough).unwrap();
+    shows_only_what_is_noticed("the-furnished-rooms", &engine, playthrough, &glance);
+    assert_eq!(glance.counts.unnoticed, unseen.len());
+    assert!(glance
+        .verbs
+        .iter()
+        .find(|verb| verb.name == "examine")
+        .unwrap()
+        .targets
+        .iter()
+        .any(|target| target.kind.as_deref() == Some(noticed::LOOK)
+            && target.line.as_deref() == Some(noticed::LOOK_LINE)));
+}
+
+#[test]
+fn a_turn_in_the_room_notices_one_more_and_a_look_shows_the_rest() {
+    let (mut engine, playthrough) = furnished(&LOOSE, Mode::PlayerNarrates);
+    let mut unnoticed = engine.glance(playthrough).unwrap().counts.unnoticed;
+    assert!(unnoticed >= 2);
+    for turn in 0..2 {
+        let before = noticed_ids(&engine, playthrough);
+        let played = submit(
+            &mut engine,
+            playthrough,
+            "/inspect desk",
+            &format!("t{turn}"),
+        );
+        assert!(played.turned.refusal.is_none());
+        let after = noticed_ids(&engine, playthrough);
+        assert_eq!(
+            after.len(),
+            before.len() + 1,
+            "turn {turn} noticed one more"
+        );
+        let glance = engine.glance(playthrough).unwrap();
+        assert_eq!(glance.counts.unnoticed, unnoticed - 1);
+        unnoticed = glance.counts.unnoticed;
+    }
+    let before = noticed_ids(&engine, playthrough);
+    let looked = submit(&mut engine, playthrough, noticed::LOOK_LINE, "look");
+    let scene = scene_row(&engine, looked.turned.scene.expect("a look writes a scene"));
+    let words = text(&scene, "description").unwrap().to_string();
+    assert!(
+        words.starts_with("You look around The Clerk's Study. You notice: "),
+        "{words}"
+    );
+    let records = engine.store().load().unwrap();
+    let seen: Vec<i64> = noticed_ids(&engine, playthrough)
+        .into_iter()
+        .filter(|item| !before.contains(item))
+        .collect();
+    assert_eq!(seen.len(), unnoticed);
+    assert_eq!(
+        words,
+        noticed::look_words("The Clerk's Study", &noticed::names(&records, &seen))
+    );
+    let glance = engine.glance(playthrough).unwrap();
+    assert_eq!(glance.counts.unnoticed, 0);
+    assert!(glance
+        .verbs
+        .iter()
+        .flat_map(|verb| verb.targets.iter())
+        .all(|target| target.kind.as_deref() != Some(noticed::LOOK)));
+    let here = lying_here(&engine, playthrough);
+    for hidden in ["folded note", "lump of coal"] {
+        assert!(
+            !noticed::stamped(named(&here, hidden)),
+            "a look found {hidden}"
+        );
+    }
+    // Nothing is left to notice, so a turn in the room notices nothing.
+    let before = noticed_ids(&engine, playthrough);
+    submit(&mut engine, playthrough, "/inspect desk", "after");
+    assert_eq!(noticed_ids(&engine, playthrough), before);
+}
+
+#[test]
+fn a_line_naming_an_unnoticed_thing_is_refused_until_a_look() {
+    let (mut engine, playthrough) = furnished(&LOOSE, Mode::PlayerNarrates);
+    let here = lying_here(&engine, playthrough);
+    let unseen = here
+        .iter()
+        .find(|row| {
+            text(row, "tier") != Some("fixture")
+                && !noticed::stamped(row)
+                && !noticed::concealed(row)
+        })
+        .map(|row| text(row, "name").unwrap().to_string())
+        .expect("something unnoticed in plain sight");
+    let before = stamps(&engine, playthrough);
+    let refused = submit(&mut engine, playthrough, &format!("/take {unseen}"), "take");
+    let refusal = refused.turned.refusal.expect("a refusal");
+    assert_eq!(refusal.kind, "unresolved");
+    assert_eq!(refusal.fact, noticed::UNNOTICED);
+    let offer = refusal.offer.expect("what is noticed");
+    assert!(offer.starts_with("You have noticed: "), "{offer}");
+    assert!(
+        offer.contains("desk") && !offer.contains(&unseen),
+        "{offer}"
+    );
+    assert_eq!(
+        stamps(&engine, playthrough),
+        before,
+        "a refused line noticed something"
+    );
+    assert!(engine
+        .glance(playthrough)
+        .unwrap()
+        .carrying
+        .iter()
+        .all(|thing| thing.name != unseen));
+
+    // The console reads the line the same way.
+    let console = engine
+        .play(playthrough, &format!("take {unseen}"), &mut |_| {})
+        .unwrap();
+    assert!(
+        console
+            .report
+            .refusal
+            .as_deref()
+            .is_some_and(|said| said.starts_with(noticed::UNNOTICED)),
+        "{:?}",
+        console.report
+    );
+
+    submit(&mut engine, playthrough, "look around", "look");
+    let taken = submit(
+        &mut engine,
+        playthrough,
+        &format!("/take {unseen}"),
+        "take again",
+    );
+    assert!(taken.turned.refusal.is_none(), "{:?}", taken.turned.refusal);
+    assert!(engine
+        .glance(playthrough)
+        .unwrap()
+        .carrying
+        .iter()
+        .any(|thing| thing.name == unseen));
+
+    // What lies shut away is not found by a look.
+    let shut = submit(&mut engine, playthrough, "/take lump of coal", "coal");
+    assert_eq!(
+        shut.turned.refusal.expect("a refusal").fact,
+        noticed::UNNOTICED
+    );
+}
+
+#[test]
+fn a_look_stops_at_what_one_room_may_show() {
+    let names: Vec<String> = (0..30).map(|n| format!("pebble number {n}")).collect();
+    let loose: Vec<(&str, &str)> = names.iter().map(|name| (name.as_str(), "light")).collect();
+    let (mut engine, playthrough) = furnished(&loose, Mode::PlayerNarrates);
+    submit(&mut engine, playthrough, "/look around", "look");
+    let shown = lying_here(&engine, playthrough)
+        .iter()
+        .filter(|row| noticed::stamped(row))
+        .count();
+    assert_eq!(shown, noticed::MAX_VISIBLE_PER_ROOM);
+    let glance = engine.glance(playthrough).unwrap();
+    assert!(glance.counts.unnoticed > 0);
+    assert_eq!(
+        glance.fixtures.len() + glance.lying_here.len(),
+        noticed::MAX_VISIBLE_PER_ROOM
+    );
+    assert!(glance
+        .verbs
+        .iter()
+        .flat_map(|verb| verb.targets.iter())
+        .all(|target| target.kind.as_deref() != Some(noticed::LOOK)));
+    let before = noticed_ids(&engine, playthrough);
+    submit(&mut engine, playthrough, "/inspect desk", "after");
+    assert_eq!(noticed_ids(&engine, playthrough), before);
+}
+
+#[test]
+fn a_narrated_game_notices_nothing_and_shows_everything() {
+    let (mut engine, playthrough) = furnished(&LOOSE, Mode::Narrated);
+    for line in [
+        "inspect desk",
+        "take ledger",
+        "go The Beech Clearing",
+        "go The Clerk's Study",
+    ] {
+        engine.play(playthrough, line, &mut |_| {}).unwrap();
+    }
+    assert!(stamps(&engine, playthrough)
+        .iter()
+        .all(|(_, at)| at.is_none()));
+    let glance = engine.glance(playthrough).unwrap();
+    assert_eq!(glance.counts.unnoticed, 0);
+    let lying = lying_here(&engine, playthrough);
+    assert_eq!(glance.fixtures.len() + glance.lying_here.len(), lying.len());
+    assert!(glance
+        .verbs
+        .iter()
+        .flat_map(|verb| verb.targets.iter())
+        .all(|target| target.kind.as_deref() != Some(noticed::LOOK)));
+    let records = engine.store().load().unwrap();
+    assert_eq!(
+        noticed::refusal_for_line(&records, playthrough, "take lump of coal"),
+        None
+    );
+}
+
+#[test]
+fn the_doctor_finds_a_noticed_record_out_of_line() {
+    let (engine, playthrough) = furnished(&LOOSE, Mode::PlayerNarrates);
+    let story = story_of(&engine, playthrough);
+    assert_eq!(engine.noticed_findings(story).unwrap(), Vec::new());
+    let conn = engine.store().connection();
+    // The world's own desk, stamped.
+    conn.execute(
+        "UPDATE items SET noticed_at = '2026-01-01 00:00:00' WHERE id = ?1",
+        [DESK],
+    )
+    .unwrap();
+    // This game's copy of the windowsill, its stamp lost.
+    let sill: i64 = conn
+        .query_row(
+            "SELECT id FROM items WHERE playthrough_id = ?1 AND name = 'windowsill'",
+            [playthrough],
+            |row| row.get(0),
+        )
+        .unwrap();
+    conn.execute("UPDATE items SET noticed_at = NULL WHERE id = ?1", [sill])
+        .unwrap();
+    let found = engine.noticed_findings(story).unwrap();
+    let subjects: Vec<(&str, i64)> = found.iter().map(|finding| finding.subject).collect();
+    assert!(found.iter().all(|finding| finding.code == noticed::FINDING));
+    assert!(subjects.contains(&("items", DESK)), "{found:#?}");
+    assert!(subjects.contains(&("items", sill)), "{found:#?}");
+    assert_eq!(found.len(), 2, "{found:#?}");
+
+    // A stamp in a narrated game is out of line too.
+    conn.execute(
+        "UPDATE playthroughs SET mode = 'narrated' WHERE id = ?1",
+        [playthrough],
+    )
+    .unwrap();
+    let found = engine.noticed_findings(story).unwrap();
+    assert!(
+        found
+            .iter()
+            .any(|finding| finding.message.contains("which is narrated")),
+        "{found:#?}"
+    );
+}
+
+#[test]
+fn a_resumed_turn_notices_what_the_uninterrupted_turn_did() {
+    let (mut straight, a) = furnished(&LOOSE, Mode::PlayerNarrates);
+    let (mut stopped, b) = furnished(&LOOSE, Mode::PlayerNarrates);
+    let mut steps_stopped = Vec::new();
+    for turn in 0..8 {
+        let token = format!("act-{turn}");
+        let mut replay = Replay::new(Vec::new());
+        straight
+            .act(a, &token, false, &mut replay, &mut |_| {})
+            .unwrap();
+        let journal = straight
+            .store()
+            .connection()
+            .query_row(
+                "SELECT journal FROM playthrough_commands WHERE request_token = ?1",
+                [&token],
+                |row| row.get::<_, String>(0),
+            )
+            .unwrap();
+        let journal: Value = serde_json::from_str(&journal).unwrap();
+        let Some(stop) = noticed::STEPS
+            .iter()
+            .find(|step| journal["steps"].get(**step).is_some())
+        else {
+            panic!("turn {turn} noticed nothing at all: {journal}");
+        };
+        let mut replay = Replay::new(Vec::new());
+        match stopped.act_stopping(b, &token, false, &mut replay, &mut |_| {}, Some(stop)) {
+            Err(Error::Stopped(step)) => assert_eq!(&step, stop),
+            other => panic!("expected the turn to stop after {stop}, got {other:?}"),
+        }
+        let mut replay = Replay::new(Vec::new());
+        stopped
+            .act(b, &token, false, &mut replay, &mut |_| {})
+            .unwrap();
+        assert_eq!(
+            stamps(&straight, a),
+            stamps(&stopped, b),
+            "turn {turn}, stopped after {stop}"
+        );
+        steps_stopped.push(*stop);
+        if straight.glance(a).unwrap().over {
+            break;
+        }
+    }
+    for step in noticed::STEPS {
+        assert!(
+            steps_stopped.contains(&step),
+            "no turn stopped after {step}: {steps_stopped:?}"
+        );
+    }
 }
