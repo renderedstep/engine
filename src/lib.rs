@@ -49,6 +49,7 @@ pub mod ledger;
 pub mod memory;
 pub mod model;
 pub mod moment;
+pub mod narrates;
 pub mod narration;
 pub mod outcome;
 pub mod parameters;

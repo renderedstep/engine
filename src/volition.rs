@@ -52,7 +52,7 @@ pub fn throwable(item: &Row) -> bool {
 
 /// The templates the open arcs ask the player to hold, which nobody else
 /// may pick up.
-fn arc_item_ids(game: &Game) -> Vec<i64> {
+pub(crate) fn arc_item_ids(game: &Game) -> Vec<i64> {
     let story = Some(game.story_id());
     let open: Vec<i64> = game
         .records

@@ -23,7 +23,7 @@ use std::path::Path;
 /// shape it had at this version ([`SHAPE`]): a later migration that adds a
 /// table the engine never reads is harmless, and one that changes a table
 /// the engine reads or writes is refused.
-pub const SCHEMA_VERSION: &str = "20260929023507";
+pub const SCHEMA_VERSION: &str = "20261010120000";
 
 /// The shape, at [`SCHEMA_VERSION`], of every table the engine touches, as
 /// [`shape`] describes it, one fact per line.
@@ -56,6 +56,7 @@ pub const TABLES: &[&str] = &[
     "playthrough_endings",
     "playthrough_npc_states",
     "playthrough_overreaches",
+    "playthrough_paragraphs",
     "playthrough_passages",
     "playthrough_tolls",
     "playthrough_turn_events",

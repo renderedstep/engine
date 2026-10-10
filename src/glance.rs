@@ -18,7 +18,7 @@
 use crate::grammar::{self, Grammar};
 use crate::intent::{slot_for, Intent};
 use crate::outcome::State;
-use crate::playthrough::Game;
+use crate::playthrough::{Game, Mode};
 use crate::records::{id, int, string, text, Records, Row};
 use crate::refusal::{self, Refusal};
 use crate::room::{Choice, Record, Room};
@@ -175,6 +175,11 @@ pub struct Glance {
     pub slash_menu: SlashMenu,
     /// The read-out a console prints (`Playthrough::Mechanics::State`).
     pub state: State,
+    /// How the game is told.
+    pub mode: Mode,
+    /// In a game the player narrates, the scene waiting for the player's
+    /// paragraph (`narrates::waiting`).
+    pub waiting: Option<i64>,
 }
 
 impl Glance {
@@ -289,6 +294,8 @@ impl Glance {
             verbs: verbs(mechanics, &room, &game),
             slash_menu: SlashMenu::for_room(&room),
             state: State::read(records, mechanics.playthrough()),
+            mode: game.mode(),
+            waiting: crate::narrates::waiting(records, mechanics.playthrough()),
         }
     }
 }

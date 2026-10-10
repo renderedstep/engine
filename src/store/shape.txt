@@ -208,6 +208,14 @@ column playthrough_overreaches.scene_id integer pk=0
 column playthrough_overreaches.story_timestamp datetime(6) pk=0
 column playthrough_overreaches.unacted text not null pk=0
 column playthrough_overreaches.updated_at datetime(6) not null pk=0
+column playthrough_paragraphs.audit json pk=0
+column playthrough_paragraphs.author varchar not null default 'player' pk=0
+column playthrough_paragraphs.created_at datetime(6) not null pk=0
+column playthrough_paragraphs.id integer not null pk=1
+column playthrough_paragraphs.playthrough_id integer not null pk=0
+column playthrough_paragraphs.scene_id integer not null pk=0
+column playthrough_paragraphs.text text not null pk=0
+column playthrough_paragraphs.updated_at datetime(6) not null pk=0
 column playthrough_passages.created_at datetime(6) not null pk=0
 column playthrough_passages.id integer not null pk=1
 column playthrough_passages.location_connection_id integer not null pk=0
@@ -264,6 +272,7 @@ column playthroughs.current_location_id integer pk=0
 column playthroughs.current_scene_id integer pk=0
 column playthroughs.ended_at datetime(6) pk=0
 column playthroughs.id integer not null pk=1
+column playthroughs.mode varchar not null default 'narrated' pk=0
 column playthroughs.player_id integer pk=0
 column playthroughs.story_id integer not null pk=0
 column playthroughs.token varchar not null pk=0
@@ -462,6 +471,8 @@ foreign key playthrough_npc_states.playthrough_id -> playthroughs.id on update N
 foreign key playthrough_overreaches.location_id -> locations.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_overreaches.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_overreaches.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_paragraphs.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_paragraphs.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_passages.location_connection_id -> location_connections.id on update NO ACTION on delete CASCADE
 foreign key playthrough_passages.opened_by_item_id -> items.id on update NO ACTION on delete SET NULL
 foreign key playthrough_passages.playthrough_id -> playthroughs.id on update NO ACTION on delete CASCADE
@@ -565,6 +576,8 @@ index playthrough_overreaches (location_id)
 index playthrough_overreaches (playthrough_id)
 index playthrough_overreaches (playthrough_id, story_timestamp)
 index playthrough_overreaches (scene_id)
+index playthrough_paragraphs (playthrough_id)
+index playthrough_paragraphs (scene_id, author) unique
 index playthrough_passages (location_connection_id)
 index playthrough_passages (opened_by_item_id)
 index playthrough_passages (playthrough_id)

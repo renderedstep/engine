@@ -172,6 +172,18 @@ pub fn recap_line(scene: &Row) -> Option<String> {
     (!is_blank(&line)).then_some(line)
 }
 
+/// A scene's line in the recap of a game the player narrates: its summary,
+/// else the first sentence of the engine's fact for the turn, else of the
+/// engine's own words the scene keeps.
+fn engine_recap_line(scene: &Row) -> Option<String> {
+    if let Some(summary) = presence(text(scene, "summary")) {
+        return Some(ruby_strip(summary).to_string());
+    }
+    let told = presence(text(scene, "engine_fact")).unwrap_or(string(scene, "description"));
+    let line = truncate(first_sentence(ruby_strip(told)), 200);
+    (!is_blank(&line)).then_some(line)
+}
+
 /// The text up to the first ASCII whitespace run that follows ".", "!" or
 /// "?" (`split(/(?<=[.!?])\s+/).first`).
 fn first_sentence(text: &str) -> &str {
@@ -314,10 +326,7 @@ impl<'a> Moment<'a> {
             }
         ));
         if let Some(previous) = self.what_just_happened() {
-            parts.push(format!(
-                "What just happened: {}",
-                string(previous, "description")
-            ));
+            parts.push(format!("What just happened: {}", self.told(previous)));
         }
         if let Some(recap) = self.recap() {
             parts.push(format!("Earlier, in order:\n{recap}"));
@@ -618,6 +627,18 @@ impl<'a> Moment<'a> {
         ))
     }
 
+    /// What a prompt is told a scene was. In a game the player narrates it
+    /// is the engine's fact for the turn, or its own words where it stated
+    /// none, and never anybody's paragraph.
+    fn told(&self, scene: &'a Row) -> &'a str {
+        if self.game.player_narrates() {
+            if let Some(fact) = presence(text(scene, "engine_fact")) {
+                return fact;
+            }
+        }
+        string(scene, "description")
+    }
+
     fn what_just_happened(&self) -> Option<&'a Row> {
         let scene = self.game.current_scene()?;
         if self.ending.is_none() {
@@ -663,8 +684,14 @@ impl<'a> Moment<'a> {
         let mut room = RECAP_BUDGET;
         let mut dropped = 0;
         let mut lines = Vec::new();
+        let told_by_the_player = self.game.player_narrates();
         for scene in chain[start..].iter().rev() {
-            let Some(line) = recap_line(scene) else {
+            let line = if told_by_the_player {
+                engine_recap_line(scene)
+            } else {
+                recap_line(scene)
+            };
+            let Some(line) = line else {
                 continue;
             };
             let length = line.chars().count();
