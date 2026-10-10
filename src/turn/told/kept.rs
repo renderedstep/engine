@@ -570,6 +570,20 @@ impl Turn<'_, '_> {
     }
 }
 
+/// The act the game picked in a game the player narrates, and the line that
+/// plays it; none when there was nothing to pick.
+impl Kept for Option<(Intent, String)> {
+    fn encode(&self) -> Value {
+        self.as_ref().map_or(Value::Null, Kept::encode)
+    }
+    fn decode(turn: &Turn, value: &Value) -> Result<Option<(Intent, String)>, Error> {
+        if value.is_null() {
+            return Ok(None);
+        }
+        <(Intent, String)>::decode(turn, value).map(Some)
+    }
+}
+
 impl Kept for (Intent, String) {
     fn encode(&self) -> Value {
         let (intent, resolved_by) = self;

@@ -188,6 +188,13 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
+CREATE TABLE IF NOT EXISTS "playthrough_paragraphs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "audit" json, "author" varchar DEFAULT 'player' NOT NULL, "created_at" datetime(6) NOT NULL, "playthrough_id" integer NOT NULL, "scene_id" integer NOT NULL, "text" text NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_db3983d32c"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_52ef8100a0"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 CREATE TABLE IF NOT EXISTS "playthrough_passages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "location_connection_id" integer NOT NULL, "means" varchar NOT NULL, "opened_at" datetime(6) NOT NULL, "opened_by_item_id" integer, "playthrough_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_7bdf6a743a"
 FOREIGN KEY ("location_connection_id")
   REFERENCES "location_connections" ("id")
@@ -238,7 +245,7 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "playthroughs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "current_location_id" integer, "current_scene_id" integer, "ended_at" datetime(6), "player_id" integer, "story_id" integer NOT NULL, "token" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_9b48509224"
+CREATE TABLE IF NOT EXISTS "playthroughs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "current_location_id" integer, "current_scene_id" integer, "ended_at" datetime(6), "mode" varchar DEFAULT 'narrated' NOT NULL, "player_id" integer, "story_id" integer NOT NULL, "token" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_9b48509224"
 FOREIGN KEY ("current_scene_id")
   REFERENCES "scenes" ("id")
 , CONSTRAINT "fk_rails_3a7e48fa36"
@@ -314,6 +321,7 @@ FOREIGN KEY ("story_id")
 );
 INSERT INTO world_mechanics VALUES(1000000001,'hourly','2026-10-02 13:25:59.924220','The two outer doorways exchange their fixed destinations each hour.','shuffle_connections',NULL,'The hourly rearrangement',1000000001,'2026-10-02 13:25:59.924220');
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20261010120000');
 INSERT INTO schema_migrations VALUES('20260929023507');
 INSERT INTO schema_migrations VALUES('20260928124453');
 INSERT INTO schema_migrations VALUES('20260928102823');
@@ -425,6 +433,7 @@ INSERT INTO sqlite_sequence VALUES('playthrough_endings',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_feedbacks',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_npc_states',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_overreaches',1000000000);
+INSERT INTO sqlite_sequence VALUES('playthrough_paragraphs',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_passages',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_tolls',1000000000);
 INSERT INTO sqlite_sequence VALUES('playthrough_turn_events',1000000000);
@@ -538,6 +547,8 @@ CREATE INDEX "index_playthrough_overreaches_on_location_id" ON "playthrough_over
 CREATE INDEX "idx_on_playthrough_id_story_timestamp_b54cd36315" ON "playthrough_overreaches" ("playthrough_id", "story_timestamp");
 CREATE INDEX "index_playthrough_overreaches_on_playthrough_id" ON "playthrough_overreaches" ("playthrough_id");
 CREATE INDEX "index_playthrough_overreaches_on_scene_id" ON "playthrough_overreaches" ("scene_id");
+CREATE INDEX "index_playthrough_paragraphs_on_playthrough_id" ON "playthrough_paragraphs" ("playthrough_id");
+CREATE UNIQUE INDEX "index_playthrough_paragraphs_on_scene_id_and_author" ON "playthrough_paragraphs" ("scene_id", "author");
 CREATE INDEX "index_playthrough_passages_on_location_connection_id" ON "playthrough_passages" ("location_connection_id");
 CREATE INDEX "index_playthrough_passages_on_opened_by_item_id" ON "playthrough_passages" ("opened_by_item_id");
 CREATE UNIQUE INDEX "idx_on_playthrough_id_location_connection_id_6d3a29d910" ON "playthrough_passages" ("playthrough_id", "location_connection_id");

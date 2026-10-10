@@ -64,6 +64,8 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `store` | the schema `db/schema.rb` describes | the database on a connection of its own: the schema version and the shape of every table it touches checked, every table the loop reads loaded as records, a row inserted or updated |
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: who speaks up unasked, foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
+| `turn::chooser` | none: it was written here | the protagonist's act in a game the player narrates: the glance's targets for move, examine, take, drop and use, weighed by the protagonist's own pursuit, boosted toward the arc's next beat, with a line already played on this visit weighing nothing and a thing the arc asks the player to hold never let go of, and one `Roll::CHOICE` over them |
+| `narrates` | none: it was written here | a game the player narrates: the facts card the player writes from, the scene waiting for their paragraph, and the paragraph kept beside the scene, never read |
 | `glance` | `Playthrough::Glance`, `Playthrough::Availability`, `Playthrough::SlashMenu` | what a front end's panels show between turns: the room, its ways out, who and what is here, which verbs are open at what (each target one the turn plays, each closed verb closed in the refusal's words), the slash menu and the next beat |
 | `facts`, `prompt_version` | `Scene::Narrator#prompt_for`, `Playthrough::Turn`'s `_fact` builders, `Playthrough::PromptVersion::Scaffold` | what a turn hands the narrator as already done, and that scaffold rendered against fixed placeholders for the game's prompt version to digest |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
@@ -120,6 +122,34 @@ returns what a front end's panels show between turns and writes nothing, and
 `Engine::play_deciding` plays a line that talks to somebody with a fixed
 decision standing in for the answer a model would give, which is how the
 engine sweep plays its conversations.
+
+A game is told one of two ways, chosen when it starts and kept on it
+(`playthroughs.mode`, `playthrough::Mode`): `narrated`, where the player
+types each act and the narrator writes what happened, and
+`player_narrates`, where the game picks each act and the player writes the
+paragraph. `Engine::start_in` starts a game in either; `Engine::start` is
+narrated. In a game the player narrates:
+
+- `Engine::act` lets the game act: a submission whose line is
+  `turn::chooser::LINE`, accepted, queued and journalled like any other,
+  where the turn picks the protagonist's act with one die from what the
+  player's panels offer (`turn::chooser`) and keeps the pick as its
+  `chosen` step before it reads it, so a resumed turn plays the same pick.
+  The scene says `resolved_by = "engine"`. A game told the other way is
+  refused with `Error::WrongMode`, having written nothing.
+- No narrator is asked: every scene keeps the engine's own words, which are
+  not a fallback (`engine_fallback` stays false), and a game on a written
+  world asks no model at all. A pick walks into a room nobody has written
+  only when the caller lets it, which writes the room through the models.
+- The scene the turn was answered with waits for the player's paragraph
+  (`Glance::waiting`). `Engine::facts_card` is what the player writes it
+  from, in the engine's player-facing words, and `Engine::write_paragraph`
+  keeps it in `playthrough_paragraphs` with its author, beside the scene and
+  never in it. No rule and no prompt reads it: a later prompt's "What just
+  happened" and "Earlier, in order" are told the engine's fact and summary
+  for each turn instead.
+- `Engine::candidates` lists every act the game could choose now and what
+  the die would weigh it at, and throws nothing.
 
 `Engine::submit_fixed` plays a submitted line with a fixed reading
 (`turn::Fixed`: an action and the name of its target) wherever the

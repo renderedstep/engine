@@ -29,6 +29,7 @@ use crate::refusal::Refusal;
 use crate::room::{Choice, Record};
 use crate::store::Store;
 use crate::text::{is_blank, presence, ruby_strip};
+use crate::turn::chooser;
 use kept::Kept;
 use serde_json::{json, Value};
 
@@ -140,6 +141,9 @@ pub struct Turn<'s, 'm> {
     fixed: Option<Fixed>,
     /// The line being played, as a typed volition request states it.
     line: Option<String>,
+    /// The game, choosing the act in a game the player narrates, may walk
+    /// into a room nobody has written, which writes it through the models.
+    unwritten: bool,
 }
 
 fn model(failure: Failure) -> Error {
@@ -192,7 +196,14 @@ impl<'s, 'm> Turn<'s, 'm> {
             stop_after: None,
             fixed: None,
             line: None,
+            unwritten: false,
         })
+    }
+
+    /// Lets the game, choosing the act in a game the player narrates, walk
+    /// into a room nobody has written yet.
+    pub fn walk_into_unwritten(&mut self, allowed: bool) {
+        self.unwritten = allowed;
     }
 
     /// Reads every line this turn plays as `fixed` says, wherever the
@@ -413,9 +424,32 @@ impl<'s, 'm> Turn<'s, 'm> {
             turn.m.snapshot_room(here.as_ref())
         })?;
 
-        let typed = grammar::unslashed(command);
+        // In a game the player narrates, letting the game act picks the
+        // act here, kept before the turn reads it, so a resumed turn plays
+        // the same pick.
+        let chosen = if command == chooser::LINE && self.m.game().player_narrates() {
+            let picked = self.commit("chosen", |turn| {
+                let sequence = turn.journal.as_ref().map_or(0, |journal| journal.command);
+                Ok(chooser::choose(&turn.m, sequence, turn.unwritten)
+                    .map(|pick| (pick.intent, pick.line)))
+            })?;
+            match picked {
+                Some(pick) => Some(pick),
+                None => {
+                    let refusal = Refusal::new("unplayable", "", chooser::NOTHING_TO_DO, None)
+                        .expect("unplayable is a refusal's kind");
+                    return Ok(Played::Refused(refusal));
+                }
+            }
+        } else {
+            None
+        };
+        let typed = grammar::unslashed(chosen.as_ref().map_or(command, |(_, line)| line));
         self.line = Some(typed.clone());
-        let (intent, resolved_by) = self.remember("intent", |turn| turn.read_line(command))?;
+        let (intent, resolved_by) = self.remember("intent", |turn| match &chosen {
+            Some((intent, _)) => Ok((intent.clone(), chooser::RESOLVED_BY.to_string())),
+            None => turn.read_line(command),
+        })?;
 
         let refusal = self.commit("refusal", |turn| {
             let room = turn.m.room();
@@ -500,6 +534,14 @@ impl<'s, 'm> Turn<'s, 'm> {
                 .and_then(|_| int(turn.m.game().row, "current_scene_id"))
                 .map(Told::plain))
         })?;
+        if self.m.game().player_narrates() {
+            // The player's paragraph tells the whole turn, so what the world
+            // did after the act belongs to the act's scene too.
+            self.commit("told_after", |turn| {
+                turn.claim_tolls(scene.as_ref())?;
+                turn.claim_volitions(scene.as_ref())
+            })?;
+        }
 
         if let (Some(told), Some(agent)) = (&scene, &self.classifier) {
             if classify::MODEL_PATHS.contains(&resolved_by.as_str()) {
@@ -751,7 +793,12 @@ impl<'s, 'm> Turn<'s, 'm> {
     fn read_item(&mut self, item: i64, command: &str) -> Result<Option<Told>, Error> {
         let row = self.m.row("items", item)?;
         if !flag(&row, "readable") {
-            return self.narrate(command, None, None, None, None);
+            let words = self
+                .m
+                .game()
+                .player_narrates()
+                .then(|| format!("You look closely at {}.", definite_name(&row)));
+            return self.narrate(command, None, None, None, words);
         }
         let (words, inscriber) = self.inscribe(item)?;
         let fact = facts::read(&row, &words);
@@ -951,10 +998,16 @@ impl<'s, 'm> Turn<'s, 'm> {
         })?;
         self.m.reactions = reactions;
 
-        let told = match self.arrive(destination) {
-            Ok(told) => told,
-            Err(Error::Model(failure)) => self.arrive_without_prose(destination, Some(failure))?,
-            Err(other) => return Err(other),
+        let told = if self.m.game().player_narrates() {
+            self.arrive_without_prose(destination, None)?
+        } else {
+            match self.arrive(destination) {
+                Ok(told) => told,
+                Err(Error::Model(failure)) => {
+                    self.arrive_without_prose(destination, Some(failure))?
+                }
+                Err(other) => return Err(other),
+            }
         };
         self.commit("moved", |turn| {
             turn.m.stand_the_party_in(destination)?;
@@ -1061,7 +1114,9 @@ impl<'s, 'm> Turn<'s, 'm> {
     }
 
     /// `Scene::Generator#fallback!`: the arrival in the engine's own words,
-    /// and what the people there did as the party came in.
+    /// and what the people there did as the party came in. In a game the
+    /// player narrates these are the arrival's words, not a fallback, and
+    /// the player's paragraph tells the rest.
     fn arrive_without_prose(
         &mut self,
         destination: i64,
@@ -1076,6 +1131,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             .join(" ");
         let safety = failure.as_ref().is_some_and(Failure::crisis);
         let setup = failure == Some(Failure::NoModel);
+        let told_by_the_player = self.m.game().player_narrates();
         self.commit("arrival", |turn| {
             let scene = turn.persist_arrival(
                 destination,
@@ -1084,12 +1140,12 @@ impl<'s, 'm> Turn<'s, 'm> {
                 at,
                 &cast,
                 &facts,
-                true,
+                !told_by_the_player,
             )?;
             Ok(Told {
                 id: scene,
-                tolls: Some(tolls),
-                volitions: Some(turn.m.reactions.clone()),
+                tolls: (!told_by_the_player).then_some(tolls),
+                volitions: (!told_by_the_player).then(|| turn.m.reactions.clone()),
                 safety,
                 setup,
             })
@@ -1161,6 +1217,10 @@ impl<'s, 'm> Turn<'s, 'm> {
             return self.saved("narrated").map(Option::flatten);
         }
         self.speak_up(None)?;
+        if self.m.game().player_narrates() {
+            let words = fallback.unwrap_or_else(|| crate::refusal::UNCHANGED.to_string());
+            return self.tell_in_engine_words(&words, fact.as_deref()).map(Some);
+        }
         let call = narration::call(self.m.game(), command, fact.as_deref(), doing, handled);
         let mut agent = Agent::new(self.filed("narration"));
         let asked = {
@@ -1227,6 +1287,32 @@ impl<'s, 'm> Turn<'s, 'm> {
         Ok(Some(told))
     }
 
+    /// The scene of a line in a game the player narrates: the engine's own
+    /// words for it, and no narrator asked. Nothing failed, so the words are
+    /// not a fallback; the player's paragraph tells the turn, every toll and
+    /// act of it.
+    fn tell_in_engine_words(&mut self, words: &str, fact: Option<&str>) -> Result<Told, Error> {
+        self.commit("narrated", |turn| {
+            let here = turn.m.here().map(|room| id(&room));
+            let at = turn.m.story_now() + ACTION_SECONDS;
+            let mut values = vec![
+                ("location_id", here.map_or(Value::Null, Value::from)),
+                ("description", Value::from(words)),
+                ("engine_fact", fact.map_or(Value::Null, Value::from)),
+                ("engine_fallback", Value::Bool(false)),
+                ("story_timestamp", Value::from(at)),
+            ];
+            values.retain(|(column, value)| !(*column == "location_id" && value.is_null()));
+            let scene = turn.m.write_scene(values, &[])?;
+            turn.m.update(
+                "playthroughs",
+                turn.m.playthrough,
+                vec![("current_scene_id", Value::from(scene))],
+            )?;
+            Ok(Told::plain(scene))
+        })
+    }
+
     /// `Scene::Ending#narrate!`: the last paragraph of the game, written by
     /// the narrator over the closing scene the arc already wrote. Every way
     /// the call can fail, and a paragraph that stops mid-sentence, leaves
@@ -1234,6 +1320,9 @@ impl<'s, 'm> Turn<'s, 'm> {
     fn tell_ending(&mut self, concluded: Concluded) -> Result<Told, Error> {
         if let Some(told) = self.saved::<Told>("ending_scene")? {
             return Ok(told);
+        }
+        if self.m.game().player_narrates() {
+            return Ok(Told::plain(concluded.scene));
         }
         let outcome = self.m.row("quest_outcomes", concluded.outcome)?;
         let call = narration::ending_call(self.m.game(), &outcome);

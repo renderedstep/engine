@@ -19,7 +19,7 @@ built against the commit it pins (`data::files`).
 | `location/generator.yml` | `realization`: the room writer's instructions |
 | `character/desires.yml` | `realization`: the desire block's extra lines for a roomful |
 | `item/inscriber.yml` | `turn`: the instructions the words on a readable thing are written under |
-| `playthrough/volition/weights.yml` | `turn`: how heavily each person's pursuit weighs each act on volition's die |
+| `playthrough/volition/weights.yml` | `turn`: how heavily each person's pursuit weighs each act on volition's die, and, in a game the player narrates, how heavily the protagonist's weighs each act the game may choose for them (`turn::chooser`) |
 | `playthrough/volition/speech.yml` | `turn`: how often each person's pursuit speaks up unasked on the speech die, and what bounds it |
 | `physics.yml` | `room`, `turn`: the bulk and thrown-damage tables a throw reads |
 | `location/kind.yml` | `kind`: what sort of place a room may be, how cluttered, and the sort each room of a building is dealt; `schemas` offers the first two to the exits call and the buildings to the place call |

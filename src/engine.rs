@@ -8,9 +8,12 @@
 //! could not be rescued.
 
 use crate::glance::Glance;
+use crate::narrates::{self, FactsCard};
 use crate::outcome::{Outcome, State};
+use crate::playthrough::{Game, Mode};
 use crate::records::{flag, id, int, text};
 use crate::store::Store;
+use crate::turn::chooser::{self, Candidate};
 use crate::turn::{Mechanics, Report};
 use serde_json::Value;
 use std::panic::{self, AssertUnwindSafe};
@@ -54,6 +57,18 @@ pub enum Error {
     /// there stops: what it committed stands and the submission stays
     /// running, to be finished by the next delivery.
     Stopped(String),
+    /// A call that belongs to a game the player narrates, made of a game
+    /// told another way (`playthroughs.mode`). Nothing was written.
+    WrongMode {
+        playthrough: i64,
+        mode: String,
+    },
+    /// The scene is not one a turn the game chose was answered with in this
+    /// game, so no paragraph is written for it.
+    NotChosen {
+        playthrough: i64,
+        scene: i64,
+    },
 }
 
 impl std::fmt::Display for Error {
@@ -78,6 +93,14 @@ impl std::fmt::Display for Error {
             Error::Interrupted => f.write_str("a previous worker stopped during this turn"),
             Error::PreviouslyFailed => f.write_str("this submission has already failed"),
             Error::Stopped(step) => write!(f, "the turn was stopped after its {step} step"),
+            Error::WrongMode { playthrough, mode } => write!(
+                f,
+                "playthrough {playthrough} is {mode}, and only a game the player narrates lets the game act"
+            ),
+            Error::NotChosen { playthrough, scene } => write!(
+                f,
+                "scene {scene} is not one the game chose in playthrough {playthrough}"
+            ),
         }
     }
 }
@@ -236,6 +259,140 @@ impl Engine {
         result
     }
 
+    /// Lets the game act, in a game the player narrates: a submission whose
+    /// line is [`chooser::LINE`], played like any other, where the turn
+    /// picks the protagonist's act with one die from what the player's
+    /// panels offer ([`chooser`]) and keeps the pick in its journal before
+    /// reading it. The scene is told in the engine's own words, no narrator
+    /// is asked, and it waits for the player's paragraph
+    /// ([`Engine::write_paragraph`]). `unwritten` lets the pick walk into a
+    /// room nobody has written, which writes it through `models`; without it
+    /// a game on a written world asks no model at all.
+    ///
+    /// Refused with [`Error::WrongMode`], having written nothing, in a game
+    /// told any other way.
+    pub fn act(
+        &mut self,
+        playthrough: i64,
+        token: &str,
+        unwritten: bool,
+        models: &mut dyn crate::model::Models,
+        on_chunk: &mut dyn FnMut(&str),
+    ) -> Result<Submitted, Error> {
+        self.act_stopping(playthrough, token, unwritten, models, on_chunk, None)
+    }
+
+    /// [`Engine::act`], stopped right after the journal step `stop_after`
+    /// commits, as a worker killed there stops.
+    pub fn act_stopping(
+        &mut self,
+        playthrough: i64,
+        token: &str,
+        unwritten: bool,
+        models: &mut dyn crate::model::Models,
+        on_chunk: &mut dyn FnMut(&str),
+        stop_after: Option<&str>,
+    ) -> Result<Submitted, Error> {
+        let store = &self.store;
+        let result = guarded(|| {
+            let mode = mode_of(store, playthrough)?;
+            if mode != Mode::PlayerNarrates {
+                return Err(Error::WrongMode {
+                    playthrough,
+                    mode: mode.as_str().to_string(),
+                });
+            }
+            let mut turn = crate::turn::Turn::new(store, playthrough, models, on_chunk)?;
+            turn.stop_after(stop_after);
+            turn.walk_into_unwritten(unwritten);
+            let turned = turn.play(chooser::LINE, token)?;
+            Ok(Submitted {
+                turned,
+                state: State::read(turn.records(), playthrough),
+            })
+        });
+        if matches!(result, Err(Error::Panicked(_))) {
+            store.rollback();
+        }
+        result
+    }
+
+    /// Every act the game could choose now in this game, and what the die
+    /// would weigh each at ([`chooser::candidates`]). Writes nothing and
+    /// throws no die.
+    pub fn candidates(&self, playthrough: i64, unwritten: bool) -> Result<Vec<Candidate>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let mechanics = Mechanics::new(store, playthrough)?;
+            Ok(chooser::candidates(&mechanics, unwritten))
+        })
+    }
+
+    /// What the player writes a chosen turn's paragraph from
+    /// ([`narrates::card`]): none for a scene no turn the game chose was
+    /// answered with. Writes nothing.
+    pub fn facts_card(&self, playthrough: i64, scene: i64) -> Result<Option<FactsCard>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let records = store.load()?;
+            if records.find("playthroughs", playthrough).is_none() {
+                return Err(Error::NoSuchPlaythrough(playthrough));
+            }
+            Ok(narrates::card(&records, playthrough, scene))
+        })
+    }
+
+    /// Keeps the player's paragraph for a scene a turn the game chose was
+    /// answered with, beside the scene and never in it, and returns its row's
+    /// id. A second paragraph for the same scene replaces the first, and
+    /// clears what the game's check found in the first (`audit`). The engine
+    /// reads nothing from it.
+    pub fn write_paragraph(
+        &mut self,
+        playthrough: i64,
+        scene: i64,
+        words: &str,
+    ) -> Result<i64, Error> {
+        let store = &self.store;
+        transaction(store, || {
+            let records = store.load()?;
+            if records.find("playthroughs", playthrough).is_none() {
+                return Err(Error::NoSuchPlaythrough(playthrough));
+            }
+            let game = Game::new(&records, playthrough);
+            if !game.player_narrates() {
+                return Err(Error::WrongMode {
+                    playthrough,
+                    mode: game.mode().as_str().to_string(),
+                });
+            }
+            if !narrates::chosen_scenes(&records, playthrough).contains(&scene) {
+                return Err(Error::NotChosen { playthrough, scene });
+            }
+            match narrates::paragraph(&records, scene).map(id) {
+                Some(kept) => {
+                    store.update(
+                        "playthrough_paragraphs",
+                        kept,
+                        &[("text", Value::from(words)), ("audit", Value::Null)],
+                    )?;
+                    Ok(kept)
+                }
+                None => store
+                    .insert(
+                        "playthrough_paragraphs",
+                        &[
+                            ("playthrough_id", Value::from(playthrough)),
+                            ("scene_id", Value::from(scene)),
+                            ("author", Value::from(narrates::PLAYER)),
+                            ("text", Value::from(words)),
+                        ],
+                    )
+                    .map(|row| id(&row)),
+            }
+        })
+    }
+
     /// Accepts a line into a game's submission queue without playing it,
     /// as a browser does for a line typed while a turn is still running.
     pub fn accept(&mut self, playthrough: i64, line: &str, token: &str) -> Result<(), Error> {
@@ -277,6 +434,11 @@ impl Engine {
     /// scene, with this game's copies of what they carry and of that room.
     /// Returns the new playthrough's id.
     pub fn start(&mut self, story: i64) -> Result<i64, Error> {
+        self.start_in(story, Mode::Narrated)
+    }
+
+    /// [`Engine::start`], told in `mode`, which the game keeps for good.
+    pub fn start_in(&mut self, story: i64, mode: Mode) -> Result<i64, Error> {
         let store = &self.store;
         transaction(store, || {
             let records = store.load()?;
@@ -305,19 +467,20 @@ impl Engine {
                 .filter_map(|row| text(row, "token"))
                 .collect();
             let token = token(&taken);
-            let row = store.insert(
-                "playthroughs",
-                &[
-                    ("story_id", Value::from(story)),
-                    ("character_id", protagonist.map_or(Value::Null, Value::from)),
-                    (
-                        "current_location_id",
-                        opening.map_or(Value::Null, Value::from),
-                    ),
-                    ("current_scene_id", scene.map_or(Value::Null, Value::from)),
-                    ("token", Value::from(token)),
-                ],
-            )?;
+            let mut values = vec![
+                ("story_id", Value::from(story)),
+                ("character_id", protagonist.map_or(Value::Null, Value::from)),
+                (
+                    "current_location_id",
+                    opening.map_or(Value::Null, Value::from),
+                ),
+                ("current_scene_id", scene.map_or(Value::Null, Value::from)),
+                ("token", Value::from(token)),
+            ];
+            if mode != Mode::Narrated {
+                values.push(("mode", Value::from(mode.as_str())));
+            }
+            let row = store.insert("playthroughs", &values)?;
             let playthrough = id(&row);
             let mut mechanics = Mechanics::new(store, playthrough)?;
             mechanics.snapshot_party()?;
@@ -340,6 +503,19 @@ impl Engine {
                 .map_err(|_| Error::NoSuchStory(title.to_string()))
         })
     }
+}
+
+/// How a game is told, off its row.
+fn mode_of(store: &Store, playthrough: i64) -> Result<Mode, Error> {
+    let mode: String = store
+        .connection()
+        .query_row(
+            "SELECT mode FROM playthroughs WHERE id = ?1",
+            [playthrough],
+            |row| row.get(0),
+        )
+        .map_err(|_| Error::NoSuchPlaythrough(playthrough))?;
+    Ok(Mode::parse(&mode).unwrap_or_default())
 }
 
 /// Runs `body` in one transaction, committed only if it succeeds.

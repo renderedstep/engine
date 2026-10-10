@@ -29,6 +29,7 @@ use crate::volition::{Asked, Judgment};
 use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_mechanic};
 use serde_json::Value;
 
+pub mod chooser;
 mod told;
 pub use told::{Fixed, Turn, Turned};
 
@@ -4058,7 +4059,13 @@ fn weight_of(row: &[(String, i64)], shape: &str) -> i64 {
 }
 
 /// `Playthrough::Blow#to_s`.
-fn blow_to_s(attacker: &str, target: &Row, damage: i64, hp_after: i64, round: i64) -> String {
+pub(crate) fn blow_to_s(
+    attacker: &str,
+    target: &Row,
+    damage: i64,
+    hp_after: i64,
+    round: i64,
+) -> String {
     let condition = Condition {
         hp: hp_after,
         max: max_hp(target).unwrap_or_default(),

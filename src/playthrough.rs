@@ -82,6 +82,35 @@ impl Condition {
     }
 }
 
+/// How a game is told (`playthroughs.mode`), chosen when it starts and kept
+/// on it.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum Mode {
+    /// The player types each act, and the narrator writes what happened.
+    #[default]
+    Narrated,
+    /// The game picks each act, the engine tells it in its own words, and
+    /// the player writes the paragraph. No narrator is asked.
+    PlayerNarrates,
+}
+
+impl Mode {
+    pub const ALL: [Mode; 2] = [Mode::Narrated, Mode::PlayerNarrates];
+
+    /// The column's value.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Mode::Narrated => "narrated",
+            Mode::PlayerNarrates => "player_narrates",
+        }
+    }
+
+    /// The mode a column value names; none for one this engine does not know.
+    pub fn parse(value: &str) -> Option<Mode> {
+        Mode::ALL.into_iter().find(|mode| mode.as_str() == value)
+    }
+}
+
 /// One playthrough and every row it can read.
 #[derive(Clone, Copy)]
 pub struct Game<'a> {
@@ -121,6 +150,19 @@ impl<'a> Game<'a> {
         self.records
             .find("locations", id)
             .unwrap_or_else(|| panic!("no location {id}"))
+    }
+
+    /// How this game is told. A value this engine does not know is told as
+    /// narrated, as every game was before the column.
+    pub fn mode(&self) -> Mode {
+        text(self.row, "mode")
+            .and_then(Mode::parse)
+            .unwrap_or_default()
+    }
+
+    /// The game picks the acts and the player writes the paragraphs.
+    pub fn player_narrates(&self) -> bool {
+        self.mode() == Mode::PlayerNarrates
     }
 
     /// The player (`playthrough.character`).
