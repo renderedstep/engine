@@ -22,6 +22,7 @@ use crate::grammar::{self, Grammar};
 use crate::intent::Intent;
 use crate::model::{Agent, Book, Call, Failure, Filed, Models};
 use crate::moment::{Direction, Handled};
+use crate::narrates::{self, WouldAsk};
 use crate::narration;
 use crate::noticed;
 use crate::playthrough::Game;
@@ -43,6 +44,12 @@ mod typed;
 
 /// `Scene::Ending::PURPOSE`.
 const ENDING: &str = "ending";
+
+/// The narrator's pass (`Playthrough::PromptVersion::NARRATION`).
+const NARRATION: &str = crate::prompt_version::NARRATION;
+
+/// `Scene::Generator`'s pass.
+const ARRIVAL: &str = "arrival";
 
 /// `Scene::NARRATED_ENDING`: the label a closing scene carries once the
 /// narrator's words have replaced the engine's.
@@ -1037,6 +1044,10 @@ impl<'s, 'm> Turn<'s, 'm> {
         }
 
         let told = if self.m.game().player_narrates() {
+            self.commit(narrates::WOULD_ASK, |turn| {
+                let (request, ..) = turn.arrival(destination)?;
+                Ok(WouldAsk::new(ARRIVAL, &Call::from_request(&request)))
+            })?;
             self.arrive_without_prose(destination, None)?
         } else {
             match self.arrive(destination) {
@@ -1114,7 +1125,7 @@ impl<'s, 'm> Turn<'s, 'm> {
                 .map(|told| told.expect("a saved step"));
         }
         let (request, at, cast, facts, tolls, _) = self.arrival(destination)?;
-        let mut agent = Agent::new(self.filed("arrival"));
+        let mut agent = Agent::new(self.filed(ARRIVAL));
         let call = Call::from_request(&request);
         let mut book = Book {
             store: self.m.store,
@@ -1256,11 +1267,17 @@ impl<'s, 'm> Turn<'s, 'm> {
         }
         self.speak_up(None)?;
         if self.m.game().player_narrates() {
+            // What the narrator would have been sent here, built and never
+            // sent: the player's paragraph is written against it.
+            self.commit(narrates::WOULD_ASK, |turn| {
+                let call = narration::call(turn.m.game(), command, fact.as_deref(), doing, handled);
+                Ok(WouldAsk::new(NARRATION, &call))
+            })?;
             let words = fallback.unwrap_or_else(|| crate::refusal::UNCHANGED.to_string());
             return self.tell_in_engine_words(&words, fact.as_deref()).map(Some);
         }
         let call = narration::call(self.m.game(), command, fact.as_deref(), doing, handled);
-        let mut agent = Agent::new(self.filed("narration"));
+        let mut agent = Agent::new(self.filed(NARRATION));
         let asked = {
             let on_chunk = &mut *self.on_chunk;
             let mut book = Book {
@@ -1375,10 +1392,14 @@ impl<'s, 'm> Turn<'s, 'm> {
         if let Some(told) = self.saved::<Told>("ending_scene")? {
             return Ok(told);
         }
+        let outcome = self.m.row("quest_outcomes", concluded.outcome)?;
         if self.m.game().player_narrates() {
+            self.commit(narrates::WOULD_END, |turn| {
+                let call = narration::ending_call(turn.m.game(), &outcome);
+                Ok(WouldAsk::new(ENDING, &call))
+            })?;
             return Ok(Told::plain(concluded.scene));
         }
-        let outcome = self.m.row("quest_outcomes", concluded.outcome)?;
         let call = narration::ending_call(self.m.game(), &outcome);
         let mut agent = Agent::new(self.filed(ENDING));
         let asked = {

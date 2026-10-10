@@ -12,14 +12,17 @@
 //! plain sight, a turn in the room one more), that the card names what the
 //! turn noticed, and that the doctor finds nothing out of line.
 
+use renderedstep_engine::data;
 use renderedstep_engine::engine::{Engine, Error, Submitted};
 use renderedstep_engine::glance::Glance;
 use renderedstep_engine::grammar::unslashed;
 use renderedstep_engine::model::Replay;
+use renderedstep_engine::narrates::{Consent, WouldAsk, WOULD_ASK};
 use renderedstep_engine::narration;
 use renderedstep_engine::noticed;
 use renderedstep_engine::parity::{open_world, TITLE_SUFFIX};
 use renderedstep_engine::playthrough::{Game, Mode};
+use renderedstep_engine::prompt_version;
 use renderedstep_engine::records::{int, text, Records, Row};
 use renderedstep_engine::turn::chooser::{self, Candidate};
 use serde_json::Value;
@@ -349,6 +352,15 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
         let words = format!("PLAYER-WRITTEN PARAGRAPH {turn}.");
         engine.write_paragraph(playthrough, scene, &words).unwrap();
         assert_eq!(engine.glance(playthrough).unwrap().waiting, None);
+        captured_beside_the_paragraph(
+            world,
+            &engine,
+            playthrough,
+            scene,
+            &typed,
+            pick.verb == "move",
+            matches!(text(&row, "resolved_action"), Some("conclude" | "ending")),
+        );
         assert!(
             !text(&scene_row(&engine, scene), "description")
                 .unwrap_or_default()
@@ -379,6 +391,77 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
     }
     let over = engine.glance(playthrough).unwrap().over;
     Walked { picks, over }
+}
+
+/// The paragraph's row carries every request a narrator would have been
+/// sent for the turn, built and never sent, and the prompt digest of the
+/// act's: the arrival writer's on a walk into a room, the narrator's told the
+/// engine's act as the line typed otherwise, and the ending's after it where
+/// the turn closed the story.
+fn captured_beside_the_paragraph(
+    world: &str,
+    engine: &Engine,
+    playthrough: i64,
+    scene: i64,
+    typed: &str,
+    moved: bool,
+    ended: bool,
+) {
+    let (requests, digest, consent): (Option<String>, Option<String>, String) = engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT requests, prompt_digest, consent FROM playthrough_paragraphs WHERE scene_id = ?1",
+            [scene],
+            |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
+        )
+        .unwrap();
+    assert_eq!(
+        consent, "none",
+        "{world}: a paragraph is kept for the game alone"
+    );
+    let requests: Value = serde_json::from_str(
+        &requests.unwrap_or_else(|| panic!("{world}: the paragraph carries no request")),
+    )
+    .unwrap();
+    let requests = requests.as_array().unwrap();
+    let digest = digest.unwrap_or_else(|| panic!("{world}: the paragraph carries no digest"));
+    let would = engine.would_ask(playthrough, scene).unwrap();
+    assert_eq!(
+        requests,
+        &would.iter().map(WouldAsk::to_json).collect::<Vec<_>>()
+    );
+    let purposes: Vec<&str> = would.iter().map(|asked| asked.purpose.as_str()).collect();
+    let act = if moved { "arrival" } else { "narration" };
+    let expected: &[&str] = if ended { &[act, "ending"] } else { &[act] };
+    assert_eq!(purposes, expected, "{world}: {typed:?}");
+    assert_eq!(Some(digest.clone()), would[0].prompt_digest());
+    let system = would[0].request["system"].as_str().unwrap();
+    let user = would[0].request["user"].as_str().unwrap();
+    if moved {
+        assert_eq!(Some(digest), prompt_version::of(system));
+        assert!(would[0].request["schema"].is_object());
+    } else {
+        assert_eq!(system, data::narrator_instructions());
+        assert_eq!(
+            Some(digest),
+            prompt_version::digest(prompt_version::NARRATION, Some(system))
+        );
+        assert!(
+            user.contains(&format!("The player types: {typed}")),
+            "{world}: the request is not told the engine's act:\n{user}"
+        );
+    }
+    assert!(
+        !user.contains("PLAYER-WRITTEN"),
+        "{world}: a request read the paragraph"
+    );
+    if ended {
+        assert_eq!(
+            would[1].request["system"].as_str(),
+            Some(data::ending_instructions())
+        );
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -684,6 +767,80 @@ fn a_paragraph_is_written_only_for_a_scene_the_game_chose() {
         )
         .unwrap();
     assert_eq!((author.as_str(), words.as_str()), ("player", "Second."));
+}
+
+#[test]
+fn a_paragraph_keeps_what_the_player_let_it_be_used_for() {
+    let (mut engine, playthrough) =
+        open("the-salt-assizes", "The Salt Assizes", Mode::PlayerNarrates);
+    let mut replay = Replay::new(Vec::new());
+    let scene = engine
+        .act(playthrough, "act", false, &mut replay, &mut |_| {})
+        .unwrap()
+        .turned
+        .scene
+        .unwrap();
+    let consent = |engine: &Engine| -> String {
+        engine
+            .store()
+            .connection()
+            .query_row(
+                "SELECT consent FROM playthrough_paragraphs WHERE scene_id = ?1",
+                [scene],
+                |row| row.get(0),
+            )
+            .unwrap()
+    };
+    engine
+        .write_paragraph_with_consent(playthrough, scene, "Mine.", Consent::Owner)
+        .unwrap();
+    assert_eq!(consent(&engine), "owner");
+    engine
+        .write_paragraph(playthrough, scene, "Mine, again.")
+        .unwrap();
+    assert_eq!(consent(&engine), "owner", "a rewrite keeps what was let");
+    engine
+        .write_paragraph_with_consent(playthrough, scene, "Mine.", Consent::None)
+        .unwrap();
+    assert_eq!(consent(&engine), "none");
+    assert_eq!(Consent::parse("owner"), Some(Consent::Owner));
+    assert_eq!(Consent::parse("everyone"), None);
+}
+
+#[test]
+fn a_resumed_turn_keeps_the_request_the_uninterrupted_turn_built() {
+    let (mut straight, a) = open("the-salt-assizes", "The Salt Assizes", Mode::PlayerNarrates);
+    let (mut stopped, b) = open("the-salt-assizes", "The Salt Assizes", Mode::PlayerNarrates);
+    for turn in 0..4 {
+        let token = format!("act-{turn}");
+        let mut replay = Replay::new(Vec::new());
+        let played = straight
+            .act(a, &token, false, &mut replay, &mut |_| {})
+            .unwrap();
+        let mut replay = Replay::new(Vec::new());
+        match stopped.act_stopping(b, &token, false, &mut replay, &mut |_| {}, Some(WOULD_ASK)) {
+            Err(Error::Stopped(step)) => assert_eq!(step, WOULD_ASK),
+            other => panic!("expected the turn to stop after {WOULD_ASK}, got {other:?}"),
+        }
+        let mut replay = Replay::new(Vec::new());
+        let resumed = stopped
+            .act(b, &token, false, &mut replay, &mut |_| {})
+            .unwrap();
+        assert!(replay.sent().is_empty());
+        let would = |engine: &Engine, game: i64, scene: Option<i64>| {
+            engine.would_ask(game, scene.unwrap()).unwrap()
+        };
+        let kept = would(&straight, a, played.turned.scene);
+        assert!(!kept.is_empty(), "turn {turn} built no request");
+        assert_eq!(
+            kept,
+            would(&stopped, b, resumed.turned.scene),
+            "turn {turn}"
+        );
+        if played.state.dead || straight.glance(a).unwrap().over {
+            break;
+        }
+    }
 }
 
 #[test]

@@ -65,7 +65,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `turn` | `Playthrough::Mechanics` with `model: false`, the `Playthrough::Turn` writers it calls, `PhysicalAction`, `NpcAction`, `Riposte`, `Volition`, `Hazards`, `Arc`, `Fight` | one typed line read, refused or played, and the world's answer: who speaks up unasked, foes, volition's die, hazards, the arc and its ending, and the scene that closes a fight |
 | `outcome` | `Playthrough::Mechanics::State` | what a turn left behind, read off the records |
 | `turn::chooser` | none: it was written here | the protagonist's act in a game the player narrates: the glance's targets for move, examine (a look around the room among them, in a game that notices), take, drop and use, weighed by the protagonist's own pursuit, boosted toward the arc's next beat, with a line already played on this visit weighing nothing and a thing the arc asks the player to hold never let go of, and one `Roll::CHOICE` over them |
-| `narrates` | none: it was written here | a game the player narrates: the facts card the player writes from, the scene waiting for their paragraph, and the paragraph kept beside the scene, never read |
+| `narrates` | none: it was written here | a game the player narrates: the facts card the player writes from, the scene waiting for their paragraph, the request a narrator would have been sent for the turn, built and never sent, and the paragraph kept beside the scene with that request, never read |
 | `noticed` | none: it was written here | what a game the player narrates has noticed of a room (`noticed_at` on its copy of each thing and its state for a person), the tiers that notice it (`turn::notice`), the refusal of a line naming a thing not noticed, and the doctor's findings |
 | `glance` | `Playthrough::Glance`, `Playthrough::Availability`, `Playthrough::SlashMenu` | what a front end's panels show between turns: the room, its ways out, who and what is here, which verbs are open at what (each target one the turn plays, each closed verb closed in the refusal's words), the slash menu and the next beat |
 | `facts`, `prompt_version` | `Scene::Narrator#prompt_for`, `Playthrough::Turn`'s `_fact` builders, `Playthrough::PromptVersion::Scaffold` | what a turn hands the narrator as already done, and that scaffold rendered against fixed placeholders for the game's prompt version to digest |
@@ -149,6 +149,17 @@ narrated. In a game the player narrates:
   never in it. No rule and no prompt reads it: a later prompt's "What just
   happened" and "Earlier, in order" are told the engine's fact and summary
   for each turn instead.
+- The turn builds the request a narrator would have been sent for it, at
+  the point a narrated game sends it, and sends nothing: the narrator's,
+  told the engine's act as the line typed, or the arrival writer's on a walk
+  into a room, then the ending's where the turn closed the story. It keeps
+  them in its journal (`narrates::WOULD_ASK`, `narrates::WOULD_END`), and
+  the paragraph's row carries them (`requests`) with the act's prompt digest
+  as the game's `Playthrough::PromptVersion` takes it (`prompt_digest`,
+  `prompt_version::digest`). `Engine::would_ask` reads them for a scene.
+  The row also says what the player let the paragraph be used for
+  (`consent`, `narrates::Consent`): `none` unless the caller says otherwise
+  with `Engine::write_paragraph_with_consent`, and a rewrite keeps it.
 - `Engine::candidates` lists every act the game could choose now and what
   the die would weigh it at, and throws nothing.
 - The room is revealed in tiers (`noticed`), each stamping `noticed_at` on
