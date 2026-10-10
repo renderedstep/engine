@@ -54,7 +54,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -105,7 +106,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -129,7 +131,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -174,7 +177,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -225,7 +229,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -249,7 +254,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -294,7 +300,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -345,7 +352,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -369,7 +377,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -414,7 +423,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -465,7 +475,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -489,7 +500,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -534,7 +546,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -585,7 +598,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -609,7 +623,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -654,7 +669,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -731,7 +747,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -755,7 +772,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -823,7 +841,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -832,7 +851,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -909,7 +929,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -933,7 +954,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1001,7 +1023,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -1010,7 +1033,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1099,7 +1123,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -1123,7 +1148,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1191,7 +1217,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -1200,7 +1227,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1289,7 +1317,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -1313,7 +1342,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1381,7 +1411,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -1390,7 +1421,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1479,7 +1511,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -1503,7 +1536,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1571,7 +1605,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -1580,7 +1615,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1669,7 +1705,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -1693,7 +1730,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1761,7 +1799,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -1770,7 +1809,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1859,7 +1899,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -1883,7 +1924,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -1951,7 +1993,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -1960,7 +2003,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2049,7 +2093,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -2073,7 +2118,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2141,7 +2187,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -2150,7 +2197,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2239,7 +2287,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -2263,7 +2312,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2331,7 +2381,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -2340,7 +2391,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2429,7 +2481,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -2453,7 +2506,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2521,7 +2575,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -2530,7 +2585,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2619,7 +2675,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -2643,7 +2700,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2711,7 +2769,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -2720,7 +2779,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2809,7 +2869,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -2833,7 +2894,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2901,7 +2963,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -2910,7 +2973,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -2999,7 +3063,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -3023,7 +3088,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3091,7 +3157,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -3100,7 +3167,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3189,7 +3257,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -3213,7 +3282,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3281,7 +3351,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -3290,7 +3361,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3379,7 +3451,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -3403,7 +3476,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3471,7 +3545,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -3480,7 +3555,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3569,7 +3645,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -3593,7 +3670,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3661,7 +3739,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -3670,7 +3749,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3759,7 +3839,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -3783,7 +3864,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3851,7 +3933,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -3860,7 +3943,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -3956,7 +4040,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -3980,7 +4065,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -4069,7 +4155,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -4078,7 +4165,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -4241,7 +4329,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -4265,7 +4354,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -4375,7 +4465,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -4384,7 +4475,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -4473,7 +4565,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -4497,7 +4590,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -4607,7 +4701,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -4616,7 +4711,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -4736,7 +4832,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             },
             {
               "id": 1000000004,
@@ -4760,7 +4857,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -4891,7 +4989,8 @@
               "following": 0,
               "location_id": 1000000002,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             },
             {
               "id": 1000000002,
@@ -4900,7 +4999,8 @@
               "following": 0,
               "location_id": 1000000007,
               "peace_after_blow_id": 0,
-              "playthrough_id": 1000000001
+              "playthrough_id": 1000000001,
+              "noticed_at": null
             }
           ],
           "removed": []

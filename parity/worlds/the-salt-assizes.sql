@@ -50,7 +50,7 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, CONSTRAINT "fk_rails_e8ed83a2e6"
+CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), CONSTRAINT "fk_rails_e8ed83a2e6"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_35423c7ef8"
@@ -60,9 +60,9 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'light',NULL,0,'2026-10-02 13:25:46.926810','The court''s bell: bronze, the size of two cupped hands, on a yew handle worn pale where nineteen years of your grip have been. It hangs on its hook at your shoulder, and the court rises and sits on it and on nothing else. Nobody but the Bell-Keeper takes it down.','intact',NULL,1000000001,'Assize hand-bell',NULL,'{"rung": false}',0,NULL,'2026-10-02 13:25:46.926810','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000002,'heavy',1000000001,0,'2026-10-02 13:25:47.070863','A ruled board of black slate, three hands wide, on which the day''s high water is chalked. Nobody but the Bell-Keeper may erase it. Today''s figure is in a hand that has her slant and none of her pressure.','intact','HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway.',NULL,'Assize tide-slate',NULL,'{"ruled": true, "erasable_by": "bell-keeper", "chalk": "altered"}',1,NULL,'2026-10-02 13:25:47.070863','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000003,'light',1000000003,0,'2026-10-02 13:25:47.105480','A length of tarred line knotted along its whole length, wound round Neb''s free fist: one knot for every wave that has reached the stain band since the ebb, the way the Shorefolk have counted water for two hundred years without writing any of it down. Read against the band, it is the tide''s own figure for this morning, and it is not the one on the slate.','intact',NULL,NULL,'Neb''s knotted cord',NULL,'{"knots": 41, "written": false}',0,NULL,'2026-10-02 13:25:47.105480','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000001,'light',NULL,0,'2026-10-02 13:25:46.926810','The court''s bell: bronze, the size of two cupped hands, on a yew handle worn pale where nineteen years of your grip have been. It hangs on its hook at your shoulder, and the court rises and sits on it and on nothing else. Nobody but the Bell-Keeper takes it down.','intact',NULL,1000000001,'Assize hand-bell',NULL,'{"rung": false}',0,NULL,'2026-10-02 13:25:46.926810','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000002,'heavy',1000000001,0,'2026-10-02 13:25:47.070863','A ruled board of black slate, three hands wide, on which the day''s high water is chalked. Nobody but the Bell-Keeper may erase it. Today''s figure is in a hand that has her slant and none of her pressure.','intact','HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway.',NULL,'Assize tide-slate',NULL,'{"ruled": true, "erasable_by": "bell-keeper", "chalk": "altered"}',1,NULL,'2026-10-02 13:25:47.070863','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000003,'light',1000000003,0,'2026-10-02 13:25:47.105480','A length of tarred line knotted along its whole length, wound round Neb''s free fist: one knot for every wave that has reached the stain band since the ebb, the way the Shorefolk have counted water for two hundred years without writing any of it down. Read against the band, it is the tide''s own figure for this morning, and it is not the one on the slate.','intact',NULL,NULL,'Neb''s knotted cord',NULL,'{"knots": 41, "written": false}',0,NULL,'2026-10-02 13:25:47.105480','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -170,7 +170,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "playthrough_npc_states" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "ceasefire" boolean DEFAULT FALSE NOT NULL, "character_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "following" boolean DEFAULT FALSE NOT NULL, "location_id" integer, "peace_after_blow_id" integer DEFAULT 0 NOT NULL, "playthrough_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ef100d7841"
+CREATE TABLE IF NOT EXISTS "playthrough_npc_states" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "ceasefire" boolean DEFAULT FALSE NOT NULL, "character_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "following" boolean DEFAULT FALSE NOT NULL, "location_id" integer, "peace_after_blow_id" integer DEFAULT 0 NOT NULL, "playthrough_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, "noticed_at" datetime(6), CONSTRAINT "fk_rails_ef100d7841"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_71a135780d"
@@ -331,6 +331,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20261010180000');
 INSERT INTO schema_migrations VALUES('20261010120000');
 INSERT INTO schema_migrations VALUES('20260929023507');
 INSERT INTO schema_migrations VALUES('20260928124453');

@@ -47,7 +47,7 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, CONSTRAINT "fk_rails_e8ed83a2e6"
+CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), CONSTRAINT "fk_rails_e8ed83a2e6"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_35423c7ef8"
@@ -57,18 +57,18 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'immovable',NULL,0,'2026-10-02 13:25:45.105573','A clerk''s desk with two shut drawers.','intact',NULL,1000000001,'desk',NULL,'{}',0,NULL,'2026-10-02 13:25:45.105573','ordinary',NULL,NULL,'sturdy','fixture','closed',NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000002,'immovable',NULL,0,'2026-10-02 13:25:45.126185','A deep sill over the yard.','intact',NULL,1000000001,'windowsill',NULL,'{}',0,NULL,'2026-10-02 13:25:45.126185','ordinary',NULL,NULL,'sturdy','fixture','top',NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000003,'immovable',NULL,0,'2026-10-02 13:25:45.131617','A black iron scuttle by the grate.','intact',NULL,1000000001,'coal scuttle',NULL,'{}',0,NULL,'2026-10-02 13:25:45.131617','ordinary',NULL,NULL,'sturdy','fixture','hollow',NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000004,'handy',NULL,0,'2026-10-02 13:25:45.166752','A brass stamp on a wooden handle.','intact',NULL,1000000001,'ward stamp',NULL,'{}',0,NULL,'2026-10-02 13:25:45.166752','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000001,'on',NULL);
-INSERT INTO items VALUES(1000000005,'handy',NULL,0,'2026-10-02 13:25:45.177606','A fern in a cracked pot.','intact',NULL,1000000001,'potted fern',NULL,'{}',0,NULL,'2026-10-02 13:25:45.177606','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000002,'on',NULL);
-INSERT INTO items VALUES(1000000006,'handy',NULL,1,'2026-10-02 13:25:45.185183','A fist-sized lump of coal.','intact',NULL,1000000001,'lump of coal',NULL,'{}',0,NULL,'2026-10-02 13:25:45.185183','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000003,'in',NULL);
-INSERT INTO items VALUES(1000000007,'immovable',NULL,0,'2026-10-02 13:25:45.200815','A beech older than the office.','intact',NULL,1000000002,'old beech',NULL,'{}',0,NULL,'2026-10-02 13:25:45.200815','ordinary',NULL,NULL,'sturdy','fixture','nothing',NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000008,'immovable',NULL,0,'2026-10-02 13:25:45.206796','A mossy log across the clearing.','intact',NULL,1000000002,'fallen log',NULL,'{}',0,NULL,'2026-10-02 13:25:45.206796','ordinary',NULL,NULL,'sturdy','fixture','top',NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000009,'handy',NULL,0,'2026-10-02 13:25:45.229052','A dry pine cone.','intact',NULL,1000000002,'pine cone',NULL,'{}',0,NULL,'2026-10-02 13:25:45.229052','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000008,'on',NULL);
-INSERT INTO items VALUES(1000000010,'immovable',NULL,0,'2026-10-02 13:25:45.237996','A trestle counter under a striped awning.','intact',NULL,1000000003,'market stall',NULL,'{}',0,NULL,'2026-10-02 13:25:45.237996','ordinary',NULL,NULL,'sturdy','fixture','top',NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000011,'immovable',NULL,0,'2026-10-02 13:25:45.240832','A lidded crate under the counter.','intact',NULL,1000000003,'crate',NULL,'{}',0,NULL,'2026-10-02 13:25:45.240832','ordinary',NULL,NULL,'sturdy','fixture','closed',NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000012,'handy',NULL,0,'2026-10-02 13:25:45.248549','A red apple.','intact',NULL,1000000003,'apple',NULL,'{}',0,NULL,'2026-10-02 13:25:45.248549','food',NULL,NULL,'sturdy','portable',NULL,1000000010,'on',NULL);
+INSERT INTO items VALUES(1000000001,'immovable',NULL,0,'2026-10-02 13:25:45.105573','A clerk''s desk with two shut drawers.','intact',NULL,1000000001,'desk',NULL,'{}',0,NULL,'2026-10-02 13:25:45.105573','ordinary',NULL,NULL,'sturdy','fixture','closed',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000002,'immovable',NULL,0,'2026-10-02 13:25:45.126185','A deep sill over the yard.','intact',NULL,1000000001,'windowsill',NULL,'{}',0,NULL,'2026-10-02 13:25:45.126185','ordinary',NULL,NULL,'sturdy','fixture','top',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000003,'immovable',NULL,0,'2026-10-02 13:25:45.131617','A black iron scuttle by the grate.','intact',NULL,1000000001,'coal scuttle',NULL,'{}',0,NULL,'2026-10-02 13:25:45.131617','ordinary',NULL,NULL,'sturdy','fixture','hollow',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000004,'handy',NULL,0,'2026-10-02 13:25:45.166752','A brass stamp on a wooden handle.','intact',NULL,1000000001,'ward stamp',NULL,'{}',0,NULL,'2026-10-02 13:25:45.166752','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000001,'on',NULL,NULL);
+INSERT INTO items VALUES(1000000005,'handy',NULL,0,'2026-10-02 13:25:45.177606','A fern in a cracked pot.','intact',NULL,1000000001,'potted fern',NULL,'{}',0,NULL,'2026-10-02 13:25:45.177606','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000002,'on',NULL,NULL);
+INSERT INTO items VALUES(1000000006,'handy',NULL,1,'2026-10-02 13:25:45.185183','A fist-sized lump of coal.','intact',NULL,1000000001,'lump of coal',NULL,'{}',0,NULL,'2026-10-02 13:25:45.185183','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000003,'in',NULL,NULL);
+INSERT INTO items VALUES(1000000007,'immovable',NULL,0,'2026-10-02 13:25:45.200815','A beech older than the office.','intact',NULL,1000000002,'old beech',NULL,'{}',0,NULL,'2026-10-02 13:25:45.200815','ordinary',NULL,NULL,'sturdy','fixture','nothing',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000008,'immovable',NULL,0,'2026-10-02 13:25:45.206796','A mossy log across the clearing.','intact',NULL,1000000002,'fallen log',NULL,'{}',0,NULL,'2026-10-02 13:25:45.206796','ordinary',NULL,NULL,'sturdy','fixture','top',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000009,'handy',NULL,0,'2026-10-02 13:25:45.229052','A dry pine cone.','intact',NULL,1000000002,'pine cone',NULL,'{}',0,NULL,'2026-10-02 13:25:45.229052','ordinary',NULL,NULL,'sturdy','portable',NULL,1000000008,'on',NULL,NULL);
+INSERT INTO items VALUES(1000000010,'immovable',NULL,0,'2026-10-02 13:25:45.237996','A trestle counter under a striped awning.','intact',NULL,1000000003,'market stall',NULL,'{}',0,NULL,'2026-10-02 13:25:45.237996','ordinary',NULL,NULL,'sturdy','fixture','top',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000011,'immovable',NULL,0,'2026-10-02 13:25:45.240832','A lidded crate under the counter.','intact',NULL,1000000003,'crate',NULL,'{}',0,NULL,'2026-10-02 13:25:45.240832','ordinary',NULL,NULL,'sturdy','fixture','closed',NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000012,'handy',NULL,0,'2026-10-02 13:25:45.248549','A red apple.','intact',NULL,1000000003,'apple',NULL,'{}',0,NULL,'2026-10-02 13:25:45.248549','food',NULL,NULL,'sturdy','portable',NULL,1000000010,'on',NULL,NULL);
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -179,7 +179,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "playthrough_npc_states" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "ceasefire" boolean DEFAULT FALSE NOT NULL, "character_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "following" boolean DEFAULT FALSE NOT NULL, "location_id" integer, "peace_after_blow_id" integer DEFAULT 0 NOT NULL, "playthrough_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ef100d7841"
+CREATE TABLE IF NOT EXISTS "playthrough_npc_states" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "ceasefire" boolean DEFAULT FALSE NOT NULL, "character_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "following" boolean DEFAULT FALSE NOT NULL, "location_id" integer, "peace_after_blow_id" integer DEFAULT 0 NOT NULL, "playthrough_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, "noticed_at" datetime(6), CONSTRAINT "fk_rails_ef100d7841"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_71a135780d"
@@ -331,6 +331,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20261010180000');
 INSERT INTO schema_migrations VALUES('20261010120000');
 INSERT INTO schema_migrations VALUES('20260929023507');
 INSERT INTO schema_migrations VALUES('20260928124453');

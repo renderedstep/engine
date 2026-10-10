@@ -30,6 +30,7 @@ use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_m
 use serde_json::Value;
 
 pub mod chooser;
+mod notice;
 mod told;
 pub use told::{Fixed, Turn, Turned};
 
@@ -416,7 +417,19 @@ impl<'s> Mechanics<'s> {
             .max()
             .unwrap_or(0);
 
-        let report = if let Some(refusal) = &reading.refusal {
+        let narrates = self.game().player_narrates();
+        let unnoticed = crate::noticed::refusal_for_line(&self.records, self.playthrough, command);
+        let report = if let Some(refusal) = unnoticed {
+            self.engine_refused = true;
+            Report::refuse(refusal.text(), None)
+        } else if narrates && crate::noticed::is_look_line(command) {
+            let seen = self.notice_on_look()?;
+            let words = crate::noticed::look_words(
+                from.as_ref().map_or("", |room| string(room, "name")),
+                &crate::noticed::names(&self.records, &seen),
+            );
+            Report::change(words, None)
+        } else if let Some(refusal) = &reading.refusal {
             Report {
                 note: note_of(&reading),
                 ..Report::refuse(refusal.clone(), reading.understood.clone())
@@ -432,6 +445,11 @@ impl<'s> Mechanics<'s> {
         };
 
         let report = self.answered_by_the_world(report, &reading, from.as_ref())?;
+        let stayed = self.here().map(|room| id(&room)) == from.as_ref().map(id);
+        let looked = narrates && crate::noticed::is_look_line(command);
+        if narrates && stayed && !looked && report.change.is_some() && !self.over() {
+            self.notice_in_time(self.round)?;
+        }
         Ok(Report {
             resolved_by: reading.resolved_by.clone(),
             ..report
@@ -572,6 +590,7 @@ impl<'s> Mechanics<'s> {
         self.snapshot_room(Some(&room))?;
         self.on_arrival(&room, from.as_ref())?;
         let reacted = self.reactions(&room, None)?;
+        self.notice_on_arrival(&room)?;
         self.stand_the_party_in(destination)?;
         let stub = text(&room, "detail_level") == Some("stub");
         let mut report = Report::change(
@@ -3778,10 +3797,11 @@ enum Into {
 }
 
 /// `Item::NOT_COPIED`.
-const NOT_COPIED: [&str; 7] = [
+const NOT_COPIED: [&str; 8] = [
     "character_id",
     "location_id",
     "id",
+    "noticed_at",
     "playthrough_id",
     "template_id",
     "created_at",
@@ -3876,7 +3896,24 @@ fn note_of(reading: &Reading) -> Vec<String> {
 /// (`Playthrough::Classifier`'s closed sets). [`Mechanics::room`] answers
 /// this, and so does a caller holding a staged position's rows and no
 /// database.
+///
+/// In a game the player narrates, the things lying here are only those it
+/// has noticed ([`crate::noticed`]), so every reader of a line, and every
+/// panel, lists what the player has noticed and nothing else.
 pub fn room_of(records: &Records, playthrough: i64) -> Room {
+    let game = Game::new(records, playthrough);
+    Room {
+        lying: game
+            .items_noticed_in(game.current_location())
+            .into_iter()
+            .map(|item| thing_of(item, false))
+            .collect(),
+        ..whole_room_of(records, playthrough)
+    }
+}
+
+/// [`room_of`] with every thing lying here, noticed or not.
+pub fn whole_room_of(records: &Records, playthrough: i64) -> Room {
     let game = Game::new(records, playthrough);
     let here = game.current_location();
     let story_protagonist = story_protagonist(records, game.story_id());

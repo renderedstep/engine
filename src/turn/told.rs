@@ -23,6 +23,7 @@ use crate::intent::Intent;
 use crate::model::{Agent, Book, Call, Failure, Filed, Models};
 use crate::moment::{Direction, Handled};
 use crate::narration;
+use crate::noticed;
 use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
@@ -446,6 +447,20 @@ impl<'s, 'm> Turn<'s, 'm> {
         };
         let typed = grammar::unslashed(chosen.as_ref().map_or(command, |(_, line)| line));
         self.line = Some(typed.clone());
+        // A typed line in a game the player narrates that names a thing
+        // lying here unnoticed is refused before any reader is asked.
+        if chosen.is_none() && self.m.game().player_narrates() {
+            let unnoticed = self.commit("unnoticed", |turn| {
+                Ok(noticed::refusal_for_line(
+                    &turn.m.records,
+                    turn.m.playthrough,
+                    &typed,
+                ))
+            })?;
+            if let Some(refusal) = unnoticed {
+                return Ok(Played::Refused(refusal));
+            }
+        }
         let (intent, resolved_by) = self.remember("intent", |turn| match &chosen {
             Some((intent, _)) => Ok((intent.clone(), chooser::RESOLVED_BY.to_string())),
             None => turn.read_line(command),
@@ -482,6 +497,8 @@ impl<'s, 'm> Turn<'s, 'm> {
                 "drop" => self.drop_item(thing.id, &typed)?,
                 _ => self.take_item(thing.id, &typed)?,
             }
+        } else if intent.action == "examine" && self.m.game().player_narrates() {
+            self.look(&typed)?
         } else {
             self.narrate(&typed, None, Some(intent.action.as_str()), None, None)?
         };
@@ -535,6 +552,18 @@ impl<'s, 'm> Turn<'s, 'm> {
                 .map(Told::plain))
         })?;
         if self.m.game().player_narrates() {
+            // A turn spent in the room notices one more thing there; a
+            // turn that left it noticed the next room on the way in.
+            self.commit("noticed", |turn| {
+                let stayed = turn.m.here().map(|room| id(&room)) == from.as_ref().map(id);
+                if !stayed || turn.m.over() {
+                    let here = turn.m.here();
+                    turn.m.notice_at_hand(here.as_ref())?;
+                    return Ok(Vec::new());
+                }
+                let sequence = turn.journal.as_ref().map_or(0, |journal| journal.command);
+                turn.m.notice_in_time(sequence)
+            })?;
             // The player's paragraph tells the whole turn, so what the world
             // did after the act belongs to the act's scene too.
             self.commit("told_after", |turn| {
@@ -569,6 +598,9 @@ impl<'s, 'm> Turn<'s, 'm> {
     /// `#read_line`: the grammar reads a slashed line first; everything it
     /// cannot place goes to the classifier.
     fn read_line(&mut self, command: &str) -> Result<(Intent, String), Error> {
+        if self.m.game().player_narrates() && noticed::is_look_line(command) {
+            return Ok((Intent::new("examine"), "grammar".into()));
+        }
         let room = self.m.room();
         let reading = Grammar::new(&room).reading_first(command);
         if let Some(reading) = reading {
@@ -997,6 +1029,12 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(turn.m.reactions.clone())
         })?;
         self.m.reactions = reactions;
+        if self.m.game().player_narrates() {
+            self.commit("noticed_on_arrival", |turn| {
+                let room = turn.m.row("locations", destination)?;
+                turn.m.notice_on_arrival(&room)
+            })?;
+        }
 
         let told = if self.m.game().player_narrates() {
             self.arrive_without_prose(destination, None)?
@@ -1285,6 +1323,22 @@ impl<'s, 'm> Turn<'s, 'm> {
         };
         self.models.attribute(&mut book, &agent, told.id)?;
         Ok(Some(told))
+    }
+
+    /// A look around the room, in a game the player narrates: everything in
+    /// plain sight is noticed, and the scene says what was.
+    fn look(&mut self, command: &str) -> Result<Option<Told>, Error> {
+        if self.done("narrated") {
+            return self.saved("narrated").map(Option::flatten);
+        }
+        let seen = self.commit("looked", |turn| turn.m.notice_on_look())?;
+        let room = self
+            .m
+            .here()
+            .map(|room| string(&room, "name").to_string())
+            .unwrap_or_default();
+        let words = noticed::look_words(&room, &noticed::names(&self.m.records, &seen));
+        self.narrate(command, None, Some("examine"), None, Some(words))
     }
 
     /// The scene of a line in a game the player narrates: the engine's own

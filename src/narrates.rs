@@ -11,6 +11,7 @@
 //!
 //! THE CARD IS THE ENGINE'S PLAYER-FACING WORDS, not the narrator's facts:
 //! what the protagonist did, as the scene says it; what the arrival found;
+//! what the turn noticed for the first time;
 //! what the people there did; what the world took; who was hit; and how the
 //! story ended, where it did.
 
@@ -41,6 +42,9 @@ pub struct FactsCard {
     pub wounds: Vec<String>,
     /// The story's closing words, where the turn ended it.
     pub ending: Option<String>,
+    /// What the turn noticed first, in the order it did: on the way in, on a
+    /// look, and on the time it spent in the room ([`crate::noticed`]).
+    pub noticed: Vec<String>,
 }
 
 /// The scenes this game was answered with on the turns the game chose, in
@@ -97,6 +101,10 @@ pub fn card(records: &Records, playthrough: i64, scene: i64) -> Option<FactsCard
     let mut card = FactsCard {
         scene,
         ending,
+        noticed: crate::noticed::names(
+            records,
+            &crate::noticed::noticed_on(records, playthrough, scene),
+        ),
         ..FactsCard::default()
     };
     let Some(acted) = acted else {

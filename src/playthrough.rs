@@ -425,6 +425,20 @@ impl<'a> Game<'a> {
         })
     }
 
+    /// What the player has noticed lying in a room ([`crate::noticed`]): in
+    /// a game the player narrates, the things this game stamped; in any
+    /// other, everything [`Game::items_lying_in`] holds.
+    pub fn items_noticed_in(&self, location: Option<&Row>) -> Vec<&'a Row> {
+        let lying = self.items_lying_in(location);
+        if !self.player_narrates() {
+            return lying;
+        }
+        lying
+            .into_iter()
+            .filter(|item| crate::noticed::stamped(item))
+            .collect()
+    }
+
     /// `#items_held_by`.
     pub fn items_held_by(&self, character: &Row) -> Vec<&'a Row> {
         let who = id(character);

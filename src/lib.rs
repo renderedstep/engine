@@ -51,6 +51,7 @@ pub mod model;
 pub mod moment;
 pub mod narrates;
 pub mod narration;
+pub mod noticed;
 pub mod outcome;
 pub mod parameters;
 pub mod parity;

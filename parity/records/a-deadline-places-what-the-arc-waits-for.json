@@ -6719,7 +6719,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -8287,7 +8288,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -9855,7 +9857,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -11423,7 +11426,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
@@ -12991,7 +12995,8 @@
               "holds": null,
               "within_id": null,
               "how": null,
-              "kit_key": null
+              "kit_key": null,
+              "noticed_at": null
             }
           ],
           "removed": []
