@@ -11,6 +11,7 @@
 //!
 //! THE CARD IS THE ENGINE'S PLAYER-FACING WORDS, not the narrator's facts:
 //! what the protagonist did, as the scene says it; what the arrival found;
+//! on a return, what has changed since the game last left the room;
 //! what the turn noticed for the first time;
 //! what the people there did; what the world took; who was hit; and how the
 //! story ended, where it did.
@@ -162,6 +163,11 @@ pub struct FactsCard {
     /// What the turn noticed first, in the order it did: on the way in, on a
     /// look, and on the time it spent in the room ([`crate::noticed`]).
     pub noticed: Vec<String>,
+    /// On a walk back into a room this game left before, what has changed
+    /// there since among what it saw, one fact a line, or
+    /// [`crate::revisit::UNCHANGED`] when nothing has ([`crate::revisit`]).
+    /// Empty on any other turn.
+    pub changed: Vec<String>,
 }
 
 /// The scenes this game was answered with on the turns the game chose, in
@@ -241,6 +247,9 @@ pub fn card(records: &Records, playthrough: i64, scene: i64) -> Option<FactsCard
         );
         card.found = text(acted, "engine_fact")
             .map(|facts| facts.lines().map(str::to_string).collect())
+            .unwrap_or_default();
+        card.changed = crate::revisit::since_on(records, playthrough, scene)
+            .map(|since| since.facts())
             .unwrap_or_default();
     } else {
         card.act = string(acted, "description").to_string();

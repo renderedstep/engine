@@ -64,6 +64,7 @@ pub mod random;
 pub mod realization;
 pub mod records;
 pub mod refusal;
+pub mod revisit;
 pub mod roll;
 pub mod room;
 pub mod schemas;
