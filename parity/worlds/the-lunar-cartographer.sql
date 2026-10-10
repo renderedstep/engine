@@ -201,7 +201,7 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "playthrough_paragraphs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "audit" json, "author" varchar DEFAULT 'player' NOT NULL, "created_at" datetime(6) NOT NULL, "playthrough_id" integer NOT NULL, "scene_id" integer NOT NULL, "text" text NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_db3983d32c"
+CREATE TABLE IF NOT EXISTS "playthrough_paragraphs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "audit" json, "author" varchar DEFAULT 'player' NOT NULL, "created_at" datetime(6) NOT NULL, "playthrough_id" integer NOT NULL, "scene_id" integer NOT NULL, "text" text NOT NULL, "updated_at" datetime(6) NOT NULL, "consent" varchar DEFAULT 'none' NOT NULL, "requests" json, "prompt_digest" varchar, CONSTRAINT "fk_rails_db3983d32c"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 , CONSTRAINT "fk_rails_52ef8100a0"
@@ -346,6 +346,7 @@ FOREIGN KEY ("story_id")
 );
 INSERT INTO world_mechanics VALUES(1000000001,'nightly','2026-10-02 13:25:49.063810','At midnight Nocturna floods the city and the Larkspur Quarter travels. The boarding house, its hallway, the lane below it and the rooftops above it go as one piece with their own doors intact -- old Grenn laid his foundation stones loose for exactly this -- and come to rest against a different part of Nocturnis. The fixed ground does not move: the Celestial Spire, the Sovereign''s Circle and the bell tower of Saint Aravel are where they have always been. What changes is which of them you can walk to from here, and a map of last night is a map of nowhere.','shuffle_connections',NULL,'The nightly rearrangement',1000000001,'2026-10-02 13:25:49.063810');
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20261010220000');
 INSERT INTO schema_migrations VALUES('20261010180000');
 INSERT INTO schema_migrations VALUES('20261010120000');
 INSERT INTO schema_migrations VALUES('20260929023507');

@@ -233,7 +233,7 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "playthrough_paragraphs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "audit" json, "author" varchar DEFAULT 'player' NOT NULL, "created_at" datetime(6) NOT NULL, "playthrough_id" integer NOT NULL, "scene_id" integer NOT NULL, "text" text NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_db3983d32c"
+CREATE TABLE IF NOT EXISTS "playthrough_paragraphs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "audit" json, "author" varchar DEFAULT 'player' NOT NULL, "created_at" datetime(6) NOT NULL, "playthrough_id" integer NOT NULL, "scene_id" integer NOT NULL, "text" text NOT NULL, "updated_at" datetime(6) NOT NULL, "consent" varchar DEFAULT 'none' NOT NULL, "requests" json, "prompt_digest" varchar, CONSTRAINT "fk_rails_db3983d32c"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 , CONSTRAINT "fk_rails_52ef8100a0"
@@ -365,6 +365,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20261010220000');
 INSERT INTO schema_migrations VALUES('20261010180000');
 INSERT INTO schema_migrations VALUES('20261010120000');
 INSERT INTO schema_migrations VALUES('20260929023507');

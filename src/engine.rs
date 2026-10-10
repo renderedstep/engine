@@ -8,7 +8,7 @@
 //! could not be rescued.
 
 use crate::glance::Glance;
-use crate::narrates::{self, FactsCard};
+use crate::narrates::{self, Consent, FactsCard, WouldAsk};
 use crate::outcome::{Outcome, State};
 use crate::playthrough::{Game, Mode};
 use crate::records::{flag, id, int, text};
@@ -355,16 +355,55 @@ impl Engine {
         })
     }
 
+    /// The requests a narrator would have been sent for a turn the game
+    /// chose, built when the turn was played and never sent
+    /// ([`narrates::would_ask`]): empty for any other scene. Writes nothing.
+    pub fn would_ask(&self, playthrough: i64, scene: i64) -> Result<Vec<WouldAsk>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let records = store.load()?;
+            if records.find("playthroughs", playthrough).is_none() {
+                return Err(Error::NoSuchPlaythrough(playthrough));
+            }
+            Ok(narrates::would_ask(&records, playthrough, scene))
+        })
+    }
+
     /// Keeps the player's paragraph for a scene a turn the game chose was
     /// answered with, beside the scene and never in it, and returns its row's
     /// id. A second paragraph for the same scene replaces the first, and
     /// clears what the game's check found in the first (`audit`). The engine
-    /// reads nothing from it.
+    /// reads nothing from it. The row carries the requests a narrator would
+    /// have been sent for the turn and their prompt digest
+    /// ([`Engine::would_ask`]); what the player let it be used for stays as
+    /// it was, [`Consent::None`] on a first paragraph.
     pub fn write_paragraph(
         &mut self,
         playthrough: i64,
         scene: i64,
         words: &str,
+    ) -> Result<i64, Error> {
+        self.keep_paragraph(playthrough, scene, words, None)
+    }
+
+    /// [`Engine::write_paragraph`], kept with what the player let it be used
+    /// for.
+    pub fn write_paragraph_with_consent(
+        &mut self,
+        playthrough: i64,
+        scene: i64,
+        words: &str,
+        consent: Consent,
+    ) -> Result<i64, Error> {
+        self.keep_paragraph(playthrough, scene, words, Some(consent))
+    }
+
+    fn keep_paragraph(
+        &mut self,
+        playthrough: i64,
+        scene: i64,
+        words: &str,
+        consent: Option<Consent>,
     ) -> Result<i64, Error> {
         let store = &self.store;
         transaction(store, || {
@@ -382,26 +421,44 @@ impl Engine {
             if !narrates::chosen_scenes(&records, playthrough).contains(&scene) {
                 return Err(Error::NotChosen { playthrough, scene });
             }
+            let asked = narrates::would_ask(&records, playthrough, scene);
+            let mut values = vec![
+                ("text", Value::from(words)),
+                (
+                    "requests",
+                    if asked.is_empty() {
+                        Value::Null
+                    } else {
+                        asked.iter().map(WouldAsk::to_json).collect()
+                    },
+                ),
+                (
+                    "prompt_digest",
+                    asked
+                        .first()
+                        .and_then(WouldAsk::prompt_digest)
+                        .map_or(Value::Null, Value::from),
+                ),
+            ];
+            if let Some(consent) = consent {
+                values.push(("consent", Value::from(consent.as_str())));
+            }
             match narrates::paragraph(&records, scene).map(id) {
                 Some(kept) => {
-                    store.update(
-                        "playthrough_paragraphs",
-                        kept,
-                        &[("text", Value::from(words)), ("audit", Value::Null)],
-                    )?;
+                    values.push(("audit", Value::Null));
+                    store.update("playthrough_paragraphs", kept, &values)?;
                     Ok(kept)
                 }
-                None => store
-                    .insert(
-                        "playthrough_paragraphs",
-                        &[
-                            ("playthrough_id", Value::from(playthrough)),
-                            ("scene_id", Value::from(scene)),
-                            ("author", Value::from(narrates::PLAYER)),
-                            ("text", Value::from(words)),
-                        ],
-                    )
-                    .map(|row| id(&row)),
+                None => {
+                    values.extend([
+                        ("playthrough_id", Value::from(playthrough)),
+                        ("scene_id", Value::from(scene)),
+                        ("author", Value::from(narrates::PLAYER)),
+                    ]);
+                    store
+                        .insert("playthrough_paragraphs", &values)
+                        .map(|row| id(&row))
+                }
             }
         })
     }

@@ -19,6 +19,7 @@
 use crate::facts::{self, Throw};
 use crate::moment::Direction;
 use serde_json::{json, Value};
+use sha2::{Digest, Sha256};
 
 /// Where the moment, from the records, would go.
 pub const FACTS: &str = "<the moment, from the records>";
@@ -167,9 +168,64 @@ pub fn scaffold() -> String {
     texts.join(JOINER)
 }
 
+/// `Playthrough::PromptVersion::NARRATION`: the prose pass whose scaffold
+/// [`scaffold`] covers.
+pub const NARRATION: &str = "narration";
+
+/// `Playthrough::PromptVersion::LENGTH`.
+pub const LENGTH: usize = 16;
+
+/// `Playthrough::PromptVersion.of`: the first [`LENGTH`] hex characters of
+/// the SHA-256 of `text` stripped at its edges, as Ruby's `strip` strips;
+/// none for a text with nothing in it.
+pub fn of(text: &str) -> Option<String> {
+    let body = strip(text);
+    if body.is_empty() {
+        return None;
+    }
+    let hash = Sha256::digest(body.as_bytes());
+    Some(
+        hash.iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect::<String>()[..LENGTH]
+            .to_string(),
+    )
+}
+
+/// `Playthrough::PromptVersion.for_chat`, for a call built and not sent:
+/// the digest of its instructions, and for the narrator's pass, of the
+/// instructions and [`scaffold`] together. None for a call with no
+/// instructions.
+pub fn digest(purpose: &str, system: Option<&str>) -> Option<String> {
+    let instructions = system.unwrap_or_default();
+    if purpose != NARRATION {
+        return of(instructions);
+    }
+    of(instructions)?;
+    of(&[strip(instructions), &scaffold()].join(JOINER))
+}
+
+/// Ruby's `String#strip`: whitespace and NULs off both edges.
+fn strip(text: &str) -> &str {
+    text.trim_matches(|c| matches!(c, ' ' | '\t' | '\n' | '\x0b' | '\x0c' | '\r' | '\0'))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_narrators_digest_covers_its_instructions_and_the_scaffold() {
+        let instructions = crate::data::narrator_instructions();
+        let narrator = digest(NARRATION, Some(instructions)).unwrap();
+        assert_eq!(narrator.len(), LENGTH);
+        let joined = format!("{}{JOINER}{}", instructions.trim(), scaffold());
+        assert_eq!(Some(narrator.clone()), of(&joined));
+        assert_ne!(Some(narrator), of(instructions));
+        assert_eq!(digest("arrival", Some(" words \n")), of("words"));
+        assert_eq!(digest(NARRATION, None), None);
+        assert_eq!(digest("ending", Some("  ")), None);
+    }
 
     #[test]
     fn every_placeholder_is_rendered_and_no_record_is() {

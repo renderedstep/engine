@@ -71,6 +71,16 @@ pub(super) fn plain(value: &Value) -> Value {
     value.clone()
 }
 
+/// The request a narrator would have been sent and was not, as JSON text.
+impl Kept for crate::narrates::WouldAsk {
+    fn encode(&self) -> Value {
+        self.to_journal()
+    }
+    fn decode(_: &Turn, value: &Value) -> Result<Self, Error> {
+        crate::narrates::WouldAsk::from_journal(value).ok_or_else(|| unreadable("a request", value))
+    }
+}
+
 impl Kept for () {
     fn encode(&self) -> Value {
         Value::Null
