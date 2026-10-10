@@ -355,6 +355,25 @@ impl Engine {
         })
     }
 
+    /// What the move answered with `scene` found changed since the game last
+    /// left the room it walked back into ([`crate::revisit::since_on`]), in
+    /// a game told either way: none for any other scene, and for a move into
+    /// a room the game has no record of leaving. Writes nothing.
+    pub fn since_last_visit(
+        &self,
+        playthrough: i64,
+        scene: i64,
+    ) -> Result<Option<crate::revisit::Since>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let records = store.load()?;
+            if records.find("playthroughs", playthrough).is_none() {
+                return Err(Error::NoSuchPlaythrough(playthrough));
+            }
+            Ok(crate::revisit::since_on(&records, playthrough, scene))
+        })
+    }
+
     /// The requests a narrator would have been sent for a turn the game
     /// chose, built when the turn was played and never sent
     /// ([`narrates::would_ask`]): empty for any other scene. Writes nothing.

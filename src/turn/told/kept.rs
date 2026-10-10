@@ -81,6 +81,38 @@ impl Kept for crate::narrates::WouldAsk {
     }
 }
 
+/// What the game saw of the room it walked out of, as JSON text.
+impl Kept for Option<crate::revisit::Seen> {
+    fn encode(&self) -> Value {
+        crate::revisit::to_journal(self.as_ref().map(crate::revisit::Seen::to_json))
+    }
+    fn decode(_: &Turn, value: &Value) -> Result<Self, Error> {
+        if value.is_null() {
+            return Ok(None);
+        }
+        crate::revisit::from_journal(value)
+            .and_then(|seen| crate::revisit::Seen::from_json(&seen))
+            .map(Some)
+            .ok_or_else(|| unreadable("what a room held", value))
+    }
+}
+
+/// What has changed in a room since the game last left it, as JSON text.
+impl Kept for Option<crate::revisit::Since> {
+    fn encode(&self) -> Value {
+        crate::revisit::to_journal(self.as_ref().map(crate::revisit::Since::to_json))
+    }
+    fn decode(_: &Turn, value: &Value) -> Result<Self, Error> {
+        if value.is_null() {
+            return Ok(None);
+        }
+        crate::revisit::from_journal(value)
+            .and_then(|since| crate::revisit::Since::from_json(&since))
+            .map(Some)
+            .ok_or_else(|| unreadable("what changed in a room", value))
+    }
+}
+
 impl Kept for () {
     fn encode(&self) -> Value {
         Value::Null
