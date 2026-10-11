@@ -28,6 +28,7 @@ use crate::noticed;
 use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
+use crate::revisit;
 use crate::room::{Choice, Record};
 use crate::store::Store;
 use crate::text::{is_blank, presence, ruby_strip};
@@ -1001,6 +1002,9 @@ impl<'s, 'm> Turn<'s, 'm> {
         if self.done("moved") {
             return self.saved("moved").map(|told| told.expect("a saved step"));
         }
+        // What the game saw of the room it is walking out of, kept before
+        // anything of the move is written: what a later return compares.
+        self.commit(revisit::LEFT, |turn| Ok(revisit::Seen::of(&turn.m.game())))?;
         let mut realizers = Vec::new();
         realizers.extend(self.realize(destination)?);
         let entry = self.m.way_in(destination);
@@ -1018,6 +1022,11 @@ impl<'s, 'm> Turn<'s, 'm> {
 
         self.commit("destination_snapshot", |turn| {
             turn.m.snapshot_room(Some(&room))
+        })?;
+        // What has changed in the room since the game last left it, as it
+        // stands before anybody there reacts to the party coming in.
+        self.commit(revisit::SINCE, |turn| {
+            Ok(revisit::since(&turn.m.game(), &room))
         })?;
         self.commit("arrival_cost", |turn| {
             let from = turn.m.here();

@@ -10,7 +10,9 @@
 //! that what was noticed stays noticed, that each turn noticed what its tier
 //! says (an arrival every fixed piece and a rolled few, a look everything in
 //! plain sight, a turn in the room one more), that the card names what the
-//! turn noticed, and that the doctor finds nothing out of line.
+//! turn noticed, and that the doctor finds nothing out of line. A walk back
+//! into a room the game left keeps what it noticed there as it left, and the
+//! card says what has changed among it ([`revisit`]).
 
 use renderedstep_engine::data;
 use renderedstep_engine::engine::{Engine, Error, Submitted};
@@ -23,9 +25,11 @@ use renderedstep_engine::noticed;
 use renderedstep_engine::parity::{open_world, TITLE_SUFFIX};
 use renderedstep_engine::playthrough::{Game, Mode};
 use renderedstep_engine::prompt_version;
-use renderedstep_engine::records::{int, text, Records, Row};
+use renderedstep_engine::records::{flag, int, text, Records, Row};
+use renderedstep_engine::revisit;
 use renderedstep_engine::turn::chooser::{self, Candidate};
 use serde_json::Value;
+use std::collections::HashMap;
 use std::path::Path;
 
 fn open(world: &str, title: &str, mode: Mode) -> (Engine, i64) {
@@ -181,11 +185,76 @@ fn shows_only_what_is_noticed(world: &str, engine: &Engine, playthrough: i64, gl
     );
 }
 
-/// What one walk saw on each turn: the line picked, and whether the game
-/// ended on it.
+/// What one walk saw on each turn: the line picked, whether the game ended
+/// on it, and how many of its moves walked back into a room it had left.
 struct Walked {
     picks: Vec<String>,
     over: bool,
+    returns: usize,
+}
+
+/// The room the game stands in, the things lying there it has noticed and
+/// the people there, by id, read off the records as the test reads them.
+fn standing(engine: &Engine, playthrough: i64) -> (i64, Vec<i64>, Vec<i64>) {
+    let records = engine.store().load().unwrap();
+    let game = Game::new(&records, playthrough);
+    let room = game.current_location().expect("a room");
+    let things = game
+        .items_noticed_in(Some(room))
+        .iter()
+        .map(|item| int(item, "id").unwrap())
+        .collect();
+    let walking: Vec<i64> = game
+        .followers()
+        .iter()
+        .map(|who| int(who, "id").unwrap())
+        .collect();
+    let mut people: Vec<i64> = game
+        .characters_located_in(room)
+        .into_iter()
+        .filter(|who| !flag(who, "is_protagonist"))
+        .map(|who| int(who, "id").unwrap())
+        .filter(|who| !walking.contains(who))
+        .collect();
+    people.sort();
+    (int(room, "id").unwrap(), things, people)
+}
+
+/// The card's changes on a turn: on a walk back into a room the game left,
+/// what the move kept, compared with what the test saw there as it left,
+/// and nothing on any other turn.
+fn changed_since_it_left(
+    world: &str,
+    records: &Records,
+    playthrough: i64,
+    scene: i64,
+    left: Option<&(i64, Vec<i64>, Vec<i64>)>,
+    card: &[String],
+) -> bool {
+    let since = revisit::since_on(records, playthrough, scene);
+    let Some((room, things, people)) = left else {
+        assert_eq!(since, None, "{world}: a change on a room never left");
+        assert!(card.is_empty(), "{world}: the card says {card:?}");
+        return false;
+    };
+    let since = since.unwrap_or_else(|| panic!("{world}: a return kept no record"));
+    assert_eq!(since.seen.room, *room);
+    let seen: Vec<i64> = since.seen.things.iter().map(|thing| thing.id).collect();
+    assert_eq!(&seen, things, "{world}: the record is not what was noticed");
+    let met: Vec<i64> = since.seen.people.iter().map(|who| who.id).collect();
+    assert_eq!(&met, people, "{world}: the record is not who was there");
+    for change in &since.changes {
+        if change.subject.0 == "items" {
+            assert!(
+                things.contains(&change.subject.1),
+                "{world}: {} is about a thing the game never noticed",
+                change.fact
+            );
+        }
+    }
+    assert!(!card.is_empty());
+    assert_eq!(card, since.facts().as_slice());
+    true
 }
 
 /// Lets the game act `turns` times, checking every rule the chooser keeps
@@ -195,6 +264,8 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
     let arc = arc_items(&engine);
     let story = story_of(&engine, playthrough);
     let mut picks = Vec::new();
+    let mut left: HashMap<i64, (i64, Vec<i64>, Vec<i64>)> = HashMap::new();
+    let mut returns = 0;
     for turn in 0..turns {
         let glance = engine.glance(playthrough).unwrap();
         assert_eq!(glance.mode, Mode::PlayerNarrates);
@@ -205,9 +276,14 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
             "{world}: the doctor finds a noticed record out of line before turn {turn}"
         );
         if glance.over {
-            return Walked { picks, over: true };
+            return Walked {
+                picks,
+                over: true,
+                returns,
+            };
         }
         let before = noticed_ids(&engine, playthrough);
+        let stood = standing(&engine, playthrough);
         let candidates = engine.candidates(playthrough, false).unwrap();
         assert!(
             !candidates.is_empty(),
@@ -349,6 +425,21 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
                 "{world}: the card names what the turn noticed"
             );
         }
+        let now = standing(&engine, playthrough).0;
+        let moved = now != stood.0;
+        if changed_since_it_left(
+            world,
+            &records,
+            playthrough,
+            scene,
+            left.get(&now).filter(|_| moved),
+            &card.changed,
+        ) {
+            returns += 1;
+        }
+        if moved {
+            left.insert(stood.0, stood);
+        }
         let words = format!("PLAYER-WRITTEN PARAGRAPH {turn}.");
         engine.write_paragraph(playthrough, scene, &words).unwrap();
         assert_eq!(engine.glance(playthrough).unwrap().waiting, None);
@@ -390,7 +481,11 @@ fn walk(world: &str, title: &str, turns: usize) -> Walked {
         picks.push(typed);
     }
     let over = engine.glance(playthrough).unwrap().over;
-    Walked { picks, over }
+    Walked {
+        picks,
+        over,
+        returns,
+    }
 }
 
 /// The paragraph's row carries every request a narrator would have been
@@ -541,12 +636,14 @@ fn noticed_by_its_tier(
 fn the_game_walks_the_salt_assizes_by_the_rules() {
     let walked = walk("the-salt-assizes", "The Salt Assizes", 10);
     assert!(walked.picks.len() >= 4, "{:?}", walked.picks);
+    assert!(walked.returns >= 1, "{:?}", walked.picks);
 }
 
 #[test]
 fn the_game_walks_the_unrecorded_hour_by_the_rules() {
     let walked = walk("the-unrecorded-hour", "The Unrecorded Hour", 10);
     assert!(walked.picks.len() >= 4, "{:?}", walked.picks);
+    assert!(walked.returns >= 1, "{:?}", walked.picks);
 }
 
 #[test]
@@ -579,6 +676,7 @@ fn the_game_walks_the_furnished_rooms_by_the_rules() {
     let walked = walk("the-furnished-rooms", "The Furnished Rooms", 8);
     assert_eq!(walked.picks.len(), 8);
     assert!(!walked.over);
+    assert!(walked.returns >= 1, "{:?}", walked.picks);
 }
 
 #[test]

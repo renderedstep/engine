@@ -67,6 +67,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `turn::chooser` | none: it was written here | the protagonist's act in a game the player narrates: the glance's targets for move, examine (a look around the room among them, in a game that notices), take, drop and use, weighed by the protagonist's own pursuit, boosted toward the arc's next beat, with a line already played on this visit weighing nothing and a thing the arc asks the player to hold never let go of, and one `Roll::CHOICE` over them |
 | `narrates` | none: it was written here | a game the player narrates: the facts card the player writes from, the scene waiting for their paragraph, the request a narrator would have been sent for the turn, built and never sent, and the paragraph kept beside the scene with that request, never read |
 | `noticed` | none: it was written here | what a game the player narrates has noticed of a room (`noticed_at` on its copy of each thing and its state for a person), the tiers that notice it (`turn::notice`), the refusal of a line naming a thing not noticed, and the doctor's findings |
+| `revisit` | none: it was written here | the arrival diff: what a game saw of a room when it last left it, kept by the move that walked out, and on a walk back what has changed among it, in a closed list in the engine's words (a thing gone, held by somebody there, moved or broken; a person gone, come or dead; a way out gone or new; an event of the world in the room), kept by the move that walked back. Every game keeps both; no prompt reads them |
 | `glance` | `Playthrough::Glance`, `Playthrough::Availability`, `Playthrough::SlashMenu` | what a front end's panels show between turns: the room, its ways out, who and what is here, which verbs are open at what (each target one the turn plays, each closed verb closed in the refusal's words), the slash menu and the next beat |
 | `facts`, `prompt_version` | `Scene::Narrator#prompt_for`, `Playthrough::Turn`'s `_fact` builders, `Playthrough::PromptVersion::Scaffold` | what a turn hands the narrator as already done, and that scaffold rendered against fixed placeholders for the game's prompt version to digest |
 | `command` | `Playthrough::Command`, `Playthrough::Command::Journal` | a submitted line and its token, the order lines were accepted in, and the receipts a turn writes as it goes |
@@ -175,6 +176,13 @@ narrated. In a game the player narrates:
   What lies inside a hollow or a closed fixture waits for the search.
   `Engine::noticed_findings` is what the game's doctor reports about it. A
   narrated game is never stamped and lists everything.
+- A walk back into a room the game left before puts on the card what has
+  changed there since, among what the game had noticed as it left
+  (`revisit`, `FactsCard.changed`), or `revisit::UNCHANGED` where nothing
+  has. A thing that came into the room while the game was away is not a
+  change: the record cannot say it was not there, unnoticed.
+  `Engine::since_last_visit` reads what a move found. A narrated game keeps
+  the same record, which no prompt reads yet.
 
 `Engine::submit_fixed` plays a submitted line with a fixed reading
 (`turn::Fixed`: an action and the name of its target) wherever the
