@@ -28,7 +28,7 @@ use crate::noticed;
 use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
-use crate::revisit;
+use crate::revisit::{self, Since};
 use crate::room::{Choice, Record};
 use crate::store::Store;
 use crate::text::{is_blank, presence, ruby_strip};
@@ -1024,8 +1024,9 @@ impl<'s, 'm> Turn<'s, 'm> {
             turn.m.snapshot_room(Some(&room))
         })?;
         // What has changed in the room since the game last left it, as it
-        // stands before anybody there reacts to the party coming in.
-        self.commit(revisit::SINCE, |turn| {
+        // stands before anybody there reacts to the party coming in: what
+        // the arrival writer is told changed.
+        let since = self.commit(revisit::SINCE, |turn| {
             Ok(revisit::since(&turn.m.game(), &room))
         })?;
         self.commit("arrival_cost", |turn| {
@@ -1054,12 +1055,12 @@ impl<'s, 'm> Turn<'s, 'm> {
 
         let told = if self.m.game().player_narrates() {
             self.commit(narrates::WOULD_ASK, |turn| {
-                let (request, ..) = turn.arrival(destination)?;
+                let (request, ..) = turn.arrival(destination, since.as_ref())?;
                 Ok(WouldAsk::new(ARRIVAL, &Call::from_request(&request)))
             })?;
             self.arrive_without_prose(destination, None)?
         } else {
-            match self.arrive(destination) {
+            match self.arrive(destination, since.as_ref()) {
                 Ok(told) => told,
                 Err(Error::Model(failure)) => {
                     self.arrive_without_prose(destination, Some(failure))?
@@ -1090,7 +1091,8 @@ impl<'s, 'm> Turn<'s, 'm> {
 
     /// What the arrival writer is told, and what the scene it writes keeps:
     /// the request, the time, the cast, the facts and the untold tolls.
-    fn arrival(&self, destination: i64) -> Result<ArrivalInputs, Error> {
+    /// `since` is what the move found changed, which only the request reads.
+    fn arrival(&self, destination: i64, since: Option<&Since>) -> Result<ArrivalInputs, Error> {
         let records = &self.m.records;
         let location = records
             .find("locations", destination)
@@ -1103,6 +1105,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             game: Some(game),
             opening: false,
             reactions: &self.m.reactions,
+            since,
         };
         let cast: Vec<i64> = arrival
             .characters_present()
@@ -1127,13 +1130,13 @@ impl<'s, 'm> Turn<'s, 'm> {
     }
 
     /// `Scene::Generator#generate!`.
-    fn arrive(&mut self, destination: i64) -> Result<Told, Error> {
+    fn arrive(&mut self, destination: i64, since: Option<&Since>) -> Result<Told, Error> {
         if self.done("arrival") {
             return self
                 .saved("arrival")
                 .map(|told| told.expect("a saved step"));
         }
-        let (request, at, cast, facts, tolls, _) = self.arrival(destination)?;
+        let (request, at, cast, facts, tolls, _) = self.arrival(destination, since)?;
         let mut agent = Agent::new(self.filed(ARRIVAL));
         let call = Call::from_request(&request);
         let mut book = Book {
@@ -1180,7 +1183,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         destination: i64,
         failure: Option<Failure>,
     ) -> Result<Told, Error> {
-        let (_, at, cast, facts, tolls, reacted) = self.arrival(destination)?;
+        let (_, at, cast, facts, tolls, reacted) = self.arrival(destination, None)?;
         let name = string(&self.m.row("locations", destination)?, "name").to_string();
         let description = std::iter::once(format!("You arrive at {name}."))
             .chain(facts.iter().cloned())

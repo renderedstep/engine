@@ -12,7 +12,7 @@ use renderedstep_engine::realization::{self, Realization, Slot};
 use renderedstep_engine::records::{id, Records};
 use renderedstep_engine::roll::{self, Seed};
 use renderedstep_engine::{cast, danger, population, text};
-use renderedstep_engine::{data, identity, ledger, memory, moment, schemas, volition};
+use renderedstep_engine::{data, identity, ledger, memory, moment, revisit, schemas, volition};
 use serde_json::{json, Value};
 
 fn int(value: &Value) -> i64 {
@@ -337,6 +337,8 @@ fn arrival(records: &Records, input: &Value) -> Value {
         .iter()
         .find(|room| Some(id(room)) != origin)
         .expect("the room arrived in");
+    // What the game kept of leaving the room, as the records stand.
+    let since = game.and_then(|game| revisit::since(&game, location));
     Arrival {
         records,
         location,
@@ -344,6 +346,7 @@ fn arrival(records: &Records, input: &Value) -> Value {
         game,
         opening: game.is_none(),
         reactions: &reactions,
+        since: since.as_ref(),
     }
     .request()
 }
