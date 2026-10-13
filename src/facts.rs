@@ -119,7 +119,9 @@ pub fn read(item: &Row, words: &str) -> String {
 
 /// A look at a thing with nothing written on it: what the game holds of it,
 /// where it is now, and that the look moved nothing. `carried` is whether
-/// the player holds it.
+/// the player holds it. Only a thing with no description is said to have
+/// nothing written on it: a description may mention writing the thing
+/// carries as part of its look, and the fact does not contradict it.
 pub fn examined(item: &Row, looker: Option<&Row>, carried: bool) -> String {
     let now = if carried {
         "they are carrying it"
@@ -132,11 +134,13 @@ pub fn examined(item: &Row, looker: Option<&Row>, carried: bool) -> String {
              Describe how it looks from that, in your own words, and do not contradict it. Where \
              that description says where it is or who has it, it may be out of date: {now}."
         ),
-        None => format!("The game records nothing of it beyond its name. Now {now}."),
+        None => format!(
+            "The game records nothing of it beyond its name. Now {now}. Nothing is written on it."
+        ),
     };
     format!(
-        "ON THIS TURN {} looked closely at {}. {held} Nothing is written on it. The look moved \
-         nothing: nothing was lifted, opened, drawn out or taken into anybody's hands.",
+        "ON THIS TURN {} looked closely at {}. {held} The look moved nothing: nothing was \
+         lifted, opened, drawn out or taken into anybody's hands.",
         looker.map_or("the player", |who| string(who, "fullname")),
         definite_name(item),
     )

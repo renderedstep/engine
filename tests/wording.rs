@@ -57,6 +57,7 @@ fn the_take_drop_and_read_facts_name_an_article_bearing_thing_once() {
 
 /// A look at a thing with nothing written on it, in each of its four forms:
 /// with a description or none, lying here or carried, and its engine words.
+/// Only the forms with no description say nothing is written on it.
 #[test]
 fn the_look_fact_says_what_the_game_holds_and_where_the_thing_is() {
     let odile = row(json!({ "id": 2, "fullname": "Odile Vance" }));
@@ -67,8 +68,7 @@ fn the_look_fact_says_what_the_game_holds_and_where_the_thing_is() {
             "ON THIS TURN Odile Vance looked closely at the ward stamp. The game's description \
              of it, written when it was put in the world: \"A brass stamp.\" Describe how it looks \
              from that, in your own words, and do not contradict it. Where that description says \
-             where it is or who has it, it may be out of date: {now}. Nothing is written on it. \
-             The look moved nothing: nothing was lifted, opened, drawn out or taken into \
+             where it is or who has it, it may be out of date: {now}. The look moved nothing: nothing was lifted, opened, drawn out or taken into \
              anybody's hands."
         )
     };

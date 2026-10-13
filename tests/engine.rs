@@ -722,9 +722,10 @@ fn a_look_at_a_plain_thing_hands_the_narrator_its_description_and_where_it_is() 
                 "looked closely at the red coin. The game's description of it, written when it \
                  was put in the world: \"A copper coin left on the flagstones.\" Describe how it \
                  looks from that, in your own words, and do not contradict it.",
-                format!("it may be out of date: {now}. Nothing is written on it."),
+                format!("it may be out of date: {now}. The look moved nothing"),
                 "The player is looking more closely at something that is here.",
             ],
+            "prompt_excludes": ["Nothing is written on it."],
         }))
         .unwrap()
     };
