@@ -833,10 +833,10 @@ impl<'s, 'm> Turn<'s, 'm> {
     fn read_item(&mut self, item: i64, command: &str) -> Result<Option<Told>, Error> {
         let row = self.m.row("items", item)?;
         if !flag(&row, "readable") {
-            // The engine's own words for a look, which stand when the
-            // narrator cannot be asked, as a take's do.
-            let words = format!("You look closely at {}.", definite_name(&row));
-            return self.narrate(command, None, None, None, Some(words));
+            let carried = int(&row, "character_id").is_none() && int(&row, "location_id").is_none();
+            let fact = facts::examined(&row, self.m.player().as_ref(), carried);
+            let words = facts::examined_words(&row);
+            return self.narrate(command, Some(fact), Some("examine"), None, Some(words));
         }
         let (words, inscriber) = self.inscribe(item)?;
         let fact = facts::read(&row, &words);

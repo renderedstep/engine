@@ -693,12 +693,12 @@ fn with_no_model_access_a_look_at_a_plain_thing_is_told_in_the_engines_own_words
             .connection()
             .query_row(
                 "SELECT description FROM scenes WHERE id = ?1 AND engine_fallback = 1 \
-                 AND engine_fact IS NULL",
+                 AND engine_fact LIKE 'ON THIS TURN % looked closely at the red coin. %'",
                 [submitted.turned.scene.unwrap()],
                 |row| row.get::<_, String>(0)
             )
             .unwrap(),
-        "You look closely at the red coin."
+        "You look closely at the red coin. A copper coin left on the flagstones."
     );
     assert_eq!(
         count(
@@ -708,6 +708,46 @@ fn with_no_model_access_a_look_at_a_plain_thing_is_told_in_the_engines_own_words
         0,
         "a look moves nothing"
     );
+}
+
+#[test]
+fn a_look_at_a_plain_thing_hands_the_narrator_its_description_and_where_it_is() {
+    use renderedstep_engine::model::{Replay, Reply};
+    let (mut engine, playthrough) = gate();
+    let look = |content: &str, now: &str| {
+        Reply::from_value(&serde_json::json!({
+            "purpose": "narration",
+            "content": content,
+            "prompt_includes": [
+                "looked closely at the red coin. The game's description of it, written when it \
+                 was put in the world: \"A copper coin left on the flagstones.\" Describe how it \
+                 looks from that, in your own words, and do not contradict it.",
+                format!("it may be out of date: {now}. Nothing is written on it."),
+                "The player is looking more closely at something that is here.",
+            ],
+        }))
+        .unwrap()
+    };
+    let take = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![
+        look("The coin is dull copper.", "it is lying here"),
+        take,
+        look("It is warm from your hand.", "they are carrying it"),
+    ]);
+    for (line, token) in [
+        ("/examine red coin", "a"),
+        ("/take red coin", "b"),
+        ("/examine red coin", "c"),
+    ] {
+        engine
+            .submit(playthrough, line, token, &mut replay, &mut |_| {})
+            .unwrap();
+    }
+    replay.finish().unwrap();
 }
 
 /// Answers each post with the next body, and keeps what was sent.

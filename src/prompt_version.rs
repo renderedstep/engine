@@ -78,6 +78,8 @@ pub fn scaffold() -> String {
         facts::dropped_and_broke(&plain, &somewhere, None),
         facts::dropped_and_broke(&described, &somewhere, Some(&somebody)),
         facts::read(&plain, WORDS),
+        facts::examined(&plain, None, false),
+        facts::examined(&described, Some(&somebody), true),
         facts::written_words(WORDS),
     ]);
     // Every way a throw comes out, and a fumble both ways: the sentence

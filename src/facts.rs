@@ -117,6 +117,39 @@ pub fn read(item: &Row, words: &str) -> String {
     )
 }
 
+/// A look at a thing with nothing written on it: what the game holds of it,
+/// where it is now, and that the look moved nothing. `carried` is whether
+/// the player holds it.
+pub fn examined(item: &Row, looker: Option<&Row>, carried: bool) -> String {
+    let now = if carried {
+        "they are carrying it"
+    } else {
+        "it is lying here"
+    };
+    let held = match presence(text(item, "description")) {
+        Some(description) => format!(
+            "The game's description of it, written when it was put in the world: \"{description}\" \
+             Describe how it looks from that, in your own words, and do not contradict it. Where \
+             that description says where it is or who has it, it may be out of date: {now}."
+        ),
+        None => format!("The game records nothing of it beyond its name. Now {now}."),
+    };
+    format!(
+        "ON THIS TURN {} looked closely at {}. {held} Nothing is written on it. The look moved \
+         nothing: nothing was lifted, opened, drawn out or taken into anybody's hands.",
+        looker.map_or("the player", |who| string(who, "fullname")),
+        definite_name(item),
+    )
+}
+
+/// The engine's own words for a look at a thing with nothing written on it.
+pub fn examined_words(item: &Row) -> String {
+    match presence(text(item, "description")) {
+        Some(description) => format!("You look closely at {}. {description}", definite_name(item)),
+        None => format!("You look closely at {}.", definite_name(item)),
+    }
+}
+
 /// How a throw came out, as `Playthrough::Turn#thrown_fact` states it.
 #[derive(Clone, Copy, Debug)]
 pub enum Throw<'a> {
