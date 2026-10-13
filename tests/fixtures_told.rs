@@ -1,8 +1,7 @@
 //! What the narrator is told of a furnished room: the pieces fixed in it on a
 //! line of their own, never among the things a player could pick up, and no
-//! such line at all in a room with nothing fixed in it. And what the arrival
-//! writer is told of one today, which is not yet that: every piece, fixed or
-//! not, under "Lying here".
+//! such line at all in a room with nothing fixed in it. The arrival writer is
+//! told them apart the same way.
 
 use renderedstep_engine::engine::Engine;
 use renderedstep_engine::model::{Replay, Reply};
@@ -86,25 +85,25 @@ fn a_room_with_nothing_fixed_in_it_has_no_line_for_it() {
     );
 }
 
-/// The baseline a change to the arrival writer's words has to move: today a
-/// furnished room's fixed pieces are told among the things lying in it, and
-/// nothing tells them apart.
 #[test]
-fn the_arrival_writer_is_told_a_furnished_rooms_fixed_pieces_as_lying_in_it() {
+fn the_arrival_writer_is_told_a_furnished_rooms_fixed_pieces_apart_from_what_lies_in_it() {
     let (mut engine, playthrough) = open("the-furnished-rooms", "The Furnished Rooms");
     arrive(
         &mut engine,
         playthrough,
         "/go The Beech Clearing",
-        &["Lying here: old beech, fallen log, pine cone."],
-        &["Fixed here"],
+        &["Fixed here, and not takeable: old beech, fallen log.\nLying here: pine cone."],
+        &["Lying here: old beech"],
     );
     arrive(
         &mut engine,
         playthrough,
         "/go The Clerk's Study",
-        &["Lying here: desk, windowsill, coal scuttle, ward stamp, potted fern, lump of coal."],
-        &["Fixed here"],
+        &[
+            "Fixed here, and not takeable: desk, windowsill, coal scuttle.\n\
+             Lying here: ward stamp, potted fern, lump of coal.",
+        ],
+        &["Lying here: desk"],
     );
 }
 

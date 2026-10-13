@@ -356,7 +356,7 @@
         {
           "purpose": "arrival",
           "system": "You narrate a text adventure. You write the moment a player walks into a\nplace: what reaches them first, in the second person and the present\ntense. You never break character, never offer a numbered menu, and never\nmention that you are a narrator.\n\nDO NOT INCLUDE EMOJIS IN YOUR RESPONSE.\n",
-          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Ink, lamps and hand carts.\n\n## Story Details\ntitle: The Furnished Rooms (engine sweep)\ngenre: town adventure\nsummary: Mira looks over the ward clerk's rooms.\n\n## The Place\nname: The Reading Room\ndescription: A quiet room of books, a desk under the window.\nlore: The clerk reads here when the ward is quiet.\nways out: The Clerk's Study\n\n## Who Is Here\nMira Vell (Mira), Townsfolk -- the player, the one arriving\n\n## Just Before This\nThe player has come from The Clerk's Study. Mira arrives in the study.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nNobody else is alive here.\nLying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.\n",
+          "user": "## Universe Details\nphysics: Ordinary physics.\ntechnology: Ink, lamps and hand carts.\n\n## Story Details\ntitle: The Furnished Rooms (engine sweep)\ngenre: town adventure\nsummary: Mira looks over the ward clerk's rooms.\n\n## The Place\nname: The Reading Room\ndescription: A quiet room of books, a desk under the window.\nlore: The clerk reads here when the ward is quiet.\nways out: The Clerk's Study\n\n## Who Is Here\nMira Vell (Mira), Townsfolk -- the player, the one arriving\n\n## Just Before This\nThe player has come from The Clerk's Study. Mira arrives in the study.\n\n## Instructions\n- The player has never been here. This is the first time they have set\n  foot in it\n- Narrate discovery: what catches them on the way in, before they\n  have made sense of the rest\n- Address the player as \"you\", in the present tense\n- One paragraph. Do not re-describe the place item by item -- the\n  description above is already what is here, and your job is the moment\n  of coming into it\n- Anyone listed above is here; write them as already present, not as\n  arriving. Do not add a person who is not on that list\n- Do not name a way out that is not on the list above\n- Respect the stated length of each field\n\n## Current State On Arrival\nThe place description is the world's original account. These current records\ntake precedence over its claims about people, items and wounds. Narrate the\nrecorded crossing result as part of this arrival.\nYou are unhurt.\nNobody else is alive here.\nFixed here, and not takeable: desk, bookcase.\nLying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.\n",
           "schema": {
             "name": "Scene::Schema",
             "description": null,
@@ -1038,8 +1038,8 @@
               "id": 1000000002,
               "acted_on_id": 1000000004,
               "acted_on_type": "Location",
-              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
-              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
+              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nFixed here, and not takeable: desk, bookcase.\nLying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
               "engine_fallback": 1,
               "is_opening": 0,
               "location_id": 1000000004,
@@ -1048,7 +1048,7 @@
               "resolved_by": "grammar",
               "story_id": 1000000001,
               "story_timestamp": "2026-09-28 09:01:00",
-              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
               "typed": "move The Reading Room"
             }
           ],
@@ -1742,8 +1742,8 @@
               "id": 1000000002,
               "acted_on_id": 1000000004,
               "acted_on_type": "Location",
-              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
-              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
+              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nFixed here, and not takeable: desk, bookcase.\nLying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
               "engine_fallback": 1,
               "is_opening": 0,
               "location_id": 1000000004,
@@ -1752,7 +1752,7 @@
               "resolved_by": "grammar",
               "story_id": 1000000001,
               "story_timestamp": "2026-09-28 09:01:00",
-              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
               "typed": "move The Reading Room"
             }
           ],
@@ -2446,8 +2446,8 @@
               "id": 1000000002,
               "acted_on_id": 1000000004,
               "acted_on_type": "Location",
-              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
-              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
+              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nFixed here, and not takeable: desk, bookcase.\nLying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
               "engine_fallback": 1,
               "is_opening": 0,
               "location_id": 1000000004,
@@ -2456,7 +2456,7 @@
               "resolved_by": "grammar",
               "story_id": 1000000001,
               "story_timestamp": "2026-09-28 09:01:00",
-              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
               "typed": "move The Reading Room"
             }
           ],
@@ -3150,8 +3150,8 @@
               "id": 1000000002,
               "acted_on_id": 1000000004,
               "acted_on_type": "Location",
-              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
-              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
+              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nFixed here, and not takeable: desk, bookcase.\nLying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
               "engine_fallback": 1,
               "is_opening": 0,
               "location_id": 1000000004,
@@ -3160,7 +3160,7 @@
               "resolved_by": "grammar",
               "story_id": 1000000001,
               "story_timestamp": "2026-09-28 09:01:00",
-              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
               "typed": "move The Reading Room"
             }
           ],
@@ -3854,8 +3854,8 @@
               "id": 1000000002,
               "acted_on_id": 1000000004,
               "acted_on_type": "Location",
-              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
-              "engine_fact": "You are unhurt.\nNobody else is alive here.\nLying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
+              "description": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "engine_fact": "You are unhurt.\nNobody else is alive here.\nFixed here, and not takeable: desk, bookcase.\nLying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife.\nYou are carrying: nothing.",
               "engine_fallback": 1,
               "is_opening": 0,
               "location_id": 1000000004,
@@ -3864,7 +3864,7 @@
               "resolved_by": "grammar",
               "story_id": 1000000001,
               "story_timestamp": "2026-09-28 09:01:00",
-              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Lying here: desk, bookcase, chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
+              "summary": "You arrive at The Reading Room. You are unhurt. Nobody else is alive here. Fixed here, and not takeable: desk, bookcase. Lying here: chair, lamp, ledger, journal, atlas, letter opener, brass letter knife. You are carrying: nothing.",
               "typed": "move The Reading Room"
             }
           ],

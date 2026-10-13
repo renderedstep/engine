@@ -5,7 +5,7 @@
 use crate::data;
 use crate::moment::{killed_by, one_toll};
 use crate::playthrough::Game;
-use crate::records::{flag, id, int, string, Records, Row};
+use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::revisit::Since;
 use crate::schemas;
 use serde_json::{json, Value};
@@ -455,10 +455,16 @@ impl<'a> Arrival<'a> {
                 names.join(", ")
             }
         };
-        parts.push(format!(
-            "Lying here: {}.",
-            items(game.items_noticed_in(Some(self.location)))
-        ));
+        // A fixed piece is not a thing lying here: it is told on a line of its
+        // own, as the narrator is told it, only when the room has one.
+        let (fixed, loose): (Vec<&Row>, Vec<&Row>) = game
+            .items_noticed_in(Some(self.location))
+            .into_iter()
+            .partition(|item| text(item, "tier") == Some(crate::kit::FIXTURE));
+        if !fixed.is_empty() {
+            parts.push(format!("Fixed here, and not takeable: {}.", items(fixed)));
+        }
+        parts.push(format!("Lying here: {}.", items(loose)));
         parts.push(format!("You are carrying: {}.", items(game.carried())));
         for toll in game
             .own("playthrough_tolls")
