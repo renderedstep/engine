@@ -1,6 +1,8 @@
 //! What the narrator is told of a furnished room: the pieces fixed in it on a
 //! line of their own, never among the things a player could pick up, and no
-//! such line at all in a room with nothing fixed in it.
+//! such line at all in a room with nothing fixed in it. And what the arrival
+//! writer is told of one today, which is not yet that: every piece, fixed or
+//! not, under "Lying here".
 
 use renderedstep_engine::engine::Engine;
 use renderedstep_engine::model::{Replay, Reply};
@@ -23,6 +25,23 @@ fn open(world: &str, title: &str) -> (Engine, i64) {
 
 fn narrate(engine: &mut Engine, playthrough: i64, line: &str, reply: Value) {
     let mut replay = Replay::new(vec![Reply::from_value(&reply).unwrap()]);
+    engine
+        .submit(playthrough, line, "told", &mut replay, &mut |_| {})
+        .unwrap();
+    replay.finish().unwrap();
+}
+
+/// A move whose arrival request says each of `includes` and none of
+/// `excludes`.
+fn arrive(engine: &mut Engine, playthrough: i64, line: &str, includes: &[&str], excludes: &[&str]) {
+    let mut reply = Reply::from_value(&json!({
+        "purpose": "arrival",
+        "content": { "description": "You come in.", "summary": "You come in." },
+    }))
+    .unwrap();
+    reply.prompt_includes = includes.iter().map(|text| text.to_string()).collect();
+    reply.prompt_excludes = excludes.iter().map(|text| text.to_string()).collect();
+    let mut replay = Replay::new(vec![reply]);
     engine
         .submit(playthrough, line, "told", &mut replay, &mut |_| {})
         .unwrap();
@@ -64,5 +83,49 @@ fn a_room_with_nothing_fixed_in_it_has_no_line_for_it() {
             "prompt_includes": ["Lying here, and takeable: "],
             "prompt_excludes": ["Fixed here"],
         }),
+    );
+}
+
+/// The baseline a change to the arrival writer's words has to move: today a
+/// furnished room's fixed pieces are told among the things lying in it, and
+/// nothing tells them apart.
+#[test]
+fn the_arrival_writer_is_told_a_furnished_rooms_fixed_pieces_as_lying_in_it() {
+    let (mut engine, playthrough) = open("the-furnished-rooms", "The Furnished Rooms");
+    arrive(
+        &mut engine,
+        playthrough,
+        "/go The Beech Clearing",
+        &["Lying here: old beech, fallen log, pine cone."],
+        &["Fixed here"],
+    );
+    arrive(
+        &mut engine,
+        playthrough,
+        "/go The Clerk's Study",
+        &["Lying here: desk, windowsill, coal scuttle, ward stamp, potted fern, lump of coal."],
+        &["Fixed here"],
+    );
+}
+
+#[test]
+fn the_arrival_writer_is_told_an_unfurnished_rooms_things_on_one_line() {
+    let (mut engine, playthrough) = open(
+        "a-clerk-with-somewhere-to-be",
+        "A Clerk With Somewhere To Be",
+    );
+    arrive(
+        &mut engine,
+        playthrough,
+        "/go The Landing",
+        &["Lying here: nothing."],
+        &["Fixed here"],
+    );
+    arrive(
+        &mut engine,
+        playthrough,
+        "/go The Records Office",
+        &["Lying here: quarter receipt."],
+        &["Fixed here"],
     );
 }
