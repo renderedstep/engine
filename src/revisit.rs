@@ -8,8 +8,10 @@
 //! ways out; and the story time. A turn that walks back into a room this
 //! game left before compares that record with the room as it is now and
 //! keeps the changes it found ([`Since`], step [`SINCE`]). Both are kept in
-//! every game, whoever tells it; the record is the engine's, and no prompt
-//! reads either.
+//! every game, whoever tells it. The player-narrates card shows the changes,
+//! and a narrated game's arrival writer is told them
+//! ([`crate::arrival::Arrival::since`]) and that nothing else changed; a
+//! return the game kept no record of is told to claim no change.
 //!
 //! WHAT WAS NOT NOTICED CANNOT HAVE CHANGED. In a game the player narrates,
 //! the things the record holds are the ones this game had stamped

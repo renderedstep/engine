@@ -194,16 +194,25 @@ fn event(game: &Study, summary: &str, source: &str, at: i64) {
     );
 }
 
-/// An arrival writer's answer that holds its request to leaving out `facts`.
-fn arrival_reply(facts: &[String]) -> Reply {
+/// An arrival writer's answer that holds its request to saying each of
+/// `includes` and none of `excludes`.
+fn arrival_reply(includes: &[&str], excludes: &[&str]) -> Reply {
     let mut reply = Reply::from_value(&json!({
         "purpose": "arrival",
         "content": { "description": "You come in.", "summary": "You come in." },
     }))
     .unwrap();
-    reply.prompt_excludes = facts.to_vec();
+    reply.prompt_includes = includes.iter().map(|line| line.to_string()).collect();
+    reply.prompt_excludes = excludes.iter().map(|line| line.to_string()).collect();
     reply
 }
+
+const SINCE_HEADING: &str = "## Since You Were Last Here";
+const RECORDED: &str = "- What has changed since they were last here is under \"Since You Were\n  \
+                        Last Here\" below. Nothing else has changed: do not invent a change";
+const UNRECORDED: &str = "- The game kept no record of what was here when they left, so do not\n  \
+                          narrate anything as changed since they were last here";
+const TODAY: &str = "what has changed while they were gone";
 
 fn kinds(since: &Since) -> Vec<(Kind, String)> {
     since
@@ -398,26 +407,37 @@ fn a_return_finds_what_changed_among_what_the_game_saw() {
 }
 
 #[test]
-fn a_narrated_game_keeps_the_same_record_and_tells_it_to_no_prompt() {
+fn a_narrated_game_keeps_the_same_record_and_tells_the_arrival_writer_what_changed() {
     let mut game = study(Mode::Narrated);
-    game.submit("/go The Beech Clearing", "out", vec![arrival_reply(&[])]);
+    game.submit(
+        "/go The Beech Clearing",
+        "out",
+        vec![arrival_reply(&[], &[SINCE_HEADING])],
+    );
     let ledger = game.thing("ledger");
     game.execute(
         "UPDATE items SET location_id = ?1 WHERE id = ?2",
         (STALL, ledger),
     );
     game.put(game.person("Wren Hale"), None);
-    let changed = vec![
-        "The ledger is gone.".to_string(),
-        "Wren Hale is no longer here.".to_string(),
-    ];
+    let block = format!(
+        "{SINCE_HEADING}\n\
+         The game kept what the player saw here when they last left, and compared\n\
+         it with what is here now. These are the only changes. Narrate them as\n\
+         what the player notices on coming back, in the order given.\n\
+         - The ledger is gone.\n\
+         - Wren Hale is no longer here.\n"
+    );
     let back = game.submit(
         "/go The Clerk's Study",
         "back",
-        vec![arrival_reply(&changed)],
+        vec![arrival_reply(&[RECORDED, &block], &[UNRECORDED, TODAY])],
     );
     let since = game.since(&back).expect("a return");
-    assert_eq!(since.facts(), changed);
+    assert_eq!(
+        since.facts(),
+        ["The ledger is gone.", "Wren Hale is no longer here."]
+    );
     // A narrated game was shown everything lying there, noticed or not.
     let names: Vec<&str> = since
         .seen
@@ -441,6 +461,51 @@ fn a_narrated_game_keeps_the_same_record_and_tells_it_to_no_prompt() {
         )
         .unwrap();
     assert_eq!(stamped, 0);
+
+    // Out and straight back: the record says nothing has changed.
+    game.submit(
+        "/go The Beech Clearing",
+        "out again",
+        vec![arrival_reply(&[RECORDED], &[])],
+    );
+    let unchanged = format!(
+        "{SINCE_HEADING}\n\
+         The game kept what the player saw here when they last left, and compared\n\
+         it with what is here now. Nothing the player saw has changed.\n"
+    );
+    game.submit(
+        "/go The Clerk's Study",
+        "back again",
+        vec![arrival_reply(
+            &[RECORDED, &unchanged],
+            &["- The ledger is gone."],
+        )],
+    );
+}
+
+/// A game that left a room before the record existed: its return is told to
+/// claim no change, and given no list.
+#[test]
+fn a_narrated_return_the_game_kept_no_record_of_claims_no_change() {
+    let mut game = study(Mode::Narrated);
+    game.submit(
+        "/go The Beech Clearing",
+        "out",
+        vec![arrival_reply(&[], &[])],
+    );
+    game.execute(
+        "UPDATE playthrough_commands SET journal = json_remove(journal, '$.steps.left')",
+        (),
+    );
+    let back = game.submit(
+        "/go The Clerk's Study",
+        "back",
+        vec![arrival_reply(
+            &[UNRECORDED],
+            &[RECORDED, SINCE_HEADING, TODAY],
+        )],
+    );
+    assert_eq!(game.since(&back), None);
 }
 
 #[test]

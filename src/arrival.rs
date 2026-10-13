@@ -6,6 +6,7 @@ use crate::data;
 use crate::moment::{killed_by, one_toll};
 use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, Records, Row};
+use crate::revisit::Since;
 use crate::schemas;
 use serde_json::{json, Value};
 
@@ -168,6 +169,10 @@ pub struct Arrival<'a> {
     /// The volitions the people here wrote as the party came in, by id: the
     /// reactions this arrival tells. Empty for an arrival nobody reacted to.
     pub reactions: &'a [i64],
+    /// What has changed in the room since this game last left it, as the
+    /// move found it before anybody there reacted ([`crate::revisit`]).
+    /// None where the game kept no record of leaving it.
+    pub since: Option<&'a Since>,
 }
 
 impl<'a> Arrival<'a> {
@@ -341,12 +346,43 @@ impl<'a> Arrival<'a> {
         None
     }
 
+    /// A return the game kept a record of leaving is told what changed
+    /// ([`Arrival::since_last_here`]) and that nothing else did; a return it
+    /// kept none of is told to claim no change at all.
     fn arrival_instructions(&self, at: f64) -> String {
-        match self.last_visit() {
-            None => data::scene_generator("arrival_first").to_string(),
-            Some(visit) => data::scene_generator("arrival_returning")
-                .replace("%{elapsed}", &distance_of_time_in_words(at - visit as f64)),
-        }
+        let Some(visit) = self.last_visit() else {
+            return data::scene_generator("arrival_first").to_string();
+        };
+        let key = if self.since.is_some() {
+            "arrival_returning"
+        } else {
+            "arrival_returning_unrecorded"
+        };
+        data::scene_generator(key)
+            .replace("%{elapsed}", &distance_of_time_in_words(at - visit as f64))
+    }
+
+    /// "Since You Were Last Here": what the move found changed, one engine
+    /// fact a line, or that nothing the player saw has; none on a first
+    /// visit, or where the game kept no record of leaving.
+    fn since_last_here(&self) -> Option<String> {
+        let since = self.since.filter(|_| self.last_visit().is_some())?;
+        let compared = "The game kept what the player saw here when they last left, and compared\n\
+                        it with what is here now.";
+        Some(if since.changes.is_empty() {
+            format!("{compared} Nothing the player saw has changed.")
+        } else {
+            format!(
+                "{compared} These are the only changes. Narrate them as\n\
+                 what the player notices on coming back, in the order given.\n{}",
+                since
+                    .changes
+                    .iter()
+                    .map(|change| format!("- {}", change.fact))
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            )
+        })
     }
 
     /// `Scene::ArrivalContext#facts`: what the records say on the way in.
@@ -491,6 +527,9 @@ impl<'a> Arrival<'a> {
                 facts.join("\n")
             ));
         }
+        if let Some(since) = self.since_last_here() {
+            prompt.push_str(&format!("\n## Since You Were Last Here\n{since}\n"));
+        }
         let reacted = self.reacted();
         if !reacted.is_empty() {
             prompt.push_str(&format!(
@@ -545,6 +584,7 @@ mod tests {
             game: None,
             opening: false,
             reactions: &[],
+            since: None,
         };
         assert_eq!(arrival(0, 3).last_visit(), Some(220));
         assert_eq!(arrival(1, 3).last_visit(), Some(160));
