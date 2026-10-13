@@ -672,6 +672,44 @@ fn with_no_model_access_an_effect_is_told_in_the_engines_own_words() {
     );
 }
 
+#[test]
+fn with_no_model_access_a_look_at_a_plain_thing_is_told_in_the_engines_own_words() {
+    use renderedstep_engine::model::{Live, Route};
+    let (mut engine, playthrough) = gate();
+    let mut live = Live::new(Route::None);
+    let submitted = engine
+        .submit(
+            playthrough,
+            "/examine red coin",
+            "t",
+            &mut live,
+            &mut |_| {},
+        )
+        .unwrap();
+    assert!(submitted.turned.setup);
+    assert_eq!(
+        engine
+            .store()
+            .connection()
+            .query_row(
+                "SELECT description FROM scenes WHERE id = ?1 AND engine_fallback = 1 \
+                 AND engine_fact IS NULL",
+                [submitted.turned.scene.unwrap()],
+                |row| row.get::<_, String>(0)
+            )
+            .unwrap(),
+        "You look closely at the red coin."
+    );
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM items WHERE name = 'red coin' AND character_id IS NOT NULL"
+        ),
+        0,
+        "a look moves nothing"
+    );
+}
+
 /// Answers each post with the next body, and keeps what was sent.
 struct Scripted {
     answers: Vec<(u16, serde_json::Value)>,
