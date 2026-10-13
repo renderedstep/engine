@@ -55,6 +55,56 @@ fn the_take_drop_and_read_facts_name_an_article_bearing_thing_once() {
     }
 }
 
+/// A look at a thing with nothing written on it, in each of its four forms:
+/// with a description or none, lying here or carried, and its engine words.
+/// Only the forms with no description say nothing is written on it.
+#[test]
+fn the_look_fact_says_what_the_game_holds_and_where_the_thing_is() {
+    let odile = row(json!({ "id": 2, "fullname": "Odile Vance" }));
+    let stamp = row(json!({ "id": 1, "name": "ward stamp", "description": "A brass stamp." }));
+    let bare = row(json!({ "id": 1, "name": "a ward stamp", "description": null }));
+    let described = |now: &str| {
+        format!(
+            "ON THIS TURN Odile Vance looked closely at the ward stamp. The game's description \
+             of it, written when it was put in the world: \"A brass stamp.\" Describe how it looks \
+             from that, in your own words, and do not contradict it. Where that description says \
+             where it is or who has it, it may be out of date: {now}. The look moved nothing: nothing was lifted, opened, drawn out or taken into \
+             anybody's hands."
+        )
+    };
+    let undescribed = |now: &str| {
+        format!(
+            "ON THIS TURN the player looked closely at the ward stamp. The game records nothing \
+             of it beyond its name. Now {now}. Nothing is written on it. The look moved nothing: \
+             nothing was lifted, opened, drawn out or taken into anybody's hands."
+        )
+    };
+    assert_eq!(
+        facts::examined(&stamp, Some(&odile), false),
+        described("it is lying here")
+    );
+    assert_eq!(
+        facts::examined(&stamp, Some(&odile), true),
+        described("they are carrying it")
+    );
+    assert_eq!(
+        facts::examined(&bare, None, false),
+        undescribed("it is lying here")
+    );
+    assert_eq!(
+        facts::examined(&bare, None, true),
+        undescribed("they are carrying it")
+    );
+    assert_eq!(
+        facts::examined_words(&stamp),
+        "You look closely at the ward stamp. A brass stamp."
+    );
+    assert_eq!(
+        facts::examined_words(&bare),
+        "You look closely at the ward stamp."
+    );
+}
+
 /// Every way a throw comes out names an article-bearing thing once, given
 /// the bare name a turn hands the throw fact.
 #[test]
