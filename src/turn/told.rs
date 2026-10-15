@@ -818,12 +818,18 @@ impl<'s, 'm> Turn<'s, 'm> {
                 fact,
             })
         })?;
-        if matches!(choice.kind.as_str(), "search" | "open") {
-            // What a search found reaches the narrator as the room's own
-            // lines (what lies here); the engine's sentence for the search
-            // waits on the owner's wording, and stands only where no
-            // narrator answers.
-            return self.narrate(command, None, None, None, Some(fact));
+        if let (Some(piece), "search" | "open") = (&choice.item, choice.kind.as_str()) {
+            // The narrator is told what the search found; the engine's own
+            // sentence stands only where no narrator answers.
+            let row = self.m.row("items", piece.id)?;
+            let told = facts::searched(
+                &row,
+                &self.m.found_in(piece.id),
+                self.m.player().as_ref(),
+                choice.kind == "open",
+                text(&row, "holds") == Some("closed"),
+            );
+            return self.narrate(command, Some(told), Some("use"), None, Some(fact));
         }
         self.narrate(command, Some(fact.clone()), Some("use"), None, Some(fact))
     }

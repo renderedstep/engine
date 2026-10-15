@@ -25,6 +25,7 @@ use crate::roll::{self, Seed};
 use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing};
 use crate::spot;
 use crate::store::Store;
+use crate::text::to_sentence;
 use crate::volition::{Asked, Judgment};
 use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_mechanic};
 use serde_json::Value;
@@ -1141,7 +1142,7 @@ impl<'s> Mechanics<'s> {
         &mut self,
         choice: &Choice,
     ) -> Result<(&'static str, String), Error> {
-        let offered = self.room().attempts();
+        let offered = self.room().physical_actions();
         let Some(choice) = offered.into_iter().find(|offer| offer == choice) else {
             return Ok((
                 "rejected",
@@ -4108,16 +4109,6 @@ fn weights_for(pursuit: Option<&str>) -> Option<&'static [(String, i64)]> {
 /// `"1 round"`, `"2 rounds"`.
 fn count(number: i64, noun: &str) -> String {
     format!("{number} {noun}{}", if number == 1 { "" } else { "s" })
-}
-
-/// `Array#to_sentence`: `a, b, and c`.
-fn to_sentence(words: &[String]) -> String {
-    match words {
-        [] => String::new(),
-        [one] => one.clone(),
-        [one, two] => format!("{one} and {two}"),
-        [rest @ .., last] => format!("{}, and {last}", rest.join(", ")),
-    }
 }
 
 /// `Playthrough::Volition.shape_of`: `move:12` is a `move`.

@@ -529,7 +529,7 @@ impl<'a> Grammar<'a> {
         let offer = kind == "offer";
         let mut choices: Vec<Choice> = self
             .room
-            .attempts()
+            .physical_actions()
             .into_iter()
             .filter(|choice| choice.kind == kind)
             .collect();

@@ -8,7 +8,7 @@
 //! placeholders standing where the records would go.
 
 use crate::records::{flag, string, text, Row};
-use crate::text::{is_blank, presence, upcase_first};
+use crate::text::{is_blank, presence, to_sentence, upcase_first};
 
 /// `Item#definite_name`: "the" in front of the name, with any article the
 /// name arrived with taken off first.
@@ -73,6 +73,55 @@ pub fn taken(item: &Row, taker: Option<&Row>, from: Option<&Row>) -> String {
         taker.map_or("", |who| string(who, "fullname")),
         definite_name(item),
         upcase_first(&definite_name(item)),
+    )
+}
+
+/// A search of a fixed piece, or the opening of a shut one (`opened`): what
+/// it found inside, lying here now and picked up by nobody. `closed` is
+/// whether the piece was shut, which the search leaves standing open; a
+/// hollow piece's inside lay in plain view and nothing about it opens.
+pub fn searched(
+    piece: &Row,
+    found: &[Row],
+    searcher: Option<&Row>,
+    opened: bool,
+    closed: bool,
+) -> String {
+    let verb = if opened { "opened" } else { "searched" };
+    let open = if closed {
+        format!(" {} now stands open.", upcase_first(&definite_name(piece)))
+    } else {
+        String::new()
+    };
+    let start = format!(
+        "ON THIS TURN, and not before it, {} {verb} {}.",
+        searcher.map_or("the player", |who| string(who, "fullname")),
+        definite_name(piece),
+    );
+    if found.is_empty() {
+        return format!(
+            "{start} There was nothing inside it.{open} Nothing was found and nothing moved: the \
+             search is what has just happened and it is what to narrate. Do not write anything \
+             being found, taken out or carried."
+        );
+    }
+    let names: Vec<String> = found.iter().map(definite_name).collect();
+    let (were, them) = if found.len() == 1 {
+        (
+            "it was not there to be seen before this turn, and now it is",
+            "it",
+        )
+    } else {
+        (
+            "those were not there to be seen before this turn, and now they are",
+            "them",
+        )
+    };
+    format!(
+        "{start} Inside it they found {}, and nothing else: {were} lying here and takeable.{open} \
+         Nothing was picked up: finding {them} is what has just happened and it is what to \
+         narrate. Do not write anything else being found, taken out or carried.",
+        to_sentence(&names),
     )
 }
 

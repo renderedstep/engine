@@ -55,6 +55,57 @@ fn the_take_drop_and_read_facts_name_an_article_bearing_thing_once() {
     }
 }
 
+/// A search in each of its forms: finding more than one thing, one thing and
+/// nothing, searched or opened, in a shut piece or a hollow one, whose
+/// inside lay in plain view and which nothing opens.
+#[test]
+fn the_search_fact_says_what_was_found_and_that_nothing_was_picked_up() {
+    let mira = row(json!({ "id": 2, "fullname": "Mira Vell" }));
+    let desk = row(json!({ "id": 1, "name": "desk", "holds": "closed" }));
+    let crate_ = row(json!({ "id": 3, "name": "a crate", "holds": "closed" }));
+    let scuttle = row(json!({ "id": 4, "name": "coal scuttle", "holds": "hollow" }));
+    let papers = row(json!({ "id": 5, "name": "sheaf of papers" }));
+    let letter = row(json!({ "id": 6, "name": "the letter" }));
+    let coal = row(json!({ "id": 7, "name": "lump of coal" }));
+    let found = [papers, letter.clone()];
+    assert_eq!(
+        facts::searched(&desk, &found, Some(&mira), false, true),
+        "ON THIS TURN, and not before it, Mira Vell searched the desk. Inside it they found the \
+         sheaf of papers and the letter, and nothing else: those were not there to be seen \
+         before this turn, and now they are lying here and takeable. The desk now stands open. \
+         Nothing was picked up: finding them is what has just happened and it is what to \
+         narrate. Do not write anything else being found, taken out or carried."
+    );
+    assert!(
+        facts::searched(&desk, &found, Some(&mira), true, true).starts_with(
+            "ON THIS TURN, and not before it, Mira Vell opened the desk. Inside it they found"
+        )
+    );
+    assert_eq!(
+        facts::searched(&desk, &[letter], Some(&mira), false, true),
+        "ON THIS TURN, and not before it, Mira Vell searched the desk. Inside it they found the \
+         letter, and nothing else: it was not there to be seen before this turn, and now it is \
+         lying here and takeable. The desk now stands open. Nothing was picked up: finding it is \
+         what has just happened and it is what to narrate. Do not write anything else being \
+         found, taken out or carried."
+    );
+    assert_eq!(
+        facts::searched(&crate_, &[], Some(&mira), false, true),
+        "ON THIS TURN, and not before it, Mira Vell searched the crate. There was nothing inside \
+         it. The crate now stands open. Nothing was found and nothing moved: the search is what \
+         has just happened and it is what to narrate. Do not write anything being found, taken \
+         out or carried."
+    );
+    assert_eq!(
+        facts::searched(&scuttle, &[coal], None, false, false),
+        "ON THIS TURN, and not before it, the player searched the coal scuttle. Inside it they \
+         found the lump of coal, and nothing else: it was not there to be seen before this turn, \
+         and now it is lying here and takeable. Nothing was picked up: finding it is what has \
+         just happened and it is what to narrate. Do not write anything else being found, taken \
+         out or carried."
+    );
+}
+
 /// A look at a thing with nothing written on it, in each of its four forms:
 /// with a description or none, lying here or carried, and its engine words.
 /// Only the forms with no description say nothing is written on it.

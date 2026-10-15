@@ -148,6 +148,16 @@ pub fn upcase_first(text: &str) -> String {
     }
 }
 
+/// `Array#to_sentence`: `a, b, and c`.
+pub fn to_sentence(words: &[String]) -> String {
+    match words {
+        [] => String::new(),
+        [one] => one.clone(),
+        [one, two] => format!("{one} and {two}"),
+        [rest @ .., last] => format!("{}, and {last}", rest.join(", ")),
+    }
+}
+
 /// Ruby's `String#casecmp?`: equal once both are case-folded.
 pub fn casecmp(a: &str, b: &str) -> bool {
     ruby_downcase(a) == ruby_downcase(b)

@@ -14,7 +14,7 @@
 //! out), so nothing in it can be named, taken or listed until it does.
 //!
 //! A SEARCH IS A RECORD OF THE GAME'S. It stamps `searched_at` on this game's
-//! copy of the piece, which is what `Room::searches` reads, so a piece is
+//! copy of the piece, which is what `Room::physical_actions` reads, so a piece is
 //! searched once a game. A hollow piece's inside lies in plain view and is
 //! already copied: searching it draws nothing. In a game the player narrates
 //! the search is the tier that notices what lies inside a piece
@@ -57,17 +57,7 @@ impl Mechanics<'_> {
             }
         }
         self.update("items", piece.id, vec![("searched_at", Value::from(at))])?;
-        let found: Vec<Row> = self
-            .records
-            .select("items", |item| {
-                int(item, "within_id") == Some(piece.id)
-                    && text(item, "how") == Some("in")
-                    && int(item, "character_id").is_none()
-                    && text(item, "disposition") == Some("intact")
-            })
-            .into_iter()
-            .cloned()
-            .collect();
+        let found = self.found_in(piece.id);
         if self.game().player_narrates() {
             for item in found.iter().filter(|item| !crate::noticed::stamped(item)) {
                 self.update("items", id(item), vec![("noticed_at", Value::from(at))])?;
@@ -91,10 +81,25 @@ impl Mechanics<'_> {
             format!(
                 "You {verb} {piece}. In it you found {}, which {} here now; you have not \
                  picked anything up.",
-                super::to_sentence(&names),
+                crate::text::to_sentence(&names),
                 if found.len() == 1 { "lies" } else { "lie" }
             ),
         ))
+    }
+
+    /// What lies inside this game's piece, whole and in nobody's hands: what
+    /// a search of it finds.
+    pub(super) fn found_in(&self, piece: i64) -> Vec<Row> {
+        self.records
+            .select("items", |item| {
+                int(item, "within_id") == Some(piece)
+                    && text(item, "how") == Some("in")
+                    && int(item, "character_id").is_none()
+                    && text(item, "disposition") == Some("intact")
+            })
+            .into_iter()
+            .cloned()
+            .collect()
     }
 
     /// `Item::Contents#reveal!`: a closed piece's inside, drawn and written

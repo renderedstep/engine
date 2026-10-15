@@ -64,7 +64,7 @@ fn uniq(names: impl IntoIterator<Item = String>) -> Vec<String> {
 impl SlashMenu {
     pub fn for_room(room: &Room) -> SlashMenu {
         let mut kinds: Vec<String> = Vec::new();
-        let choices = room.attempts();
+        let choices = room.physical_actions();
         for choice in &choices {
             if !kinds.contains(&choice.kind) {
                 kinds.push(choice.kind.clone());

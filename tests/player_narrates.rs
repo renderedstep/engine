@@ -1325,12 +1325,26 @@ fn a_resumed_turn_notices_what_the_uninterrupted_turn_did() {
     let (mut straight, a) = furnished(&LOOSE, Mode::PlayerNarrates);
     let (mut stopped, b) = furnished(&LOOSE, Mode::PlayerNarrates);
     let mut steps_stopped = Vec::new();
-    for turn in 0..8 {
+    // The first turn looks around, as typed; every other is the game's own
+    // act, until a turn has stopped after every step.
+    for turn in 0..40 {
         let token = format!("act-{turn}");
-        let mut replay = Replay::new(Vec::new());
-        straight
-            .act(a, &token, false, &mut replay, &mut |_| {})
-            .unwrap();
+        let play = |engine: &mut Engine, game: i64, stop: Option<&str>| {
+            let mut replay = Replay::new(Vec::new());
+            if turn == 0 {
+                engine.submit_stopping(
+                    game,
+                    noticed::LOOK_LINE,
+                    &token,
+                    &mut replay,
+                    &mut |_| {},
+                    stop,
+                )
+            } else {
+                engine.act_stopping(game, &token, false, &mut replay, &mut |_| {}, stop)
+            }
+        };
+        play(&mut straight, a, None).unwrap();
         let journal = straight
             .store()
             .connection()
@@ -1347,22 +1361,22 @@ fn a_resumed_turn_notices_what_the_uninterrupted_turn_did() {
         else {
             panic!("turn {turn} noticed nothing at all: {journal}");
         };
-        let mut replay = Replay::new(Vec::new());
-        match stopped.act_stopping(b, &token, false, &mut replay, &mut |_| {}, Some(stop)) {
+        match play(&mut stopped, b, Some(stop)) {
             Err(Error::Stopped(step)) => assert_eq!(&step, stop),
             other => panic!("expected the turn to stop after {stop}, got {other:?}"),
         }
-        let mut replay = Replay::new(Vec::new());
-        stopped
-            .act(b, &token, false, &mut replay, &mut |_| {})
-            .unwrap();
+        play(&mut stopped, b, None).unwrap();
         assert_eq!(
             stamps(&straight, a),
             stamps(&stopped, b),
             "turn {turn}, stopped after {stop}"
         );
         steps_stopped.push(*stop);
-        if straight.glance(a).unwrap().over {
+        if straight.glance(a).unwrap().over
+            || noticed::STEPS
+                .iter()
+                .all(|step| steps_stopped.contains(step))
+        {
             break;
         }
     }
