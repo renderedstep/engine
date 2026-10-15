@@ -99,7 +99,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []
@@ -295,7 +296,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []

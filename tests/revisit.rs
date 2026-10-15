@@ -293,8 +293,8 @@ fn a_return_finds_what_changed_among_what_the_game_saw() {
         "UPDATE items SET disposition = 'broken' WHERE id = ?1",
         [mug],
     );
-    // The note shut in the desk was never noticed: taking it out is no news.
-    let note = game.thing("folded note");
+    // The coal in the scuttle was never noticed: taking it out is no news.
+    let note = game.thing("lump of coal");
     game.execute(
         "UPDATE items SET location_id = ?1, within_id = NULL, how = NULL WHERE id = ?2",
         (STALL, note),
@@ -445,10 +445,10 @@ fn a_narrated_game_keeps_the_same_record_and_tells_the_arrival_writer_what_chang
         .iter()
         .map(|thing| thing.name.as_str())
         .collect();
-    assert!(
-        names.contains(&"folded note") && names.contains(&"lump of coal"),
-        "{names:?}"
-    );
+    assert!(names.contains(&"lump of coal"), "{names:?}");
+    // But not what lies shut in a piece the game never searched: it holds
+    // no copy of it.
+    assert!(!names.contains(&"folded note"), "{names:?}");
     // And nothing is stamped.
     let stamped: i64 = game
         .engine

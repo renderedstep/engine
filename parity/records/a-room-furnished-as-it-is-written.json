@@ -448,7 +448,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000014,
@@ -473,7 +474,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000015,
@@ -498,7 +500,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000016,
@@ -523,7 +526,8 @@
               "within_id": 1000000013,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000017,
@@ -548,7 +552,8 @@
               "within_id": 1000000014,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000018,
@@ -573,7 +578,8 @@
               "within_id": 1000000015,
               "how": "in",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000019,
@@ -598,7 +604,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000020,
@@ -623,7 +630,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000021,
@@ -648,7 +656,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000022,
@@ -673,7 +682,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000023,
@@ -698,7 +708,8 @@
               "within_id": 1000000019,
               "how": "on",
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000024,
@@ -723,7 +734,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000025,
@@ -748,7 +760,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000026,
@@ -773,7 +786,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000027,
@@ -798,7 +812,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000028,
@@ -823,7 +838,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000029,
@@ -848,7 +864,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000030,
@@ -873,7 +890,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000031,
@@ -898,7 +916,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000032,
@@ -923,7 +942,8 @@
               "within_id": 1000000028,
               "how": "on",
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000033,
@@ -948,7 +968,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000034,
@@ -973,7 +994,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000035,
@@ -998,7 +1020,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000036,
@@ -1023,7 +1046,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []
@@ -1152,7 +1176,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000014,
@@ -1177,7 +1202,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000015,
@@ -1202,7 +1228,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000016,
@@ -1227,7 +1254,8 @@
               "within_id": 1000000013,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000017,
@@ -1252,7 +1280,8 @@
               "within_id": 1000000014,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000018,
@@ -1277,7 +1306,8 @@
               "within_id": 1000000015,
               "how": "in",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000019,
@@ -1302,7 +1332,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000020,
@@ -1327,7 +1358,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000021,
@@ -1352,7 +1384,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000022,
@@ -1377,7 +1410,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000023,
@@ -1402,7 +1436,8 @@
               "within_id": 1000000019,
               "how": "on",
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000024,
@@ -1427,7 +1462,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000025,
@@ -1452,7 +1488,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000026,
@@ -1477,7 +1514,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000027,
@@ -1502,7 +1540,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000028,
@@ -1527,7 +1566,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000029,
@@ -1552,7 +1592,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000030,
@@ -1577,7 +1618,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000031,
@@ -1602,7 +1644,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000032,
@@ -1627,7 +1670,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000033,
@@ -1652,7 +1696,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000034,
@@ -1677,7 +1722,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000035,
@@ -1702,7 +1748,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000036,
@@ -1727,7 +1774,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []
@@ -1856,7 +1904,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000014,
@@ -1881,7 +1930,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000015,
@@ -1906,7 +1956,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000016,
@@ -1931,7 +1982,8 @@
               "within_id": 1000000013,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000017,
@@ -1956,7 +2008,8 @@
               "within_id": 1000000014,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000018,
@@ -1981,7 +2034,8 @@
               "within_id": 1000000015,
               "how": "in",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000019,
@@ -2006,7 +2060,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000020,
@@ -2031,7 +2086,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000021,
@@ -2056,7 +2112,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000022,
@@ -2081,7 +2138,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000023,
@@ -2106,7 +2164,8 @@
               "within_id": 1000000019,
               "how": "on",
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000024,
@@ -2131,7 +2190,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000025,
@@ -2156,7 +2216,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000026,
@@ -2181,7 +2242,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000027,
@@ -2206,7 +2268,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000028,
@@ -2231,7 +2294,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000029,
@@ -2256,7 +2320,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000030,
@@ -2281,7 +2346,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000031,
@@ -2306,7 +2372,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000032,
@@ -2331,7 +2398,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000033,
@@ -2356,7 +2424,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000034,
@@ -2381,7 +2450,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000035,
@@ -2406,7 +2476,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000036,
@@ -2431,7 +2502,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []
@@ -2560,7 +2632,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000014,
@@ -2585,7 +2658,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000015,
@@ -2610,7 +2684,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000016,
@@ -2635,7 +2710,8 @@
               "within_id": 1000000013,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000017,
@@ -2660,7 +2736,8 @@
               "within_id": 1000000014,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000018,
@@ -2685,7 +2762,8 @@
               "within_id": 1000000015,
               "how": "in",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000019,
@@ -2710,7 +2788,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000020,
@@ -2735,7 +2814,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000021,
@@ -2760,7 +2840,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000022,
@@ -2785,7 +2866,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000023,
@@ -2810,7 +2892,8 @@
               "within_id": 1000000019,
               "how": "on",
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000024,
@@ -2835,7 +2918,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000025,
@@ -2860,7 +2944,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000026,
@@ -2885,7 +2970,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000027,
@@ -2910,7 +2996,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000028,
@@ -2935,7 +3022,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000029,
@@ -2960,7 +3048,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000030,
@@ -2985,7 +3074,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000031,
@@ -3010,7 +3100,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000032,
@@ -3035,7 +3126,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000033,
@@ -3060,7 +3152,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000034,
@@ -3085,7 +3178,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000035,
@@ -3110,7 +3204,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000036,
@@ -3135,7 +3230,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []
@@ -3264,7 +3360,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000014,
@@ -3289,7 +3386,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000015,
@@ -3314,7 +3412,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000016,
@@ -3339,7 +3438,8 @@
               "within_id": 1000000013,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000017,
@@ -3364,7 +3464,8 @@
               "within_id": 1000000014,
               "how": "on",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000018,
@@ -3389,7 +3490,8 @@
               "within_id": 1000000015,
               "how": "in",
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000019,
@@ -3414,7 +3516,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000020,
@@ -3439,7 +3542,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000021,
@@ -3464,7 +3568,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000022,
@@ -3489,7 +3594,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000023,
@@ -3514,7 +3620,8 @@
               "within_id": 1000000019,
               "how": "on",
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000024,
@@ -3539,7 +3646,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000025,
@@ -3564,7 +3672,8 @@
               "within_id": 1000000020,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000026,
@@ -3589,7 +3698,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000027,
@@ -3614,7 +3724,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000028,
@@ -3639,7 +3750,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000029,
@@ -3664,7 +3776,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/bookcase",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000030,
@@ -3689,7 +3802,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/chair",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000031,
@@ -3714,7 +3828,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/lamp",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000032,
@@ -3739,7 +3854,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/desk/ledger",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000033,
@@ -3764,7 +3880,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/journal",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000034,
@@ -3789,7 +3906,8 @@
               "within_id": 1000000029,
               "how": "on",
               "kit_key": "study/bookcase/atlas",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000035,
@@ -3814,7 +3932,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "study/loose/letter opener",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000036,
@@ -3839,7 +3958,8 @@
               "within_id": null,
               "how": null,
               "kit_key": null,
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []

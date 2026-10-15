@@ -1,0 +1,116 @@
+---
+story: The Furnished Rooms
+steps:
+- id: in-the-study
+  type: look
+  expect:
+    location: The Clerk's Study (realized)
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - ward stamp
+    - potted fern
+    - lump of coal
+    changed: false
+    refused: false
+- id: the-shut-desk-holds-nothing-to-take-yet
+  type: take the pen
+  expect:
+    refused: true
+    changed: false
+- id: search-the-desk
+  type: "/search desk"
+  expect:
+    understood: use -> desk
+    changed: true
+    refused: false
+    carrying: []
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - ward stamp
+    - potted fern
+    - lump of coal
+    - sheaf of papers
+    - letter
+- id: the-desk-is-searched-once-a-game
+  type: "/search desk"
+  expect:
+    refused: true
+    changed: false
+- id: and-cannot-be-opened-again
+  type: "/open desk"
+  expect:
+    refused: true
+    changed: false
+- id: the-scuttle-holds-what-it-held
+  type: rummage coal scuttle
+  expect:
+    understood: use -> coal scuttle
+    changed: true
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - ward stamp
+    - potted fern
+    - lump of coal
+    - sheaf of papers
+    - letter
+- id: the-letter-comes-out-of-the-drawer
+  type: take the letter
+  expect:
+    understood: take -> letter
+    changed: true
+    carrying:
+    - letter
+- id: a-second-game-finds-the-desk-shut
+  type: look
+  player: second
+  expect:
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - ward stamp
+    - potted fern
+    - lump of coal
+    carrying: []
+- id: and-opens-it-on-what-the-first-found
+  type: "/open desk"
+  player: second
+  expect:
+    understood: use -> desk
+    changed: true
+    here:
+    - desk
+    - windowsill
+    - coal scuttle
+    - ward stamp
+    - potted fern
+    - lump of coal
+    - sheaf of papers
+    - letter
+- id: to-the-stall
+  type: go to Cinder Lane Stall
+  expect:
+    changed: true
+    location: Cinder Lane Stall (realized)
+    carrying:
+    - letter
+- id: open-the-crate
+  type: "/open crate"
+  expect:
+    understood: use -> crate
+    changed: true
+    here:
+    - market stall
+    - crate
+    - apple
+- id: search-the-market-stall
+  type: "/search market stall"
+  expect:
+    refused: true
+    changed: false

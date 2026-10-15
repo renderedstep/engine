@@ -1048,12 +1048,15 @@ fn arriving_notices_every_fixed_piece_and_a_rolled_few_heaviest_first() {
         unseen.iter().all(|row| rank(row) <= lightest_seen),
         "a lighter thing was noticed before a heavier one"
     );
-    for hidden in ["folded note", "lump of coal"] {
-        assert!(
-            !noticed::stamped(named(&here, hidden)),
-            "{hidden} is shut away"
-        );
-    }
+    assert!(
+        !noticed::stamped(named(&here, "lump of coal")),
+        "the lump of coal lies inside the scuttle"
+    );
+    assert!(
+        here.iter()
+            .all(|row| text(row, "name") != Some("folded note")),
+        "the folded note is shut in the desk, and this game has not searched it"
+    );
     let glance = engine.glance(playthrough).unwrap();
     shows_only_what_is_noticed("the-furnished-rooms", &engine, playthrough, &glance);
     assert_eq!(glance.counts.unnoticed, unseen.len());
@@ -1118,16 +1121,29 @@ fn a_turn_in_the_room_notices_one_more_and_a_look_shows_the_rest() {
         .flat_map(|verb| verb.targets.iter())
         .all(|target| target.kind.as_deref() != Some(noticed::LOOK)));
     let here = lying_here(&engine, playthrough);
-    for hidden in ["folded note", "lump of coal"] {
-        assert!(
-            !noticed::stamped(named(&here, hidden)),
-            "a look found {hidden}"
-        );
-    }
+    assert!(
+        !noticed::stamped(named(&here, "lump of coal")),
+        "a look found the lump of coal"
+    );
+    assert!(here
+        .iter()
+        .all(|row| text(row, "name") != Some("folded note")));
     // Nothing is left to notice, so a turn in the room notices nothing.
     let before = noticed_ids(&engine, playthrough);
     submit(&mut engine, playthrough, "/inspect desk", "after");
     assert_eq!(noticed_ids(&engine, playthrough), before);
+    // A search is the tier that finds what lies inside a piece.
+    let searched = submit(&mut engine, playthrough, "/search desk", "search");
+    assert!(searched.turned.refusal.is_none());
+    let here = lying_here(&engine, playthrough);
+    assert!(noticed::stamped(named(&here, "folded note")));
+    assert!(int(named(&here, "desk"), "searched_at").is_some());
+    let searched = submit(&mut engine, playthrough, "/search coal scuttle", "scuttle");
+    assert!(searched.turned.refusal.is_none());
+    assert!(noticed::stamped(named(
+        &lying_here(&engine, playthrough),
+        "lump of coal"
+    )));
 }
 
 #[test]

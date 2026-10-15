@@ -78,6 +78,7 @@ column items.noticed_at datetime(6) pk=0
 column items.playthrough_id integer pk=0
 column items.properties text pk=0
 column items.readable boolean not null default FALSE pk=0
+column items.searched_at datetime(6) pk=0
 column items.template_id integer pk=0
 column items.tier varchar not null default 'portable' pk=0
 column items.updated_at datetime(6) not null pk=0

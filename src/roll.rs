@@ -33,6 +33,9 @@ pub const CHOICE: i128 = 14;
 /// `Roll::NOTICE`: how many loose things a game the player narrates notices
 /// walking into a room, and which one more it notices on a turn spent there.
 pub const NOTICE: i128 = 15;
+/// `Roll::CONTENTS`: what lies inside a closed piece, drawn the first time
+/// anybody searches it, by the piece's own row.
+pub const CONTENTS: i128 = 16;
 
 /// The five parts of a seed. Unset parts are 0.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

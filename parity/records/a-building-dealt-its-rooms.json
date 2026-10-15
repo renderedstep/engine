@@ -1182,7 +1182,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/workbench",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000002,
@@ -1207,7 +1208,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/tool rack",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000003,
@@ -1232,7 +1234,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/crate",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000004,
@@ -1257,7 +1260,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/forge",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000005,
@@ -1282,7 +1286,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/stool",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000006,
@@ -1307,7 +1312,8 @@
               "within_id": 1000000001,
               "how": "on",
               "kit_key": "workshop/workbench/tin of grease",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000007,
@@ -1332,7 +1338,8 @@
               "within_id": 1000000002,
               "how": "on",
               "kit_key": "workshop/tool rack/coil of wire",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000008,
@@ -1357,7 +1364,8 @@
               "within_id": 1000000002,
               "how": "on",
               "kit_key": "workshop/tool rack/mallet",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000009,
@@ -1382,7 +1390,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/wood shaving",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000010,
@@ -1407,7 +1416,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/rag",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000011,
@@ -1432,7 +1442,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/stub of chalk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000012,
@@ -1457,7 +1468,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/nail",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000013,
@@ -1482,7 +1494,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/rivet",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000014,
@@ -1507,7 +1520,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/workbench",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000015,
@@ -1532,7 +1546,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/tool rack",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000016,
@@ -1557,7 +1572,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/crate",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000017,
@@ -1582,7 +1598,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/forge",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000018,
@@ -1607,7 +1624,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/stool",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000019,
@@ -1632,7 +1650,8 @@
               "within_id": 1000000014,
               "how": "on",
               "kit_key": "workshop/workbench/tin of grease",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000020,
@@ -1657,7 +1676,8 @@
               "within_id": 1000000015,
               "how": "on",
               "kit_key": "workshop/tool rack/coil of wire",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000021,
@@ -1682,7 +1702,8 @@
               "within_id": 1000000015,
               "how": "on",
               "kit_key": "workshop/tool rack/mallet",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000022,
@@ -1707,7 +1728,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/wood shaving",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000023,
@@ -1732,7 +1754,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/rag",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000024,
@@ -1757,7 +1780,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/stub of chalk",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000025,
@@ -1782,7 +1806,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/nail",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             },
             {
               "id": 1000000026,
@@ -1807,7 +1832,8 @@
               "within_id": null,
               "how": null,
               "kit_key": "workshop/loose/rivet",
-              "noticed_at": null
+              "noticed_at": null,
+              "searched_at": null
             }
           ],
           "removed": []

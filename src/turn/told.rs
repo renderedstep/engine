@@ -155,6 +155,16 @@ pub struct Turn<'s, 'm> {
     unwritten: bool,
 }
 
+/// What a scene records the turn did (`scenes.resolved_action`): the
+/// intent, but `search` for a search or an opening, which the game reports
+/// as its own outcome.
+fn resolved_action(intent: &Intent) -> &str {
+    match &intent.physical {
+        Some(choice) if matches!(choice.kind.as_str(), "search" | "open") => "search",
+        _ => intent.action.as_str(),
+    }
+}
+
 fn model(failure: Failure) -> Error {
     Error::Model(failure)
 }
@@ -643,7 +653,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             vec![
                 ("typed", Value::from(typed)),
                 ("resolved_by", Value::from(resolved_by)),
-                ("resolved_action", Value::from(intent.action.as_str())),
+                ("resolved_action", Value::from(resolved_action(intent))),
                 ("acted_on_type", kind),
                 ("acted_on_id", subject),
             ],
@@ -767,6 +777,13 @@ impl<'s, 'm> Turn<'s, 'm> {
                 fact,
             })
         })?;
+        if matches!(choice.kind.as_str(), "search" | "open") {
+            // What a search found reaches the narrator as the room's own
+            // lines (what lies here); the engine's sentence for the search
+            // waits on the owner's wording, and stands only where no
+            // narrator answers.
+            return self.narrate(command, None, None, None, Some(fact));
+        }
         self.narrate(command, Some(fact.clone()), Some("use"), None, Some(fact))
     }
 

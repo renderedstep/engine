@@ -62,6 +62,8 @@ fn thing(value: &Value, carried: bool) -> Thing {
     }
     thing.combustible = value["combustible"].as_bool().unwrap_or(false);
     thing.template = value["template"].as_i64();
+    thing.holds = value["holds"].as_str().map(str::to_string);
+    thing.searched = value["searched"].as_bool().unwrap_or(false);
     thing
 }
 
@@ -199,7 +201,7 @@ fn grammar() {
         let built = build(worlds, &input["world"]);
         let grammar = Grammar::new(&built.room);
         if let Some(token) = input["token"].as_str() {
-            let choices = built.room.physical_actions();
+            let choices = built.room.attempts();
             let choice = choices
                 .iter()
                 .find(|choice| choice.token() == token)

@@ -31,6 +31,7 @@ use serde_json::Value;
 
 pub mod chooser;
 mod notice;
+mod search;
 mod told;
 pub use told::{Fixed, Turn, Turned};
 
@@ -1122,7 +1123,7 @@ impl<'s> Mechanics<'s> {
         &mut self,
         choice: &Choice,
     ) -> Result<(&'static str, String), Error> {
-        let offered = self.room().physical_actions();
+        let offered = self.room().attempts();
         let Some(choice) = offered.into_iter().find(|offer| offer == choice) else {
             return Ok((
                 "rejected",
@@ -1189,6 +1190,7 @@ impl<'s> Mechanics<'s> {
                 ))
             }
             "unlock" | "pick" | "pry" | "force" => self.open_passage(&choice),
+            "search" | "open" => self.search(&choice),
             _ => Ok((
                 "rejected",
                 "The item remains in your hands until its recipient accepts it.".into(),
@@ -3611,12 +3613,20 @@ impl<'s> Mechanics<'s> {
     }
 
     /// `Playthrough::Snapshot#of_the_room!`: this game's copies of what lies
-    /// in a room and what its people hold, and a body for each of them.
+    /// in a room and what its people hold, and a body for each of them. What
+    /// lies inside a closed piece is not among them: a game copies that when
+    /// it searches the piece (`search`).
     pub fn snapshot_room(&mut self, location: Option<&Row>) -> Result<(), Error> {
         let Some(location) = location else {
             return Ok(());
         };
         let here = id(location);
+        let shut = |item: &Row| {
+            text(item, "how") == Some("in")
+                && int(item, "within_id")
+                    .and_then(|piece| self.records.find("items", piece))
+                    .is_some_and(|piece| text(piece, "holds") == Some("closed"))
+        };
         let mut wanted: Vec<(i64, Into)> = self
             .records
             .select("items", |item| {
@@ -3624,6 +3634,7 @@ impl<'s> Mechanics<'s> {
                     && int(item, "character_id").is_none()
                     && int(item, "playthrough_id").is_none()
                     && text(item, "disposition") == Some("intact")
+                    && !shut(item)
             })
             .iter()
             .map(|item| (id(item), Into::Room(here)))
@@ -3796,12 +3807,14 @@ enum Into {
     Person(i64),
 }
 
-/// `Item::NOT_COPIED`.
-const NOT_COPIED: [&str; 8] = [
+/// `Item::NOT_COPIED`. A game's copy of a piece starts unsearched, whether
+/// or not the world's piece has had its inside drawn.
+const NOT_COPIED: [&str; 9] = [
     "character_id",
     "location_id",
     "id",
     "noticed_at",
+    "searched_at",
     "playthrough_id",
     "template_id",
     "created_at",
@@ -4029,6 +4042,10 @@ pub fn thing_of(row: &Row, carried: bool) -> Thing {
         combustible: flag(row, "combustible"),
         carried,
         template: int(row, "template_id"),
+        holds: (text(row, "tier") == Some(crate::kit::FIXTURE))
+            .then(|| text(row, "holds").map(str::to_string))
+            .flatten(),
+        searched: int(row, "searched_at").is_some(),
     }
 }
 

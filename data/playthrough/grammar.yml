@@ -95,4 +95,11 @@ verbs:
   pick: pick
   pry: pry
   force: force
+  # A FIXED PIECE'S INSIDE: `search` and `open` name a piece standing here,
+  # and play the attempt `Room::searches` offers on it -- the first one by
+  # anybody draws what lies inside a closed piece (`kit::contents`). They
+  # are reached only through these words, never from a model's list.
+  search: search
+  rummage: search
+  open: open
   help: help

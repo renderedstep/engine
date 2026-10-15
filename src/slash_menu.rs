@@ -15,6 +15,8 @@ pub const PHYSICAL_HINTS: &[(&str, &str)] = &[
     ("pick", "try a lock with lockpicks"),
     ("pry", "try a jammed passage with a lever"),
     ("force", "try to force a jammed passage"),
+    ("search", "look inside something fixed here"),
+    ("open", "open something fixed here that is shut"),
 ];
 
 /// A line about each resolving word.
@@ -62,7 +64,7 @@ fn uniq(names: impl IntoIterator<Item = String>) -> Vec<String> {
 impl SlashMenu {
     pub fn for_room(room: &Room) -> SlashMenu {
         let mut kinds: Vec<String> = Vec::new();
-        let choices = room.physical_actions();
+        let choices = room.attempts();
         for choice in &choices {
             if !kinds.contains(&choice.kind) {
                 kinds.push(choice.kind.clone());

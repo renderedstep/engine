@@ -453,6 +453,21 @@ impl<'a> Grammar<'a> {
             Some(kind @ ("consume" | "offer" | "burn" | "unlock" | "pick" | "pry" | "force")) => {
                 self.read_physical(kind, &argument)
             }
+            // A piece's inside, unless the line names no piece and does name
+            // a way out ("open the narrow door into the closet"), which reads
+            // as the move it always did.
+            Some(kind @ ("search" | "open")) => {
+                let reading = self.read_physical(kind, &argument);
+                let found = reading
+                    .intent
+                    .as_ref()
+                    .is_some_and(|intent| intent.physical.is_some());
+                if !found && self.resolve(&self.room.exits_here(), &text).found() {
+                    self.read_move(&text)
+                } else {
+                    reading
+                }
+            }
             _ => {
                 if self.resolve(&self.room.exits_here(), &text).found() {
                     self.read_move(&text)
@@ -514,7 +529,7 @@ impl<'a> Grammar<'a> {
         let offer = kind == "offer";
         let mut choices: Vec<Choice> = self
             .room
-            .physical_actions()
+            .attempts()
             .into_iter()
             .filter(|choice| choice.kind == kind)
             .collect();

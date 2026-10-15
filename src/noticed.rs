@@ -20,9 +20,10 @@
 //! - **A return visit**: whatever was noticed stays noticed.
 //!
 //! THE SEARCH IS NOT HERE. A thing lying *in* a hollow or a closed fixture is
-//! [`concealed`]: no tier above notices it. Dense stage 2's `search` and
-//! `open` are the tier that will, by stamping what they find; until then a
-//! game the player narrates never lists one.
+//! [`concealed`]: no tier above notices it. `search` and `open` are the tier
+//! that does (`turn::search`): each stamps what it finds inside the piece,
+//! as `searched_at` stamps the piece, and until a game searches a piece the
+//! player narrating it never sees what lies in it.
 //!
 //! WHAT IS NOT NOTICED IS NOT THERE FOR THE PLAYER. The room a line reads
 //! against (`turn::room_of`) holds only noticed things in a game the player

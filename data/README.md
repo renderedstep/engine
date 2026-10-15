@@ -23,7 +23,7 @@ built against the commit it pins (`data::files`).
 | `playthrough/volition/speech.yml` | `turn`: how often each person's pursuit speaks up unasked on the speech die, and what bounds it |
 | `physics.yml` | `room`, `turn`: the bulk and thrown-damage tables a throw reads |
 | `location/kind.yml` | `kind`: what sort of place a room may be, how cluttered, and the sort each room of a building is dealt; `schemas` offers the first two to the exits call and the buildings to the place call |
-| `item/kits.yml` | `kit`: what stands in a room of each sort, what lies on or in each fixed piece in plain view, and the small stuff each density lies about; `turn` furnishes a room from it as the room is realized, and `realization` states what it wrote |
+| `item/kits.yml` | `kit`: what stands in a room of each sort, what lies on or in each fixed piece in plain view, the small stuff each density lies about, and what lies inside each closed piece; `turn` furnishes a room from it as the room is realized, and `realization` states what it wrote; `turn` draws a closed piece's inside from it the first time anybody searches it |
 
 Their comments name files in the game repository, where the reasons for
 each value were first written.
