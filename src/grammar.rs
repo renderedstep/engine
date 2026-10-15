@@ -450,9 +450,10 @@ impl<'a> Grammar<'a> {
             Some("check") => read_check(&argument),
             Some("attack") => self.read_attack(&argument),
             Some("throw") => self.read_throw(&argument),
-            Some(kind @ ("consume" | "offer" | "burn" | "unlock" | "pick" | "pry" | "force")) => {
-                self.read_physical(kind, &argument)
-            }
+            Some(
+                kind @ ("consume" | "offer" | "burn" | "unlock" | "pick" | "pry" | "force"
+                | "break"),
+            ) => self.read_physical(kind, &argument),
             // A piece's inside, unless the line names no piece and does name
             // a way out ("open the narrow door into the closet"), which reads
             // as the move it always did.
@@ -533,12 +534,27 @@ impl<'a> Grammar<'a> {
             .into_iter()
             .filter(|choice| choice.kind == kind)
             .collect();
+        let parted = kind == "break";
         let (target, second) = if argument.is_empty() {
             (None, None)
         } else {
-            let (target, second) = split_around(argument, if offer { "to" } else { "with" });
+            let word = match kind {
+                "offer" => "to",
+                "break" => "off",
+                _ => "with",
+            };
+            let (target, second) = split_around(argument, word);
             (Some(target), second)
         };
+        // Two pieces may each have a part of one name (two trees, each with
+        // branches), so the piece after `off` is read first.
+        if let (true, Some(second)) = (parted, &second) {
+            let pieces = uniq(choices.iter().filter_map(Choice::piece).collect());
+            match self.resolve(&pieces, second).record {
+                Some(piece) => choices.retain(|choice| choice.piece().as_ref() == Some(&piece)),
+                None => choices.clear(),
+            }
+        }
         let subjects = uniq(choices.iter().filter_map(Choice::subject).collect());
         let primary = self
             .resolve(&subjects, target.as_deref().unwrap_or(""))
@@ -554,15 +570,19 @@ impl<'a> Grammar<'a> {
                 choice.tool.clone().map(Record::Thing)
             }
         };
-        if let Some(second) = second {
-            let partners = uniq(choices.iter().filter_map(partner).collect());
-            let found = self.resolve(&partners, &second).record;
-            match &found {
-                Some(found) => choices.retain(|choice| partner(choice).as_ref() == Some(found)),
-                None => choices.clear(),
+        match second {
+            Some(second) if !parted => {
+                let partners = uniq(choices.iter().filter_map(partner).collect());
+                let found = self.resolve(&partners, &second).record;
+                match &found {
+                    Some(found) => {
+                        choices.retain(|choice| partner(choice).as_ref() == Some(found));
+                    }
+                    None => choices.clear(),
+                }
             }
-        } else if offer {
-            choices.clear();
+            None if offer => choices.clear(),
+            _ => {}
         }
         let found = if choices.len() == 1 {
             choices.pop()

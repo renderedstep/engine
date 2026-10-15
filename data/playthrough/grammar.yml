@@ -102,4 +102,11 @@ verbs:
   search: search
   rummage: search
   open: open
+  # A PART OFF A FIXED PIECE: `break` names a part attached to a piece
+  # standing here, and the piece after `off` when two pieces have a part of
+  # that name, and plays the attempt `Room::breaks` offers: a strength check
+  # against how hard it holds. Reached only through these words, never from
+  # a model's list. Not `pull`: "pull the door shut" is no break.
+  break: break
+  snap: break
   help: help

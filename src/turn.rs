@@ -32,6 +32,7 @@ use serde_json::Value;
 pub mod chooser;
 mod notice;
 mod search;
+mod snap;
 mod told;
 pub use told::{Fixed, Turn, Turned};
 
@@ -1209,6 +1210,7 @@ impl<'s> Mechanics<'s> {
             }
             "unlock" | "pick" | "pry" | "force" => self.open_passage(&choice),
             "search" | "open" => self.search(&choice),
+            "break" => self.snap(&choice),
             _ => Ok((
                 "rejected",
                 "The item remains in your hands until its recipient accepts it.".into(),
@@ -3846,12 +3848,13 @@ const WITHIN: [&str; 2] = ["within_id", "how"];
 
 /// A column name as a `'static` string, for the columns an item copies.
 fn column_name(column: &str) -> &'static str {
-    const COLUMNS: [&str; 15] = [
+    const COLUMNS: [&str; 16] = [
         "bulk",
         "combustible",
         "description",
         "disposition",
         "fragility",
+        "hold",
         "holds",
         "inscription",
         "kit_key",
@@ -3934,13 +3937,27 @@ fn note_of(reading: &Reading) -> Vec<String> {
 /// panel, lists what the player has noticed and nothing else.
 pub fn room_of(records: &Records, playthrough: i64) -> Room {
     let game = Game::new(records, playthrough);
+    let lying: Vec<Thing> = game
+        .items_noticed_in(game.current_location())
+        .into_iter()
+        .map(|item| thing_of(item, false))
+        .collect();
+    let whole = whole_room_of(records, playthrough);
+    // A part is seen when the piece it is attached to is.
+    let parts = whole
+        .parts
+        .iter()
+        .filter(|part| {
+            part.piece
+                .as_ref()
+                .is_some_and(|(piece, _)| lying.iter().any(|thing| thing.id == *piece))
+        })
+        .cloned()
+        .collect();
     Room {
-        lying: game
-            .items_noticed_in(game.current_location())
-            .into_iter()
-            .map(|item| thing_of(item, false))
-            .collect(),
-        ..whole_room_of(records, playthrough)
+        lying,
+        parts,
+        ..whole
     }
 }
 
@@ -3991,7 +4008,23 @@ pub fn whole_room_of(records: &Records, playthrough: i64) -> Room {
             .into_iter()
             .map(|item| thing_of(item, true))
             .collect(),
+        parts: game
+            .parts_in(here)
+            .into_iter()
+            .map(|item| part_of(records, item))
+            .collect(),
         over: int(game.row, "ended_at").is_some(),
+    }
+}
+
+/// A part as the break attempts read it: a thing, with the piece it is
+/// attached to and how hard it holds.
+fn part_of(records: &Records, row: &Row) -> Thing {
+    let piece = int(row, "within_id").and_then(|piece| records.find("items", piece));
+    Thing {
+        piece: piece.map(|piece| (id(piece), string(piece, "name").to_string())),
+        hold: text(row, "hold").map(str::to_string),
+        ..thing_of(row, false)
     }
 }
 
@@ -4065,6 +4098,8 @@ pub fn thing_of(row: &Row, carried: bool) -> Thing {
             .then(|| text(row, "holds").map(str::to_string))
             .flatten(),
         searched: int(row, "searched_at").is_some(),
+        piece: None,
+        hold: None,
     }
 }
 

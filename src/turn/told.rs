@@ -159,11 +159,12 @@ pub struct Turn<'s, 'm> {
 }
 
 /// What a scene records the turn did (`scenes.resolved_action`): the
-/// intent, but `search` for a search or an opening, which the game reports
-/// as its own outcome.
+/// intent, but `search` for a search or an opening and `break` for breaking
+/// a part off, which the game reports as outcomes of their own.
 fn resolved_action(intent: &Intent) -> &str {
     match &intent.physical {
         Some(choice) if matches!(choice.kind.as_str(), "search" | "open") => "search",
+        Some(choice) if choice.kind == "break" => "break",
         _ => intent.action.as_str(),
     }
 }
@@ -818,11 +819,11 @@ impl<'s, 'm> Turn<'s, 'm> {
                 fact,
             })
         })?;
-        if matches!(choice.kind.as_str(), "search" | "open") {
+        if matches!(choice.kind.as_str(), "search" | "open" | "break") {
             // What a search found reaches the narrator as the room's own
-            // lines (what lies here); the engine's sentence for the search
-            // waits on the owner's wording, and stands only where no
-            // narrator answers.
+            // lines (what lies here), and a part broken off as what the
+            // player carries; the engine's sentence for either waits on the
+            // owner's wording, and stands only where no narrator answers.
             return self.narrate(command, None, None, None, Some(fact));
         }
         self.narrate(command, Some(fact.clone()), Some("use"), None, Some(fact))

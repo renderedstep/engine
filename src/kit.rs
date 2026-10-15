@@ -6,18 +6,27 @@
 //! One generator, seeded on the room's name (`Roll::KIT`), thrown in one
 //! order: a die per piece the kind lists; then, for each piece that came
 //! up, how many things lie on or in it and a draw per thing; then how many
-//! small things lie about at the room's density and a draw per thing. No
-//! name is drawn twice in one room, and the list is cut at `visible`,
-//! pieces first. A room with no kind, or one the table lacks, gets nothing.
+//! small things lie about at the room's density and a draw per thing; then,
+//! for each piece that came up, how many of each of its parts it was born
+//! with ([`furnish`]; [`roll`] is the same list less the parts). Parts are
+//! drawn last, so a room whose pieces have none rolls what it always rolled.
+//! No name is drawn twice in one room, but a part (a tree's two branches),
+//! and the list is cut at `visible`, pieces first. A room with no kind, or
+//! one the table lacks, gets nothing.
 
 use crate::data::{self, Kits};
 use crate::random::Random;
 use crate::roll::{self, Seed};
 use crate::text::{crc32, natural_key};
 
-/// `Item::FIXTURE` and `Item::PORTABLE`.
+/// `Item::FIXTURE`, `Item::PORTABLE` and `Item::PART`.
 pub const FIXTURE: &str = "fixture";
 pub const PORTABLE: &str = "portable";
+/// Attached to a fixed piece (`how: attached`) until somebody breaks it off.
+pub const PART: &str = "part";
+
+/// `items.how` on a part.
+pub const ATTACHED: &str = "attached";
 
 /// `Item::HOLDS`: what a fixed piece holds.
 pub const HOLDS: [&str; 4] = ["nothing", "top", "hollow", "closed"];
@@ -32,9 +41,14 @@ pub struct Thing {
     pub bulk: String,
     /// The index, in the same list, of the piece it lies on or in.
     pub within: Option<usize>,
-    /// `on` a top, `in` a hollow.
+    /// `on` a top, `in` a hollow, `attached` to the piece as a part.
     pub how: Option<&'static str>,
     pub kit_key: String,
+    /// How hard a part holds on (`hold_penalty`); `None` on anything else.
+    pub hold: Option<String>,
+    /// A part's fragility once it comes away; `None` leaves the column's
+    /// default.
+    pub fragility: Option<String>,
 }
 
 impl Thing {
@@ -90,8 +104,20 @@ fn draw(from: &[String], count: i64, used: &mut Vec<String>, rng: &mut Random) -
     drawn
 }
 
-/// `Item::Kit.roll`: the room's kit, as values.
+/// `Item::Kit.roll`: the room's kit, as values, as the game rolls it: what
+/// [`furnish`] writes, less the parts. The parts are drawn after everything
+/// else and cut first, so this is what the roll was before parts were drawn.
 pub fn roll(name: &str, kind: Option<&str>, density: Option<&str>) -> Vec<Thing> {
+    furnish(name, kind, density)
+        .into_iter()
+        .filter(|thing| thing.tier != PART)
+        .collect()
+}
+
+/// Everything a room is furnished with, its pieces' parts included, in the
+/// order it is written: [`roll`]'s list, then the parts, cut at `visible`.
+/// A part's `within` is its piece's index in the same list.
+pub fn furnish(name: &str, kind: Option<&str>, density: Option<&str>) -> Vec<Thing> {
     let kits = data::kits();
     let Some((kind, kit)) = kind.and_then(|kind| kits.kinds.iter().find(|(k, _)| k == kind)) else {
         return Vec::new();
@@ -116,6 +142,8 @@ pub fn roll(name: &str, kind: Option<&str>, density: Option<&str>) -> Vec<Thing>
                 within: None,
                 how: None,
                 kit_key: format!("{kind}/{piece}"),
+                hold: None,
+                fragility: None,
             }
         })
         .collect();
@@ -145,6 +173,8 @@ pub fn roll(name: &str, kind: Option<&str>, density: Option<&str>) -> Vec<Thing>
                 bulk: "handy".into(),
                 within: Some(index),
                 how: Some(how),
+                hold: None,
+                fragility: None,
             });
         }
     }
@@ -159,7 +189,30 @@ pub fn roll(name: &str, kind: Option<&str>, density: Option<&str>) -> Vec<Thing>
                 bulk: "handy".into(),
                 within: None,
                 how: None,
+                hold: None,
+                fragility: None,
             });
+        }
+    }
+    for (index, piece) in pieces.iter().enumerate() {
+        let Some((_, parts)) = kits.parts.iter().find(|(name, _)| name == *piece) else {
+            continue;
+        };
+        for (part, spec) in parts {
+            let count = spec.count[roll::one_of(spec.count.len(), &mut rng)];
+            for _ in 0..count {
+                things.push(Thing {
+                    name: part.clone(),
+                    tier: PART,
+                    holds: None,
+                    bulk: spec.bulk.clone(),
+                    within: Some(index),
+                    how: Some(ATTACHED),
+                    kit_key: format!("{kind}/{piece}/{ATTACHED}/{part}"),
+                    hold: Some(spec.hold.clone()),
+                    fragility: Some(spec.fragility.clone()),
+                });
+            }
         }
     }
     things.truncate(kits.visible);
@@ -205,16 +258,35 @@ pub fn inside(name: &str, piece: &str) -> Thing {
         within: None,
         how: Some("in"),
         kit_key: format!("{piece}/inside/{name}"),
+        hold: None,
+        fragility: None,
     }
+}
+
+/// `hold_penalty`: what a part's hold takes off strength on the check to
+/// break it off; a hold the table does not name takes nothing.
+pub fn hold_penalty(hold: Option<&str>) -> i64 {
+    data::kits()
+        .hold_penalty
+        .iter()
+        .find(|(name, _)| Some(name.as_str()) == hold)
+        .map_or(0, |(_, penalty)| *penalty)
 }
 
 /// `Item::Kit#description`: one engine line, never prose.
 pub fn description(thing: &Thing, within: Option<&str>) -> String {
     match (within, thing.how) {
+        (Some(piece), Some(ATTACHED)) => format!("The {}, attached to the {piece}.", thing.name),
         (Some(piece), Some(how)) => format!("The {}, {how} the {piece}.", thing.name),
         _ if thing.tier == FIXTURE => format!("The {}, fixed in place.", thing.name),
-        _ => format!("The {}.", thing.name),
+        _ => plain_description(&thing.name),
     }
+}
+
+/// The engine's line for a thing that lies on, in and against nothing, as
+/// a part is once it has been broken off.
+pub fn plain_description(name: &str) -> String {
+    format!("The {name}.")
 }
 
 #[cfg(test)]
@@ -233,10 +305,11 @@ mod tests {
             for n in 0..50 {
                 let things = roll(&format!("room {n}"), Some(kind), Some("cluttered"));
                 assert!(things.len() <= data::kits().visible);
-                let mut names: Vec<&str> = things.iter().map(|t| t.name.as_str()).collect();
+                let unattached: Vec<&Thing> = things.iter().filter(|t| t.tier != PART).collect();
+                let mut names: Vec<&str> = unattached.iter().map(|t| t.name.as_str()).collect();
                 names.sort_unstable();
                 names.dedup();
-                assert_eq!(names.len(), things.len(), "{kind}: {things:?}");
+                assert_eq!(names.len(), unattached.len(), "{kind}: {things:?}");
                 for thing in &things {
                     if let Some(index) = thing.within {
                         assert_eq!(things[index].tier, FIXTURE);
@@ -244,6 +317,68 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn parts_are_drawn_last_attached_to_a_piece_that_came_up() {
+        let mut seen = false;
+        for n in 0..200 {
+            let name = format!("clearing {n}");
+            let things = furnish(&name, Some("forest"), Some("cluttered"));
+            assert!(things.len() <= data::kits().visible);
+            let unattached: Vec<Thing> =
+                things.iter().filter(|t| t.tier != PART).cloned().collect();
+            assert_eq!(unattached, roll(&name, Some("forest"), Some("cluttered")));
+            let first = things.iter().position(|t| t.tier == PART);
+            if let Some(first) = first {
+                seen = true;
+                assert!(things[first..].iter().all(|t| t.tier == PART), "{things:?}");
+            }
+            for part in things.iter().filter(|t| t.tier == PART) {
+                let piece = &things[part.within.expect("a part is attached")];
+                assert_eq!(piece.tier, FIXTURE);
+                assert_eq!(part.how, Some(ATTACHED));
+                assert!(part.hold.is_some() && part.fragility.is_some());
+                assert_eq!(
+                    part.kit_key,
+                    format!("forest/{}/attached/{}", piece.name, part.name)
+                );
+            }
+        }
+        assert!(
+            seen,
+            "an old tree comes up with its branches in some forest"
+        );
+    }
+
+    /// A room whose pieces have no parts rolls what it rolled before parts
+    /// were drawn: the same things, in the same order.
+    #[test]
+    fn a_room_whose_pieces_have_no_parts_rolls_what_it_always_did() {
+        let things = roll("The Reading Room", Some("study"), Some("lived-in"));
+        let names: Vec<&str> = things.iter().map(|t| t.name.as_str()).collect();
+        assert_eq!(
+            names,
+            [
+                "desk",
+                "bookcase",
+                "chair",
+                "lamp",
+                "ledger",
+                "journal",
+                "atlas",
+                "letter opener"
+            ]
+        );
+    }
+
+    #[test]
+    fn a_hold_takes_its_penalty_and_an_unknown_one_nothing() {
+        assert_eq!(hold_penalty(Some("loose")), 0);
+        assert_eq!(hold_penalty(Some("firm")), 3);
+        assert_eq!(hold_penalty(Some("stout")), 6);
+        assert_eq!(hold_penalty(Some("welded")), 0);
+        assert_eq!(hold_penalty(None), 0);
     }
 
     #[test]

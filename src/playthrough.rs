@@ -421,7 +421,24 @@ impl<'a> Game<'a> {
         };
         let here = id(location);
         self.items(|item| {
-            int(item, "location_id") == Some(here) && int(item, "character_id").is_none()
+            int(item, "location_id") == Some(here)
+                && int(item, "character_id").is_none()
+                && text(item, "tier") != Some(crate::kit::PART)
+        })
+    }
+
+    /// What is attached to the fixed pieces of a room and could be broken
+    /// off them, in id order. A part is not a thing lying there: it is in no
+    /// list a line is read against but the break attempts.
+    pub fn parts_in(&self, location: Option<&Row>) -> Vec<&'a Row> {
+        let Some(location) = location else {
+            return Vec::new();
+        };
+        let here = id(location);
+        self.items(|item| {
+            int(item, "location_id") == Some(here)
+                && int(item, "character_id").is_none()
+                && text(item, "tier") == Some(crate::kit::PART)
         })
     }
 

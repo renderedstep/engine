@@ -17,6 +17,7 @@ pub const PHYSICAL_HINTS: &[(&str, &str)] = &[
     ("force", "try to force a jammed passage"),
     ("search", "look inside something fixed here"),
     ("open", "open something fixed here that is shut"),
+    ("break", "try to break a part off something fixed here"),
 ];
 
 /// A line about each resolving word.

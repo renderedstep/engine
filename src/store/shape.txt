@@ -67,6 +67,7 @@ column items.created_at datetime(6) not null pk=0
 column items.description text pk=0
 column items.disposition varchar not null default 'intact' pk=0
 column items.fragility varchar not null default 'sturdy' pk=0
+column items.hold varchar pk=0
 column items.holds varchar pk=0
 column items.how varchar pk=0
 column items.id integer not null pk=1

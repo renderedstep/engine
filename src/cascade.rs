@@ -571,6 +571,7 @@ mod tests {
             cast,
             lying: Vec::new(),
             carried: Vec::new(),
+            parts: Vec::new(),
             over: false,
         }
     }

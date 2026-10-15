@@ -2,6 +2,8 @@
 # for step. `cargo test` and `parity --check parity` fail when one of these
 # diverges, and when a script agrees and is not listed here.
 a-body-says-who-killed-it
+a-branch-broken-off-the-old-tree
+a-branch-that-holds-moves-nothing
 a-building-dealt-its-rooms
 a-building-with-two-floors
 a-cellar-below-the-way-in

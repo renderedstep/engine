@@ -38,6 +38,11 @@ pub struct Thing {
     pub holds: Option<String>,
     /// This game has searched it (`items.searched_at`).
     pub searched: bool,
+    /// The fixed piece a part is attached to, by id and name; none for
+    /// anything that is not a part.
+    pub piece: Option<(i64, String)>,
+    /// How hard a part holds on (`hold_penalty` in `data/item/kits.yml`).
+    pub hold: Option<String>,
 }
 
 pub const USE_KINDS: &[&str] = &[
@@ -66,6 +71,8 @@ impl Thing {
             template: None,
             holds: None,
             searched: false,
+            piece: None,
+            hold: None,
         }
     }
 
@@ -202,6 +209,9 @@ impl Choice {
         if self.kind == "offer" {
             return format!("{} to {}", self.item_name(), self.recipient_name());
         }
+        if self.kind == "break" {
+            return format!("{} off {}", self.item_name(), self.piece_name());
+        }
         let target = self.subject().map(|s| s.label()).unwrap_or_default();
         match &self.tool {
             Some(tool) => format!("{target} with {}", tool.name),
@@ -237,8 +247,28 @@ impl Choice {
             "force" => format!("Force open the jammed way to {}", place()),
             "search" => format!("Search {}", self.item_definite()),
             "open" => format!("Open {}", self.item_definite()),
+            "break" => format!(
+                "Break {} off the {}",
+                self.item_definite(),
+                self.piece_name()
+            ),
             _ => String::new(),
         }
+    }
+
+    /// The fixed piece a `break` would take its part off, as a record a
+    /// line can name.
+    pub fn piece(&self) -> Option<Record> {
+        let (id, name) = self.item.as_ref()?.piece.clone()?;
+        Some(Record::Thing(Thing::new(id, &name, false)))
+    }
+
+    fn piece_name(&self) -> String {
+        self.item
+            .as_ref()
+            .and_then(|t| t.piece.as_ref())
+            .map(|(_, name)| strip_leading_article(name).to_string())
+            .unwrap_or_default()
     }
 
     fn item_definite(&self) -> String {
@@ -357,6 +387,9 @@ pub struct Room {
     pub cast: Vec<Person>,
     pub lying: Vec<Thing>,
     pub carried: Vec<Thing>,
+    /// What is attached to the pieces lying here and could be broken off
+    /// them. In no closed set: only [`Room::breaks`] reads it.
+    pub parts: Vec<Thing>,
     /// The game has ended.
     pub over: bool,
 }
@@ -418,9 +451,45 @@ impl Room {
     }
 
     /// Every attempt a line may play here: [`Room::physical_actions`], then
-    /// [`Room::searches`].
+    /// [`Room::searches`], then [`Room::breaks`].
     pub fn attempts(&self) -> Vec<Choice> {
-        [self.physical_actions(), self.searches()].concat()
+        [self.physical_actions(), self.searches(), self.breaks()].concat()
+    }
+
+    /// A `break` for each sort of part still attached to a piece lying here,
+    /// in the order the pieces lie: one attempt for a tree's branches however
+    /// many it has left, on the first of them. Reached, like a search, only
+    /// through the grammar's own words (`break`, `snap`), never a model's
+    /// list.
+    pub fn breaks(&self) -> Vec<Choice> {
+        if self.protagonist.is_none() || self.here.is_none() || self.over {
+            return Vec::new();
+        }
+        let mut result: Vec<Choice> = Vec::new();
+        for piece in &self.lying {
+            for part in &self.parts {
+                if part.piece.as_ref().map(|(id, _)| *id) != Some(piece.id) {
+                    continue;
+                }
+                let offered = result.iter().any(|choice| {
+                    choice
+                        .item
+                        .as_ref()
+                        .is_some_and(|other| other.piece == part.piece && other.name == part.name)
+                });
+                if offered {
+                    continue;
+                }
+                result.push(Choice {
+                    kind: "break".to_string(),
+                    item: Some(part.clone()),
+                    recipient: None,
+                    connection: None,
+                    tool: None,
+                });
+            }
+        }
+        result
     }
 
     /// Each fixed piece here a search would find something new in, as a

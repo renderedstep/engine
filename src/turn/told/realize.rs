@@ -519,7 +519,7 @@ impl Turn<'_, '_> {
         if Self::is_place(&row) || furnished {
             return Ok(());
         }
-        let things = kit::roll(
+        let things = kit::furnish(
             string(&row, "name"),
             text(&row, "kind"),
             text(&row, "density"),
@@ -533,29 +533,33 @@ impl Turn<'_, '_> {
             for thing in &things {
                 let within = thing.within.map(|index| &rows[index]);
                 let description = kit::description(thing, within.map(|(_, name)| name.as_str()));
-                let row = self.m.insert(
-                    "items",
-                    vec![
-                        ("location_id", Value::from(location)),
-                        ("name", Value::from(thing.name.as_str())),
-                        ("description", Value::from(description)),
-                        ("tier", Value::from(thing.tier)),
-                        (
-                            "holds",
-                            thing.holds.as_deref().map_or(Value::Null, Value::from),
-                        ),
-                        ("bulk", Value::from(thing.bulk.as_str())),
-                        (
-                            "within_id",
-                            within.map_or(Value::Null, |(id, _)| Value::from(*id)),
-                        ),
-                        ("how", thing.how.map_or(Value::Null, Value::from)),
-                        ("kit_key", Value::from(thing.kit_key.as_str())),
-                        ("use_kind", Value::from(thing.use_kind())),
-                        ("combustible", Value::Bool(thing.combustible())),
-                        ("readable", Value::Bool(thing.readable())),
-                    ],
-                )?;
+                let mut values = vec![
+                    ("location_id", Value::from(location)),
+                    ("name", Value::from(thing.name.as_str())),
+                    ("description", Value::from(description)),
+                    ("tier", Value::from(thing.tier)),
+                    (
+                        "holds",
+                        thing.holds.as_deref().map_or(Value::Null, Value::from),
+                    ),
+                    ("bulk", Value::from(thing.bulk.as_str())),
+                    (
+                        "within_id",
+                        within.map_or(Value::Null, |(id, _)| Value::from(*id)),
+                    ),
+                    ("how", thing.how.map_or(Value::Null, Value::from)),
+                    ("kit_key", Value::from(thing.kit_key.as_str())),
+                    ("use_kind", Value::from(thing.use_kind())),
+                    ("combustible", Value::Bool(thing.combustible())),
+                    ("readable", Value::Bool(thing.readable())),
+                ];
+                if let Some(hold) = &thing.hold {
+                    values.push(("hold", Value::from(hold.as_str())));
+                }
+                if let Some(fragility) = &thing.fragility {
+                    values.push(("fragility", Value::from(fragility.as_str())));
+                }
+                let row = self.m.insert("items", values)?;
                 if within.is_none() {
                     let placed = self.placement(location, spot::Record::Item(id(&row)));
                     if !placed.is_empty() {
