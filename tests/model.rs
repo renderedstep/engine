@@ -20,6 +20,7 @@ use renderedstep_engine::schemas;
 use serde_json::{json, Value};
 use std::io::{BufRead, BufReader, Read, Write};
 use std::net::TcpListener;
+use std::time::Duration;
 
 fn fixture(name: &str) -> Value {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -228,9 +229,16 @@ struct Canned {
     replies: Vec<Posted>,
     streams: Vec<Option<Vec<String>>>,
     sent: Vec<(String, String, Value)>,
+    wait: Duration,
 }
 
 impl Canned {
+    /// Each post waits this long before it answers.
+    fn slow(mut self, wait: Duration) -> Canned {
+        self.wait = wait;
+        self
+    }
+
     fn json(mut self, status: u16, body: Value) -> Canned {
         self.replies.push(Posted {
             status,
@@ -290,6 +298,7 @@ impl Transport for Canned {
     ) -> Result<Posted, Unreached> {
         let bearer = format!("{:?}", endpoint.bearer);
         self.sent.push((endpoint.url.clone(), bearer, body.clone()));
+        std::thread::sleep(self.wait);
         if self.replies.is_empty() {
             return Err(Unreached("no reply".into()));
         }
@@ -911,6 +920,70 @@ fn a_system_one_receipt_books_the_reported_cost_or_the_estimate() {
             "{answer}"
         );
     }
+}
+
+/// Every receipt keeps how long its request took, from sending it to its
+/// answer or its failure: a chat attempt answered or failed, and a System One
+/// request answered, refused or never reached.
+#[test]
+fn a_receipt_keeps_how_long_its_request_took() {
+    let wait = Duration::from_millis(30);
+    let mut game = game();
+    let transport = Canned::default()
+        .json(500, json!({"error": "down"}))
+        .answer("You wait.")
+        .slow(wait);
+    let mut live = Live::with_transport(own_key(), transport);
+    let mut agent = narration(game.playthrough);
+    let mut book = Book {
+        store: game.engine.store(),
+        records: &mut game.records,
+    };
+    live.ask(
+        &mut book,
+        &mut agent,
+        &Call::prompt("The player types: wait"),
+        None,
+        None,
+    )
+    .unwrap();
+    assert_eq!(
+        rows(
+            &game,
+            "SELECT status, latency_ms >= 30 FROM ruby_llm_usages ORDER BY id"
+        ),
+        vec![
+            vec![json!("failed"), json!(1)],
+            vec![json!("succeeded"), json!(1)]
+        ]
+    );
+
+    let questions = json!({"verb": {"type": "choice", "criteria": {"look": "x"}}});
+    let filed = Filed {
+        purpose: "classifier".into(),
+        playthrough: Some(game.playthrough),
+        ..Filed::default()
+    };
+    let transport = Canned::default()
+        .json(200, json!({"answers": {}}))
+        .json(403, json!({"error": "about the key"}))
+        .slow(wait);
+    let mut live = Live::with_transport(own_key(), transport);
+    for _ in 0..3 {
+        let mut book = Book {
+            store: game.engine.store(),
+            records: &mut game.records,
+        };
+        let _ = live.ask_questions(&mut book, &filed, &json!({}), &questions);
+    }
+    assert_eq!(
+        rows(
+            &game,
+            "SELECT latency_ms >= 30 FROM system_one_receipts ORDER BY id"
+        ),
+        vec![vec![json!(1)], vec![json!(1)], vec![json!(1)]],
+        "answered, refused and unreached"
+    );
 }
 
 // --- the two routes over a real socket --------------------------------------

@@ -7,7 +7,7 @@ use super::system_one::SystemOne;
 use super::wire::{self, Call, Completion};
 use super::{declined, receipts, Agent, Answer, Book, Failure, Filed, Models, Unavailable, Verify};
 use serde_json::Value;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 /// The hosted models, in the order they are asked
 /// (`BaseAgent::REMOTE_MODEL_IDS`). Every one must honour a JSON schema.
@@ -265,6 +265,7 @@ impl<T: Transport> Models for Live<T> {
             // Prose is shown only as far as the judgement below cannot turn
             // on it; the rest follows once the answer is kept.
             let mut held = declined::Held::new();
+            let started = Instant::now();
             let sent = match on_chunk.as_deref_mut() {
                 Some(show) if call.schema.is_none() => {
                     let mut guarded = |part: &str| {
@@ -277,9 +278,10 @@ impl<T: Transport> Models for Live<T> {
                 }
                 streaming => self.send(&model, call, streaming),
             };
+            let latency = receipts::latency_ms(started);
             let judged = match sent {
                 Err(Sent::Unauthorized(message)) => {
-                    written(receipts::usage(book, chat, None, &model, None))?;
+                    written(receipts::usage(book, chat, None, &model, None, latency))?;
                     written(receipts::rewind(book, chat, mark))?;
                     return Err(Failure::Unauthorized(format!(
                         "{} refused the credential ({message}); not asking another model, because a refused credential is not fixed by a different model",
@@ -287,7 +289,7 @@ impl<T: Transport> Models for Live<T> {
                     )));
                 }
                 Err(Sent::Failed(message)) => {
-                    written(receipts::usage(book, chat, None, &model, None))?;
+                    written(receipts::usage(book, chat, None, &model, None, latency))?;
                     Err(Failure::Provider(format!("{model} failed: {message}")))
                 }
                 Ok(completion) => {
@@ -306,6 +308,7 @@ impl<T: Transport> Models for Live<T> {
                             Some(id),
                             &model,
                             Some(&completion.usage),
+                            latency,
                         ))
                     });
                     answered

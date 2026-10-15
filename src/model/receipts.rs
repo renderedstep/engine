@@ -14,6 +14,7 @@ use super::Book;
 use crate::engine::Error;
 use crate::records::{int, text, Row};
 use serde_json::Value;
+use std::time::Instant;
 
 /// `Chat::CHARACTER`: the one conversation that is picked up again.
 pub const CHARACTER: &str = "character";
@@ -288,14 +289,22 @@ fn price(pricing: &Value, key: &str) -> Option<f64> {
     pricing["text_tokens"]["standard"][key].as_f64()
 }
 
+/// Wall-clock milliseconds since `started`, as a receipt's `latency_ms`
+/// keeps them.
+pub fn latency_ms(started: Instant) -> i64 {
+    i64::try_from(started.elapsed().as_millis()).unwrap_or(i64::MAX)
+}
+
 /// One attempt's usage row: what it cost when it was answered (`message`
-/// the answer), or a failed attempt with nothing counted.
+/// the answer), or a failed attempt with nothing counted, and how long the
+/// request took, from sending it to its last byte or its failure.
 pub fn usage(
     book: &mut Book,
     chat: i64,
     message: Option<i64>,
     model: &str,
     used: Option<&Usage>,
+    latency_ms: i64,
 ) -> Result<(), Error> {
     let mut values = vec![
         ("chat_id", Value::from(chat)),
@@ -303,6 +312,7 @@ pub fn usage(
         ("operation", Value::from("chat")),
         ("provider", Value::from("openrouter")),
         ("model", Value::from(model)),
+        ("latency_ms", Value::from(latency_ms)),
     ];
     if let Some(message) = message {
         values.push(("message_id", Value::from(message)));
@@ -387,6 +397,17 @@ pub fn system_one(book: &mut Book, filed: &Filed, transport: &str) -> Result<i64
         ],
     )?;
     Ok(int(&row, "id").expect("a receipt has an id"))
+}
+
+/// How long the request took, from sending it to its answer or its failure,
+/// kept on its receipt whether or not it was answered.
+pub fn system_one_timed(book: &mut Book, receipt: i64, latency_ms: i64) -> Result<(), Error> {
+    book.store.update(
+        "system_one_receipts",
+        receipt,
+        &[("latency_ms", Value::from(latency_ms))],
+    )?;
+    Ok(())
 }
 
 /// The cost the answer reported (OpenRouter's `usage.cost`), booked in
