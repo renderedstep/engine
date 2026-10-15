@@ -9,10 +9,19 @@ use crate::model::Book;
 use crate::records::Row;
 use crate::volition::{self, Asked, Judgment};
 
+/// The purpose a System One receipt files unprompted speech under.
+const VOLITION_SPEECH: &str = "volition_speech";
+
+/// The purpose a System One receipt files what bystanders do under.
+const VOLITION_ACTS: &str = "volition_acts";
+
+/// The purpose a System One receipt files reactions to an arrival under.
+const VOLITION_REACTIONS: &str = "volition_reactions";
+
 impl Turn<'_, '_> {
-    /// System One's judgment of `asked` in `location`, or none when System
-    /// One is off or nobody is asked anything.
-    pub(super) fn judged(&mut self, asked: &[Asked], location: &Row) -> Option<Judgment> {
+    /// System One's judgment of `asked` in `location`, filed under
+    /// `purpose`, or none when System One is off or nobody is asked anything.
+    fn judged(&mut self, asked: &[Asked], location: &Row, purpose: &str) -> Option<Judgment> {
         if asked.is_empty() || !self.models.system_one() {
             return None;
         }
@@ -22,7 +31,7 @@ impl Turn<'_, '_> {
         if questions.as_object().is_none_or(|map| map.is_empty()) {
             return None;
         }
-        let filed = self.filed("volition");
+        let filed = self.filed(purpose);
         let mut book = Book {
             store: self.m.store,
             records: &mut self.m.records,
@@ -50,7 +59,7 @@ impl Turn<'_, '_> {
                 }
             })
             .collect();
-        self.judged(&asked, &here)
+        self.judged(&asked, &here, VOLITION_SPEECH)
     }
 
     /// The typed judgment of what the people in the room the turn began in
@@ -70,13 +79,13 @@ impl Turn<'_, '_> {
                 }
             })
             .collect();
-        self.judged(&asked, from)
+        self.judged(&asked, from, VOLITION_ACTS)
     }
 
     /// The typed judgment of how the people in the room the party walks
     /// into react to it, before the reactions step writes them.
     pub(super) fn judged_reactions(&mut self, destination: &Row) -> Option<Judgment> {
         let asked = self.m.arrival_asked(destination);
-        self.judged(&asked, destination)
+        self.judged(&asked, destination, VOLITION_REACTIONS)
     }
 }

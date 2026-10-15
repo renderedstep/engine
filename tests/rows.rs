@@ -852,3 +852,101 @@ fn an_ending_is_written_over_its_own_closing_scene_and_the_engines_sentence_outl
         );
     }
 }
+
+/// Answers a System One request with no answers, so the die decides, and
+/// any other request with `prose`, or a reading of no move when it asks
+/// for one.
+struct Undecided {
+    prose: &'static str,
+}
+
+impl renderedstep_engine::model::http::Transport for Undecided {
+    fn post(
+        &mut self,
+        endpoint: &renderedstep_engine::model::route::Endpoint,
+        body: &Value,
+        _options: &renderedstep_engine::model::http::Options,
+        on_line: Option<&mut (dyn FnMut(&str) + '_)>,
+    ) -> Result<renderedstep_engine::model::http::Posted, renderedstep_engine::model::http::Unreached>
+    {
+        let ok = |body: Value| {
+            Ok(renderedstep_engine::model::http::Posted {
+                status: 200,
+                body: body.to_string(),
+            })
+        };
+        if endpoint.url.ends_with("/decisions") {
+            return ok(json!({"answers": {}}));
+        }
+        let content = if body.get("response_format").is_some() {
+            json!({
+                "intent": "other", "target": "nothing", "also_named": "nothing",
+                "thrown_at": "nothing", "description": self.prose, "summary": self.prose,
+            })
+            .to_string()
+        } else {
+            self.prose.to_string()
+        };
+        if let Some(on_line) = on_line {
+            let delta =
+                json!({"choices": [{"delta": {"content": content}, "finish_reason": "stop"}]});
+            on_line(&format!("data: {delta}"));
+            on_line("data: [DONE]");
+            return ok(Value::Null).map(|posted| renderedstep_engine::model::http::Posted {
+                body: String::new(),
+                ..posted
+            });
+        }
+        ok(json!({"choices": [{"message": {"content": content}, "finish_reason": "stop"}]}))
+    }
+}
+
+/// The System One purposes `line` files in the world `name` started with
+/// `sql` run over it, the requests answered by [`Undecided`].
+fn system_one_purposes(name: &str, title: &str, sql: &str, line: &str) -> Vec<String> {
+    use renderedstep_engine::model::{Live, Route, Secret};
+    let (mut engine, game) = started(name, title, sql);
+    let route = Route::Direct {
+        key: Secret::new("own"),
+    };
+    let mut live = Live::with_transport(
+        route,
+        Undecided {
+            prose: "Time passes.",
+        },
+    );
+    engine
+        .submit(game, line, "one", &mut live, &mut |_| {})
+        .unwrap();
+    all(
+        &engine,
+        "SELECT purpose FROM system_one_receipts WHERE playthrough_id = ?1 \
+         AND latency_ms >= 0 ORDER BY id",
+        game,
+    )
+}
+
+/// Unprompted speech, what bystanders do and how a room reacts to an
+/// arrival are each filed under a purpose of their own, and every receipt
+/// keeps how long its request took.
+#[test]
+fn each_volition_call_is_filed_under_its_own_purpose() {
+    assert_eq!(
+        system_one_purposes(
+            "two-clerks-at-one-counter",
+            "Two Clerks at One Counter",
+            "",
+            "wait"
+        ),
+        ["classifier", "volition_speech", "volition_acts"]
+    );
+    assert_eq!(
+        system_one_purposes(
+            "a-lodge-inside-the-gate",
+            "A Lodge Inside the Gate",
+            "",
+            "/move The Porters' Lodge",
+        ),
+        ["volition_reactions"]
+    );
+}

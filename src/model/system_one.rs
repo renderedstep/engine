@@ -12,7 +12,7 @@ use super::http::{Options, Transport};
 use super::route::{Endpoint, Route, Secret, DECISIONS};
 use super::{receipts, wire, Book, Filed, Unavailable};
 use serde_json::Value;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 /// `SystemOneAgent::TYPESAFE_ENDPOINT`.
 pub const TYPESAFE_ENDPOINT: &str = "https://api.typesafe.ai/v1/systemone";
@@ -95,9 +95,11 @@ impl SystemOne {
             timeout: Some(TIMEOUT),
             headers: Vec::new(),
         };
-        let posted = transport
-            .post(&endpoint, &body, &options, None)
-            .map_err(|unreached| Unavailable(unreached.0))?;
+        let started = Instant::now();
+        let posted = transport.post(&endpoint, &body, &options, None);
+        receipts::system_one_timed(book, receipt, receipts::latency_ms(started))
+            .map_err(|error| Unavailable(error.to_string()))?;
+        let posted = posted.map_err(|unreached| Unavailable(unreached.0))?;
         if !posted.success() {
             return Err(Unavailable(format!(
                 "the provider answered {}",
