@@ -348,6 +348,61 @@ fn a_break_die_is_kept_in_the_journal_of_the_line_that_threw_it() {
 }
 
 #[test]
+fn a_check_thrown_on_a_line_is_kept_as_a_receipt_in_its_journal() {
+    // Strength 25 passes every lift, so the throw's one check is a d20 at
+    // or under 25 less the cork float's bulk penalty.
+    let (mut engine, _scratch, game) = at_the_ropewalk(
+        "check",
+        "UPDATE characters SET strength = 25 WHERE fullname = 'Jory Pask';",
+    );
+    let (_, journal) = narrated(
+        &mut engine,
+        game,
+        "/throw cork float at Wat Coyle",
+        &["Jory Pask threw the cork float at Wat Coyle and it hit them."],
+        &[],
+    );
+    let journal: serde_json::Value = serde_json::from_str(&journal).unwrap();
+    let checks = journal["steps"]["checks"]["array"]
+        .as_array()
+        .unwrap_or_else(|| panic!("no checks were kept: {journal}"));
+    assert_eq!(checks.len(), 1, "{journal}");
+    assert_eq!(checks[0]["data"], "Character::Check");
+    let fields: Vec<(String, serde_json::Value)> = checks[0]["fields"]["hash"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|pair| {
+            (
+                pair[0]["symbol"].as_str().unwrap().to_string(),
+                pair[1].clone(),
+            )
+        })
+        .collect();
+    let field = |name: &str| {
+        fields
+            .iter()
+            .find(|(key, _)| key == name)
+            .unwrap()
+            .1
+            .clone()
+    };
+    assert_eq!(
+        field("ability"),
+        serde_json::json!({ "symbol": "strength" })
+    );
+    assert_eq!(field("score"), 25);
+    let die = field("die").as_i64().expect("a die was thrown");
+    assert!((1..=20).contains(&die), "{die}");
+
+    let (_, journal) = narrated(&mut engine, game, "/drop hank of twine", &["twine"], &[]);
+    assert!(
+        !journal.contains("Character::Check"),
+        "a line that checks nothing keeps no check"
+    );
+}
+
+#[test]
 fn a_thing_thrown_through_the_window_fell_only_in_a_world_with_a_gravity() {
     let up = [
         "go to the drying loft",
