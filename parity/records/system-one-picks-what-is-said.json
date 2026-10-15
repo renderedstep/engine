@@ -159,7 +159,8 @@
               "how": null,
               "kit_key": null,
               "noticed_at": null,
-              "searched_at": null
+              "searched_at": null,
+              "hold": null
             },
             {
               "id": 1000000004,
@@ -185,7 +186,8 @@
               "how": null,
               "kit_key": null,
               "noticed_at": null,
-              "searched_at": null
+              "searched_at": null,
+              "hold": null
             }
           ],
           "removed": []
@@ -417,7 +419,8 @@
               "how": null,
               "kit_key": null,
               "noticed_at": null,
-              "searched_at": null
+              "searched_at": null,
+              "hold": null
             },
             {
               "id": 1000000004,
@@ -443,7 +446,8 @@
               "how": null,
               "kit_key": null,
               "noticed_at": null,
-              "searched_at": null
+              "searched_at": null,
+              "hold": null
             }
           ],
           "removed": []

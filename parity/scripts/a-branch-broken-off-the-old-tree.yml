@@ -1,0 +1,142 @@
+---
+story: The Rook Wood Gate
+steps:
+- id: into-rook-wood
+  type: "/move Rook Wood"
+  browser:
+    token: first-entry
+    realizes: Rook Wood
+    replies:
+    - purpose: location
+      prompt_includes:
+      - "## Already Here, Decided By The Game"
+      - 'Fixed in place: old tree, undergrowth (unsearched), fallen log.'
+      - 'Loose, and could be picked up: snail shell.'
+      prompt_excludes:
+      - branch
+      - bark
+      content:
+        description: A wood of old trees, one far older than the rest.
+        lore: The porters cut their kindling here.
+        items: []
+        people: []
+    - purpose: location
+      content:
+        exits: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: Rook Wood (realized)
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+    changed: true
+    refused: false
+- id: a-branch-is-not-lying-here
+  type: take branch
+  expect:
+    refused: true
+    changed: false
+- id: the-first-try-fails
+  type: "/break a branch off the old tree"
+  browser:
+    token: break-1
+    replies:
+    - purpose: narration
+      content: You reach up and take hold of a low branch. It does not give.
+      prompt_excludes:
+      - You tried to break
+      - It held
+      - strength ->
+  expect:
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+    carrying: []
+- id: the-second-try-fails
+  type: "/break a branch off the old tree"
+  browser:
+    token: break-2
+    replies:
+    - purpose: narration
+      content: You hang your weight on it. It holds.
+      prompt_excludes:
+      - You tried to break
+      - It held
+  expect:
+    carrying: []
+- id: the-third-try-passes
+  type: "/break a branch off the old tree"
+  browser:
+    token: break-3
+    replies:
+    - purpose: narration
+      content: The branch cracks away in your hands.
+      prompt_includes:
+      - 'The player is carrying: branch.'
+      prompt_excludes:
+      - You broke
+      - strength ->
+  expect:
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+    carrying:
+    - branch
+- id: the-bark-holds
+  type: "/break the bark"
+  browser:
+    token: bark-1
+    replies:
+    - purpose: narration
+      content: You pick at the bark. It clings.
+  expect:
+    carrying:
+    - branch
+- id: the-bark-comes-away-in-pieces
+  type: "/break the bark"
+  expect:
+    changed: true
+    change: It came away in pieces; you are holding nothing new.
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+    carrying:
+    - branch
+- id: no-bark-is-left-to-break
+  type: "/break the bark"
+  expect:
+    refused: true
+    changed: false
+    carrying:
+    - branch
+- id: the-branch-put-down
+  type: drop branch
+  expect:
+    changed: true
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+    - branch
+    carrying: []
+- id: and-taken-again
+  type: take branch
+  expect:
+    changed: true
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+    carrying:
+    - branch

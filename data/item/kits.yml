@@ -33,6 +33,16 @@
 # the first time anybody searches or opens it, when it is drawn once, on the
 # piece itself (`Roll::CONTENTS`), and every later game finds the same.
 #
+# `parts` names what is attached to a fixed piece and could be broken off it
+# -- a tree's branches, a wall's loose stones -- each with how many, one of
+# the list drawn, how hard it holds, and the bulk and fragility it has once
+# it comes away. A piece is born with its parts, drawn after everything else
+# in the room on the same die, and the parts count toward `visible`. A part
+# is not stated to the room writer, and no list a model picks from names
+# one. `hold_penalty` is what each hold takes off strength on the check to
+# break a part off (`Roll::SNAP`); a part that comes away brittle or fragile
+# throws the break die as if dropped (`data/physics.yml`).
+#
 # `readable` names the things with words on them: born with none, written
 # once the first time somebody reads one. `use_kinds` gives a thing a use
 # other than `ordinary`, and `combustible` names what a firestarter burns.
@@ -423,6 +433,22 @@ contents:
   crevice: crevice
   undergrowth: undergrowth
   sand drift: sand drift
+parts:
+  tree: {branch: {count: [1, 2, 3], hold: firm, bulk: handy, fragility: sturdy}}
+  old tree: {branch: {count: [1, 2, 3], hold: firm, bulk: handy, fragility: sturdy}, bark: {count: [1], hold: loose, bulk: light, fragility: brittle}}
+  stunted tree: {branch: {count: [1, 2], hold: loose, bulk: handy, fragility: fragile}}
+  dead tree: {branch: {count: [1, 2, 3], hold: loose, bulk: handy, fragility: brittle}}
+  hedge: {twig: {count: [1, 2], hold: loose, bulk: light, fragility: fragile}}
+  fence: {paling: {count: [0, 1, 2], hold: firm, bulk: handy, fragility: sturdy}}
+  hearth: {loose brick: {count: [0, 0, 1], hold: firm, bulk: handy, fragility: sturdy}}
+  chimney: {loose brick: {count: [0, 1, 1], hold: firm, bulk: handy, fragility: sturdy}}
+  broken wall: {loose stone: {count: [1, 2, 3], hold: loose, bulk: heavy, fragility: sturdy}}
+  stalagmite: {stalagmite tip: {count: [0, 1], hold: stout, bulk: handy, fragility: brittle}}
+  awning: {guy rope: {count: [1, 2], hold: loose, bulk: light, fragility: sturdy}}
+hold_penalty:
+  loose: 0
+  firm: 3
+  stout: 6
 pools:
   desk: {count: [1, 2, 2, 3], from: [pen, sheaf of papers, paperweight, folded note, ledger, cup, pencil, magnifying glass, letter]}
   table: {count: [0, 1, 2, 3], from: [cup, plate, knife, jug, cloth, bowl, spoon, heel of bread, deck of cards, candle]}
@@ -523,4 +549,4 @@ use_kinds:
   canteen: drink
   crowbar: lever
   tinderbox: firestarter
-combustible: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, scrap of paper, folded paper, twist of paper, twist of salt, bookmark, deck of cards, rag, cloth, folded cloth, scrap of cloth, blanket, saddle blanket, pillow, cushion, towel, bathrobe, folded shirt, coat, cap, hat, apron, scarf, sock, glove, handkerchief, scrap of wool, straw, hay, sack of grain, tarpaulin, candle, candle stub, spent candle, log, driftwood, stick, burnt stick, offcut, wood shaving, wooden spoon, wooden sword, pine cone, moss, bird's nest, dried flowers, dried petal, dried thorn, ribbon, bootlace, coil of rope, tangle of rope, old rope end, rope halter, length of twine, length of string, roll of twine, bundle of herbs, basket]
+combustible: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, scrap of paper, folded paper, twist of paper, twist of salt, bookmark, deck of cards, rag, cloth, folded cloth, scrap of cloth, blanket, saddle blanket, pillow, cushion, towel, bathrobe, folded shirt, coat, cap, hat, apron, scarf, sock, glove, handkerchief, scrap of wool, straw, hay, sack of grain, tarpaulin, candle, candle stub, spent candle, log, driftwood, stick, burnt stick, offcut, wood shaving, wooden spoon, wooden sword, pine cone, moss, bird's nest, dried flowers, dried petal, dried thorn, ribbon, bootlace, coil of rope, tangle of rope, old rope end, rope halter, length of twine, length of string, roll of twine, bundle of herbs, basket, branch, bark, twig, paling]

@@ -36,6 +36,9 @@ pub const NOTICE: i128 = 15;
 /// `Roll::CONTENTS`: what lies inside a closed piece, drawn the first time
 /// anybody searches it, by the piece's own row.
 pub const CONTENTS: i128 = 16;
+/// `Roll::SNAP`: the strength check to break a part off a fixed piece, by
+/// the part's own row, at story time.
+pub const SNAP: i128 = 17;
 
 /// The five parts of a seed. Unset parts are 0.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
