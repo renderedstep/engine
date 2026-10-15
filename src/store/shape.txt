@@ -391,6 +391,7 @@ column stories.summary text pk=0
 column stories.title varchar pk=0
 column stories.universe_id integer not null pk=0
 column stories.updated_at datetime(6) not null pk=0
+column system_one_receipts.cost_source varchar not null default 'estimated' pk=0
 column system_one_receipts.cost_usd decimal(12,6) not null pk=0
 column system_one_receipts.created_at datetime(6) not null pk=0
 column system_one_receipts.id integer not null pk=1
