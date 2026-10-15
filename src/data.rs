@@ -506,6 +506,9 @@ pub struct Kits {
     pub kinds: Vec<(String, Kit)>,
     pub pieces: Vec<(String, String)>,
     pub holding: Vec<(String, String)>,
+    /// The pool each closed piece's inside is drawn from, on its first
+    /// search (`kit::contents`).
+    pub contents: Vec<(String, String)>,
     pub pools: Vec<(String, Pool)>,
     pub readable: Vec<String>,
     pub use_kinds: Vec<(String, String)>,
@@ -536,6 +539,7 @@ const KITS_KEYS: &[&str] = &[
     "kinds",
     "pieces",
     "holding",
+    "contents",
     "pools",
     "readable",
     "use_kinds",
@@ -605,6 +609,7 @@ fn read_kits(source: &str) -> Kits {
             .collect(),
         pieces: pairs(&file["pieces"], "pieces"),
         holding: pairs(&file["holding"], "holding"),
+        contents: pairs(&file["contents"], "contents"),
         pools: entries(&file["pools"], "pools")
             .into_iter()
             .map(|(name, pool)| {
@@ -659,7 +664,23 @@ fn check_kits(kits: &Kits) {
             "item/kits.yml: {name} holds things and is not fixed"
         );
     }
+    for (name, pool) in &kits.contents {
+        assert!(
+            kits.pools.iter().any(|(p, _)| p == pool),
+            "item/kits.yml: {name}'s inside is drawn from {pool}, which is no pool"
+        );
+        assert!(
+            piece(name).is_some_and(|w| w == "closed"),
+            "item/kits.yml: {name} has an inside and is not closed"
+        );
+    }
     for (name, word) in &kits.pieces {
+        if word == "closed" {
+            assert!(
+                kits.contents.iter().any(|(p, _)| p == name),
+                "item/kits.yml: {name} is closed and has no inside"
+            );
+        }
         if ["top", "hollow"].contains(&word.as_str()) {
             assert!(
                 kits.holding.iter().any(|(p, _)| p == name),

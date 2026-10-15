@@ -34,6 +34,10 @@ pub struct Thing {
     pub carried: bool,
     /// The world's own row this is a game's copy of, where it is one.
     pub template: Option<i64>,
+    /// What a fixed piece holds (`Item::HOLDS`); none for a portable thing.
+    pub holds: Option<String>,
+    /// This game has searched it (`items.searched_at`).
+    pub searched: bool,
 }
 
 pub const USE_KINDS: &[&str] = &[
@@ -60,7 +64,21 @@ impl Thing {
             combustible: false,
             carried,
             template: None,
+            holds: None,
+            searched: false,
         }
+    }
+
+    /// Whether a search would find anything this game has not looked in: a
+    /// closed piece, or a hollow one, nobody in this game has searched.
+    pub fn searchable(&self) -> bool {
+        !self.searched && matches!(self.holds.as_deref(), Some("closed" | "hollow"))
+    }
+
+    /// Whether it is shut and could be opened: a closed piece this game has
+    /// not searched.
+    pub fn openable(&self) -> bool {
+        !self.searched && self.holds.as_deref() == Some("closed")
     }
 
     /// Whether it can leave a pair of hands at all. A bulk outside the table
@@ -217,8 +235,17 @@ impl Choice {
             "pick" => format!("Pick the lock to {} with {}", place(), tool()),
             "pry" => format!("Pry open the way to {} with {}", place(), tool()),
             "force" => format!("Force open the jammed way to {}", place()),
+            "search" => format!("Search {}", self.item_definite()),
+            "open" => format!("Open {}", self.item_definite()),
             _ => String::new(),
         }
+    }
+
+    fn item_definite(&self) -> String {
+        self.item
+            .as_ref()
+            .map(Thing::definite_name)
+            .unwrap_or_default()
     }
 
     fn item_name(&self) -> String {
@@ -388,6 +415,39 @@ impl Room {
                 .collect(),
             _ => Vec::new(),
         }
+    }
+
+    /// Every attempt a line may play here: [`Room::physical_actions`], then
+    /// [`Room::searches`].
+    pub fn attempts(&self) -> Vec<Choice> {
+        [self.physical_actions(), self.searches()].concat()
+    }
+
+    /// Each fixed piece here a search would find something new in, as a
+    /// `search`, and a shut one as an `open` beside it, in the order the
+    /// pieces lie. These reach a line only through the grammar's own words
+    /// (`search`, `open`), never a model's list: what a model is told of
+    /// them waits on the owner's wording.
+    pub fn searches(&self) -> Vec<Choice> {
+        if self.protagonist.is_none() || self.here.is_none() || self.over {
+            return Vec::new();
+        }
+        let mut result = Vec::new();
+        for piece in self.lying.iter().filter(|thing| thing.searchable()) {
+            for kind in ["search", "open"] {
+                if kind == "open" && !piece.openable() {
+                    continue;
+                }
+                result.push(Choice {
+                    kind: kind.to_string(),
+                    item: Some(piece.clone()),
+                    recipient: None,
+                    connection: None,
+                    tool: None,
+                });
+            }
+        }
+        result
     }
 
     /// Every physical attempt this room offers, in the order the engine

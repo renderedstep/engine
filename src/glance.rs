@@ -104,7 +104,8 @@ pub struct Fixture {
     pub name: String,
     /// `Item::HOLDS`: `nothing`, `top`, `hollow` or `closed`.
     pub holds: String,
-    /// `shut` for a closed fixture, none for one with no inside.
+    /// `shut` for a closed fixture, `open` once this game has searched it,
+    /// none for one with no inside.
     pub state: Option<String>,
     /// Whether this game has looked inside a closed fixture; none for one
     /// with no inside.
@@ -264,6 +265,7 @@ impl Glance {
             .map(|item| {
                 let holds = text(item, "holds").unwrap_or("nothing").to_string();
                 let closed = holds == "closed";
+                let searched = int(item, "searched_at").is_some();
                 Fixture {
                     id: id(item),
                     name: string(item, "name").to_string(),
@@ -275,8 +277,8 @@ impl Glance {
                         .map(|thing| thing.name.clone())
                         .collect(),
                     holds,
-                    state: closed.then(|| "shut".to_string()),
-                    searched: closed.then_some(false),
+                    state: closed.then(|| if searched { "open" } else { "shut" }.to_string()),
+                    searched: closed.then_some(searched),
                     noticed_at: int(item, "noticed_at"),
                 }
             })

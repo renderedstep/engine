@@ -34,7 +34,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `boxes` | `Location::Box` | walls, shared ground, bearings and distances between rooms |
 | `interior` | `Location::Interior` | a building's rooms and doorways, returned rather than written |
 | `kind` | `Location::Kind` | what sort of place a room may be and how cluttered, and the sort each room of a building is dealt |
-| `kit` | `Item::Kit` | what stands in a room of a kind and what lies about in it, rolled on the room's name from `data/item/kits.yml` |
+| `kit` | `Item::Kit`, `Item::Contents` | what stands in a room of a kind and what lies about in it, rolled on the room's name from `data/item/kits.yml`; and what lies inside a closed piece, drawn on the piece's own row (`Roll::CONTENTS`) |
 | `shuffle_connections` | `WorldMechanic::ShuffleConnections` | how a shuffle rearranges the mobile rooms' doorways |
 | `world_mechanic` | `WorldMechanic` | the cadence boundaries a mechanic has to run for |
 | `deadline` | `Quest::Deadline` | the hops walk and the anchor room an overdue step is placed from |
@@ -173,7 +173,8 @@ narrated. In a game the player narrates:
   `turn::room_of` holds only noticed things, so the closed sets, the
   glance, the read-out, the chooser and the card follow the record, and a
   line naming a thing lying here unnoticed is refused in the engine's words.
-  What lies inside a hollow or a closed fixture waits for the search.
+  What lies inside a hollow or a closed fixture waits for the search
+  (`search` and `open`, `turn::search`), which stamps what it finds.
   `Engine::noticed_findings` is what the game's doctor reports about it. A
   narrated game is never stamped and lists everything.
 - A walk back into a room the game left before puts on the card what has

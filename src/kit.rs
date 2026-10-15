@@ -166,6 +166,48 @@ pub fn roll(name: &str, kind: Option<&str>, density: Option<&str>) -> Vec<Thing>
     things
 }
 
+/// `Item::Contents.roll`: the names lying inside a closed piece, drawn once,
+/// the first time anybody searches it, from the pool `contents` names for
+/// the piece. One generator, seeded on the story and the piece's own row
+/// (`Roll::CONTENTS`): how many, one of the pool's count drawn, then a draw
+/// per thing, never a name already lying in the room (`used`). A piece the
+/// table has no inside for holds nothing.
+pub fn contents(piece: &str, story: i64, fixture: i64, used: &[String]) -> Vec<String> {
+    let kits = data::kits();
+    let Some(pool) = kits
+        .contents
+        .iter()
+        .find(|(name, _)| name == piece)
+        .and_then(|(_, pool)| kits.pools.iter().find(|(name, _)| name == pool))
+        .map(|(_, pool)| pool)
+    else {
+        return Vec::new();
+    };
+    let mut rng = Seed {
+        story: story.into(),
+        sequence: fixture.into(),
+        kind: roll::CONTENTS,
+        ..Seed::default()
+    }
+    .generator();
+    let count = pool.count[roll::one_of(pool.count.len(), &mut rng)];
+    draw(&pool.from, count, &mut used.to_vec(), &mut rng)
+}
+
+/// What a name drawn into a closed piece is, as a kit [`Thing`] lying in it,
+/// for its use, its burning and its words.
+pub fn inside(name: &str, piece: &str) -> Thing {
+    Thing {
+        name: name.to_string(),
+        tier: PORTABLE,
+        holds: None,
+        bulk: "handy".into(),
+        within: None,
+        how: Some("in"),
+        kit_key: format!("{piece}/inside/{name}"),
+    }
+}
+
 /// `Item::Kit#description`: one engine line, never prose.
 pub fn description(thing: &Thing, within: Option<&str>) -> String {
     match (within, thing.how) {
@@ -202,6 +244,23 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn a_closed_piece_is_filled_the_same_way_every_time_and_never_twice_by_name() {
+        let used = vec!["pen".to_string()];
+        for fixture in 1..200 {
+            let drawn = contents("desk", 7, fixture, &used);
+            assert_eq!(drawn, contents("desk", 7, fixture, &used));
+            assert!(drawn.len() <= 3, "{drawn:?}");
+            assert!(!drawn.contains(&"pen".to_string()));
+            let mut names = drawn.clone();
+            names.sort_unstable();
+            names.dedup();
+            assert_eq!(names.len(), drawn.len());
+        }
+        assert!(contents("table", 7, 1, &[]).is_empty());
+        assert!(contents("old beech", 7, 1, &[]).is_empty());
     }
 
     #[test]

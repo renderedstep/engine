@@ -28,7 +28,10 @@
 # (`light`, `handy`, `heavy`) for a piece that stands here and can be carried
 # off. `holding` names what lies on or in a fixed piece in plain view -- a
 # closed piece may have a top too -- and `pools` each one's count and the
-# names it is drawn from, never a name twice in one room.
+# names it is drawn from, never a name twice in one room. `contents` names
+# the pool each closed piece's inside is drawn from: nothing is in it until
+# the first time anybody searches or opens it, when it is drawn once, on the
+# piece itself (`Roll::CONTENTS`), and every later game finds the same.
 #
 # `readable` names the things with words on them: born with none, written
 # once the first time somebody reads one. `use_kinds` gives a thing a use
@@ -394,6 +397,32 @@ holding:
   scree: scree
   rubble: rubble
   column stump: column stump
+contents:
+  desk: desk drawer
+  cabinet: shelf
+  cupboard: shelf
+  wardrobe: wardrobe
+  locker: locker
+  chest: chest
+  filing cabinet: files
+  safe: safe
+  medicine cabinet: medicine
+  glass cabinet: specimens
+  catalogue cabinet: catalogue
+  display case: display
+  till: till
+  crate: crate
+  barrel: barrel
+  pantry: pantry
+  cold store: cold store
+  suit locker: suit locker
+  oil drum: oil drum
+  toll box: toll box
+  cistern: cistern
+  crack: crack
+  crevice: crevice
+  undergrowth: undergrowth
+  sand drift: sand drift
 pools:
   desk: {count: [1, 2, 2, 3], from: [pen, sheaf of papers, paperweight, folded note, ledger, cup, pencil, magnifying glass, letter]}
   table: {count: [0, 1, 2, 3], from: [cup, plate, knife, jug, cloth, bowl, spoon, heel of bread, deck of cards, candle]}
@@ -453,6 +482,30 @@ pools:
   scree: {count: [0, 1], from: [stone, bone]}
   rubble: {count: [0, 1, 2], from: [rusted hinge, coin, shard of pottery, bone]}
   column stump: {count: [0, 1], from: [bird's nest, coin, carved fragment]}
+  # what lies inside a closed piece, found the first time anybody searches it
+  desk drawer: {count: [0, 1, 2, 3], from: [pen, pencil, folded note, letter, sheaf of papers, paperweight, receipt, docket]}
+  wardrobe: {count: [1, 2, 3], from: [coat, cap, hat, scarf, folded shirt, blanket]}
+  locker: {count: [1, 2], from: [coat, cap, bag, towel, canteen, folded shirt]}
+  chest: {count: [1, 2, 3], from: [blanket, folded shirt, bundle of letters, coin, candle, coil of rope]}
+  files: {count: [1, 2, 3], from: [docket, receipt, ledger, sheaf of papers, folded note, bundle of letters]}
+  safe: {count: [1, 2], from: [coin, ledger, bundle of letters, pocket watch]}
+  medicine: {count: [1, 2, 3], from: [bandage, empty vial, bottle, jar of powder, razor]}
+  specimens: {count: [1, 2], from: [specimen jar, flask, test tube, glass stopper]}
+  catalogue: {count: [1, 2], from: [loose page, sheet of notes, pencil]}
+  display: {count: [1, 2], from: [carved token, small statue, pocket watch, coin]}
+  till: {count: [1, 2], from: [coin, receipt, price card]}
+  crate: {count: [0, 1, 2], from: [straw, apple, turnip, bottle, sack of grain, coil of rope]}
+  barrel: {count: [0, 1, 2], from: [apple, turnip, onion, sack of grain]}
+  pantry: {count: [1, 2, 3], from: [loaf, wedge of cheese, jar of pickles, onion, apple, heel of bread, jar]}
+  cold store: {count: [0, 1, 2], from: [specimen jar, flask, jar, bottle]}
+  suit locker: {count: [1, 2], from: [breathing mask, helmet lamp, safety line, canteen]}
+  oil drum: {count: [0, 1], from: [rag, tin of grease]}
+  toll box: {count: [1, 2], from: [coin, ticket, receipt]}
+  cistern: {count: [0, 1], from: [stone, bone, shard of pottery]}
+  crack: {count: [0, 1], from: [coin, bone, pebble]}
+  crevice: {count: [0, 1], from: [bone, feather, pebble, coin]}
+  undergrowth: {count: [0, 1, 2], from: [mushroom, pine cone, feather, bird skull, acorn]}
+  sand drift: {count: [0, 1], from: [bleached bone, shard of pottery, coin, snake skin]}
 readable: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, sign, warning sign, signpost, milestone, marker stone, blackboard]
 use_kinds:
   apple: food
