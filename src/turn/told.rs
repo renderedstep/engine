@@ -52,6 +52,9 @@ const NARRATION: &str = crate::prompt_version::NARRATION;
 /// `Scene::Generator`'s pass.
 const ARRIVAL: &str = "arrival";
 
+/// The journal step holding every ability check a turn threw.
+const CHECKS: &str = "checks";
+
 /// `Scene::NARRATED_ENDING`: the label a closing scene carries once the
 /// narrator's words have replaced the engine's.
 const NARRATED_ENDING: &str = "ending";
@@ -265,6 +268,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             None => {
                 self.m.store.savepoint()?;
                 let result = body(self).and_then(|value| {
+                    self.keep_checks()?;
                     let receipt = value.encode();
                     if let Some(journal) = self.journal.as_mut() {
                         journal.save(self.m.store, &mut self.m.records, key, receipt)?;
@@ -278,6 +282,7 @@ impl<'s, 'm> Turn<'s, 'm> {
                     }
                     Err(error) => {
                         self.m.store.rollback_to();
+                        self.m.take_checks();
                         return Err(error);
                     }
                 }
@@ -300,11 +305,47 @@ impl<'s, 'm> Turn<'s, 'm> {
             return Ok(value);
         }
         let value = body(self)?;
+        self.keep_checks()?;
         let receipt = value.encode();
         if let Some(journal) = self.journal.as_mut() {
             journal.save(self.m.store, &mut self.m.records, key, receipt)?;
         }
         Ok(value)
+    }
+
+    /// Every ability check the step just run threw, added to the journal's
+    /// `checks` step as a `Character::Check` receipt each, in the order
+    /// thrown. The protocol's rolls list is read off these receipts, so a
+    /// check thrown on a turn is one the player is shown.
+    fn keep_checks(&mut self) -> Result<(), Error> {
+        let thrown = self.m.take_checks();
+        let Some(journal) = self.journal.as_mut() else {
+            return Ok(());
+        };
+        if thrown.is_empty() {
+            return Ok(());
+        }
+        let mut kept = journal
+            .read(CHECKS)
+            .and_then(|value| value["array"].as_array().cloned())
+            .unwrap_or_default();
+        kept.extend(thrown.iter().map(|check| {
+            command::encode::data(
+                "Character::Check",
+                vec![
+                    ("ability", command::encode::symbol(&check.ability)),
+                    ("score", Value::from(check.score)),
+                    ("penalty", Value::from(check.penalty)),
+                    ("die", check.die.map_or(Value::Null, Value::from)),
+                ],
+            )
+        }));
+        journal.save(
+            self.m.store,
+            &mut self.m.records,
+            CHECKS,
+            command::encode::array(kept),
+        )
     }
 
     /// What the journal saved for `key`, read back.

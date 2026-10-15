@@ -215,6 +215,9 @@ pub struct Mechanics<'s> {
     /// Who decides the volition rows being written: the die, unless a typed
     /// judgment is being applied or failed.
     decider: Decider,
+    /// Every ability check thrown since the journal last kept them, in the
+    /// order thrown: the dice a turn's receipts must carry.
+    checks: std::cell::RefCell<Vec<Check>>,
 }
 
 /// `playthrough_volitions.decided_by`: the seeded die, a typed System One
@@ -285,7 +288,21 @@ impl<'s> Mechanics<'s> {
             reactions: Vec::new(),
             arriving: None,
             decider: Decider::Die,
+            checks: std::cell::RefCell::new(Vec::new()),
         })
+    }
+
+    /// Notes a check that was thrown, so the journal can keep it.
+    fn thrown(&self, check: Option<Check>) -> Option<Check> {
+        if let Some(check) = &check {
+            self.checks.borrow_mut().push(check.clone());
+        }
+        check
+    }
+
+    /// The checks thrown since this was last asked, oldest first.
+    pub(crate) fn take_checks(&self) -> Vec<Check> {
+        std::mem::take(&mut *self.checks.borrow_mut())
     }
 
     pub fn records(&self) -> &Records {
@@ -897,7 +914,8 @@ impl<'s> Mechanics<'s> {
             ));
         };
         let mut rng = self.generator(self.story_now(), item, roll::THROW);
-        let Some(check) = check_ability(&thrower, "strength", penalty, &mut rng) else {
+        let Some(check) = self.thrown(check_ability(&thrower, "strength", penalty, &mut rng))
+        else {
             return Ok(Report::refuse(
                 format!(
                     "{} has no abilities, so there is no strength to throw with. \
@@ -1658,7 +1676,7 @@ impl<'s> Mechanics<'s> {
             .position(|a| *a == ability)
             .map_or(0, |index| index as i64 + 1);
         let mut rng = self.generator(self.clock(), sequence, 0);
-        check_ability(character, ability, penalty, &mut rng)
+        self.thrown(check_ability(character, ability, penalty, &mut rng))
     }
 
     // --- bodies --------------------------------------------------------------
@@ -2935,6 +2953,7 @@ impl<'s> Mechanics<'s> {
         }
         let mut rng = self.generator(self.story_now(), id(edge), roll::FALL);
         let fall = physics::fall(dice, &who, &mut rng);
+        self.thrown(fall.save.clone());
         self.write_toll(
             &who,
             physics::FALL,
@@ -2983,7 +3002,7 @@ impl<'s> Mechanics<'s> {
             return Ok(());
         }
         let mut rng = self.generator(self.story_now(), self.next_toll(), 0);
-        let check = save.and_then(|save| check_ability(&who, save, 0, &mut rng));
+        let check = self.thrown(save.and_then(|save| check_ability(&who, save, 0, &mut rng)));
         let saved = check.as_ref().is_some_and(Check::passed);
         let damage = if saved { 0 } else { roll::die(die, &mut rng) };
         self.write_toll(&who, hazard, saved, damage, room, connection)
