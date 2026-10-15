@@ -312,7 +312,7 @@ FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
 INSERT INTO stories VALUES(1000000001,'2026-10-02 13:25:46.849793',NULL,'tidal legal mystery','You have rung this court up and down for nineteen years and you have never once been wrong about the water, which is why the chalk on the tide-slate is wrong in somebody else''s hand. High water is written as ten minutes past eight. High water is at seven. You wrote seven yourself, last night, on a dry board in a still room, and the figure on the slate now is not yours and is close enough to yours to pass. Out at the post, Neb Halloran has been chained since the ebb for a wrecking nobody on this coast believes he did alone, and his hearing is set for the last hour before the turn -- an hour that, on that chalk, does not exist. The Justicar is already in the court with his gown on. The bell is on its hook. Whoever moved seventy minutes has given the water time to do what the court would have had to sign for.','2026-09-01 05:20:00','The player is Coraith Vell, Bell-Keeper of the Assize causeway, who finds the day''s high water altered by seventy minutes in a hand that is almost her own. The chained man at the tide post has a hearing in an hour the false chalk has erased, so working out who changed it means reading the court''s own papers against the water: the Justicar who needs a verdict, the wreck that serves as the vestry, and the question of who benefits from a drowning the record will call a delay. The tone is cold, procedural and out of doors, and the clock is the sea.','The Salt Assizes (engine sweep)',1000000001,'2026-10-02 13:25:46.849793');
-CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
+CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, "cost_source" varchar DEFAULT 'estimated' NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
 , CONSTRAINT "fk_rails_75847e1556"
@@ -413,6 +413,7 @@ INSERT INTO schema_migrations VALUES('20250823023925');
 INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
+INSERT INTO schema_migrations VALUES('20261015180000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');

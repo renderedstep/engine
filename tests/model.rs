@@ -814,12 +814,13 @@ fn system_one_goes_to_the_decisions_route_or_to_typesafe() {
     assert_eq!(
         rows(
             &game,
-            "SELECT purpose, transport, cost_usd FROM system_one_receipts"
+            "SELECT purpose, transport, cost_usd, cost_source FROM system_one_receipts"
         ),
         vec![vec![
             json!("classifier"),
             json!("openrouter_decisions"),
-            json!(0.003)
+            json!(0.003),
+            json!("reported")
         ]]
     );
 
@@ -848,6 +849,68 @@ fn system_one_goes_to_the_decisions_route_or_to_typesafe() {
         "https://api.typesafe.ai/v1/systemone"
     );
     assert_eq!(live.transport().sent[0].2["model"], "jev-1.13.0");
+}
+
+/// What a System One answer reported is what its receipt books: OpenRouter's
+/// `usage.cost`, however far under the estimate, marked `reported`; an answer
+/// with no cost (TypeSafe direct reports tokens only, or the field is missing)
+/// keeps the conservative estimate, marked `estimated`.
+#[test]
+fn a_system_one_receipt_books_the_reported_cost_or_the_estimate() {
+    let questions = json!({"verb": {"type": "choice", "criteria": {"look": "x"}}});
+    let answers = json!({"verb": {"type": "choice", "choice": "look"}});
+    let cases = [
+        (
+            SystemOne::Decisions,
+            json!({"answers": answers, "usage": {"prompt_tokens": 412, "completion_tokens": 9, "total_tokens": 421, "cost": 0.0000351}}),
+            json!(0.0000351),
+            "reported",
+        ),
+        (
+            SystemOne::Decisions,
+            json!({"answers": answers, "usage": {"prompt_tokens": 412, "completion_tokens": 9, "total_tokens": 421}}),
+            json!(0.002),
+            "estimated",
+        ),
+        (
+            SystemOne::Decisions,
+            json!({"answers": answers}),
+            json!(0.002),
+            "estimated",
+        ),
+        (
+            SystemOne::TypeSafe {
+                key: Secret::new("ts-key"),
+            },
+            json!({"answers": answers, "usage": {"input_tokens": 412, "output_tokens": 9}}),
+            json!(0.002),
+            "estimated",
+        ),
+    ];
+    for (system_one, answer, cost, source) in cases {
+        let mut game = game();
+        let mut live = Live::with_transport(own_key(), Canned::default().json(200, answer.clone()))
+            .with_system_one(system_one);
+        let filed = Filed {
+            purpose: "classifier".into(),
+            playthrough: Some(game.playthrough),
+            ..Filed::default()
+        };
+        let mut book = Book {
+            store: game.engine.store(),
+            records: &mut game.records,
+        };
+        live.ask_questions(&mut book, &filed, &json!({"line": "look"}), &questions)
+            .unwrap();
+        assert_eq!(
+            rows(
+                &game,
+                "SELECT cost_usd, cost_source FROM system_one_receipts"
+            ),
+            vec![vec![cost, json!(source)]],
+            "{answer}"
+        );
+    }
 }
 
 // --- the two routes over a real socket --------------------------------------

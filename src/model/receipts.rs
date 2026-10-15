@@ -365,7 +365,8 @@ pub fn attribute(book: &mut Book, messages: &[i64], scene: i64) -> Result<(), Er
 }
 
 /// `SystemOneReceipt::COST_PER_REQUEST_USD`: what a System One request is
-/// charged at before its answer says otherwise.
+/// charged at when its answer reports no cost of its own (TypeSafe direct
+/// reports tokens only), a conservative figure rather than a measured one.
 pub const SYSTEM_ONE_COST: f64 = 0.002;
 
 /// The System One receipt, written before the request goes, because a
@@ -382,22 +383,29 @@ pub fn system_one(book: &mut Book, filed: &Filed, transport: &str) -> Result<i64
             ("purpose", Value::from(filed.purpose.as_str())),
             ("transport", Value::from(transport)),
             ("cost_usd", Value::from(SYSTEM_ONE_COST)),
+            ("cost_source", Value::from("estimated")),
         ],
     )?;
     Ok(int(&row, "id").expect("a receipt has an id"))
 }
 
-/// The cost the answer reported, where it is more than the receipt holds
-/// (`SystemOneReceipt#reported!`).
+/// The cost the answer reported (OpenRouter's `usage.cost`), booked in
+/// place of the estimate and marked `reported` (`SystemOneReceipt#reported!`).
+/// An answer that reports no usable cost leaves the estimate standing.
 pub fn system_one_reported(book: &mut Book, receipt: i64, usage: &Value) -> Result<(), Error> {
-    if let Some(cost) = usage.get("cost").and_then(Value::as_f64) {
-        if cost > SYSTEM_ONE_COST {
-            book.store.update(
-                "system_one_receipts",
-                receipt,
-                &[("cost_usd", Value::from(cost))],
-            )?;
-        }
+    let reported = usage
+        .get("cost")
+        .and_then(Value::as_f64)
+        .filter(|cost| cost.is_finite() && *cost >= 0.0);
+    if let Some(cost) = reported {
+        book.store.update(
+            "system_one_receipts",
+            receipt,
+            &[
+                ("cost_usd", Value::from(cost)),
+                ("cost_source", Value::from("reported")),
+            ],
+        )?;
     }
     Ok(())
 }

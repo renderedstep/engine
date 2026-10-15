@@ -315,7 +315,7 @@ FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
 INSERT INTO stories VALUES(1000000001,'2026-10-02 13:25:39.568268',NULL,'bureaucratic mystery','The stamp is still in your hand and the ink is still wet, and there is an hour missing out of the middle of your own daybook. Not a blank line: a clean, ruled gap between four and five o''clock, in your handwriting, with the running total carried straight across it as though nothing needed to be entered at all. You have worked Ward Office 12 for eleven years and you have never carried a total across a gap in your life. Rain is coming off the levee and going sideways past the window. Somewhere down the long hallway a door closes, and then another, nearer -- the Inspectorate does its rounds at seven and it is twenty past six. Perrin''s desk across the room has been cleared to the wood, and you cannot remember when, or by whom, or -- and this is the part that has your hands cold -- whether there was ever anybody sitting at it. There is one thing in this office nobody has audited in eleven years, and its door is behind you.','2026-08-31 18:40:00','The player is a ward clerk in Ambry who finds an hour cut out of their own daybook and the desk opposite theirs cleared of a colleague they can no longer quite remember. Working out what happened in that hour means going through the Registry''s own paperwork against it: the supply closet nobody has inventoried, the long hallway with the Inspectorate coming up it, and eventually the question of who has blank writs and why one was spent on a Marginalia clerk in Ward Office 12. The tone is dry, close and procedural, and the horror is entirely administrative.','The Unrecorded Hour (engine sweep)',1000000001,'2026-10-02 13:25:39.568268');
-CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
+CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, "cost_source" varchar DEFAULT 'estimated' NOT NULL, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
 , CONSTRAINT "fk_rails_75847e1556"
@@ -416,6 +416,7 @@ INSERT INTO schema_migrations VALUES('20250823023925');
 INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
+INSERT INTO schema_migrations VALUES('20261015180000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
