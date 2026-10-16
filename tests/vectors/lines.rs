@@ -64,6 +64,10 @@ fn thing(value: &Value, carried: bool) -> Thing {
     thing.template = value["template"].as_i64();
     thing.holds = value["holds"].as_str().map(str::to_string);
     thing.searched = value["searched"].as_bool().unwrap_or(false);
+    thing.piece = value["piece"]
+        .as_array()
+        .map(|pair| (pair[0].as_i64().expect("a piece's id"), text(&pair[1])));
+    thing.hold = value["hold"].as_str().map(str::to_string);
     thing
 }
 
@@ -99,6 +103,10 @@ fn build(worlds: &Value, name: &Value) -> Built {
             .iter()
             .map(|t| thing(t, true))
             .collect(),
+        parts: list(&world["parts"])
+            .iter()
+            .map(|t| thing(t, false))
+            .collect(),
         over: false,
     };
     let mut records: Vec<Record> = Vec::new();
@@ -108,6 +116,7 @@ fn build(worlds: &Value, name: &Value) -> Built {
     records.extend(room.cast.iter().cloned().map(Record::Person));
     records.extend(room.lying.iter().cloned().map(Record::Thing));
     records.extend(room.carried.iter().cloned().map(Record::Thing));
+    records.extend(room.parts.iter().cloned().map(Record::Thing));
     Built { room, records }
 }
 
@@ -201,7 +210,7 @@ fn grammar() {
         let built = build(worlds, &input["world"]);
         let grammar = Grammar::new(&built.room);
         if let Some(token) = input["token"].as_str() {
-            let choices = built.room.physical_actions();
+            let choices = built.room.attempts();
             let choice = choices
                 .iter()
                 .find(|choice| choice.token() == token)

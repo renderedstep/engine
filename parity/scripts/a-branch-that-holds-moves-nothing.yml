@@ -1,0 +1,54 @@
+---
+story: The Rook Wood Gate
+steps:
+- id: into-rook-wood
+  type: "/move Rook Wood"
+  browser:
+    token: first-entry
+    realizes: Rook Wood
+    replies:
+    - purpose: location
+      content:
+        description: A wood of old trees, one far older than the rest.
+        lore: The porters cut their kindling here.
+        items: []
+        people: []
+    - purpose: location
+      content:
+        exits: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: Rook Wood (realized)
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+- id: a-branch-that-holds
+  type: "/break branch off old tree"
+  expect:
+    changed: false
+    refused: false
+    note: It held; nothing came away.
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+    carrying: []
+- id: a-second-game-walks-in
+  player: second
+  type: go to Rook Wood
+  expect:
+    location: Rook Wood (realized)
+    here:
+    - old tree
+    - undergrowth
+    - fallen log
+    - snail shell
+- id: and-tries-its-own-branch
+  player: second
+  type: "/break branch off old tree"
+- id: the-first-games-branch-is-still-on-the-tree
+  type: "/break branch off old tree"

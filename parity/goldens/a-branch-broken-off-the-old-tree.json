@@ -1,0 +1,725 @@
+{
+  "script": "a-branch-broken-off-the-old-tree",
+  "story": "The Rook Wood Gate",
+  "steps": [
+    {
+      "step": "step 1 into-rook-wood",
+      "player": "first",
+      "typed": "/move Rook Wood",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> Rook Wood",
+        "resolved_by": "grammar",
+        "note": "first-entry: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 a-branch-is-not-lying-here",
+      "player": "first",
+      "typed": "take branch",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "there is no thing lying here called \"branch\". There is: old tree, undergrowth, fallen log, snail shell",
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 the-first-try-fails",
+      "player": "first",
+      "typed": "/break a branch off the old tree",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "break -> branch",
+        "resolved_by": "grammar",
+        "note": "break-1: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 the-second-try-fails",
+      "player": "first",
+      "typed": "/break a branch off the old tree",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "break -> branch",
+        "resolved_by": "grammar",
+        "note": "break-2: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 the-third-try-passes",
+      "player": "first",
+      "typed": "/break a branch off the old tree",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "branch"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "break -> branch",
+        "resolved_by": "grammar",
+        "note": "break-3: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 the-bark-holds",
+      "player": "first",
+      "typed": "/break the bark",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "branch"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "break -> bark",
+        "resolved_by": "grammar",
+        "note": "bark-1: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 the-bark-comes-away-in-pieces",
+      "player": "first",
+      "typed": "/break the bark",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "branch"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You broke the bark off the old tree. strength -> d20(8) <= 10 PASS. It came away in pieces; you are holding nothing new.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> bark",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 8 no-bark-is-left-to-break",
+      "player": "first",
+      "typed": "/break the bark",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "branch"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "That did not resolve to an available physical action with these items and doorways. Nothing has changed. A Playthrough::Drift row was written.",
+        "understood": "use -> nothing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 9 the-branch-put-down",
+      "player": "first",
+      "typed": "drop branch",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "branch"
+          },
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "dropped: branch (was carried by Tamsin Rook, now lying in Rook Wood)",
+        "refused": false,
+        "offers": null,
+        "understood": "drop -> branch",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 10 and-taken-again",
+      "player": "first",
+      "typed": "take branch",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Rook Wood",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Back Gate",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000010,
+            "name": "fallen log"
+          },
+          {
+            "id": 1000000008,
+            "name": "old tree"
+          },
+          {
+            "id": 1000000011,
+            "name": "snail shell"
+          },
+          {
+            "id": 1000000009,
+            "name": "undergrowth"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "branch"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 10,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: branch (was lying in Rook Wood, now carried by Tamsin Rook)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> branch",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

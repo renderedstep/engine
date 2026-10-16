@@ -509,6 +509,11 @@ pub struct Kits {
     /// The pool each closed piece's inside is drawn from, on its first
     /// search (`kit::contents`).
     pub contents: Vec<(String, String)>,
+    /// What is attached to each fixed piece that has anything, in file
+    /// order (`kit::roll`).
+    pub parts: Vec<(String, Vec<(String, Part)>)>,
+    /// What each hold takes off strength on the check to break a part off.
+    pub hold_penalty: Vec<(String, i64)>,
     pub pools: Vec<(String, Pool)>,
     pub readable: Vec<String>,
     pub use_kinds: Vec<(String, String)>,
@@ -531,6 +536,16 @@ pub struct Pool {
     pub from: Vec<String>,
 }
 
+/// One part a fixed piece is born with: how many, one of the list drawn,
+/// how hard it holds, and what it is once it comes away.
+#[derive(Debug)]
+pub struct Part {
+    pub count: Vec<i64>,
+    pub hold: String,
+    pub bulk: String,
+    pub fragility: String,
+}
+
 /// The file's shape: every top-level key, and nothing else.
 const KITS_KEYS: &[&str] = &[
     "kit_die",
@@ -540,6 +555,8 @@ const KITS_KEYS: &[&str] = &[
     "pieces",
     "holding",
     "contents",
+    "parts",
+    "hold_penalty",
     "pools",
     "readable",
     "use_kinds",
@@ -610,6 +627,36 @@ fn read_kits(source: &str) -> Kits {
         pieces: pairs(&file["pieces"], "pieces"),
         holding: pairs(&file["holding"], "holding"),
         contents: pairs(&file["contents"], "contents"),
+        parts: entries(&file["parts"], "parts")
+            .into_iter()
+            .map(|(piece, parts)| {
+                let parts = entries(parts, "a piece's parts")
+                    .into_iter()
+                    .map(|(name, part)| {
+                        let word = |key: &str| string(&part[key], "a part's word");
+                        (
+                            name,
+                            Part {
+                                count: integers(&part["count"], "a part's count"),
+                                hold: word("hold"),
+                                bulk: word("bulk"),
+                                fragility: word("fragility"),
+                            },
+                        )
+                    })
+                    .collect();
+                (piece, parts)
+            })
+            .collect(),
+        hold_penalty: entries(&file["hold_penalty"], "hold_penalty")
+            .into_iter()
+            .map(|(hold, penalty)| {
+                (
+                    hold,
+                    penalty.as_i64().expect("a hold's penalty is an integer"),
+                )
+            })
+            .collect(),
         pools: entries(&file["pools"], "pools")
             .into_iter()
             .map(|(name, pool)| {
@@ -698,6 +745,47 @@ fn check_kits(kits: &Kits) {
             piece(name).is_none(),
             "item/kits.yml: {name} is both a piece and a thing"
         );
+    }
+    let moving = |bulk: &str| {
+        physics()
+            .bulk
+            .iter()
+            .any(|(b, penalty)| b == bulk && penalty.is_some())
+    };
+    for (name, parts) in &kits.parts {
+        assert!(
+            piece(name)
+                .is_some_and(|w| ["nothing", "top", "hollow", "closed"].contains(&w.as_str())),
+            "item/kits.yml: {name} has parts and is not fixed"
+        );
+        for (part, spec) in parts {
+            assert!(
+                piece(part).is_none(),
+                "item/kits.yml: {part} is both a piece and a part"
+            );
+            assert!(
+                !spec.count.is_empty() && spec.count.iter().all(|n| *n >= 0),
+                "item/kits.yml: {name}'s {part} has no count"
+            );
+            assert!(
+                kits.hold_penalty.iter().any(|(hold, _)| *hold == spec.hold),
+                "item/kits.yml: {name}'s {part} holds {:?}, which has no penalty",
+                spec.hold
+            );
+            assert!(
+                moving(&spec.bulk),
+                "item/kits.yml: {name}'s {part} is {:?}, which no hand moves",
+                spec.bulk
+            );
+            assert!(
+                physics()
+                    .fragility
+                    .iter()
+                    .any(|(f, _)| *f == spec.fragility),
+                "item/kits.yml: {name}'s {part} is {:?}, which is no fragility",
+                spec.fragility
+            );
+        }
     }
     for (word, _) in &kits.density {
         assert!(

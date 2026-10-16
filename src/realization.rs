@@ -295,7 +295,8 @@ impl<'a> Realization<'a> {
     }
 
     /// The world's own things lying in this room, in the order they were
-    /// written (`Item.lying_in(location).templates.order(:id)`).
+    /// written (`Item.lying_in(location).templates.order(:id)`). A piece's
+    /// parts are not among them: nothing states them to the room writer.
     fn lying_here(&self) -> Vec<&'a Row> {
         let here = Some(id(self.location));
         let mut rows = self.records.select("items", |item| {
@@ -303,6 +304,7 @@ impl<'a> Realization<'a> {
                 && int(item, "location_id") == here
                 && int(item, "character_id").is_none()
                 && int(item, "playthrough_id").is_none()
+                && text(item, "tier") != Some(crate::kit::PART)
         });
         rows.sort_by_key(|item| id(item));
         rows
