@@ -451,16 +451,15 @@ impl Room {
     }
 
     /// Every attempt a line may play here: [`Room::physical_actions`], then
-    /// [`Room::searches`], then [`Room::breaks`].
+    /// [`Room::breaks`].
     pub fn attempts(&self) -> Vec<Choice> {
-        [self.physical_actions(), self.searches(), self.breaks()].concat()
+        [self.physical_actions(), self.breaks()].concat()
     }
 
     /// A `break` for each sort of part still attached to a piece lying here,
     /// in the order the pieces lie: one attempt for a tree's branches however
-    /// many it has left, on the first of them. Reached, like a search, only
-    /// through the grammar's own words (`break`, `snap`), never a model's
-    /// list.
+    /// many it has left, on the first of them. Reached only through the
+    /// grammar's own words (`break`, `snap`), never a model's list.
     pub fn breaks(&self) -> Vec<Choice> {
         if self.protagonist.is_none() || self.here.is_none() || self.over {
             return Vec::new();
@@ -492,36 +491,11 @@ impl Room {
         result
     }
 
-    /// Each fixed piece here a search would find something new in, as a
-    /// `search`, and a shut one as an `open` beside it, in the order the
-    /// pieces lie. These reach a line only through the grammar's own words
-    /// (`search`, `open`), never a model's list: what a model is told of
-    /// them waits on the owner's wording.
-    pub fn searches(&self) -> Vec<Choice> {
-        if self.protagonist.is_none() || self.here.is_none() || self.over {
-            return Vec::new();
-        }
-        let mut result = Vec::new();
-        for piece in self.lying.iter().filter(|thing| thing.searchable()) {
-            for kind in ["search", "open"] {
-                if kind == "open" && !piece.openable() {
-                    continue;
-                }
-                result.push(Choice {
-                    kind: kind.to_string(),
-                    item: Some(piece.clone()),
-                    recipient: None,
-                    connection: None,
-                    tool: None,
-                });
-            }
-        }
-        result
-    }
-
     /// Every physical attempt this room offers, in the order the engine
-    /// lists them: consuming, offering, burning, then each closed doorway
-    /// in the order the doorways were written.
+    /// lists them: consuming, offering, burning, each closed doorway in the
+    /// order the doorways were written, then each fixed piece here a search
+    /// would find something new in, as a `search`, and a shut one as an
+    /// `open` beside it, in the order the pieces lie.
     pub fn physical_actions(&self) -> Vec<Choice> {
         if self.protagonist.is_none() || self.here.is_none() || self.over {
             return Vec::new();
@@ -600,6 +574,18 @@ impl Room {
                         ..choice("pry")
                     });
                 }
+            }
+        }
+        for piece in self.lying.iter().filter(|thing| thing.searchable()) {
+            result.push(Choice {
+                item: Some(piece.clone()),
+                ..choice("search")
+            });
+            if piece.openable() {
+                result.push(Choice {
+                    item: Some(piece.clone()),
+                    ..choice("open")
+                });
             }
         }
         result

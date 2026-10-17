@@ -77,6 +77,24 @@ pub fn scaffold() -> String {
         facts::dropped(&described, &somewhere, Some(&somebody)),
         facts::dropped_and_broke(&plain, &somewhere, None),
         facts::dropped_and_broke(&described, &somewhere, Some(&somebody)),
+        // A search finding nothing, one thing and more than one, in a shut
+        // piece and a hollow one, searched and opened.
+        facts::searched(&plain, &[], Some(&somebody), false, true),
+        facts::searched(&plain, &[], None, false, false),
+        facts::searched(
+            &plain,
+            std::slice::from_ref(&plain),
+            Some(&somebody),
+            true,
+            true,
+        ),
+        facts::searched(
+            &plain,
+            &[plain.clone(), plain.clone()],
+            Some(&somebody),
+            false,
+            false,
+        ),
         facts::read(&plain, WORDS),
         facts::examined(&plain, None, false),
         facts::examined(&described, Some(&somebody), true),
