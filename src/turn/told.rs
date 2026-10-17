@@ -812,8 +812,14 @@ impl<'s, 'm> Turn<'s, 'm> {
             let item = choice.item.as_ref().map(|thing| thing.id);
             return self.talk_to(recipient, command, item);
         }
+        let part = match (&choice.item, choice.kind.as_str()) {
+            (Some(part), "break") => Some(self.m.row("items", part.id)?),
+            _ => None,
+        };
+        let mut thrown = None;
         let kept::Effect { fact, .. } = self.commit("physical_effect", |turn| {
             let (status, fact) = turn.m.apply_physical(choice)?;
+            thrown = turn.m.checks.borrow().last().cloned();
             Ok(kept::Effect {
                 status: status.to_string(),
                 fact,
@@ -832,13 +838,90 @@ impl<'s, 'm> Turn<'s, 'm> {
             );
             return self.narrate(command, Some(told), Some("use"), None, Some(fact));
         }
-        if choice.kind == "break" {
-            // A part broken off reaches the narrator as what the player
-            // carries; the engine's sentence for it waits on the owner's
-            // wording, and stands only where no narrator answers.
-            return self.narrate(command, None, None, None, Some(fact));
+        if let Some(part) = part {
+            // The narrator is told what came away; the engine's own sentence
+            // stands only where no narrator answers.
+            if let Some(told) = self.broke_off(&part, thrown)? {
+                return self.narrate(command, Some(told), Some("use"), None, Some(fact));
+            }
         }
         self.narrate(command, Some(fact.clone()), Some("use"), None, Some(fact))
+    }
+
+    /// The fact a narrator is handed after a `break`, or none where the
+    /// piece cannot be found. `part` is the part's row as the turn found it,
+    /// and `thrown` the check the attempt threw, or none on a turn resumed
+    /// after its effect, which reads the check back off the journal; the
+    /// row it found then has come away already, so the piece is the one
+    /// here its kit key names, and the hold the one the check took off.
+    fn broke_off(&self, part: &Row, thrown: Option<super::Check>) -> Result<Option<String>, Error> {
+        let player = self.m.player();
+        let able = player
+            .as_ref()
+            .is_some_and(|who| super::ABILITIES.iter().all(|a| int(who, a).is_some()));
+        let check = thrown.or_else(|| {
+            self.journal
+                .as_ref()
+                .and_then(|journal| journal.read(CHECKS))
+                .and_then(kept::last_check)
+                .filter(|_| able)
+        });
+        let Some(piece) = int(part, "within_id").or_else(|| self.piece_keyed(part)) else {
+            return Ok(None);
+        };
+        let mut part = part.clone();
+        if text(&part, "hold").is_none() {
+            if let Some(hold) = check
+                .as_ref()
+                .and_then(|check| crate::kit::hold_of_penalty(check.penalty))
+            {
+                part.insert("hold".into(), Value::from(hold));
+            }
+        }
+        let now = self.m.row("items", id(&part))?;
+        let outcome = if text(&now, "how") == Some(crate::kit::ATTACHED) {
+            facts::Snapped::Held
+        } else if text(&now, "disposition") == Some(crate::physics::BROKEN) {
+            facts::Snapped::InPieces
+        } else {
+            facts::Snapped::InHand
+        };
+        let name = string(&part, "name");
+        let left = self
+            .m
+            .room()
+            .parts
+            .iter()
+            .filter(|other| {
+                other.piece.as_ref().map(|(id, _)| *id) == Some(piece) && other.name == name
+            })
+            .count() as i64;
+        let before = left + i64::from(outcome != facts::Snapped::Held);
+        Ok(Some(facts::broke_off(
+            &part,
+            &self.m.row("items", piece)?,
+            player.as_ref(),
+            check.as_ref(),
+            outcome,
+            before,
+            left,
+        )))
+    }
+
+    /// The fixed piece lying here that a part's kit key names it attached
+    /// to (`<kind>/<piece>/attached/<part>` on `<kind>/<piece>`).
+    fn piece_keyed(&self, part: &Row) -> Option<i64> {
+        let (key, _) = text(part, "kit_key")?.split_once(&format!("/{}/", crate::kit::ATTACHED))?;
+        let here = self.m.here().map(|room| id(&room));
+        self.m
+            .records()
+            .first("items", |item| {
+                int(item, "playthrough_id") == Some(self.m.playthrough)
+                    && int(item, "location_id") == here
+                    && text(item, "tier") == Some(crate::kit::FIXTURE)
+                    && text(item, "kit_key") == Some(key)
+            })
+            .map(id)
     }
 
     fn take_item(&mut self, item: i64, command: &str) -> Result<Option<Told>, Error> {
