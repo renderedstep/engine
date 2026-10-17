@@ -392,6 +392,17 @@ impl Kept for Option<Break> {
     }
 }
 
+/// The last `Character::Check` in the journal's `checks` step, read back.
+pub(super) fn last_check(checks: &Value) -> Option<crate::turn::Check> {
+    let map = fields(checks["array"].as_array()?.last()?).ok()?;
+    Some(crate::turn::Check {
+        ability: symbol_or_string(map.get("ability")?)?,
+        score: map.get("score")?.as_i64()?,
+        penalty: map.get("penalty")?.as_i64()?,
+        die: map.get("die").and_then(Value::as_i64),
+    })
+}
+
 fn break_of(value: &Value) -> Result<Break, Error> {
     let map = fields(value)?;
     let number = |key: &str| {

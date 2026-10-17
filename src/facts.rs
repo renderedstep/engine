@@ -125,6 +125,124 @@ pub fn searched(
     )
 }
 
+/// What became of a part somebody tried to break off a fixed piece.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Snapped {
+    /// The check failed, or no die could be thrown: it is still attached.
+    Held,
+    /// It came away and is in the hand.
+    InHand,
+    /// It came away brittle or fragile and broke as it came loose.
+    InPieces,
+}
+
+/// An attempt to break a part off a fixed piece: the strength check, what
+/// came away, and how many more of its kind the piece has left (`left`,
+/// told only of a part that came away). `before` is how many of its kind
+/// the piece had before the attempt: one of several is "a branch", the only
+/// one "the bark". `check` is none where the breaker has no abilities.
+pub fn broke_off(
+    part: &Row,
+    piece: &Row,
+    breaker: Option<&Row>,
+    check: Option<&crate::turn::Check>,
+    outcome: Snapped,
+    before: i64,
+    left: i64,
+) -> String {
+    let who = breaker.map_or("the player", |who| string(who, "fullname"));
+    let noun = bare_name(part);
+    let named = if before > 1 {
+        format!("{} {noun}", indefinite_article(&noun))
+    } else {
+        definite_name(part)
+    };
+    let the_piece = definite_name(piece);
+    let start = if outcome == Snapped::Held {
+        format!("ON THIS TURN, and not before it, {who} tried to break {named} off {the_piece}.")
+    } else {
+        format!("ON THIS TURN, and not before it, {who} broke {named} off {the_piece}.")
+    };
+    let rolled = check.map(|check| {
+        let hold = match presence(text(part, "hold")) {
+            Some(hold) => format!(" for {} {hold} hold", indefinite_article(hold)),
+            None => String::new(),
+        };
+        let less = if check.penalty == 0 {
+            String::new()
+        } else {
+            format!(" less {}", check.penalty)
+        };
+        match check.die {
+            Some(die) => format!(
+                " It was {} {} check, a d{} under {}{less}{hold}: it came up {die}, and {}.",
+                indefinite_article(&check.ability),
+                check.ability,
+                crate::turn::CHECK_DIE,
+                check.score,
+                if check.passed() { "passed" } else { "failed" },
+            ),
+            None => format!(
+                " It was beyond them: {} {}{less}{hold} leaves nothing to roll under.",
+                check.ability, check.score,
+            ),
+        }
+    });
+    let rolled = rolled.unwrap_or_default();
+    let it = upcase_first(&definite_name(part));
+    match outcome {
+        Snapped::Held => format!(
+            "{start}{rolled} {it} held: it is still on {the_piece}, nothing came away and they are \
+             holding nothing new. Do not write it breaking, bending away or coming loose."
+        ),
+        Snapped::InHand => format!(
+            "{start}{rolled} {it} is in their hands now. {} has {} left that could be broken off. \
+             Do not write anything else coming away, being picked up or being carried.",
+            upcase_first(&the_piece),
+            how_many(left, &noun),
+        ),
+        Snapped::InPieces => format!(
+            "{start}{rolled} It came away in pieces: {}, it broke as it came loose, and they are \
+             holding nothing new. There {} {} left on {the_piece} that could be broken off. Do not \
+             write them holding it.",
+            string(part, "fragility"),
+            if left > 1 { "are" } else { "is" },
+            how_many(left, &noun),
+        ),
+    }
+}
+
+/// "a" or "an", by the word's first letter.
+fn indefinite_article(word: &str) -> &'static str {
+    match word.chars().next().map(|c| c.to_ascii_lowercase()) {
+        Some('a' | 'e' | 'i' | 'o' | 'u') => "an",
+        _ => "a",
+    }
+}
+
+/// "no branch", "one branch", "two branches".
+fn how_many(count: i64, noun: &str) -> String {
+    const WORDS: [&str; 10] = [
+        "no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    ];
+    let number = usize::try_from(count)
+        .ok()
+        .and_then(|n| WORDS.get(n))
+        .map_or_else(|| count.to_string(), |word| (*word).to_string());
+    if count <= 1 {
+        return format!("{number} {noun}");
+    }
+    let plural = if ["s", "sh", "ch", "x", "z"]
+        .iter()
+        .any(|end| noun.ends_with(end))
+    {
+        format!("{noun}es")
+    } else {
+        format!("{noun}s")
+    };
+    format!("{number} {plural}")
+}
+
 /// `Playthrough::Turn#dropped_fact`.
 pub fn dropped(item: &Row, here: &Row, dropper: Option<&Row>) -> String {
     format!(

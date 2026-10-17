@@ -273,6 +273,16 @@ pub fn hold_penalty(hold: Option<&str>) -> i64 {
         .map_or(0, |(_, penalty)| *penalty)
 }
 
+/// The hold that takes `penalty` off strength, where the table names one:
+/// what a part held by, read back off the check thrown to break it.
+pub fn hold_of_penalty(penalty: i64) -> Option<&'static str> {
+    data::kits()
+        .hold_penalty
+        .iter()
+        .find(|(_, taken)| *taken == penalty)
+        .map(|(name, _)| name.as_str())
+}
+
 /// `Item::Kit#description`: one engine line, never prose.
 pub fn description(thing: &Thing, within: Option<&str>) -> String {
     match (within, thing.how) {

@@ -16,7 +16,7 @@
 //! The order is fixed, and so are the placeholders: changing either moves
 //! the digest for no change of prompt.
 
-use crate::facts::{self, Throw};
+use crate::facts::{self, Snapped, Throw};
 use crate::moment::Direction;
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
@@ -95,6 +95,56 @@ pub fn scaffold() -> String {
             false,
             false,
         ),
+    ]);
+    // A part broken off: in the hand, in pieces, held on a failed check, on
+    // no die at all and with no abilities, one of several and the last.
+    let part = row(json!({ "name": ITEM, "hold": "firm", "fragility": "brittle" }));
+    let rolled = |die| crate::turn::Check {
+        ability: "strength".into(),
+        score: 10,
+        penalty: 3,
+        die,
+    };
+    texts.extend([
+        facts::broke_off(
+            &part,
+            &plain,
+            Some(&somebody),
+            Some(&rolled(Some(4))),
+            Snapped::InHand,
+            2,
+            1,
+        ),
+        facts::broke_off(
+            &part,
+            &plain,
+            None,
+            Some(&rolled(Some(4))),
+            Snapped::InPieces,
+            1,
+            0,
+        ),
+        facts::broke_off(
+            &part,
+            &plain,
+            Some(&somebody),
+            Some(&rolled(Some(15))),
+            Snapped::Held,
+            2,
+            2,
+        ),
+        facts::broke_off(
+            &part,
+            &plain,
+            Some(&somebody),
+            Some(&rolled(None)),
+            Snapped::Held,
+            1,
+            1,
+        ),
+        facts::broke_off(&part, &plain, None, None, Snapped::Held, 1, 1),
+    ]);
+    texts.extend([
         facts::read(&plain, WORDS),
         facts::examined(&plain, None, false),
         facts::examined(&described, Some(&somebody), true),

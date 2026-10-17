@@ -210,7 +210,7 @@ fn grammar() {
         let built = build(worlds, &input["world"]);
         let grammar = Grammar::new(&built.room);
         if let Some(token) = input["token"].as_str() {
-            let choices = built.room.attempts();
+            let choices = built.room.physical_actions();
             let choice = choices
                 .iter()
                 .find(|choice| choice.token() == token)
