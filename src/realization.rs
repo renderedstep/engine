@@ -349,6 +349,16 @@ impl<'a> Realization<'a> {
                 .collect();
             lines.push(format!("Fixed in place: {}.", names.join(", ")));
         }
+        let here_id = Some(id(self.location));
+        let mut parts = self.records.select("items", |item| {
+            text(item, "disposition") == Some("intact")
+                && int(item, "location_id") == here_id
+                && int(item, "character_id").is_none()
+                && int(item, "playthrough_id").is_none()
+                && text(item, "tier") == Some(crate::kit::PART)
+        });
+        parts.sort_by_key(|item| id(item));
+        lines.extend(crate::facts::attached(&fixed, &parts));
         for piece in &fixed {
             let resting: Vec<&Row> = here
                 .iter()

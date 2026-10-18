@@ -11,10 +11,8 @@ steps:
       prompt_includes:
       - "## Already Here, Decided By The Game"
       - 'Fixed in place: old tree, undergrowth (unsearched), fallen log.'
+      - 'Attached to the old tree, and could be broken off: two branches, bark.'
       - 'Loose, and could be picked up: snail shell.'
-      prompt_excludes:
-      - branch
-      - bark
       content:
         description: A wood of old trees, one far older than the rest.
         lore: The porters cut their kindling here.

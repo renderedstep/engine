@@ -106,6 +106,35 @@ fn the_search_fact_says_what_was_found_and_that_nothing_was_picked_up() {
     );
 }
 
+/// What is attached to each fixed piece, one line a piece with anything on
+/// it, its sorts counted and a lone part named bare; a piece with nothing
+/// attached, and a part on a piece not told, say nothing.
+#[test]
+fn the_attached_line_counts_each_sort_on_each_piece_told() {
+    let tree = row(json!({ "id": 1, "name": "old tree" }));
+    let log = row(json!({ "id": 2, "name": "a fallen log" }));
+    let stalagmite = row(json!({ "id": 3, "name": "stalagmite" }));
+    let part = |id: i64, name: &str, within: i64| {
+        row(json!({ "id": id, "name": name, "within_id": within }))
+    };
+    let parts = [
+        part(4, "branch", 1),
+        part(5, "branch", 1),
+        part(6, "bark", 1),
+        part(7, "stalagmite tip", 3),
+        part(8, "twig", 9),
+    ];
+    let parts: Vec<&Row> = parts.iter().collect();
+    assert_eq!(
+        facts::attached(&[&tree, &log, &stalagmite], &parts),
+        [
+            "Attached to the old tree, and could be broken off: two branches, bark.",
+            "Attached to the stalagmite, and could be broken off: stalagmite tip.",
+        ]
+    );
+    assert!(facts::attached(&[&log], &parts).is_empty());
+}
+
 /// A part broken off a fixed piece, in each of its forms: in the hand with
 /// one of its kind left, a failed check, too weak to roll, a brittle part
 /// that came away in pieces, and the last of its kind.
