@@ -9,7 +9,8 @@
 //!
 //! Two flags send a line on to the model call instead: `named_more_than_one`
 //! at or above [`TWO_NAME_THRESHOLD`], or `target_present` below
-//! [`PRESENCE_THRESHOLD`]. That is escalation, not refusal.
+//! [`PRESENCE_THRESHOLD`]. That is escalation, not refusal. A line that
+//! names a throw ([`thrown`]) goes on too: System One has no throw to read.
 //!
 //! A move read off a line that opens by speaking to somebody ([`spoken`]) is
 //! composed as the talk it is.
@@ -39,6 +40,24 @@ pub fn spoken(command: &str) -> bool {
     line.split(|c: char| !c.is_alphanumeric())
         .find(|word| !word.is_empty())
         .is_some_and(|word| SPEECH_VERBS.contains(&word))
+}
+
+/// The verbs of throwing a thing. `pitch`, `heave`, `cast`, `sling` and
+/// `pelt` are left out: each has a common sense that throws nothing.
+pub const THROW_VERBS: &[&str] = &[
+    "throw", "throws", "threw", "thrown", "throwing", "hurl", "hurls", "hurled", "hurling", "toss",
+    "tosses", "tossed", "tossing", "fling", "flings", "flung", "flinging", "lob", "lobs", "lobbed",
+    "lobbing", "chuck", "chucks", "chucked", "chucking",
+];
+
+/// Whether any word of the line is a throw verb. System One is asked no
+/// throw, so it reads one as the nearest blow or drop; such a line goes on to
+/// the model call. Every word counts, so "pick up the stone and throw it at
+/// Rowe" goes on as well.
+pub fn thrown(command: &str) -> bool {
+    let line = crate::text::ruby_downcase(command);
+    line.split(|c: char| !c.is_alphanumeric())
+        .any(|word| THROW_VERBS.contains(&word))
 }
 
 /// The state blocks, and the intent whose closed set is each one.
@@ -450,7 +469,9 @@ pub fn compose(
         return Outcome::unavailable(None, None);
     };
     let escalate = escalation == Escalation::On
-        && (two_name >= TWO_NAME_THRESHOLD || presence < PRESENCE_THRESHOLD);
+        && (two_name >= TWO_NAME_THRESHOLD
+            || presence < PRESENCE_THRESHOLD
+            || thrown(&state.command));
     if escalate {
         return Outcome {
             path: "typed_model_escalated",
@@ -682,5 +703,71 @@ mod tests {
         ] {
             assert!(!spoken(typed), "{typed}");
         }
+    }
+
+    #[test]
+    fn a_line_names_a_throw_on_any_word() {
+        for typed in [
+            "throw the daybook at Halkett Rowe",
+            "Hurl the daybook at Rowe",
+            "toss the daybook through the door into The Supply Closet",
+            "fling the ward stamp down The Long Hallway",
+            "pick up the stone and throw it at Rowe",
+            "I lobbed it, then chucked another",
+        ] {
+            assert!(thrown(typed), "{typed}");
+        }
+        for typed in [
+            "pitch the daybook at Rowe",
+            "heave a sigh",
+            "cast a glance at Rowe",
+            "sling the bag over a shoulder",
+            "pelt Rowe with the stamp",
+            "throwaway remark to Rowe",
+            "",
+        ] {
+            assert!(!thrown(typed), "{typed}");
+        }
+    }
+
+    /// The line read as a blow at Rowe, clearly present and single, as
+    /// System One reads a throw.
+    fn read_as_attack(typed: &str, escalation: Escalation) -> Outcome {
+        let room = room(vec![rowe()]);
+        let state = State::new(&room, typed);
+        let questions = request(&state);
+        let reply = body(
+            &questions,
+            &[
+                ("intent", json!("attack")),
+                ("target_attack", json!("person_1")),
+                ("target_present", json!(0.91)),
+                ("named_more_than_one", json!(0.2)),
+            ],
+        );
+        compose(&state, &questions, Ok(&reply), escalation)
+    }
+
+    #[test]
+    fn a_throw_goes_on_to_the_model_call() {
+        let outcome = read_as_attack("throw the daybook at Halkett Rowe", Escalation::On);
+        assert_eq!(outcome.path, "typed_model_escalated");
+        assert_eq!(outcome.target_present, Some(0.91));
+        assert_eq!(outcome.named_more_than_one, Some(0.2));
+        assert_eq!(outcome.intent, None);
+    }
+
+    #[test]
+    fn a_line_with_no_throw_is_composed_as_before() {
+        let outcome = read_as_attack("hit Halkett Rowe", Escalation::On);
+        assert_eq!(outcome.path, "typed_model");
+        assert_eq!(outcome.intent.expect("composed").action, "attack");
+    }
+
+    #[test]
+    fn a_throw_with_escalation_off_is_composed() {
+        let outcome = read_as_attack("throw the daybook at Halkett Rowe", Escalation::Off);
+        assert_eq!(outcome.path, "typed_model");
+        assert_eq!(outcome.intent.expect("composed").action, "attack");
     }
 }
