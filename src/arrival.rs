@@ -462,7 +462,9 @@ impl<'a> Arrival<'a> {
             .into_iter()
             .partition(|item| text(item, "tier") == Some(crate::kit::FIXTURE));
         if !fixed.is_empty() {
+            let attached = crate::facts::attached(&fixed, &game.parts_in(Some(self.location)));
             parts.push(format!("Fixed here, and not takeable: {}.", items(fixed)));
+            parts.extend(attached);
         }
         parts.push(format!("Lying here: {}.", items(loose)));
         parts.push(format!("You are carrying: {}.", items(game.carried())));

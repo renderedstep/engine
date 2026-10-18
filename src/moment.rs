@@ -310,6 +310,8 @@ impl<'a> Moment<'a> {
                 "Fixed here, and not takeable: {}.",
                 self.item_list(&fixed)
             ));
+            let attached = self.game.parts_in(self.location());
+            parts.extend(crate::facts::attached(&fixed, &attached));
         }
         let floor = self.item_list(&loose);
         parts.push(format!(
