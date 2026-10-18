@@ -40,7 +40,8 @@ fn clearing(strength: i64) -> (Engine, i64) {
         ));
     }
     sql.push_str(&format!(
-        "UPDATE characters SET strength = {strength} WHERE id = {MIRA};\n"
+        "UPDATE items SET kit_key = 'forest/old beech' WHERE id = {BEECH};\n\
+         UPDATE characters SET strength = {strength} WHERE id = {MIRA};\n"
     ));
     let mut engine = open_world(&sql).unwrap();
     let story = engine
@@ -192,18 +193,19 @@ fn brittle_bark_that_comes_away_comes_away_whole_or_in_pieces() {
     assert!(again.report.refusal.is_some(), "the bark is off the tree");
 }
 
-#[test]
-fn a_break_tells_the_narrator_no_sentence_of_its_own() {
-    let (mut engine, playthrough) = clearing(23);
+/// The narrator's words, the fact it was handed and the action the scene
+/// records, for one break typed with a narrator answering `words`.
+fn narrated(
+    engine: &mut Engine,
+    playthrough: i64,
+    words: &str,
+    includes: &[&str],
+) -> (String, Option<String>, String) {
     let mut replay = Replay::new(vec![Reply::from_value(&serde_json::json!({
         "purpose": "narration",
-        "content": "A branch cracks away in your hands.",
-        "prompt_includes": ["The player is carrying: branch."],
-        "prompt_excludes": [
-            "You broke",
-            "strength ->",
-            "What has ALREADY happened",
-        ],
+        "content": words,
+        "prompt_includes": includes,
+        "prompt_excludes": ["You broke", "You tried", "strength ->"],
     }))
     .unwrap()]);
     let submitted = engine
@@ -216,7 +218,7 @@ fn a_break_tells_the_narrator_no_sentence_of_its_own() {
         )
         .unwrap();
     replay.finish().unwrap();
-    let (words, fact, action): (String, Option<String>, String) = engine
+    engine
         .store()
         .connection()
         .query_row(
@@ -224,8 +226,78 @@ fn a_break_tells_the_narrator_no_sentence_of_its_own() {
             [submitted.turned.scene.unwrap()],
             |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
         )
-        .unwrap();
+        .unwrap()
+}
+
+#[test]
+fn a_break_tells_the_narrator_what_came_away_and_what_is_left() {
+    let (mut engine, playthrough) = clearing(23);
+    let (words, fact, action) = narrated(
+        &mut engine,
+        playthrough,
+        "A branch cracks away in your hands.",
+        &[
+            "The player is carrying: branch.",
+            "What has ALREADY happened, recorded by the game: ON THIS TURN, and not before it, \
+             Mira Vell broke a branch off the old beech. It was a strength check, a d20 under 23 \
+             less 3 for a firm hold: it came up ",
+            ", and passed. The branch is in their hands now. The old beech has one branch left \
+             that could be broken off. Do not write anything else coming away, being picked up \
+             or being carried.\nNarrate it as done.",
+            "The physical result above belongs to this exact typed command.",
+        ],
+    );
     assert_eq!(words, "A branch cracks away in your hands.");
-    assert_eq!(fact, None);
+    assert!(fact.as_deref().is_some_and(|fact| fact.starts_with(
+        "ON THIS TURN, and not before it, Mira Vell broke a branch off the old beech."
+    )));
+    assert_eq!(action, "break");
+}
+
+#[test]
+fn a_break_resumed_after_its_effect_tells_the_narrator_the_check_it_threw() {
+    let (mut engine, playthrough) = clearing(23);
+    let mut nobody = Replay::new(Vec::new());
+    let stopped = engine.submit_stopping(
+        playthrough,
+        "/break branch off old beech",
+        "b",
+        &mut nobody,
+        &mut |_| {},
+        Some("physical_effect"),
+    );
+    assert!(stopped.is_err(), "the turn stops after its effect");
+    let (_, resumed, _) = narrated(
+        &mut engine,
+        playthrough,
+        "A branch cracks away in your hands.",
+        &["Mira Vell broke a branch off the old beech. It was a strength check, a d20 under 23"],
+    );
+    let (mut engine, playthrough) = clearing(23);
+    let (_, played, _) = narrated(
+        &mut engine,
+        playthrough,
+        "A branch cracks away in your hands.",
+        &[],
+    );
+    assert!(played.is_some());
+    assert_eq!(resumed, played);
+}
+
+#[test]
+fn a_break_that_holds_tells_the_narrator_nothing_came_away() {
+    let (mut engine, playthrough) = clearing(3);
+    let held = "ON THIS TURN, and not before it, Mira Vell tried to break a branch off the old \
+                beech. It was beyond them: strength 3 less 3 for a firm hold leaves nothing to \
+                roll under. The branch held: it is still on the old beech, nothing came away and \
+                they are holding nothing new. Do not write it breaking, bending away or coming \
+                loose.";
+    let (_, fact, action) = narrated(
+        &mut engine,
+        playthrough,
+        "The branch will not give.",
+        &[held, "The player is carrying: nothing."],
+    );
+    assert_eq!(fact.as_deref(), Some(held));
     assert_eq!(action, "break");
 }

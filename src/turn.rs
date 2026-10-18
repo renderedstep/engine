@@ -1143,7 +1143,7 @@ impl<'s> Mechanics<'s> {
         &mut self,
         choice: &Choice,
     ) -> Result<(&'static str, String), Error> {
-        let offered = self.room().attempts();
+        let offered = self.room().physical_actions();
         let Some(choice) = offered.into_iter().find(|offer| offer == choice) else {
             return Ok((
                 "rejected",

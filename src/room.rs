@@ -388,7 +388,8 @@ pub struct Room {
     pub lying: Vec<Thing>,
     pub carried: Vec<Thing>,
     /// What is attached to the pieces lying here and could be broken off
-    /// them. In no closed set: only [`Room::breaks`] reads it.
+    /// them. In no closed set of its own: [`Room::physical_actions`] offers
+    /// a `break` for each sort.
     pub parts: Vec<Thing>,
     /// The game has ended.
     pub over: bool,
@@ -450,52 +451,14 @@ impl Room {
         }
     }
 
-    /// Every attempt a line may play here: [`Room::physical_actions`], then
-    /// [`Room::breaks`].
-    pub fn attempts(&self) -> Vec<Choice> {
-        [self.physical_actions(), self.breaks()].concat()
-    }
-
-    /// A `break` for each sort of part still attached to a piece lying here,
-    /// in the order the pieces lie: one attempt for a tree's branches however
-    /// many it has left, on the first of them. Reached only through the
-    /// grammar's own words (`break`, `snap`), never a model's list.
-    pub fn breaks(&self) -> Vec<Choice> {
-        if self.protagonist.is_none() || self.here.is_none() || self.over {
-            return Vec::new();
-        }
-        let mut result: Vec<Choice> = Vec::new();
-        for piece in &self.lying {
-            for part in &self.parts {
-                if part.piece.as_ref().map(|(id, _)| *id) != Some(piece.id) {
-                    continue;
-                }
-                let offered = result.iter().any(|choice| {
-                    choice
-                        .item
-                        .as_ref()
-                        .is_some_and(|other| other.piece == part.piece && other.name == part.name)
-                });
-                if offered {
-                    continue;
-                }
-                result.push(Choice {
-                    kind: "break".to_string(),
-                    item: Some(part.clone()),
-                    recipient: None,
-                    connection: None,
-                    tool: None,
-                });
-            }
-        }
-        result
-    }
-
     /// Every physical attempt this room offers, in the order the engine
     /// lists them: consuming, offering, burning, each closed doorway in the
     /// order the doorways were written, then each fixed piece here a search
     /// would find something new in, as a `search`, and a shut one as an
-    /// `open` beside it, in the order the pieces lie.
+    /// `open` beside it, in the order the pieces lie, then a `break` for each
+    /// sort of part still attached to a piece lying here, in the order the
+    /// pieces lie: one attempt for a tree's branches however many it has
+    /// left, on the first of them.
     pub fn physical_actions(&self) -> Vec<Choice> {
         if self.protagonist.is_none() || self.here.is_none() || self.over {
             return Vec::new();
@@ -588,6 +551,27 @@ impl Room {
                 });
             }
         }
+        let mut breaks: Vec<Choice> = Vec::new();
+        for piece in &self.lying {
+            for part in &self.parts {
+                if part.piece.as_ref().map(|(id, _)| *id) != Some(piece.id) {
+                    continue;
+                }
+                let offered = breaks.iter().any(|choice| {
+                    choice
+                        .item
+                        .as_ref()
+                        .is_some_and(|other| other.piece == part.piece && other.name == part.name)
+                });
+                if !offered {
+                    breaks.push(Choice {
+                        item: Some(part.clone()),
+                        ..choice("break")
+                    });
+                }
+            }
+        }
+        result.extend(breaks);
         result
     }
 }
