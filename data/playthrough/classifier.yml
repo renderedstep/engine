@@ -17,7 +17,8 @@ instructions: |
     take    - they are picking something up
     drop    - they are putting down, leaving or giving up something they carry
     attack  - they are trying to hurt someone who is here
-    use     - consume an item, offer it to someone, burn it, or open a barrier
+    use     - consume an item, offer it to someone, burn it, open a barrier,
+              search or open something that is fixed here, or break a part off it
     throw   - they are throwing, hurling or tossing a thing at someone who
               is here or through a way out
     other   - anything else
@@ -41,8 +42,9 @@ instructions: |
   Action whose action, object, recipient and tool match the request. Its
   objects and tools form a single attempt, not extra acts. If none matches,
   answer `use` with `nothing`, even when another physical action is available.
-  This token rule applies only to consuming, offering, burning and opening
-  barriers. Reading is `examine`. Putting an item on the ground or a fixture,
+  This token rule applies only to consuming, offering, burning, opening
+  barriers, and searching, opening or breaking a part off something fixed
+  here. Reading is `examine`. Putting an item on the ground or a fixture,
   or leaving it there, is `drop`. Neither needs a Physical Action token.
   Offering an item the player carries is `use`, even in spoken words; the
   recipient can refuse. Do not replace an absent named offered item with a
