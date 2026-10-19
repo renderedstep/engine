@@ -7,7 +7,7 @@
 //! turn with the records it just wrote, the prompt version with fixed
 //! placeholders standing where the records would go.
 
-use crate::records::{flag, string, text, Row};
+use crate::records::{flag, id, int, string, text, Row};
 use crate::text::{is_blank, presence, to_sentence, upcase_first};
 
 /// `Item#definite_name`: "the" in front of the name, with any article the
@@ -210,6 +210,48 @@ pub fn broke_off(
             how_many(left, &noun),
         ),
     }
+}
+
+/// What is still attached to each fixed piece told, one line a piece in the
+/// order the pieces are told, a piece with nothing on it saying nothing:
+/// "Attached to the old tree, and could be broken off: two branches, bark."
+/// Every part counts, so a reader is told as many branches as a break
+/// could still take.
+pub fn attached(pieces: &[&Row], parts: &[&Row]) -> Vec<String> {
+    pieces
+        .iter()
+        .filter_map(|piece| {
+            let mut sorts: Vec<(String, i64)> = Vec::new();
+            for part in parts
+                .iter()
+                .filter(|part| int(part, "within_id") == Some(id(piece)))
+            {
+                let noun = bare_name(part);
+                match sorts.iter_mut().find(|(name, _)| *name == noun) {
+                    Some((_, count)) => *count += 1,
+                    None => sorts.push((noun, 1)),
+                }
+            }
+            if sorts.is_empty() {
+                return None;
+            }
+            let names: Vec<String> = sorts
+                .iter()
+                .map(|(noun, count)| {
+                    if *count == 1 {
+                        noun.clone()
+                    } else {
+                        how_many(*count, noun)
+                    }
+                })
+                .collect();
+            Some(format!(
+                "Attached to {}, and could be broken off: {}.",
+                definite_name(piece),
+                names.join(", ")
+            ))
+        })
+        .collect()
 }
 
 /// "a" or "an", by the word's first letter.
