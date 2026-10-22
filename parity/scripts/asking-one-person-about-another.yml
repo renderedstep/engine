@@ -1,0 +1,61 @@
+---
+story: Two Clerks at One Counter
+steps:
+- id: asking-tamsin-about-rowe-is-a-talk-to-tamsin
+  type: ask Tamsin about Rowe
+  browser:
+    token: about
+    replies:
+    - purpose: classifier
+      prompt_includes:
+      - ask Tamsin about Rowe
+      - Tamsin Gale
+      - Rowe Harker
+      content:
+        intent: talk
+        target: Tamsin Gale
+        also_named: nothing
+    - purpose: character
+      prompt_includes:
+      - ask Tamsin about Rowe
+      - 'Also here, besides the two of you: Rowe Harker'
+      content:
+        pre_thought: He wants to know about Rowe, with Rowe standing right there.
+        pre_feeling: wary
+        action: Tamsin glances at Rowe and lowers her voice.
+        post_thought: Better he hears it from me than from the book.
+        post_feeling: careful
+        inner_resolution: I will tell him Rowe keeps the pledges.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Tamsin glances sideways at Rowe before she answers you, low.
+  expect:
+    changed: true
+    refused: false
+    resolved_by: model
+    carrying:
+    - pawn ticket
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+- id: speaking-to-both-is-still-refused
+  type: ask Tamsin and Rowe where my father's watch is
+  browser:
+    token: both
+    replies:
+    - purpose: classifier
+      content:
+        intent: talk
+        target: Tamsin Gale
+        also_named: Rowe Harker
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - Tamsin Gale
+    - Rowe Harker
+    carrying:
+    - pawn ticket
+    present:
+    - Rowe Harker
+    - Tamsin Gale
