@@ -1,0 +1,154 @@
+{
+  "script": "asking-one-person-about-another",
+  "story": "Two Clerks at One Counter",
+  "steps": [
+    {
+      "step": "step 1 asking-tamsin-about-rowe-is-a-talk-to-tamsin",
+      "player": "first",
+      "typed": "ask Tamsin about Rowe",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Pawn Counter",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
+            "id": 1000000002,
+            "name": "Tamsin Gale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "talk -> Tamsin Gale",
+        "resolved_by": "model",
+        "note": "about: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 2,
+        "acts": 1,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 10.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 speaking-to-both-is-still-refused",
+      "player": "first",
+      "typed": "ask Tamsin and Rowe where my father's watch is",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Pawn Counter",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Street",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "brass tally"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "pawn ticket"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000003,
+            "name": "Rowe Harker"
+          },
+          {
+            "id": 1000000002,
+            "name": "Tamsin Gale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Rowe Harker": 53,
+          "Tamsin Gale": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "You asked for two things at once: talk to Tamsin Gale, and talk to Rowe Harker. One line is one act -- pick one and type it on its own. Nothing has changed.",
+        "understood": null,
+        "resolved_by": null,
+        "note": "both: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}
