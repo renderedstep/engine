@@ -42,7 +42,11 @@ struct Asking<'a, 'm> {
 
 impl Reader for Asking<'_, '_> {
     fn system_one(&self) -> bool {
-        self.models.system_one()
+        self.models.classifier_system_one()
+    }
+
+    fn local(&self) -> bool {
+        self.models.local_classifier()
     }
 
     fn questions(&mut self, state: &Value, questions: &Value) -> Result<Value, Unavailable> {
@@ -50,8 +54,18 @@ impl Reader for Asking<'_, '_> {
             store: self.store,
             records: self.records,
         };
-        self.models
-            .ask_questions(&mut book, &self.filed, state, questions)
+        let answered =
+            self.models
+                .ask_classifier_questions(&mut book, &self.filed, state, questions);
+        // Every free-typed line is refused while the local reader is down,
+        // so it is said where an operator will see it.
+        if let (true, Err(unavailable)) = (self.models.local_classifier(), &answered) {
+            eprintln!(
+                "renderedstep: the local reader is down; free-typed lines are refused: {}",
+                unavailable.0
+            );
+        }
+        answered
     }
 
     fn classifier(&mut self, call: &Call) -> Result<Answer, Failure> {

@@ -41,6 +41,9 @@ pub struct Live<T: Transport = Https> {
     models: Vec<String>,
     transport: T,
     system_one: SystemOne,
+    /// The classifier's own transport, where it does not share
+    /// `system_one`'s.
+    classifier: Option<SystemOne>,
 }
 
 impl Live<Https> {
@@ -68,6 +71,7 @@ impl<T: Transport> Live<T> {
             models,
             transport,
             system_one,
+            classifier: None,
         }
     }
 
@@ -82,6 +86,14 @@ impl<T: Transport> Live<T> {
     /// Which System One transport answers.
     pub fn with_system_one(mut self, system_one: SystemOne) -> Live<T> {
         self.system_one = system_one;
+        self
+    }
+
+    /// Which System One transport answers the classifier, in place of the
+    /// one every other caller asks through. [`SystemOne::Local`] makes the
+    /// classifier the local reader's alone.
+    pub fn with_classifier(mut self, classifier: SystemOne) -> Live<T> {
+        self.classifier = Some(classifier);
         self
     }
 
@@ -382,6 +394,34 @@ impl<T: Transport> Models for Live<T> {
         questions: &Value,
     ) -> Result<Value, Unavailable> {
         self.system_one.ask(
+            &mut self.transport,
+            &self.route,
+            book,
+            filed,
+            state,
+            questions,
+        )
+    }
+
+    fn local_classifier(&self) -> bool {
+        self.classifier.as_ref().is_some_and(SystemOne::local)
+    }
+
+    fn classifier_system_one(&self) -> bool {
+        self.classifier
+            .as_ref()
+            .unwrap_or(&self.system_one)
+            .configured(&self.route)
+    }
+
+    fn ask_classifier_questions(
+        &mut self,
+        book: &mut Book,
+        filed: &Filed,
+        state: &Value,
+        questions: &Value,
+    ) -> Result<Value, Unavailable> {
+        self.classifier.as_ref().unwrap_or(&self.system_one).ask(
             &mut self.transport,
             &self.route,
             book,

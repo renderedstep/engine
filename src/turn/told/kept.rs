@@ -5,7 +5,7 @@
 use super::{Played, Told, Turn};
 use crate::command::encode;
 use crate::engine::Error;
-use crate::intent::Intent;
+use crate::intent::{Intent, Unread};
 use crate::physics::{self, Break, Reach};
 use crate::records::{id, int, string, text, Row};
 use crate::refusal::Refusal;
@@ -640,10 +640,15 @@ impl Kept for Option<(Intent, String)> {
 impl Kept for (Intent, String) {
     fn encode(&self) -> Value {
         let (intent, resolved_by) = self;
+        // Kept only where it is set, so every other reading keeps the bytes
+        // it always had.
+        let unread = intent
+            .unread
+            .map(|unread| ("unread", encode::symbol(unread.name())));
         encode::array(vec![
             encode::data(
                 "Playthrough::Classifier::Intent",
-                vec![
+                [
                     ("action", encode::symbol(&intent.action)),
                     ("destination", record_encoded(&intent.destination)),
                     ("speaker", record_encoded(&intent.speaker)),
@@ -661,7 +666,10 @@ impl Kept for (Intent, String) {
                         "physical",
                         intent.physical.as_ref().map_or(Value::Null, choice_encoded),
                     ),
-                ],
+                ]
+                .into_iter()
+                .chain(unread)
+                .collect(),
             ),
             Value::from(resolved_by.as_str()),
         ])
@@ -691,6 +699,10 @@ impl Kept for (Intent, String) {
                 Some(choice) => Some(turn.choice_of(choice)?),
                 None => None,
             },
+            unread: map
+                .get("unread")
+                .and_then(symbol_or_string)
+                .and_then(|name| Unread::named(&name)),
         };
         Ok((intent, items[1].as_str().unwrap_or_default().to_string()))
     }

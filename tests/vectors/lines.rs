@@ -4,8 +4,9 @@
 
 use crate::check_rooms;
 use renderedstep_engine::cascade::{self, Escalation, State, Unavailable};
+use renderedstep_engine::classifier;
 use renderedstep_engine::grammar::{self, Grammar, Reading, HELP};
-use renderedstep_engine::intent::{build_intent, Intent};
+use renderedstep_engine::intent::{build_intent, Intent, Unread};
 use renderedstep_engine::playthrough::Ended;
 use renderedstep_engine::refusal::{Refusal, KINDS, UNCHANGED};
 use renderedstep_engine::room::{Exit, Person, Place, Record, Room, Thing, INTENTS, NOTHING};
@@ -153,6 +154,7 @@ fn intent_json(intent: Option<&Intent>) -> Value {
             "physical",
             json!(intent.physical.as_ref().map(|c| c.token())),
         ),
+        ("unread", json!(intent.unread.map(Unread::name))),
     ])
 }
 
@@ -345,6 +347,24 @@ fn cascade() {
             return json!({ "state": state.to_json(), "questions": asked });
         }
         let body = body_for(reply, &questions);
+        if input["local"] == json!(true) {
+            let mut reader = Local {
+                reply: match reply.get("unavailable") {
+                    Some(message) => Err(text(message)),
+                    None => Ok(body),
+                },
+                asked: false,
+            };
+            let reading =
+                classifier::read_locally(&built.room, &text(&input["typed"]), &mut reader);
+            return json!({
+                "path": reading.path,
+                "asked": reader.asked,
+                "target_present": reading.target_present,
+                "named_more_than_one": reading.named_more_than_one,
+                "intent": intent_json(Some(&reading.intent)),
+            });
+        }
         let answered = match reply.get("unavailable") {
             Some(message) => Err(Unavailable(text(message))),
             None => Ok(&body),
@@ -364,6 +384,40 @@ fn cascade() {
     });
 }
 
+/// The local reader, answering a `local` case's `answers`.
+struct Local {
+    reply: Result<Value, String>,
+    asked: bool,
+}
+
+impl classifier::Reader for Local {
+    fn system_one(&self) -> bool {
+        true
+    }
+
+    fn local(&self) -> bool {
+        true
+    }
+
+    fn questions(
+        &mut self,
+        _state: &Value,
+        _questions: &Value,
+    ) -> Result<Value, renderedstep_engine::model::Unavailable> {
+        self.asked = true;
+        self.reply
+            .clone()
+            .map_err(renderedstep_engine::model::Unavailable)
+    }
+
+    fn classifier(
+        &mut self,
+        _call: &renderedstep_engine::model::Call,
+    ) -> Result<renderedstep_engine::model::Answer, renderedstep_engine::model::Failure> {
+        panic!("the local reader's line never goes on to the model call")
+    }
+}
+
 fn intent_of(built: &Built, spec: &Value) -> Intent {
     let slot = |key: &str| (!spec[key].is_null()).then(|| built.record(&spec[key]));
     Intent {
@@ -373,6 +427,7 @@ fn intent_of(built: &Built, spec: &Value) -> Intent {
         at: slot("at"),
         also_named: slot("also_named"),
         unknown_action: spec["unknown_action"].as_str().map(str::to_string),
+        unread: spec["unread"].as_str().and_then(Unread::named),
         ..Intent::new(&text(&spec["action"]))
     }
 }

@@ -9,6 +9,10 @@
 //! target out of the same sets, at temperature zero, and its answer is
 //! resolved to records the same way ([`crate::intent::build_intent`]).
 //!
+//! Where the classifier has the local reader ([`Reader::local`]), it is the
+//! only reader: what it reads is played, and what it cannot read is refused
+//! in the engine's words ([`read_locally`]). The model call is not made.
+//!
 //! A turn reads its line through this ([`crate::turn::Turn`]), and so does a
 //! caller holding a staged position's rows: whatever answers the two calls
 //! is a [`Reader`], so the reading is the turn's own either way. Nothing here
@@ -17,7 +21,7 @@
 
 use crate::cascade::{self, Escalation};
 use crate::data;
-use crate::intent::{build_intent, Intent};
+use crate::intent::{build_intent, Intent, Unread};
 use crate::model::{Answer, Call, Failure, Unavailable};
 use crate::records::{string, Records};
 use crate::room::Room;
@@ -27,10 +31,26 @@ use serde_json::Value;
 /// `Playthrough::Classifier::MODEL_PATHS`: the readings a model call made.
 pub const MODEL_PATHS: [&str; 3] = ["model", "typed_model_escalated", "typed_model_unavailable"];
 
+/// `scenes.resolved_by` for a line the local reader was unsure of, played on
+/// its own reading all the same: never a model call's.
+pub const LOCAL_UNSURE: &str = "typed_model_unsure";
+
+/// `scenes.resolved_by` for a free-typed throw the local reader left unread.
+pub const LOCAL_THROW: &str = "typed_model_throw";
+
+/// `scenes.resolved_by` for a line refused because the local reader is down
+/// or not set up.
+pub const LOCAL_DOWN: &str = "typed_model_down";
+
 /// What answers the two calls a line is read through.
 pub trait Reader {
     /// Whether System One is asked first (`SystemOneAgent.configured?`).
     fn system_one(&self) -> bool;
+
+    /// Whether the line is the local reader's alone ([`read`]).
+    fn local(&self) -> bool {
+        false
+    }
 
     /// System One's typed questions about `state`: the answer payload.
     fn questions(&mut self, state: &Value, questions: &Value) -> Result<Value, Unavailable>;
@@ -52,12 +72,17 @@ pub struct Reading {
 
 /// Reads `typed` in `room`: System One first where it is on, then the model
 /// call `call` where System One did not compose an intent.
+///
+/// The local reader's line never reaches the model call ([`read_locally`]).
 pub fn read(
     room: &Room,
     call: &Call,
     typed: &str,
     reader: &mut dyn Reader,
 ) -> Result<Reading, Failure> {
+    if reader.local() {
+        return Ok(read_locally(room, typed, reader));
+    }
     let (composed, path, target_present, named_more_than_one) = if reader.system_one() {
         let state = cascade::State::new(room, typed);
         let questions = cascade::request(&state);
@@ -105,6 +130,50 @@ pub fn read(
         target_present,
         named_more_than_one,
     })
+}
+
+/// The local reader's reading: the presence gate on its own
+/// ([`Escalation::Off`]), so a line it is unsure of is played on its own
+/// reading ([`LOCAL_UNSURE`]), and a target it reads as absent is refused
+/// with the list of what is here. Two lines it does not read at all: a
+/// free-typed throw, which is asked nothing and pointed at `/throw`, and any
+/// line while the reader is down or answers nothing it can compose.
+pub fn read_locally(room: &Room, typed: &str, reader: &mut dyn Reader) -> Reading {
+    let unread = |unread, path, target_present, named_more_than_one| Reading {
+        intent: Intent {
+            unread: Some(unread),
+            ..Intent::new("other")
+        },
+        path,
+        target_present,
+        named_more_than_one,
+    };
+    if cascade::thrown(typed) {
+        return unread(Unread::Throw, LOCAL_THROW, None, None);
+    }
+    let state = cascade::State::new(room, typed);
+    let questions = cascade::request(&state);
+    let reply = reader
+        .questions(&state.to_json(), &questions)
+        .map_err(|unavailable| cascade::Unavailable(unavailable.0));
+    let outcome = cascade::compose(
+        &state,
+        &questions,
+        reply.as_ref().map_err(Clone::clone),
+        Escalation::Off,
+    );
+    let (presence, two_name) = (outcome.target_present, outcome.named_more_than_one);
+    let Some(intent) = outcome.intent else {
+        return unread(Unread::ReaderDown, LOCAL_DOWN, presence, two_name);
+    };
+    let unsure = presence.is_some_and(|p| p < cascade::PRESENCE_THRESHOLD)
+        || two_name.is_some_and(|p| p >= cascade::TWO_NAME_THRESHOLD);
+    Reading {
+        intent,
+        path: if unsure { LOCAL_UNSURE } else { outcome.path },
+        target_present: presence,
+        named_more_than_one: two_name,
+    }
 }
 
 /// The classifier model's call for `typed` in `room`: its instructions, the

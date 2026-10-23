@@ -514,6 +514,11 @@ fn play_browser(
             .collect(),
     };
     let mut replay = Replay::new(replies);
+    // A step whose line the local reader leaves unread declares no reply
+    // for it, and names the reader instead.
+    if browser["local_reader"].as_bool().unwrap_or(false) {
+        replay = replay.with_local_classifier();
+    }
     let raises = browser["raises"].as_bool().unwrap_or(false);
     let typed = step.typed.as_deref().unwrap_or_default();
     let turned = match engine.submit_stopping(

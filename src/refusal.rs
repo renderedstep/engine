@@ -2,7 +2,7 @@
 //! it. A refused line does nothing: the player is answered in the engine's
 //! own words, built from records it already holds.
 
-use crate::intent::Intent;
+use crate::intent::{Intent, Unread};
 use crate::playthrough::Ended;
 use crate::room::{Person, Record};
 use crate::text::upcase_first;
@@ -106,6 +106,14 @@ const UNREADABLE: &str = "That did not come back as anything the game knows how 
      Say it again as one plain action -- go somewhere, talk to somebody, \
      take something, or put something down.";
 
+/// A free-typed throw, which the local reader leaves unread.
+pub const THROW_UNREAD: &str =
+    "A throw is read only when it is typed as a command: /throw <thing> at <somebody here, or a way out>.";
+
+/// Any free-typed line while the local reader is down or not set up.
+pub const READER_DOWN: &str = "The game cannot read free-typed lines right now. \
+     Type the line as a command instead: the slash menu lists them.";
+
 /// The kind asked for is not one of [`KINDS`].
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct UnknownKind(pub String);
@@ -180,7 +188,12 @@ impl Refusal {
             ));
         }
         if intent.unreadable() {
-            return Some(Refusal::of("unreadable", typed, UNREADABLE.into(), None));
+            let fact = match intent.unread {
+                Some(Unread::Throw) => THROW_UNREAD,
+                Some(Unread::ReaderDown) => READER_DOWN,
+                None => UNREADABLE,
+            };
+            return Some(Refusal::of("unreadable", typed, fact.into(), None));
         }
         if intent.throws_at_nothing() {
             let fact = match &intent.item {

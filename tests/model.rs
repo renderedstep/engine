@@ -986,6 +986,195 @@ fn a_receipt_keeps_how_long_its_request_took() {
     );
 }
 
+fn local(endpoint: &str) -> SystemOne {
+    SystemOne::Local {
+        endpoint: endpoint.into(),
+        model: "pointer-sha256-0f3e".into(),
+    }
+}
+
+/// The local reader is the classifier's alone: its questions go to the
+/// reader's address with the weights' digest as the model, and are booked as
+/// `local` at no cost, even where the answer reports none; every other
+/// caller's go on the System One they always went on.
+#[test]
+fn the_classifier_has_a_local_reader_of_its_own() {
+    let mut game = game();
+    let answers = json!({"answers": {"verb": {"type": "choice", "choice": "look"}}});
+    let transport = Canned::default()
+        .json(200, answers.clone())
+        .json(200, answers.clone());
+    let mut live = Live::with_transport(own_key(), transport)
+        .with_classifier(local("http://127.0.0.1:3342/v1/systemone"));
+    assert!(live.local_classifier());
+    assert!(live.classifier_system_one());
+    assert!(live.system_one(), "volition keeps its own switch");
+    let questions = json!({"verb": {"type": "choice", "criteria": {"look": "x"}}});
+    let filed = |purpose: &str| Filed {
+        purpose: purpose.into(),
+        playthrough: Some(game.playthrough),
+        ..Filed::default()
+    };
+    let mut book = Book {
+        store: game.engine.store(),
+        records: &mut game.records,
+    };
+    let payload = live
+        .ask_classifier_questions(
+            &mut book,
+            &filed("classifier"),
+            &json!({"line": "look"}),
+            &questions,
+        )
+        .unwrap();
+    assert_eq!(payload, answers);
+    live.ask_questions(&mut book, &filed("volition"), &json!({}), &questions)
+        .unwrap();
+    let sent = &live.transport().sent;
+    assert_eq!(sent[0].0, "http://127.0.0.1:3342/v1/systemone");
+    assert_eq!(
+        sent[0].2,
+        json!({"model": "pointer-sha256-0f3e", "state": {"line": "look"}, "questions": questions})
+    );
+    assert_eq!(sent[1].0, "https://openrouter.ai/api/alpha/decisions");
+    assert_eq!(sent[1].2["model"], "typesafe/jev-1.13");
+    assert_eq!(
+        rows(
+            &game,
+            "SELECT purpose, transport, cost_usd, cost_source FROM system_one_receipts ORDER BY id"
+        ),
+        vec![
+            vec![
+                json!("classifier"),
+                json!("local"),
+                json!(0),
+                json!("estimated")
+            ],
+            vec![
+                json!("volition"),
+                json!("openrouter_decisions"),
+                json!(0.002),
+                json!("estimated")
+            ],
+        ]
+    );
+
+    // Without a classifier of its own, the classifier shares the switch.
+    let live = Live::with_transport(own_key(), Canned::default());
+    assert!(!live.local_classifier());
+    assert!(live.classifier_system_one());
+}
+
+/// Every way the local reader fails is `Unavailable`: not set up (nothing is
+/// sent), still loading or refusing (any status outside 2xx), and a 200 whose
+/// body says it will not answer. A reported cost of 0 is booked as reported.
+#[test]
+fn the_local_reader_fails_as_unavailable_in_every_way_it_can() {
+    let mut game = game();
+    let questions = json!({"verb": {"type": "choice", "criteria": {"look": "x"}}});
+    let filed = Filed {
+        purpose: "classifier".into(),
+        playthrough: Some(game.playthrough),
+        ..Filed::default()
+    };
+    for unset in [
+        local(""),
+        SystemOne::Local {
+            endpoint: "http://127.0.0.1:3342".into(),
+            model: " ".into(),
+        },
+    ] {
+        let mut live = Live::with_transport(Route::None, Canned::default()).with_classifier(unset);
+        assert!(live.local_classifier());
+        assert!(!live.classifier_system_one());
+        let mut book = Book {
+            store: game.engine.store(),
+            records: &mut game.records,
+        };
+        let unavailable = live
+            .ask_classifier_questions(&mut book, &filed, &json!({}), &questions)
+            .unwrap_err();
+        assert_eq!(unavailable.0, "the local reader is not set up");
+        assert!(live.transport().sent.is_empty());
+    }
+
+    let transport = Canned::default()
+        .json(503, json!({"error": "loading"}))
+        .json(200, json!({"error": "a question it was not trained for"}))
+        .json(200, json!({"answers": {}, "usage": {"cost": 0}}));
+    let mut live = Live::with_transport(Route::None, transport)
+        .with_classifier(local("http://127.0.0.1:3342/v1/systemone"));
+    let mut said = Vec::new();
+    for _ in 0..3 {
+        let mut book = Book {
+            store: game.engine.store(),
+            records: &mut game.records,
+        };
+        said.push(
+            live.ask_classifier_questions(&mut book, &filed, &json!({}), &questions)
+                .map(|_| "answered".to_string())
+                .unwrap_or_else(|unavailable| unavailable.0),
+        );
+    }
+    assert_eq!(
+        said,
+        [
+            "the provider answered 503",
+            "the local reader answered an error",
+            "answered"
+        ]
+    );
+    assert_eq!(
+        rows(
+            &game,
+            "SELECT transport, cost_usd, cost_source FROM system_one_receipts ORDER BY id"
+        ),
+        vec![
+            vec![json!("local"), json!(0), json!("estimated")],
+            vec![json!("local"), json!(0), json!("estimated")],
+            vec![json!("local"), json!(0), json!("reported")],
+        ]
+    );
+}
+
+/// Over a real socket, the local reader is posted the body with no
+/// `Authorization` header at all: it takes no key.
+#[test]
+fn the_local_reader_is_sent_no_key() {
+    let answers =
+        json!({"answers": {"verb": {"type": "choice", "choice": "look"}}, "usage": {"cost": 0}});
+    let (base, server) = serve_once(http_reply("application/json", &answers.to_string()));
+    let mut game = game();
+    let mut live = Live::with_transport(own_key(), Https::new())
+        .with_classifier(local(&format!("{base}/v1/systemone")));
+    let filed = Filed {
+        purpose: "classifier".into(),
+        playthrough: Some(game.playthrough),
+        ..Filed::default()
+    };
+    let questions = json!({"verb": {"type": "choice", "criteria": {"look": "x"}}});
+    let mut book = Book {
+        store: game.engine.store(),
+        records: &mut game.records,
+    };
+    let payload = live
+        .ask_classifier_questions(&mut book, &filed, &json!({"line": "look"}), &questions)
+        .unwrap();
+    assert_eq!(payload, answers);
+    let (request_line, headers, body) = server.join().unwrap();
+    assert_eq!(request_line, "POST /v1/systemone HTTP/1.1");
+    assert!(
+        !headers
+            .iter()
+            .any(|h| h.to_ascii_lowercase().starts_with("authorization:")),
+        "{headers:?}"
+    );
+    assert_eq!(
+        serde_json::from_str::<Value>(&body).unwrap()["model"],
+        "pointer-sha256-0f3e"
+    );
+}
+
 // --- the two routes over a real socket --------------------------------------
 
 /// Serves one request on a port the system picks, answering with `reply`,

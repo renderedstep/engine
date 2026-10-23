@@ -41,6 +41,37 @@ pub struct Intent {
     /// record.
     pub unknown_action: Option<String>,
     pub physical: Option<Choice>,
+    /// Why the local reader would not read the line at all, when it would
+    /// not.
+    pub unread: Option<Unread>,
+}
+
+/// A line the local reader leaves unread, and refuses in the engine's own
+/// words.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Unread {
+    /// A free-typed throw: no reader reads one right, and `/throw` does.
+    Throw,
+    /// The reader is down or not set up.
+    ReaderDown,
+}
+
+impl Unread {
+    /// The name a journal keeps it under.
+    pub fn name(self) -> &'static str {
+        match self {
+            Unread::Throw => "throw",
+            Unread::ReaderDown => "reader_down",
+        }
+    }
+
+    pub fn named(name: &str) -> Option<Unread> {
+        match name {
+            "throw" => Some(Unread::Throw),
+            "reader_down" => Some(Unread::ReaderDown),
+            _ => None,
+        }
+    }
 }
 
 impl Intent {
@@ -89,9 +120,9 @@ impl Intent {
         DRIFT_ACTIONS.contains(&self.action.as_str()) && self.subject().is_none()
     }
 
-    /// The model answered outside the table.
+    /// The model answered outside the table, or the line was left unread.
     pub fn unreadable(&self) -> bool {
-        self.unknown_action.is_some()
+        self.unknown_action.is_some() || self.unread.is_some()
     }
 
     fn item_is_immovable(&self) -> bool {
