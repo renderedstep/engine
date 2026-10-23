@@ -217,6 +217,31 @@ pub trait Models {
         questions: &Value,
     ) -> Result<Value, Unavailable>;
 
+    /// Whether the classifier is read through the local reader, set up or
+    /// not: its readings are played as the reader gave them, and nothing it
+    /// reads goes on to the model call.
+    fn local_classifier(&self) -> bool {
+        false
+    }
+
+    /// Whether the classifier asks System One first. Unless the classifier
+    /// has a transport of its own, it shares [`Models::system_one`]'s.
+    fn classifier_system_one(&self) -> bool {
+        self.system_one()
+    }
+
+    /// The classifier's System One request, over its own transport where it
+    /// has one.
+    fn ask_classifier_questions(
+        &mut self,
+        book: &mut Book,
+        filed: &Filed,
+        state: &Value,
+        questions: &Value,
+    ) -> Result<Value, Unavailable> {
+        self.ask_questions(book, filed, state, questions)
+    }
+
     /// Puts an exchange a conversation lost back into it before it is
     /// continued (`BaseAgent#add_message`, twice): the line asked and the
     /// answer given, under `system`'s instructions. Returns the

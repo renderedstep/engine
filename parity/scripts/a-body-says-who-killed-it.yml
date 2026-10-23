@@ -121,18 +121,18 @@ steps:
   browser:
     token: the-body
     replies:
-    - purpose: classifier
+    - purpose: local_classifier
       content:
         intent: examine
-        target: nothing
-        also_named: nothing
+        named_more_than_one: 0.0
+        target_present: 0.9
     - purpose: narration
       content: Marek Sollen lies where he fell by the rope.
       prompt_includes:
       - Nobody else is alive here.
       - 'Dead here: Marek Sollen (the Ringer), killed by Isbet Marrow'
   expect:
-    resolved_by: model
+    resolved_by: typed_model
     changed: true
     present: []
 - id: out-to-the-stair

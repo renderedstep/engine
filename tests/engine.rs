@@ -1223,6 +1223,112 @@ fn a_fixed_reading_stands_in_for_the_classifier_and_nothing_else() {
     );
 }
 
+/// A free-typed line read through the local reader, in a whole turn: a throw
+/// is asked nothing and pointed at `/throw`; a down reader refuses the line
+/// and points at the slash menu; an unsure reading is played as read, so a
+/// target it reads as absent is refused with what is here; and the model call
+/// is never made.
+#[test]
+fn the_local_reader_reads_a_typed_line_alone() {
+    use renderedstep_engine::model::{Replay, Reply};
+    use renderedstep_engine::refusal::{READER_DOWN, THROW_UNREAD};
+    let local = |reply: serde_json::Value| {
+        let mut reply = reply;
+        reply["purpose"] = serde_json::json!("local_classifier");
+        Reply::from_value(&reply).unwrap()
+    };
+    // A refused line writes no scene; its journal keeps the reading and the
+    // reader that gave it.
+    let journal = |engine: &Engine| -> String {
+        engine
+            .store()
+            .connection()
+            .query_row(
+                "SELECT journal FROM playthrough_commands ORDER BY id DESC LIMIT 1",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap()
+    };
+    let resolved_by = |engine: &Engine| -> &'static str {
+        let kept = journal(engine);
+        [
+            "typed_model_throw",
+            "typed_model_down",
+            "typed_model_unsure",
+        ]
+        .into_iter()
+        .find(|path| kept.contains(&format!("\"{path}\"")))
+        .unwrap_or_else(|| panic!("no local reader in {kept}"))
+    };
+
+    let (mut engine, playthrough) = gate();
+    let mut replay = Replay::new(Vec::new()).with_local_classifier();
+    let submitted = engine
+        .submit(
+            playthrough,
+            "throw the red coin at the gate",
+            "throw",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert!(replay.calls().is_empty(), "a throw asks nothing");
+    let refusal = submitted.turned.refusal.expect("a refusal");
+    assert_eq!(
+        (refusal.kind.as_str(), refusal.fact.as_str()),
+        ("unreadable", THROW_UNREAD)
+    );
+    assert_eq!(resolved_by(&engine), "typed_model_throw");
+    assert!(
+        journal(&engine).contains(r#"{"symbol":"throw"}"#),
+        "a resumed turn reads the line as unread again"
+    );
+
+    let mut replay = Replay::new(vec![local(serde_json::json!({ "unavailable": true }))]);
+    let submitted = engine
+        .submit(
+            playthrough,
+            "take red coin",
+            "down",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    let refusal = submitted.turned.refusal.expect("a refusal");
+    assert_eq!(
+        (refusal.kind.as_str(), refusal.fact.as_str()),
+        ("unreadable", READER_DOWN)
+    );
+    assert_eq!(resolved_by(&engine), "typed_model_down");
+
+    let mut replay = Replay::new(vec![local(serde_json::json!({
+        "content": { "intent": "take", "target_present": 0.05, "named_more_than_one": 0.0 }
+    }))]);
+    let submitted = engine
+        .submit(
+            playthrough,
+            "take the brass key",
+            "absent",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    let refusal = submitted.turned.refusal.expect("a refusal");
+    assert_eq!(refusal.kind, "unresolved");
+    assert!(
+        refusal
+            .offer
+            .as_deref()
+            .is_some_and(|offer| offer.contains("red coin")),
+        "{refusal:?}"
+    );
+    assert_eq!(resolved_by(&engine), "typed_model_unsure");
+}
+
 /// The classifier's reading over rows, with no turn: System One composes
 /// what it can, and the model call answers what it escalates.
 #[test]

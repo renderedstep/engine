@@ -32,6 +32,11 @@ use std::collections::VecDeque;
 /// `EngineSweep::BrowserTurn::TypedAgent::PURPOSE`.
 pub const SYSTEM_ONE: &str = "system_one";
 
+/// The purpose of the local reader's replies. A replay that declares one
+/// reads the classifier through the local reader, as play does once the
+/// server names one.
+pub const LOCAL: &str = "local_classifier";
+
 /// `Playthrough::IntentSchema::NOTHING`.
 const NOTHING: &str = "nothing";
 
@@ -108,6 +113,7 @@ pub struct Replay {
     calls: Vec<String>,
     misses: Vec<String>,
     keyed: bool,
+    local: bool,
     sent: Vec<Value>,
 }
 
@@ -116,11 +122,19 @@ impl Replay {
         Replay {
             declared: replies.iter().map(|reply| reply.purpose.clone()).collect(),
             keyed: replies.iter().any(|reply| reply.purpose == SYSTEM_ONE),
+            local: replies.iter().any(|reply| reply.purpose == LOCAL),
             replies: replies.into(),
             calls: Vec::new(),
             misses: Vec::new(),
             sent: Vec::new(),
         }
+    }
+
+    /// Reads the classifier through the local reader even where no reply
+    /// is declared for it: a line it leaves unread asks nothing.
+    pub fn with_local_classifier(mut self) -> Replay {
+        self.local = true;
+        self
     }
 
     /// Every request answered so far, in order: a chat call as its purpose,
@@ -286,15 +300,54 @@ impl Models for Replay {
         state: &Value,
         questions: &Value,
     ) -> Result<Value, Unavailable> {
+        self.questions(SYSTEM_ONE, state, questions)
+    }
+
+    fn local_classifier(&self) -> bool {
+        self.local
+    }
+
+    fn ask_classifier_questions(
+        &mut self,
+        _book: &mut Book,
+        _filed: &Filed,
+        state: &Value,
+        questions: &Value,
+    ) -> Result<Value, Unavailable> {
+        let purpose = if self.local { LOCAL } else { SYSTEM_ONE };
+        self.questions(purpose, state, questions)
+    }
+
+    fn attribute(
+        &mut self,
+        _book: &mut Book,
+        _agent: &Agent,
+        _scene: i64,
+    ) -> Result<(), crate::engine::Error> {
+        Ok(())
+    }
+}
+
+impl Replay {
+    /// A System One request answered by the next reply for `purpose`.
+    fn questions(
+        &mut self,
+        purpose: &str,
+        state: &Value,
+        questions: &Value,
+    ) -> Result<Value, Unavailable> {
         self.sent
-            .push(json!({ "purpose": SYSTEM_ONE, "state": state, "questions": questions }));
-        let reply = self.next(SYSTEM_ONE).map_err(Unavailable)?;
+            .push(json!({ "purpose": purpose, "state": state, "questions": questions }));
+        let reply = self.next(purpose).map_err(Unavailable)?;
         let sent = serde_json::to_string(state).unwrap_or_default();
         self.check(&reply, &sent, "state");
         if reply.unavailable {
-            return Err(Unavailable(
-                "the sweep's System One provider is unavailable".into(),
-            ));
+            let which = if purpose == LOCAL {
+                "local reader"
+            } else {
+                "System One provider"
+            };
+            return Err(Unavailable(format!("the sweep's {which} is unavailable")));
         }
         let named = reply.content.clone().unwrap_or(Value::Null);
         let answers: Map<String, Value> = questions
@@ -314,15 +367,6 @@ impl Models for Replay {
             })
             .unwrap_or_default();
         Ok(json!({ "answers": answers, "usage": { "input_tokens": 0, "output_tokens": 0 } }))
-    }
-
-    fn attribute(
-        &mut self,
-        _book: &mut Book,
-        _agent: &Agent,
-        _scene: i64,
-    ) -> Result<(), crate::engine::Error> {
-        Ok(())
     }
 }
 

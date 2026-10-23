@@ -89,11 +89,14 @@ impl Transport for Https {
             .config()
             .timeout_global(options.timeout)
             .build()
-            .header(
+            .header("Content-Type", "application/json");
+        // A reader on this machine takes no key.
+        if !endpoint.bearer.is_blank() {
+            request = request.header(
                 "Authorization",
                 format!("Bearer {}", endpoint.bearer.expose()),
-            )
-            .header("Content-Type", "application/json");
+            );
+        }
         for (name, value) in &options.headers {
             request = request.header(*name, *value);
         }

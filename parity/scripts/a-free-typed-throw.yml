@@ -1,43 +1,28 @@
 ---
 story: The Unrecorded Hour
 steps:
-- id: a-free-throw-at-scenery-is-refused
+- id: a-free-throw-is-pointed-at-the-command
   type: throw the daybook at the window
   browser:
-    token: scenery
-    replies:
-    - purpose: classifier
-      prompt_includes:
-      - Ward Office 12 daybook
-      - Halkett Rowe
-      content:
-        intent: throw
-        target: Ward Office 12 daybook
-        also_named: nothing
-        thrown_at: nothing
+    token: free
+    local_reader: true
   expect:
     refused: true
     changed: false
+    offers:
+    - "/throw <thing> at <somebody here"
+    - or a way out>
     carrying:
     - Ward Office 12 daybook
-- id: a-free-throw-at-somebody-here-is-played
-  type: throw the ward stamp at Halkett Rowe
+- id: the-command-is-played
+  type: "/throw ward stamp at Halkett Rowe"
   browser:
     token: at-rowe
     replies:
-    - purpose: classifier
-      prompt_includes:
-      - ward stamp
-      - Halkett Rowe
-      content:
-        intent: throw
-        target: ward stamp
-        also_named: nothing
-        thrown_at: Halkett Rowe
     - purpose: narration
       content: The stamp flies across the office.
   expect:
-    resolved_by: model
+    resolved_by: grammar
     refused: false
     carrying:
     - Ward Office 12 daybook

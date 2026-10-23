@@ -380,8 +380,14 @@ pub fn attribute(book: &mut Book, messages: &[i64], scene: i64) -> Result<(), Er
 pub const SYSTEM_ONE_COST: f64 = 0.002;
 
 /// The System One receipt, written before the request goes, because a
-/// request that fails after it was sent may still have been billed.
-pub fn system_one(book: &mut Book, filed: &Filed, transport: &str) -> Result<i64, Error> {
+/// request that fails after it was sent may still have been billed. It is
+/// booked at `estimate` until the answer reports a cost.
+pub fn system_one(
+    book: &mut Book,
+    filed: &Filed,
+    transport: &str,
+    estimate: f64,
+) -> Result<i64, Error> {
     let row = book.store.insert(
         "system_one_receipts",
         &[
@@ -392,7 +398,7 @@ pub fn system_one(book: &mut Book, filed: &Filed, transport: &str) -> Result<i64
             ),
             ("purpose", Value::from(filed.purpose.as_str())),
             ("transport", Value::from(transport)),
-            ("cost_usd", Value::from(SYSTEM_ONE_COST)),
+            ("cost_usd", Value::from(estimate)),
             ("cost_source", Value::from("estimated")),
         ],
     )?;

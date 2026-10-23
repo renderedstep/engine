@@ -3,7 +3,7 @@
   "story": "A Turn at the Gate",
   "steps": [
     {
-      "step": "step 1 no-key-is-the-one-call-it-always-made",
+      "step": "step 1 a-sure-reading-is-played",
       "player": "first",
       "typed": "pick up that red coin",
       "dump": {
@@ -55,8 +55,8 @@
         "refused": false,
         "offers": null,
         "understood": "take -> red coin",
-        "resolved_by": "model",
-        "note": "keyless: completed",
+        "resolved_by": "typed_model",
+        "note": "sure: completed",
         "drifts": 0,
         "blows": 1,
         "hazards": 0,
@@ -72,9 +72,9 @@
       }
     },
     {
-      "step": "step 2 the-cascade-composes-and-the-model-call-never-happens",
+      "step": "step 2 an-unsure-reading-is-played-on-its-own",
       "player": "first",
-      "typed": "put the coin back down",
+      "typed": "put down the coin and the key",
       "dump": {
         "location": {
           "id": 1000000001,
@@ -124,8 +124,8 @@
         "refused": false,
         "offers": null,
         "understood": "drop -> red coin",
-        "resolved_by": "typed_model",
-        "note": "composed: completed",
+        "resolved_by": "typed_model_unsure",
+        "note": "unsure: completed",
         "drifts": 0,
         "blows": 1,
         "hazards": 0,
@@ -141,78 +141,9 @@
       }
     },
     {
-      "step": "step 3 a-flagged-line-goes-on-to-the-model-call",
+      "step": "step 3 a-free-throw-is-pointed-at-the-command",
       "player": "first",
-      "typed": "take the coin and have a word with Maren",
-      "dump": {
-        "location": {
-          "id": 1000000001,
-          "name": "Market",
-          "detail": "realized"
-        },
-        "storey": null,
-        "exits": [
-          {
-            "id": 1000000002,
-            "name": "Courtyard",
-            "detail": "realized"
-          }
-        ],
-        "here": [],
-        "carrying": [
-          {
-            "id": 1000000003,
-            "name": "red coin"
-          }
-        ],
-        "present": [
-          {
-            "id": 1000000002,
-            "name": "Maren"
-          }
-        ],
-        "foes": [
-          {
-            "id": 1000000002,
-            "name": "Maren"
-          }
-        ],
-        "inscription": [],
-        "hp": 42,
-        "hp_of": {
-          "Maren": 53
-        },
-        "abilities": {
-          "strength": 12,
-          "dexterity": 12,
-          "will": 12
-        },
-        "dead": false,
-        "changed": true,
-        "change": "The browser turn completed.",
-        "refused": false,
-        "offers": null,
-        "understood": "take -> red coin",
-        "resolved_by": "typed_model_escalated",
-        "note": "escalated: completed",
-        "drifts": 0,
-        "blows": 1,
-        "hazards": 0,
-        "quest": {},
-        "volitions": 0,
-        "acts": 0,
-        "ending": "none",
-        "ending_words": null,
-        "scheduled": 0,
-        "fired": 0,
-        "elapsed_minutes": 5.0,
-        "shown": null
-      }
-    },
-    {
-      "step": "step 4 a-provider-that-fails-never-costs-the-turn",
-      "player": "first",
-      "typed": "leave the coin on the stones",
+      "typed": "throw the coin at Maren",
       "dump": {
         "location": {
           "id": 1000000001,
@@ -247,7 +178,7 @@
           }
         ],
         "inscription": [],
-        "hp": 40,
+        "hp": 44,
         "hp_of": {
           "Maren": 53
         },
@@ -257,15 +188,15 @@
           "will": 12
         },
         "dead": false,
-        "changed": true,
-        "change": "The browser turn completed.",
-        "refused": false,
-        "offers": null,
-        "understood": "drop -> red coin",
-        "resolved_by": "typed_model_unavailable",
-        "note": "unavailable: completed",
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "A throw is read only when it is typed as a command: /throw <thing> at <somebody here, or a way out>. Nothing has changed.",
+        "understood": null,
+        "resolved_by": null,
+        "note": "throw: completed",
         "drifts": 0,
-        "blows": 1,
+        "blows": 0,
         "hazards": 0,
         "quest": {},
         "volitions": 0,
@@ -274,83 +205,14 @@
         "ending_words": null,
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 5.0,
+        "elapsed_minutes": 0.0,
         "shown": null
       }
     },
     {
-      "step": "step 5 the-presence-flag-escalates-on-its-own",
+      "step": "step 4 a-reader-that-is-down-refuses-the-line",
       "player": "first",
-      "typed": "pick up whatever the gatekeeper left on the stones",
-      "dump": {
-        "location": {
-          "id": 1000000001,
-          "name": "Market",
-          "detail": "realized"
-        },
-        "storey": null,
-        "exits": [
-          {
-            "id": 1000000002,
-            "name": "Courtyard",
-            "detail": "realized"
-          }
-        ],
-        "here": [],
-        "carrying": [
-          {
-            "id": 1000000003,
-            "name": "red coin"
-          }
-        ],
-        "present": [
-          {
-            "id": 1000000002,
-            "name": "Maren"
-          }
-        ],
-        "foes": [
-          {
-            "id": 1000000002,
-            "name": "Maren"
-          }
-        ],
-        "inscription": [],
-        "hp": 39,
-        "hp_of": {
-          "Maren": 53
-        },
-        "abilities": {
-          "strength": 12,
-          "dexterity": 12,
-          "will": 12
-        },
-        "dead": false,
-        "changed": true,
-        "change": "The browser turn completed.",
-        "refused": false,
-        "offers": null,
-        "understood": "take -> red coin",
-        "resolved_by": "typed_model_escalated",
-        "note": "presence: completed",
-        "drifts": 0,
-        "blows": 1,
-        "hazards": 0,
-        "quest": {},
-        "volitions": 0,
-        "acts": 0,
-        "ending": "none",
-        "ending_words": null,
-        "scheduled": 0,
-        "fired": 0,
-        "elapsed_minutes": 5.0,
-        "shown": null
-      }
-    },
-    {
-      "step": "step 6 the-two-name-flag-escalates-with-no-second-record",
-      "player": "first",
-      "typed": "put down the coin and the key",
+      "typed": "pick the coin up again",
       "dump": {
         "location": {
           "id": 1000000001,
@@ -385,7 +247,7 @@
           }
         ],
         "inscription": [],
-        "hp": 35,
+        "hp": 44,
         "hp_of": {
           "Maren": 53
         },
@@ -395,15 +257,15 @@
           "will": 12
         },
         "dead": false,
-        "changed": true,
-        "change": "The browser turn completed.",
-        "refused": false,
-        "offers": null,
-        "understood": "drop -> red coin",
-        "resolved_by": "typed_model_escalated",
-        "note": "two-name-alone: completed",
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The game cannot read free-typed lines right now. Type the line as a command instead: the slash menu lists them. Nothing has changed.",
+        "understood": null,
+        "resolved_by": null,
+        "note": "down: completed",
         "drifts": 0,
-        "blows": 1,
+        "blows": 0,
         "hazards": 0,
         "quest": {},
         "volitions": 0,
@@ -412,7 +274,7 @@
         "ending_words": null,
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 5.0,
+        "elapsed_minutes": 0.0,
         "shown": null
       }
     }
