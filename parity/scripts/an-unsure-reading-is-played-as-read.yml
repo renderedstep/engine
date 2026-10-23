@@ -1,0 +1,60 @@
+---
+story: Two Clerks at One Counter
+steps:
+- id: an-unsure-talk-is-played-as-read
+  type: ask Tamsin about Rowe
+  browser:
+    token: unsure-about
+    replies:
+    - purpose: local_classifier
+      prompt_includes:
+      - ask Tamsin about Rowe
+      - Tamsin Gale
+      - Rowe Harker
+      content:
+        intent: talk
+        target_talk: person_1
+        also_named: nothing
+        named_more_than_one: 0.62
+        target_present: 0.93
+    - purpose: character
+      prompt_includes:
+      - ask Tamsin about Rowe
+      content:
+        pre_thought: He wants to know about Rowe, with Rowe standing right there.
+        pre_feeling: wary
+        action: Tamsin glances at Rowe and lowers her voice.
+        post_thought: Better he hears it from me than from the book.
+        post_feeling: careful
+        inner_resolution: I will tell him Rowe keeps the pledges.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Tamsin glances sideways at Rowe before she answers you, low.
+  expect:
+    changed: true
+    refused: false
+    understood: talk -> Tamsin Gale
+    resolved_by: typed_model_unsure
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+- id: an-absent-target-is-refused-with-what-is-here
+  type: ask the night porter where the watch went
+  browser:
+    token: absent
+    replies:
+    - purpose: local_classifier
+      content:
+        intent: talk
+        target_talk: person_1
+        named_more_than_one: 0.01
+        target_present: 0.04
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - Tamsin Gale
+    - Rowe Harker
+    present:
+    - Rowe Harker
+    - Tamsin Gale

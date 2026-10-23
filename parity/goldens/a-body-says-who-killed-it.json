@@ -1882,7 +1882,7 @@
         "refused": false,
         "offers": null,
         "understood": null,
-        "resolved_by": "model",
+        "resolved_by": "typed_model",
         "note": "the-body: completed",
         "drifts": 0,
         "blows": 0,

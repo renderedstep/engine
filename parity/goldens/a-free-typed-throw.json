@@ -3,7 +3,7 @@
   "story": "The Unrecorded Hour",
   "steps": [
     {
-      "step": "step 1 a-free-throw-at-scenery-is-refused",
+      "step": "step 1 a-free-throw-is-pointed-at-the-command",
       "player": "first",
       "typed": "throw the daybook at the window",
       "dump": {
@@ -77,10 +77,10 @@
         "changed": false,
         "change": null,
         "refused": true,
-        "offers": "Nothing was thrown: the Ward Office 12 daybook stays in your hands. A throw is aimed at somebody here or through a way out, and that did not resolve to either. Nothing has changed.",
+        "offers": "A throw is read only when it is typed as a command: /throw <thing> at <somebody here, or a way out>. Nothing has changed.",
         "understood": null,
         "resolved_by": null,
-        "note": "scenery: completed",
+        "note": "free: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -100,9 +100,9 @@
       }
     },
     {
-      "step": "step 2 a-free-throw-at-somebody-here-is-played",
+      "step": "step 2 the-command-is-played",
       "player": "first",
-      "typed": "throw the ward stamp at Halkett Rowe",
+      "typed": "/throw ward stamp at Halkett Rowe",
       "dump": {
         "location": {
           "id": 1000000001,
@@ -176,7 +176,7 @@
         "refused": false,
         "offers": null,
         "understood": "throw -> ward stamp",
-        "resolved_by": "model",
+        "resolved_by": "grammar",
         "note": "at-rowe: completed",
         "drifts": 0,
         "blows": 0,

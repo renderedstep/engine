@@ -4285,69 +4285,107 @@
       "step": "step 25 the-body-a-turn-later",
       "requests": [
         {
-          "purpose": "classifier",
-          "system": "You read one line of a text adventure player's input and say what they were\ntrying to do. You do not narrate, you do not answer the player, and you do\nnot decide whether they succeed.\n\nFirst pick the intent from the action requested, even if its target is\nunavailable. Then resolve that target. Pick the intent that fits best:\n  move    - they are going somewhere else\n  talk    - they are speaking to someone who is here\n  examine - they are looking at something more closely, or looking around\n            the place in general\n  take    - they are picking something up\n  drop    - they are putting down, leaving or giving up something they carry\n  attack  - they are trying to hurt someone who is here\n  use     - consume an item, offer it to someone, burn it, open a barrier,\n            search or open something that is fixed here, or break a part off it\n  throw   - they are throwing, hurling or tossing a thing at someone who\n            is here or through a way out\n  other   - anything else\n\nThen pick what they aimed it at from the lists you are given, copied\nexactly: a way out for `move`, a person for `talk` or `attack`, a thing\nlying here for `take`, a thing they are carrying for `drop`, and for\n`examine` a thing on either of those two lists -- looking at something works\nwhether it is in their hands or on the floor in front of them. `other` has\ntarget `nothing`. If the requested target is absent from the appropriate\nlist, keep the requested intent and answer `nothing`. Never substitute\nanother available item, person or destination for the one requested.\nMatch conservatively: a place mentioned in scenery is not one of the ways\nout, and a relationship, title or role is not a different listed person.\nDo not infer that an available record is what the player meant merely\nbecause it seems related. For example, a request to go to an unlisted room\nremains `move` with `nothing`, and a request to speak to an absent landlord\nremains `talk` with `nothing`.\n\nOnly for an intent of `use`, select the exact token of ONE listed Physical\nAction whose action, object, recipient and tool match the request. Its\nobjects and tools form a single attempt, not extra acts. If none matches,\nanswer `use` with `nothing`, even when another physical action is available.\nThis token rule applies only to consuming, offering, burning, opening\nbarriers, and searching, opening or breaking a part off something fixed\nhere. Reading is `examine`. Putting an item on the ground or a fixture,\nor leaving it there, is `drop`. Neither needs a Physical Action token.\nOffering an item the player carries is `use`, even in spoken words; the\nrecipient can refuse. Do not replace an absent named offered item with a\ndifferent carried item. Asking someone for their item is `talk`. Opening a\ngate, door or other barrier is `use`; crossing it is a separate `move`.\nWords that only orient the player, such as turning around to face a door,\ndo not ask to cross it. If the named barrier is already open and therefore\nhas no listed Physical Action, answer `use` with `nothing`. Drinking and\neating consume the item. An unrelated observation, waiting or musing is\n`other`.\n\nFor `throw`, `target` is the thing thrown, from the things they carry or\nthe things lying here, and `thrown_at` is the person here or the way out it\nwas aimed at. If it was aimed at anything else -- a wall, a machine, a\nfixture, the room -- answer `thrown_at` with `nothing`; do not pick a\nperson or a way out instead. \"Throw the switch\" or \"throw a party\" is not\na throw of a thing: answer `other`.\n\n`talk` and `attack` read the SAME list of people, so what tells them apart\nis only what the player is doing to that person. Hitting, punching, kicking,\nswinging or lunging at somebody, grabbing them to hurt them, drawing on them\nor setting about them is `attack`. Speech other than an offer to hand over\na carried item is `talk`, however angry it is -- and a THREAT IS SAID:\n\"tell me or I break your arm\",\n\"I am warning you\", \"back off\" are `talk`, because the player has not\ntouched anybody yet. Looking somebody over is `examine`, and `examine` never\nresolves to a person, so it answers `nothing`.\n\nA word that means ALL of them -- \"everything\", \"all\", \"the lot\", \"both\" --\nis naming what is on the list rather than something missing from it, so it\nis not `nothing`. Answer with the first thing on the list the action reads\nagainst, and put one more in `also_named`: a turn does one thing, and the\ngame says out loud what it left undone.\n",
-          "user": "## Where The Player Is\nThe Bell of Saint Aravel\n\n## Ways Out\n- Grenn's Boarding House hallway (a short walk, walking)\n\n## Who Is Here\nNobody. There is no one here to talk to.\n\n## What Is Lying Here\n- climbers' bearing book\n- bell-rope tally\n\n## What The Player Is Carrying\nNothing. The player is carrying nothing at all.\n\n## Physical Actions (token: one attempt)\nNone are available.\n\n## The Player Types\ninspect mareks body\n",
-          "schema": {
-            "name": "player_intent",
-            "description": null,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "intent": {
-                  "type": "string",
-                  "enum": [
-                    "move",
-                    "talk",
-                    "examine",
-                    "take",
-                    "drop",
-                    "attack",
-                    "use",
-                    "other",
-                    "throw"
-                  ],
-                  "description": "What the player is trying to do. Pick the closest."
-                },
-                "target": {
-                  "type": "string",
-                  "enum": [
-                    "Grenn's Boarding House hallway",
-                    "climbers' bearing book",
-                    "bell-rope tally",
-                    "nothing"
-                  ],
-                  "description": "What they aimed it at, copied exactly from the lists you were given: a way out for `move`, a person for `talk` or `attack`, a thing lying here for `take`, a thing they are carrying for `drop`, and for `examine` a thing on either of those two lists. Answer `nothing` for anything else, or when they named something that is not on those lists."
-                },
-                "also_named": {
-                  "type": "string",
-                  "enum": [
-                    "Grenn's Boarding House hallway",
-                    "climbers' bearing book",
-                    "bell-rope tally",
-                    "nothing"
-                  ],
-                  "description": "One more thing on those lists that the player named in the SAME line and that `target` is not already pointing at, copied exactly -- as in \"take the index and the apron\". One line does one thing, so nothing here is acted on; naming it is only how the game says what it is leaving undone. Answer `nothing` when they named one thing or none, which is usual."
-                },
-                "thrown_at": {
-                  "type": "string",
-                  "enum": [
-                    "Grenn's Boarding House hallway",
-                    "climbers' bearing book",
-                    "bell-rope tally",
-                    "nothing"
-                  ],
-                  "description": "Only for `throw`: who or which way out the thrown thing was aimed at, copied exactly from the people here or the ways out. Answer `nothing` for every other intent, and for a throw aimed at anything not on those two lists -- a wall, a machine, the room."
-                }
+          "purpose": "local_classifier",
+          "state": {
+            "location": "The Bell of Saint Aravel",
+            "ways_out": {
+              "way_1": {
+                "kind": "way out",
+                "name": "Grenn's Boarding House hallway",
+                "valid_intents": [
+                  "move"
+                ]
+              }
+            },
+            "other_characters": {},
+            "available_items": {
+              "available_item_1": {
+                "kind": "item lying here",
+                "name": "climbers' bearing book",
+                "valid_intents": [
+                  "take",
+                  "examine"
+                ]
               },
-              "required": [
-                "intent",
-                "target",
-                "also_named",
-                "thrown_at"
-              ],
-              "additionalProperties": false,
-              "strict": true
+              "available_item_2": {
+                "kind": "item lying here",
+                "name": "bell-rope tally",
+                "valid_intents": [
+                  "take",
+                  "examine"
+                ]
+              }
+            },
+            "player_items": {},
+            "physical_actions": {},
+            "player_action": "inspect mareks body"
+          },
+          "questions": {
+            "intent": {
+              "type": "choice",
+              "instructions": "Which single intent is the player requesting in `player_action`? Keep the requested intent even when its target is absent from the corresponding state list.",
+              "criteria": {
+                "move": "The player is trying to go somewhere else or cross a doorway, whether or not the destination is listed in `ways_out`.",
+                "talk": "The player is speaking to or asking somebody; threats without physical contact and asking for somebody's item are talk.",
+                "examine": "The player is looking at, inspecting, or reading something more closely without moving or taking it, or looking around the place in general.",
+                "take": "The player is trying to pick something up from where they are, whether or not it is listed in `available_items`.",
+                "drop": "The player is trying to put down, leave behind, or give up something they carry, whether or not it is listed in `player_items`.",
+                "attack": "The player is trying to physically hurt somebody; a spoken threat without contact is talk.",
+                "use": "The player is trying to consume or burn an item, offer a carried item, or open a barrier, or to search, open or break a part off a fixed piece named in `physical_actions`.",
+                "other": "The line requests none of the other listed actions, such as waiting, reflecting, or making an unrelated observation."
+              }
+            },
+            "target_move": {
+              "type": "choice",
+              "instructions": "Assume, for this question only, that the player is crossing a doorway to another location. Which single listed record are they aiming that at? Match direct names, listed aliases, ordinary shortened references, direct address, and an unambiguous pronoun when context identifies one record. When the line names several fitting records, or covers them with a collective word (`everything`, `all of it`, `the lot`, `them`, `both`, `each`) or an `and then` continuation, answer with one of them, never `nothing`; `also_named` handles another. Choose `nothing` only when the record they are asking for is absent from this list. Never substitute a merely related record for an absent one. Answer this question on its own; do not decide whether this is what the player is actually doing.",
+              "criteria": {
+                "way_1": "Grenn's Boarding House hallway",
+                "nothing": "No listed way out is the one being crossed, or the requested destination is absent."
+              }
+            },
+            "target_take": {
+              "type": "choice",
+              "instructions": "Assume, for this question only, that the player is picking something up from where they are. Which single listed record are they aiming that at? Match direct names, listed aliases, ordinary shortened references, direct address, and an unambiguous pronoun when context identifies one record. When the line names several fitting records, or covers them with a collective word (`everything`, `all of it`, `the lot`, `them`, `both`, `each`) or an `and then` continuation, answer with one of them, never `nothing`; `also_named` handles another. Choose `nothing` only when the record they are asking for is absent from this list. Never substitute a merely related record for an absent one. Answer this question on its own; do not decide whether this is what the player is actually doing.",
+              "criteria": {
+                "available_item_1": "climbers' bearing book",
+                "available_item_2": "bell-rope tally",
+                "nothing": "Nothing listed here is the thing being picked up, or the requested thing is absent."
+              }
+            },
+            "target_examine": {
+              "type": "choice",
+              "instructions": "Assume, for this question only, that the player is looking at, inspecting or reading something more closely. Which single listed record are they aiming that at? Match direct names, listed aliases, ordinary shortened references, direct address, and an unambiguous pronoun when context identifies one record. When the line names several fitting records, or covers them with a collective word (`everything`, `all of it`, `the lot`, `them`, `both`, `each`) or an `and then` continuation, answer with one of them, never `nothing`; `also_named` handles another. Choose `nothing` only when the record they are asking for is absent from this list. Never substitute a merely related record for an absent one. Answer this question on its own; do not decide whether this is what the player is actually doing.",
+              "criteria": {
+                "available_item_1": "climbers' bearing book",
+                "available_item_2": "bell-rope tally",
+                "nothing": "Nothing listed here or carried is the thing being looked at, or the requested thing is absent."
+              }
+            },
+            "also_named": {
+              "type": "choice",
+              "instructions": "Independently inspect `player_action` and the state. Does the same requested intent explicitly name or unambiguously include at least two distinct records from that intent's appropriate state list? If so, choose one listed record distinct from the likely main target; for an ordinary two-record request, choose the other record rather than `nothing`. Words such as `both`, `all`, `everything`, `all of it`, `the lot`, `them`, or `each`, and a second record added with `and then`, include every fitting record in the corresponding list; the main target takes one of them and you name another. Choose `nothing` when fewer than two fitting records are requested. Objects, tools, and recipients already bound inside one complete `physical_actions` attempt are not a second act. For talk, only a second person being spoken to counts; a person who is only talked about, or named inside what is said or asked of the listener, is not a second act.",
+              "criteria": {
+                "way_1": "Grenn's Boarding House hallway",
+                "available_item_1": "climbers' bearing book",
+                "available_item_2": "bell-rope tally",
+                "nothing": "No appropriate listed record is named, or the requested target is absent from the appropriate list."
+              }
+            },
+            "named_more_than_one": {
+              "type": "noul",
+              "instructions": "First identify the one requested intent. Return a high yes probability only when that same intent requests at least two distinct eligible records: move counts `ways_out`; talk or attack counts `other_characters`; take counts `available_items`; drop counts `player_items`; examine counts either item list. For talk, count only the people the player is speaking to: a present person who is only talked about, or named inside what is said or asked of the listener, does not count. A record listed only for a different intent does not count. If the intent is `other`, the answer is no. Collective words such as `both`, `all`, `everything`, `the lot`, or `them` count only when context unambiguously selects at least two eligible records. A single `physical_actions` attempt is one act even when it binds several parts.",
+              "criteria": {
+                "true": "The same non-other requested intent explicitly names or unambiguously includes at least two distinct records from its eligible state list; for talk, at least two people being spoken to.",
+                "false": "The line has at most one eligible listed record for its requested intent, refers only to absent or differently eligible records, is other, names parts already bound inside one complete physical action, or speaks to one person about another."
+              }
+            },
+            "target_present": {
+              "type": "noul",
+              "instructions": "Does the state actually list the thing or person `player_action` asks for? Answer yes when a listed record IS that thing - by name, by a listed alias, by an ordinary shortened reference, by direct address, or by an unambiguous pronoun - and yes when a collective word such as `everything`, `all of it`, `the lot`, `them`, `both` or `each` covers listed records. Answer no when the line asks for something the state does not list and only similar or related records are present: the rest of a group whose other members are absent, a role or relationship nobody listed holds, or a thing held inside, made by or stored in a listed record. Judge only what is asked for against what is listed; do not decide which action it is.",
+              "criteria": {
+                "true": "A listed record is the very thing or person the line asks for, or a collective word covers listed records.",
+                "false": "What the line asks for is absent from the state and only similar, containing or related records are listed."
+              }
             }
           }
         },
@@ -4507,7 +4545,7 @@
               "location_id": 1000000007,
               "previous_scene_id": 1000000003,
               "resolved_action": "examine",
-              "resolved_by": "model",
+              "resolved_by": "typed_model",
               "story_id": 1000000001,
               "story_timestamp": "2026-08-31 23:25:00",
               "summary": null,
@@ -4747,7 +4785,7 @@
               "location_id": 1000000007,
               "previous_scene_id": 1000000003,
               "resolved_action": "examine",
-              "resolved_by": "model",
+              "resolved_by": "typed_model",
               "story_id": 1000000001,
               "story_timestamp": "2026-08-31 23:25:00",
               "summary": null,
@@ -5018,7 +5056,7 @@
               "location_id": 1000000007,
               "previous_scene_id": 1000000003,
               "resolved_action": "examine",
-              "resolved_by": "model",
+              "resolved_by": "typed_model",
               "story_id": 1000000001,
               "story_timestamp": "2026-08-31 23:25:00",
               "summary": null,
