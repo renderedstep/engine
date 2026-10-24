@@ -250,9 +250,10 @@ fn the_first_rule_the_world_wrote_wins_when_two_hold() {
     let late_and_wrong_way = |id| {
         let (mut engine, game) = the_iron_gate(&outcome(id, "too-slow", "'slower_than'", "60"));
         let all = lines(script);
-        play(&mut engine, game, &all[..all.len() - 1]);
+        let last = before(script, "/end").len() - 1;
+        play(&mut engine, game, &all[..last]);
         pass_to(&engine, game, 300);
-        play(&mut engine, game, &all[all.len() - 1..]);
+        play(&mut engine, game, &all[last..]);
         assert_eq!(beats(&engine, game), [1, 2, 3]);
         ending(&engine, game)
     };
@@ -290,6 +291,7 @@ fn a_time_passed_beat_is_reached_once_the_games_clock_comes_to_it() {
     pass_to(&engine, game, 40);
     play_line(&mut engine, game, "go to the dry cell");
     assert_eq!(beats(&engine, game), [1, 2, 3, 4]);
+    play_line(&mut engine, game, "/end");
     assert_eq!(
         count(
             &engine,
@@ -381,6 +383,7 @@ fn up_to_the_tally(others: &[Vec<String>]) -> (Engine, i64) {
 fn take_the_tally(engine: &mut Engine, game: i64) -> String {
     play_line(engine, game, "take the tally");
     assert_eq!(beats(engine, game), [1, 2, 3]);
+    play_line(engine, game, "/end");
     ending(engine, game).expect("the arc ended")
 }
 
@@ -520,4 +523,177 @@ fn after_talking_to_maren(target: i64) -> Vec<i64> {
 fn speaking_to_somebody_else_does_not_reach_the_beat() {
     assert_eq!(after_talking_to_maren(MAREN), [1]);
     assert_eq!(after_talking_to_maren(ORRIN), Vec::<i64>::new());
+}
+
+/// The game's due ending: the outcome it fell due with, and whether the
+/// player put it off.
+fn due(engine: &Engine, game: i64) -> Option<(String, bool)> {
+    let conn = engine.store().connection();
+    let mut statement = conn
+        .prepare(
+            "SELECT o.name, d.declined_at IS NOT NULL FROM playthrough_due_endings d
+             JOIN quest_outcomes o ON o.id = d.quest_outcome_id WHERE d.playthrough_id = ?1",
+        )
+        .unwrap();
+    let due: Vec<(String, bool)> = statement
+        .query_map([game], |row| Ok((row.get(0)?, row.get(1)?)))
+        .unwrap()
+        .map(Result::unwrap)
+        .collect();
+    assert!(due.len() <= 1, "one due ending at most: {due:?}");
+    due.into_iter().next()
+}
+
+fn closing_scenes(engine: &Engine) -> i64 {
+    count(
+        engine,
+        "SELECT COUNT(*) FROM scenes WHERE resolved_action = 'conclude'",
+    )
+}
+
+/// The line that meets the last beat decides the ending and ends nothing:
+/// the outcome is kept as due, and `/end` writes it, whatever the clock has
+/// done since to the rules that chose it.
+#[test]
+fn the_last_beat_decides_the_ending_and_only_the_end_writes_it() {
+    let slow = outcome(1_000_000_003, "too-slow", "'slower_than'", "120");
+    let (mut engine, game) = the_iron_gate(&slow);
+    play(&mut engine, game, &before("an-ending-with-words", "/end"));
+    assert_eq!(beats(&engine, game), [1, 2, 3]);
+    assert_eq!(due(&engine, game), Some(("rescued".into(), false)));
+    assert_eq!(ending(&engine, game), None);
+    assert!(!ended(&engine, game));
+    assert!(quest_events(&engine).is_empty());
+    assert_eq!(closing_scenes(&engine), 0);
+
+    pass_to(&engine, game, 121);
+    let outcome = engine.play(game, "/end", &mut |_| {}).unwrap();
+    assert_eq!(outcome.report.refusal, None);
+    assert_eq!(ending(&engine, game).as_deref(), Some("rescued"));
+    assert!(ended(&engine, game));
+    assert_eq!(closing_scenes(&engine), 1);
+    let events = quest_events(&engine);
+    assert_eq!(events.len(), 1, "{events:?}");
+    assert!(
+        events[0]
+            .3
+            .starts_with("The Church's Decree was finished (rescued): "),
+        "{events:?}"
+    );
+}
+
+/// Any other line is "not yet": it plays as it always would, the offer is
+/// not made again, and `/end` still ends the story on the outcome that fell
+/// due.
+#[test]
+fn a_line_played_past_the_offer_puts_it_off_and_the_end_still_takes_it() {
+    let (mut engine, game) = the_iron_gate("");
+    play(&mut engine, game, &before("an-ending-with-words", "/end"));
+    let outcome = engine
+        .play(game, &format!("go to {WARREN_ROOM_2}"), &mut |_| {})
+        .unwrap();
+    assert_eq!(outcome.report.refusal, None);
+    assert_eq!(
+        outcome.state.location.map(|room| room.name).as_deref(),
+        Some(WARREN_ROOM_2)
+    );
+    assert_eq!(due(&engine, game), Some(("rescued".into(), true)));
+    assert!(!ended(&engine, game));
+
+    play_line(&mut engine, game, "/end");
+    assert_eq!(ending(&engine, game).as_deref(), Some("rescued"));
+    assert!(ended(&engine, game));
+    assert_eq!(due(&engine, game), Some(("rescued".into(), true)));
+}
+
+/// A front end asks once: the glance carries the question while the ending
+/// is due, and loses it when the player says "Not yet", while `/end` still
+/// stands until the story is over.
+#[test]
+fn the_glance_asks_once_and_not_yet_puts_the_question_away() {
+    let (mut engine, game) = the_iron_gate("");
+    play(&mut engine, game, &before("an-ending-with-words", "/end"));
+    let glance = engine.glance(game).unwrap();
+    assert!(glance.ending_due);
+    let offer = glance.ending_offer.expect("the ending is offered");
+    assert_eq!(
+        offer.heading,
+        "You have done everything The Church's Decree asked for:"
+    );
+    assert_eq!(offer.goals.len(), 3);
+    assert_eq!(
+        (
+            offer.question.as_str(),
+            offer.end.as_str(),
+            offer.end_line.as_str(),
+            offer.not_yet.as_str()
+        ),
+        ("End the story here?", "End the story", "/end", "Not yet")
+    );
+
+    engine.put_off_ending(game).unwrap();
+    assert_eq!(due(&engine, game), Some(("rescued".into(), true)));
+    let glance = engine.glance(game).unwrap();
+    assert!(glance.ending_due);
+    assert_eq!(glance.ending_offer, None);
+
+    play_line(&mut engine, game, "/end");
+    let glance = engine.glance(game).unwrap();
+    assert!(!glance.ending_due);
+    assert_eq!(glance.ending_offer, None);
+    assert_eq!(ending(&engine, game).as_deref(), Some("rescued"));
+}
+
+/// `/end` before every goal is met is refused, and writes nothing.
+#[test]
+fn the_end_before_the_last_beat_is_refused() {
+    let (mut engine, game) = the_iron_gate("");
+    play(
+        &mut engine,
+        game,
+        &before("an-ending-with-words", "go to the dry cell"),
+    );
+    let outcome = engine.play(game, "/end", &mut |_| {}).unwrap();
+    assert_eq!(
+        outcome.report.refusal.as_deref(),
+        Some(
+            "The story cannot end here yet: it is still asking for something. Nothing has changed."
+        )
+    );
+    assert_eq!(due(&engine, game), None);
+    assert_eq!(ending(&engine, game), None);
+    assert!(!ended(&engine, game));
+    assert_eq!(closing_scenes(&engine), 0);
+}
+
+/// A player who died after putting the ending off leaves the arc unwritten:
+/// one quest event says every beat was reached, and `/end` is a line typed
+/// into a finished game.
+#[test]
+fn dying_after_putting_the_ending_off_leaves_it_unwritten() {
+    let (mut engine, game) = the_iron_gate("");
+    play(&mut engine, game, &before("an-ending-with-words", "/end"));
+    sql(
+        &engine,
+        &format!(
+            "UPDATE locations SET hazard = 'airless', hazard_die = 6 WHERE id = {THE_DRY_CELL};
+             UPDATE playthrough_vitals SET hp_current = 1
+             WHERE playthrough_id = {game} AND character_id = (SELECT character_id FROM playthroughs WHERE id = {game});"
+        ),
+    );
+    play_line(&mut engine, game, &format!("go to {WARREN_ROOM_2}"));
+    assert!(ended(&engine, game), "the player died on the way out");
+    assert_eq!(due(&engine, game), Some(("rescued".into(), true)));
+    assert_eq!(ending(&engine, game), None);
+    let failed = quest_events(&engine);
+    assert_eq!(failed.len(), 1, "{failed:?}");
+    assert_eq!(
+        failed[0].3,
+        "The Church's Decree was left unfinished: every beat was reached and the ending was never written."
+    );
+
+    let outcome = engine.play(game, "/end", &mut |_| {}).unwrap();
+    assert!(outcome.report.refusal.is_some());
+    assert_eq!(ending(&engine, game), None);
+    assert_eq!(quest_events(&engine), failed);
 }

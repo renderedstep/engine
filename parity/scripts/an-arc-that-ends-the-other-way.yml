@@ -95,6 +95,13 @@ steps:
       1: reached
       2: reached
       3: reached
+    ending: none
+    scheduled: 0
+    dead: false
+- id: and-the-player-ends-it-there
+  type: "/end"
+  expect:
+    changed: true
     ending: too-late
     scheduled: 1
     fired: 0

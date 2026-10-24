@@ -11,7 +11,7 @@ steps:
   type: go to Blackfang Warren room 1
 - id: first-past-the-guards
   type: go to Blackfang Warren room 2
-- id: first-the-cell-and-the-end
+- id: first-the-cell
   type: "/move the dry cell"
   browser:
     token: first-cell
@@ -20,6 +20,16 @@ steps:
       content:
         description: You push open the dry cell and find the prince alive.
         summary: The dry cell is opened.
+  expect:
+    location: the dry cell (realized)
+    ending: none
+    dead: false
+    note: completed
+- id: first-the-end
+  type: "/end"
+  browser:
+    token: first-end
+    replies:
     - purpose: ending
       unavailable: true
   expect:
@@ -45,7 +55,7 @@ steps:
 - id: second-past-the-guards
   type: go to Blackfang Warren room 2
   player: second
-- id: second-the-cell-and-the-end
+- id: second-the-cell
   type: "/move the dry cell"
   player: second
   browser:
@@ -55,6 +65,17 @@ steps:
       content:
         description: You push open the dry cell and find the prince alive.
         summary: The dry cell is opened.
+  expect:
+    location: the dry cell (realized)
+    ending: none
+    dead: false
+    note: completed
+- id: second-the-end
+  type: "/end"
+  player: second
+  browser:
+    token: second-end
+    replies:
     - purpose: ending
       content: You lift the prince to his feet, and the iron gate
   expect:

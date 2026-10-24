@@ -185,6 +185,13 @@ column playthrough_drifts.playthrough_id integer not null pk=0
 column playthrough_drifts.scene_id integer pk=0
 column playthrough_drifts.story_timestamp datetime(6) pk=0
 column playthrough_drifts.updated_at datetime(6) not null pk=0
+column playthrough_due_endings.created_at datetime(6) not null pk=0
+column playthrough_due_endings.declined_at datetime(6) pk=0
+column playthrough_due_endings.due_at datetime(6) not null pk=0
+column playthrough_due_endings.id integer not null pk=1
+column playthrough_due_endings.playthrough_id integer not null pk=0
+column playthrough_due_endings.quest_outcome_id integer not null pk=0
+column playthrough_due_endings.updated_at datetime(6) not null pk=0
 column playthrough_endings.created_at datetime(6) not null pk=0
 column playthrough_endings.id integer not null pk=1
 column playthrough_endings.playthrough_id integer not null pk=0
@@ -471,6 +478,8 @@ foreign key playthrough_commands.result_scene_id -> scenes.id on update NO ACTIO
 foreign key playthrough_drifts.location_id -> locations.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_drifts.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_drifts.scene_id -> scenes.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_due_endings.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
+foreign key playthrough_due_endings.quest_outcome_id -> quest_outcomes.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_endings.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_endings.quest_outcome_id -> quest_outcomes.id on update NO ACTION on delete NO ACTION
 foreign key playthrough_feedbacks.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION
@@ -574,6 +583,8 @@ index playthrough_drifts (location_id)
 index playthrough_drifts (playthrough_id)
 index playthrough_drifts (playthrough_id, story_timestamp)
 index playthrough_drifts (scene_id)
+index playthrough_due_endings (playthrough_id) unique
+index playthrough_due_endings (quest_outcome_id)
 index playthrough_endings (playthrough_id)
 index playthrough_endings (playthrough_id, quest_outcome_id) unique
 index playthrough_endings (quest_outcome_id)

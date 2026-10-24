@@ -372,9 +372,82 @@
       }
     },
     {
-      "step": "step 6 first-the-cell-and-the-end",
+      "step": "step 6 first-the-cell",
       "player": "first",
       "typed": "/move the dry cell",
+      "dump": {
+        "location": {
+          "id": 1000000014,
+          "name": "the dry cell",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000013,
+            "name": "Blackfang Warren room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000015,
+            "name": "Blackfang Warren room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000014,
+            "name": "prince's signet ring"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000004,
+            "name": "Prince Aurel Durn"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 8,
+        "hp_of": {
+          "Prince Aurel Durn": 6
+        },
+        "abilities": {
+          "strength": 13,
+          "dexterity": 7,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> the dry cell",
+        "resolved_by": "grammar",
+        "note": "first-cell: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 first-the-end",
+      "player": "first",
+      "typed": "/end",
       "dump": {
         "location": {
           "id": 1000000014,
@@ -425,7 +498,7 @@
         "offers": null,
         "understood": null,
         "resolved_by": null,
-        "note": "first-cell: completed",
+        "note": "first-end: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -440,12 +513,12 @@
         "ending_words": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 1.0,
+        "elapsed_minutes": 0.0,
         "shown": null
       }
     },
     {
-      "step": "step 7 second-the-ring (second)",
+      "step": "step 8 second-the-ring (second)",
       "player": "second",
       "typed": "take the signet ring",
       "dump": {
@@ -516,7 +589,7 @@
       }
     },
     {
-      "step": "step 8 second-down-into-the-maw (second)",
+      "step": "step 9 second-down-into-the-maw (second)",
       "player": "second",
       "typed": "go to the obsidian maw",
       "dump": {
@@ -597,7 +670,7 @@
       }
     },
     {
-      "step": "step 9 second-on-down-the-tunnel (second)",
+      "step": "step 10 second-on-down-the-tunnel (second)",
       "player": "second",
       "typed": "go to Blackfang Tunnel",
       "dump": {
@@ -677,7 +750,7 @@
       }
     },
     {
-      "step": "step 10 second-in-through-the-low-door (second)",
+      "step": "step 11 second-in-through-the-low-door (second)",
       "player": "second",
       "typed": "go to Blackfang Warren room 1",
       "dump": {
@@ -748,7 +821,7 @@
       }
     },
     {
-      "step": "step 11 second-past-the-guards (second)",
+      "step": "step 12 second-past-the-guards (second)",
       "player": "second",
       "typed": "go to Blackfang Warren room 2",
       "dump": {
@@ -814,9 +887,82 @@
       }
     },
     {
-      "step": "step 12 second-the-cell-and-the-end (second)",
+      "step": "step 13 second-the-cell (second)",
       "player": "second",
       "typed": "/move the dry cell",
+      "dump": {
+        "location": {
+          "id": 1000000014,
+          "name": "the dry cell",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000013,
+            "name": "Blackfang Warren room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000015,
+            "name": "Blackfang Warren room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000020,
+            "name": "prince's signet ring"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000004,
+            "name": "Prince Aurel Durn"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 8,
+        "hp_of": {
+          "Prince Aurel Durn": 6
+        },
+        "abilities": {
+          "strength": 13,
+          "dexterity": 7,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> the dry cell",
+        "resolved_by": "grammar",
+        "note": "second-cell: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 14 second-the-end (second)",
+      "player": "second",
+      "typed": "/end",
       "dump": {
         "location": {
           "id": 1000000014,
@@ -867,7 +1013,7 @@
         "offers": null,
         "understood": null,
         "resolved_by": null,
-        "note": "second-cell: completed",
+        "note": "second-end: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -882,7 +1028,7 @@
         "ending_words": "The prince is found alive in the dry cell, and the iron gate opens outward at last.",
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 1.0,
+        "elapsed_minutes": 0.0,
         "shown": null
       }
     }

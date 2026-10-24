@@ -125,6 +125,12 @@ steps:
       1: reached
       2: reached
       3: reached
+    ending: none
+    dead: false
+- id: and-the-player-ends-the-story
+  type: "/end"
+  expect:
+    changed: true
     ending: the-bearing-holds
     ending_words:
     - the survey has its fixed point at last

@@ -66,7 +66,7 @@ steps:
   expect:
     changed: true
     location: Blackfang Warren room 2 (stub)
-- id: the-first-game-finishes-the-story
+- id: the-first-game-meets-the-last-beat
   type: go to the dry cell
   expect:
     changed: true
@@ -77,6 +77,11 @@ steps:
       1: reached
       2: reached
       3: reached
+    dead: false
+- id: the-first-game-finishes-the-story
+  type: "/end"
+  expect:
+    changed: true
     dead: true
 - id: and-the-second-game-is-still-being-played
   type: go to the obsidian maw

@@ -479,6 +479,12 @@ impl<'s, 'm> Turn<'s, 'm> {
         if let Some(refusal) = ended {
             return Ok(Played::Refused(refusal));
         }
+        if grammar::ends(command) {
+            return self.end_story(command);
+        }
+        if self.m.ending_offered() {
+            self.commit("not_yet", |turn| turn.m.put_off_ending())?;
+        }
         self.commit("world_clock", |turn| turn.m.catch_up_world())?;
         self.commit("starting_room", |turn| {
             let here = turn.m.here();
@@ -1546,6 +1552,24 @@ impl<'s, 'm> Turn<'s, 'm> {
             )?;
             Ok(Told::plain(scene))
         })
+    }
+
+    /// `/end`: the story ends on the ending it fell due with, and the last
+    /// paragraph is told over it as on any ending; refused while none is due.
+    /// The line writes no scene of its own, so the ending is told over the
+    /// turn that met the last beat.
+    fn end_story(&mut self, command: &str) -> Result<Played, Error> {
+        let conclusion = self.commit("arc", |turn| {
+            turn.m.concluded = None;
+            turn.m.end_the_story()?;
+            Ok(turn.m.concluded)
+        })?;
+        let Some(concluded) = conclusion else {
+            let typed = grammar::unslashed(command);
+            return Ok(Played::Refused(Refusal::nothing_due(&typed)));
+        };
+        let told = self.remember("ending", |turn| turn.tell_ending(concluded))?;
+        Ok(Played::Scene(told))
     }
 
     /// `Scene::Ending#narrate!`: the last paragraph of the game, written by
