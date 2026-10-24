@@ -1224,6 +1224,64 @@ fn a_fixed_reading_stands_in_for_the_classifier_and_nothing_else() {
     );
 }
 
+/// A plain take asks no narrator, but the same take on a fixed reading does:
+/// a bench plays a fixed reading to measure the narrator's request.
+#[test]
+fn a_fixed_reading_take_is_narrated_where_a_plain_take_is_not() {
+    use renderedstep_engine::model::{Replay, Reply};
+    use renderedstep_engine::turn::Fixed;
+    // Maren made peaceable, so no foe strikes back and the take is plain.
+    let peaceable = || {
+        let mut engine = open_world(&format!(
+            "{}UPDATE characters SET hostile = 0;",
+            world("a-turn-at-the-gate")
+        ))
+        .unwrap();
+        let story = engine
+            .story_titled(&format!("A Turn at the Gate{TITLE_SUFFIX}"))
+            .unwrap();
+        let playthrough = engine.start(story).unwrap();
+        (engine, playthrough)
+    };
+    let (mut plain, playthrough) = peaceable();
+    let mut replay = Replay::new(Vec::new());
+    plain
+        .submit(
+            playthrough,
+            "/take red coin",
+            "plain",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert!(replay.calls().is_empty(), "a plain take asks nobody");
+
+    let (mut benched, playthrough) = peaceable();
+    let reply = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![reply]);
+    let fixed = Fixed {
+        action: "take".into(),
+        target: Some("red coin".into()),
+    };
+    benched
+        .submit_fixed(
+            playthrough,
+            "/take red coin",
+            "fixed",
+            &fixed,
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert_eq!(replay.calls(), ["narration"]);
+}
+
 /// A free-typed line read through the local reader, in a whole turn: a throw
 /// is asked nothing and pointed at `/throw`; a down reader refuses the line
 /// and points at the slash menu; an unsure reading is played as read, so a

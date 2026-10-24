@@ -959,9 +959,11 @@ impl<'s, 'm> Turn<'s, 'm> {
             return self.saved("narrated").map(Option::flatten);
         }
         // A plain take is told in the engine's own sentence, with no
-        // narrator asked: there is nothing else on the turn to tell.
+        // narrator asked: there is nothing else on the turn to tell. A turn
+        // played on a fixed reading is a bench measuring the narrator's
+        // request, so it is always asked.
         self.speak_up(None)?;
-        if !self.m.game().player_narrates() && self.plain() {
+        if self.fixed.is_none() && !self.m.game().player_narrates() && self.plain() {
             return self.tell_in_engine_words(&words, Some(&fact)).map(Some);
         }
         self.narrate(
