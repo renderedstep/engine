@@ -950,3 +950,46 @@ fn each_volition_call_is_filed_under_its_own_purpose() {
         ["volition_reactions"]
     );
 }
+
+#[test]
+fn an_ending_is_told_the_fact_of_the_turn_that_reached_it_unless_that_turn_was_a_move() {
+    use renderedstep_engine::narration;
+    use renderedstep_engine::playthrough::Game;
+    use renderedstep_engine::records::text;
+
+    let mut engine = open_world(&world("the-iron-gate-descends")).unwrap();
+    let game = at_the_cell(&mut engine);
+    let (_, turn) = into_the_cell(&mut engine, game, json!({ "content": "The gate opens." }));
+    let paragraph = "You push open the dry cell and find the prince alive.";
+    let fact = "ON THIS TURN the dry cell was opened.";
+
+    let told = |engine: &Engine, action: &str, fact: Option<&str>| {
+        engine
+            .store()
+            .connection()
+            .execute(
+                "UPDATE scenes SET resolved_action = ?1, engine_fact = ?2 WHERE id = ?3",
+                rusqlite::params![action, fact, turn],
+            )
+            .unwrap();
+        let records = engine.store().load().unwrap();
+        let outcome = records
+            .first("quest_outcomes", |row| text(row, "name") == Some("rescued"))
+            .unwrap();
+        narration::ending_call(Game::new(&records, game), outcome).user
+    };
+
+    for (action, stored, expected) in [
+        ("take", Some(fact), fact),
+        ("examine", Some(fact), fact),
+        ("move", Some(fact), paragraph),
+        ("take", None, paragraph),
+        ("other", Some("  "), paragraph),
+    ] {
+        let prompt = told(&engine, action, stored);
+        assert!(
+            prompt.contains(&format!("What just happened: {expected}\n")),
+            "{action}, {stored:?}: {prompt}"
+        );
+    }
+}
