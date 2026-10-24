@@ -328,7 +328,10 @@ impl<'a> Moment<'a> {
             }
         ));
         if let Some(previous) = self.what_just_happened() {
-            parts.push(format!("What just happened: {}", self.told(previous)));
+            parts.push(format!(
+                "What just happened: {}",
+                self.just_happened(previous)
+            ));
         }
         if let Some(recap) = self.recap() {
             parts.push(format!("Earlier, in order:\n{recap}"));
@@ -639,6 +642,18 @@ impl<'a> Moment<'a> {
             }
         }
         string(scene, "description")
+    }
+
+    /// What the request is told just happened. The ending is told the
+    /// concluding turn's fact rather than its paragraph, unless that turn
+    /// was a move, whose fact is a list of the room, or stated none.
+    fn just_happened(&self, scene: &'a Row) -> &'a str {
+        if self.ending.is_some() && text(scene, "resolved_action") != Some("move") {
+            if let Some(fact) = presence(text(scene, "engine_fact")) {
+                return fact;
+            }
+        }
+        self.told(scene)
     }
 
     fn what_just_happened(&self) -> Option<&'a Row> {
