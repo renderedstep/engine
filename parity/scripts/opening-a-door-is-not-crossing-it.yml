@@ -17,7 +17,6 @@ steps:
   type: "/take brass key"
   browser:
     token: key
-    fail: narration
   expect:
     location: Workshop (realized)
     carrying:

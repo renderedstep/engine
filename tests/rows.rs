@@ -419,17 +419,15 @@ fn a_blank_paragraph_with_no_words_of_the_engines_to_fall_back_on_fails_the_line
 #[test]
 fn taking_a_readable_thing_with_no_words_on_record_asks_for_none_and_quotes_none() {
     let (mut engine, game) = started("a-bell-nobody-has-rung", "A Bell Nobody Has Rung", "");
-    let submitted = submit(
-        &mut engine,
-        game,
-        "/take sealed letter",
-        "take",
-        &[json!({
-            "purpose": "narration",
-            "content": "You tuck the letter into your coat.",
-            "prompt_excludes": ["word for word"],
-        })],
+    // A plain take asks no narrator, so the fact it keeps is what is read.
+    let submitted = submit(&mut engine, game, "/take sealed letter", "take", &[]);
+    let scene = submitted.turned.scene.expect("a scene");
+    let fact: String = column(
+        &engine,
+        "SELECT engine_fact FROM scenes WHERE id = ?1",
+        scene,
     );
+    assert!(!fact.contains("word for word"), "{fact}");
     assert!(submitted
         .state
         .carrying
@@ -949,4 +947,49 @@ fn each_volition_call_is_filed_under_its_own_purpose() {
         ),
         ["volition_reactions"]
     );
+}
+
+#[test]
+fn a_plain_take_is_the_engines_own_sentence_and_asks_no_narrator() {
+    let (mut engine, game) = started(
+        "the-unrecorded-hour",
+        "The Unrecorded Hour",
+        "UPDATE items SET name = 'Perrin''s ward stamp' WHERE name = 'ward stamp';",
+    );
+    let submitted = submit(&mut engine, game, "/take ward stamp", "take", &[]);
+    let scene = submitted.turned.scene.expect("a scene");
+    let words: String = column(
+        &engine,
+        "SELECT description FROM scenes WHERE id = ?1",
+        scene,
+    );
+    assert_eq!(words, "You pick up Perrin's ward stamp.");
+    let fallback: bool = column(
+        &engine,
+        "SELECT engine_fallback FROM scenes WHERE id = ?1",
+        scene,
+    );
+    assert!(!fallback, "nothing failed");
+    let fact: String = column(
+        &engine,
+        "SELECT engine_fact FROM scenes WHERE id = ?1",
+        scene,
+    );
+    assert!(fact.contains("picked the Perrin's ward stamp up"), "{fact}");
+}
+
+#[test]
+fn a_take_that_reaches_a_step_of_the_arc_is_narrated() {
+    let (mut engine, game) = started("the-unrecorded-hour", "The Unrecorded Hour", "");
+    engine
+        .play(game, "go to the Supply Closet", &mut |_| {})
+        .unwrap();
+    let submitted = submit(
+        &mut engine,
+        game,
+        "/take Perrin's private index",
+        "take",
+        &[json!({ "purpose": "narration", "content": "You take the index." })],
+    );
+    assert!(submitted.turned.scene.is_some());
 }

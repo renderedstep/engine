@@ -13,6 +13,7 @@
 
 use super::{Concluded, Mechanics};
 use crate::arrival::Arrival;
+use crate::cascade::{Leave, ENGINE_LEAVE};
 use crate::command::{self, Journal, Produced};
 use crate::data;
 use crate::dialogue::sanitize;
@@ -528,6 +529,15 @@ impl<'s, 'm> Turn<'s, 'm> {
 
         let refusal = self.commit("refusal", |turn| {
             let room = turn.m.room();
+            if resolved_by == ENGINE_LEAVE {
+                let leaving = Grammar::new(&room).leaving(&typed).and_then(|leave| {
+                    let here = room.here.as_ref().map_or("", |place| place.name.as_str());
+                    Refusal::leaving(&leave, &typed, here, &room.exits_here())
+                });
+                if leaving.is_some() {
+                    return Ok(leaving);
+                }
+            }
             Ok(turn.m.refusal_for(&intent, &typed, &room))
         })?;
         if let Some(refusal) = refusal {
@@ -662,14 +672,28 @@ impl<'s, 'm> Turn<'s, 'm> {
             return Ok((Intent::new("examine"), "grammar".into()));
         }
         let room = self.m.room();
-        let reading = Grammar::new(&room).reading_first(command);
-        if let Some(reading) = reading {
+        let grammar = Grammar::new(&room);
+        if let Some(reading) = grammar.reading_first(command) {
             if reading.resolved() || reading.intent.as_ref().is_some_and(|i| i.action == "use") {
                 return Ok((
                     reading.intent.expect("a resolved reading"),
                     "grammar".into(),
                 ));
             }
+        }
+        // A line that only leaves the room it is said in is the engine's:
+        // the one way out is walked, and anything else is refused with the
+        // words for it (`Refusal::leaving`) at the turn's refusal step.
+        if let Some(leave) = grammar.leaving(command) {
+            let destination = match leave {
+                Leave::Through(way) => Some(way),
+                _ => None,
+            };
+            let intent = Intent {
+                destination,
+                ..Intent::new("move")
+            };
+            return Ok((intent, ENGINE_LEAVE.into()));
         }
         self.classify(&grammar::unslashed(command))
     }
@@ -930,6 +954,16 @@ impl<'s, 'm> Turn<'s, 'm> {
         let taker = self.m.player();
         self.commit("take", |turn| turn.m.take(item, None).map(|_| ()))?;
         let fact = facts::taken(&row, taker.as_ref(), from.as_ref());
+        let words = format!("You pick up {}.", facts::own_name(&row));
+        if self.done("narrated") {
+            return self.saved("narrated").map(Option::flatten);
+        }
+        // A plain take is told in the engine's own sentence, with no
+        // narrator asked: there is nothing else on the turn to tell.
+        self.speak_up(None)?;
+        if !self.m.game().player_narrates() && self.plain() {
+            return self.tell_in_engine_words(&words, Some(&fact)).map(Some);
+        }
         self.narrate(
             command,
             Some(fact),
@@ -938,8 +972,29 @@ impl<'s, 'm> Turn<'s, 'm> {
                 item,
                 direction: Direction::Taken,
             }),
-            Some(format!("You pick up {}.", definite_name(&row))),
+            Some(words),
         )
+    }
+
+    /// Whether the paragraph about to be asked for would tell the act alone:
+    /// nobody spoke up, no blow, toll or act of somebody else's waits to be
+    /// told, no foe here strikes back, and no step of an arc is reached.
+    fn plain(&self) -> bool {
+        let game = self.m.game();
+        let untold = |table: &str, told: fn(&Row) -> bool| {
+            game.own(table)
+                .into_iter()
+                .any(|row| int(row, "scene_id").is_none() && told(row))
+        };
+        let here = self.m.here();
+        self.m.spoke.is_empty()
+            && !untold("playthrough_blows", |_| true)
+            && !untold("playthrough_tolls", |_| true)
+            && !untold("playthrough_volitions", |row| {
+                text(row, "status") == Some("applied")
+            })
+            && game.foes_in(here.as_ref()).is_empty()
+            && !self.m.arc_step_due(ACTION_SECONDS)
     }
 
     fn drop_item(&mut self, item: i64, command: &str) -> Result<Option<Told>, Error> {

@@ -1,0 +1,65 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: a-plain-take-asks-no-narrator
+  type: "/take ward stamp"
+  browser:
+    token: take-the-stamp
+  expect:
+    changed: true
+    refused: false
+    understood: take -> ward stamp
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: a-take-of-what-is-carried-says-so
+  type: Pick up the daybook
+  browser:
+    token: take-the-daybook
+    replies:
+    - purpose: local_classifier
+      content:
+        intent: take
+        target_take: nothing
+        named_more_than_one: 0
+        target_present: 0.02
+  expect:
+    changed: false
+    refused: true
+    offers:
+    - You are already carrying the Ward Office 12 daybook.
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: a-name-that-matches-nothing-carried-lists-what-is
+  type: Pick up the day book
+  browser:
+    token: take-the-day-book
+    replies:
+    - purpose: local_classifier
+      content:
+        intent: take
+        target_take: nothing
+        named_more_than_one: 0
+        target_present: 0.02
+  expect:
+    changed: false
+    refused: true
+    offers:
+    - 'That did not resolve to anything lying here. Lying here: '
+    - 'You are already carrying: Ward Office 12 daybook, ward stamp.'
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+- id: a-take-with-something-else-to-tell-is-narrated
+  type: "/take blank closure writ"
+  browser:
+    token: take-the-writ
+    fail: narration
+  expect:
+    changed: true
+    refused: false
+    carrying:
+    - Ward Office 12 daybook
+    - ward stamp
+    - blank closure writ

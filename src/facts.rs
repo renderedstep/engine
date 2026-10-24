@@ -16,6 +16,11 @@ pub fn definite_name(item: &Row) -> String {
     crate::moment::definite_name(string(item, "name"))
 }
 
+/// What the engine's own sentence calls it ([`crate::moment::own_name`]).
+pub fn own_name(item: &Row) -> String {
+    crate::moment::own_name(string(item, "name"))
+}
+
 /// `Item#bare_name`: the name without an article it arrived with.
 pub fn bare_name(item: &Row) -> String {
     let definite = definite_name(item);

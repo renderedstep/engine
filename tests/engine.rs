@@ -1113,20 +1113,21 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         .unwrap();
     let untold = "SELECT COUNT(*) FROM playthrough_volitions WHERE scene_id IS NULL";
     let spoken = "SELECT COUNT(*) FROM playthrough_volitions WHERE chosen LIKE 'speak:%'";
-    let play = |engine: &mut Engine, line: &str, token: &str, reply: serde_json::Value| {
-        let mut replay = Replay::new(vec![Reply::from_value(&reply).unwrap()]);
+    let play = |engine: &mut Engine, line: &str, token: &str, replies: Vec<serde_json::Value>| {
+        let replies = replies
+            .iter()
+            .map(|reply| Reply::from_value(reply).unwrap())
+            .collect();
+        let mut replay = Replay::new(replies);
         engine
             .submit(playthrough, line, token, &mut replay, &mut |_| {})
             .unwrap();
         replay.finish().unwrap();
     };
 
-    play(
-        &mut engine,
-        "/take quarter receipt",
-        "take",
-        serde_json::json!({"purpose": "narration", "content": "You take the receipt."}),
-    );
+    // Nothing else happened before the take, so it is told in the engine's
+    // own sentence and no narrator is asked.
+    play(&mut engine, "/take quarter receipt", "take", Vec::new());
     assert_eq!(count(&engine, spoken), 0, "the clerk says nothing");
     assert_eq!(count(&engine, untold), 1, "the clerk acts after the take");
 
@@ -1134,7 +1135,7 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         &mut engine,
         "/drop quarter receipt",
         "drop",
-        serde_json::json!({"purpose": "narration", "unavailable": true}),
+        vec![serde_json::json!({"purpose": "narration", "unavailable": true})],
     );
     assert_eq!(
         count(
