@@ -109,4 +109,10 @@ verbs:
   # a model's list. Not `pull`: "pull the door shut" is no break.
   break: break
   snap: break
+  # TAKING THE ENDING THE STORY HAS FALLEN DUE WITH. The line that meets the
+  # main arc's last beat decides the outcome and keeps it as due; `end` is the
+  # player saying to end the story there, and nothing else ends it. It takes
+  # no name, and it is read only behind a slash wherever a model reads the
+  # rest, so "end this" said to somebody is still prose.
+  end: end
   help: help

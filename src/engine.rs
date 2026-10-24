@@ -482,6 +482,16 @@ impl Engine {
         })
     }
 
+    /// "Not yet": the player put off the ending the story offered
+    /// ([`crate::glance::EndingOffer`]), so it is not offered again; `/end`
+    /// still ends the story on it. Writes nothing while none is offered.
+    pub fn put_off_ending(&mut self, playthrough: i64) -> Result<(), Error> {
+        let store = &self.store;
+        transaction(store, || {
+            Mechanics::new(store, playthrough)?.put_off_ending()
+        })
+    }
+
     /// Accepts a line into a game's submission queue without playing it,
     /// as a browser does for a line typed while a turn is still running.
     pub fn accept(&mut self, playthrough: i64, line: &str, token: &str) -> Result<(), Error> {

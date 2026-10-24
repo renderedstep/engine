@@ -70,6 +70,9 @@ pub fn empty(action: &str) -> Option<&'static str> {
 
 const NOTHING_MATCHED: &str = "That resolved to nothing.";
 
+/// What `/end` says before the story has met everything it asked for.
+pub const NOTHING_DUE: &str = "The story cannot end here yet: it is still asking for something.";
+
 fn no_protagonist(action: &str) -> Option<&'static str> {
     match action {
         "take" => Some("There is nobody here to pick anything up"),
@@ -252,6 +255,11 @@ impl Refusal {
             }
         }
         None
+    }
+
+    /// `/end` typed while the story has no ending due.
+    pub fn nothing_due(typed: &str) -> Refusal {
+        Refusal::of("unplayable", typed, NOTHING_DUE.to_string(), None)
     }
 
     /// A line typed after the player died.

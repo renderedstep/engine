@@ -86,7 +86,7 @@ steps:
     - Blackfang Warren room 1 (stub)
     - the dry cell (realized)
     present: []
-- id: reach-the-prince-and-end-the-story
+- id: reach-the-prince
   type: go to the dry cell
   expect:
     changed: true
@@ -102,6 +102,13 @@ steps:
       1: reached
       2: reached
       3: reached
+    dead: false
+    note: 'the story can end here (/end): The prince is found alive in the dry cell'
+- id: and-end-the-story
+  type: "/end"
+  expect:
+    changed: true
+    location: the dry cell (realized)
     dead: true
     note: 'the story is over: The prince is found alive in the dry cell'
 - id: and-the-story-stays-over

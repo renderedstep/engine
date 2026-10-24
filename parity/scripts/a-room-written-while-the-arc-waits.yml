@@ -76,7 +76,7 @@ steps:
     quest:
       1: reached
       2: reached
-- id: up-the-tower-and-the-end-of-the-story
+- id: up-the-tower
   type: "/move the Bell Tower"
   browser:
     token: tower
@@ -93,6 +93,20 @@ steps:
       content:
         description: You climb the tower stair to the bell rope.
         summary: Ilse reaches the Bell Tower.
+  expect:
+    location: the Bell Tower (realized)
+    quest:
+      1: reached
+      2: reached
+      3: reached
+    ending: none
+    dead: false
+    note: completed
+- id: and-the-player-ends-the-story
+  type: "/end"
+  browser:
+    token: end
+    replies:
     - purpose: ending
       content: You haul on the rope, and the bell rings out over the valley for the
         first time in a generation.

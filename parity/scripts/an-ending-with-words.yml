@@ -44,7 +44,7 @@ steps:
   expect:
     changed: true
     location: Blackfang Warren room 2 (stub)
-- id: the-cell-and-the-end-of-the-story
+- id: the-cell-and-the-last-beat
   type: go to the dry cell
   expect:
     changed: true
@@ -55,6 +55,13 @@ steps:
       1: reached
       2: reached
       3: reached
+    ending: none
+    ending_words: []
+    dead: false
+- id: and-the-player-ends-the-story
+  type: "/end"
+  expect:
+    changed: true
     ending: rescued
     ending_words:
     - The prince is found alive in the dry cell

@@ -222,9 +222,70 @@
       }
     },
     {
-      "step": "step 4 up-the-tower-and-the-end-of-the-story",
+      "step": "step 4 up-the-tower",
       "player": "first",
       "typed": "/move the Bell Tower",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "the Bell Tower",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "Lower Cloister",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000006,
+            "name": "brass censer"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 28,
+        "hp_of": {},
+        "abilities": {
+          "strength": 11,
+          "dexterity": 12,
+          "will": 13
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> the Bell Tower",
+        "resolved_by": "grammar",
+        "note": "tower: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 and-the-player-ends-the-story",
+      "player": "first",
+      "typed": "/end",
       "dump": {
         "location": {
           "id": 1000000004,
@@ -263,7 +324,7 @@
         "offers": null,
         "understood": null,
         "resolved_by": null,
-        "note": "tower: completed",
+        "note": "end: completed",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -278,7 +339,7 @@
         "ending_words": "You haul on the rope, and the bell rings out over the valley for the first time in a generation.",
         "scheduled": 0,
         "fired": 0,
-        "elapsed_minutes": 1.0,
+        "elapsed_minutes": 0.0,
         "shown": null
       }
     }

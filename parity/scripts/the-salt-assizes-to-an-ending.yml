@@ -47,6 +47,12 @@ steps:
       1: reached
       2: reached
       3: reached
+    ending: none
+    dead: false
+- id: and-the-player-ends-the-story
+  type: "/end"
+  expect:
+    changed: true
     ending: the-court-rises-true
     ending_words:
     - You ring the court up on the water's own figure

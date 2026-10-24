@@ -811,14 +811,85 @@
           "dexterity": 7,
           "will": 10
         },
-        "dead": true,
+        "dead": false,
         "changed": true,
         "change": "took: prince's signet ring (was lying in Iron Gate Chamber, now carried by Veythra the Silent)",
         "refused": false,
         "offers": null,
         "understood": "take -> prince's signet ring",
         "resolved_by": "grammar",
-        "note": "the story: Take the signet ring that proves he came this way.\nthe story is over: The cell is opened and the prince is already cold; the decree is answered, and not the way anybody wanted.",
+        "note": "the story: Take the signet ring that proves he came this way.\nthe story can end here (/end): The cell is opened and the prince is already cold; the decree is answered, and not the way anybody wanted.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 13 and-the-player-ends-it-there",
+      "player": "first",
+      "typed": "/end",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "Iron Gate Chamber",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "obsidian maw",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000002,
+            "name": "tunnel upward",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "iron key"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000014,
+            "name": "prince's signet ring"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 8,
+        "hp_of": {},
+        "abilities": {
+          "strength": 13,
+          "dexterity": 7,
+          "will": 10
+        },
+        "dead": true,
+        "changed": true,
+        "change": "ended the story",
+        "refused": false,
+        "offers": null,
+        "understood": "end -> the story",
+        "resolved_by": "grammar",
+        "note": "the story is over: The cell is opened and the prince is already cold; the decree is answered, and not the way anybody wanted.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,

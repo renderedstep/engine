@@ -163,6 +163,43 @@ impl Verb {
     }
 }
 
+/// The question a front end asks once every goal of the story is met:
+/// whether to end it there. Its answers are `/end` and "Not yet"
+/// ([`crate::engine::Engine::put_off_ending`]); any other line is "Not yet"
+/// too.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct EndingOffer {
+    /// "You have done everything <the arc> asked for:".
+    pub heading: String,
+    /// What the story asked for, beat by beat in order.
+    pub goals: Vec<String>,
+    pub question: String,
+    /// The answer that ends the story, and the line it plays.
+    pub end: String,
+    pub end_line: String,
+    pub not_yet: String,
+}
+
+pub const ENDING_QUESTION: &str = "End the story here?";
+pub const END_THE_STORY: &str = "End the story";
+pub const NOT_YET: &str = "Not yet";
+
+impl EndingOffer {
+    fn of(arc: &Row, goals: Vec<String>) -> EndingOffer {
+        EndingOffer {
+            heading: format!(
+                "You have done everything {} asked for:",
+                string(arc, "title")
+            ),
+            goals,
+            question: ENDING_QUESTION.to_string(),
+            end: END_THE_STORY.to_string(),
+            end_line: "/end".to_string(),
+            not_yet: NOT_YET.to_string(),
+        }
+    }
+}
+
 /// Everything a front end reads between turns.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Glance {
@@ -186,6 +223,12 @@ pub struct Glance {
     pub next_beat: Option<String>,
     /// Story time now, in seconds since the epoch.
     pub story_time: Option<i64>,
+    /// Every goal is met and the ending decided: `/end` ends the story on
+    /// it, whether or not it is still offered.
+    pub ending_due: bool,
+    /// The question to ask while the ending is due and the player has
+    /// neither taken it nor played on past it; asked once.
+    pub ending_offer: Option<EndingOffer>,
     pub over: bool,
     /// Why the game stopped, for a game that has.
     pub ended: Option<String>,
@@ -311,6 +354,8 @@ impl Glance {
             sheet: player.map(sheet).unwrap_or_default(),
             next_beat: crate::moment::Moment::new(game).next_beat(),
             story_time: game.story_time(),
+            ending_due: !over && mechanics.due_ending().is_some(),
+            ending_offer: ending_offer(mechanics, &game),
             over,
             ended: over.then(|| over_refusal(&game).fact),
             verbs: verbs(mechanics, &room, &game),
@@ -320,6 +365,23 @@ impl Glance {
             waiting: crate::narrates::waiting(records, mechanics.playthrough()),
         }
     }
+}
+
+/// The question a due ending asks, while it is still offered.
+fn ending_offer(mechanics: &Mechanics, game: &Game) -> Option<EndingOffer> {
+    if !mechanics.ending_offered() {
+        return None;
+    }
+    let due = mechanics.due_ending()?;
+    let outcome = game
+        .records
+        .find("quest_outcomes", int(&due, "quest_outcome_id")?)?;
+    let arc = game.records.find("quests", int(outcome, "quest_id")?)?;
+    let goals = crate::outcome::steps(game.records, arc)
+        .into_iter()
+        .map(|step| string(step, "summary").to_string())
+        .collect();
+    Some(EndingOffer::of(arc, goals))
 }
 
 /// `Location#containing_place`: the parent of a room that has been placed.
