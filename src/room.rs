@@ -110,6 +110,12 @@ impl Thing {
     pub fn definite_name(&self) -> String {
         format!("the {}", self.bare_name())
     }
+
+    /// What a sentence in the engine's own words calls it
+    /// ([`crate::moment::own_name`]).
+    pub fn own_name(&self) -> String {
+        crate::moment::own_name(&self.name)
+    }
 }
 
 /// `\A(?:a|an|the)\s+(?=\S)`, case-insensitive: an article, spaces, and

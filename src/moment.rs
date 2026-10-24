@@ -774,6 +774,26 @@ pub fn definite_name(name: &str) -> String {
     format!("the {name}")
 }
 
+/// What a sentence in the engine's own words calls a thing: its
+/// [`definite_name`], but a name that opens with somebody's own name in the
+/// possessive ("Perrin's private index") is definite already and takes no
+/// "the". A common noun's keeps it: "the clerk's ledger".
+pub fn own_name(name: &str) -> String {
+    let definite = definite_name(name);
+    let bare = &definite["the ".len()..];
+    let possessive = bare.split_whitespace().next().is_some_and(|word| {
+        word.starts_with(char::is_uppercase)
+            && ["'s", "\u{2019}s", "s'", "s\u{2019}"]
+                .iter()
+                .any(|ending| word.len() > ending.len() && word.ends_with(ending))
+    });
+    if possessive {
+        bare.to_string()
+    } else {
+        definite
+    }
+}
+
 /// `strftime("%-l %P")` in UTC: the hour on a twelve-hour clock and "am" or
 /// "pm".
 pub fn time_of_day(at: i64) -> String {

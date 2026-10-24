@@ -27,7 +27,6 @@ steps:
   type: "/take healing draught"
   browser:
     token: pickup
-    fail: narration
   expect:
     carrying:
     - healing draught

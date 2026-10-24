@@ -8,6 +8,7 @@
 //! game with no model to fall back on. It never guesses: an ambiguous name,
 //! an unknown verb and a name that lands on nothing are refusals.
 
+use crate::cascade::{self, Leave, HERE_WORDS};
 use crate::data;
 use crate::intent::Intent;
 use crate::room::{Choice, Record, Room};
@@ -622,6 +623,9 @@ impl<'a> Grammar<'a> {
         }
         let found = self.resolve(&here, argument);
         if !found.found() {
+            if let Some(held) = self.resolve(&self.room.items_carried(), argument).record {
+                return Reading::refused(crate::refusal::already_carrying(&held));
+            }
             return Reading::refused(cannot_find("thing lying here", argument, &found, &here));
         }
         intent_reading(Intent {
@@ -768,6 +772,46 @@ impl<'a> Grammar<'a> {
         intent_reading(Intent {
             item: found.record,
             ..Intent::new("examine")
+        })
+    }
+
+    /// The thing the player carries that a line's name lands on, read past
+    /// its verb the way [`Grammar::parse`] reads it: what a take that found
+    /// nothing lying here was most likely reaching for.
+    pub fn carried_named(&self, command: &str) -> Option<Record> {
+        let text = normalize_line(&unslashed(command));
+        let argument = match self.verb_for(&text) {
+            Some(verb) => ruby_strip(chars_after(&text, verb.chars().count())).to_string(),
+            None => text,
+        };
+        self.resolve(&self.room.items_carried(), &argument).record
+    }
+
+    /// What a line that opens by leaving ([`cascade::leaving`]) comes to in
+    /// this room, or `None` where it names something other than the room
+    /// the player stands in, which is the reader's to read. A line opening
+    /// with `leave` that also names a thing the player carries could be
+    /// either act, so it is [`Leave::Either`].
+    pub fn leaving(&self, command: &str) -> Option<Leave> {
+        let leaving = cascade::leaving(command)?;
+        let here = Record::Place(self.room.here.clone()?);
+        let rest = leaving.rest.as_str();
+        let names_here = rest.is_empty()
+            || HERE_WORDS.contains(&rest)
+            || self.resolve(std::slice::from_ref(&here), rest).found();
+        if !names_here {
+            return None;
+        }
+        if leaving.leave {
+            if let Some(thing) = self.resolve(&self.room.items_carried(), rest).record {
+                return Some(Leave::Either(thing));
+            }
+        }
+        let mut exits = self.room.exits_here();
+        Some(match exits.len() {
+            0 => Leave::Nowhere,
+            1 => Leave::Through(exits.remove(0)),
+            _ => Leave::Which,
         })
     }
 

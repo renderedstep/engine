@@ -568,7 +568,14 @@ impl<'s> Mechanics<'s> {
         room: &Room,
     ) -> Option<Refusal> {
         if intent.refused() {
-            return Refusal::for_intent(intent, command, &room.offered_for(&intent.action));
+            let named = crate::grammar::Grammar::new(room).carried_named(command);
+            return Refusal::for_intent(
+                intent,
+                command,
+                &room.offered_for(&intent.action),
+                &room.items_carried(),
+                named.as_ref(),
+            );
         }
         let destination = match (&intent.destination, &intent.at) {
             (Some(Record::Place(place)), _) => Some(place.id),
@@ -3128,6 +3135,30 @@ impl<'s> Mechanics<'s> {
                 .any(|item| int(item, "template_id") == Some(target)),
             _ => false,
         }
+    }
+
+    /// Whether the arc would reach a step if it ran now, `later` seconds on
+    /// in the story: a turn that reaches one is more than its act.
+    pub(crate) fn arc_step_due(&self, later: i64) -> bool {
+        let reached = self.reached_steps();
+        self.open_arcs().iter().any(|quest| {
+            outcome::steps(&self.records, quest)
+                .into_iter()
+                .any(|step| {
+                    if reached.contains(&id(step)) {
+                        return false;
+                    }
+                    if text(step, "trigger_kind") == Some("time_passed") {
+                        return match (self.start_time(), int(step, "minutes")) {
+                            (Some(start), Some(minutes)) => {
+                                self.story_now() + later >= start + minutes * 60
+                            }
+                            _ => false,
+                        };
+                    }
+                    self.beat_reached(step)
+                })
+        })
     }
 
     /// `Playthrough::Arc#run!`: the beats this line reached, by summary,

@@ -364,12 +364,9 @@ fn an_every_turn_toll_is_told_by_the_next_paragraph_and_claimed_by_it() {
     let (mut engine, game) = gate(&format!(
         "UPDATE locations SET hazard = 'airless', hazard_die = 4 WHERE id = {MARKET};"
     ));
-    let took = submit(
-        &mut engine,
-        game,
-        "/take red coin",
-        json!([narration(&[], &[THE_PLACE])]),
-    );
+    // Nothing waits to be told yet, so the take is told in the engine's own
+    // sentence and no narrator is asked.
+    let took = submit(&mut engine, game, "/take red coin", json!([]));
     assert!(took.turned.scene.is_some());
     let first = tolls(&engine);
     assert_eq!(first.len(), 1, "the line paid for standing there");

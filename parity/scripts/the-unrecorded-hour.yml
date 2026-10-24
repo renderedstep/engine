@@ -85,7 +85,7 @@ steps:
     refused: true
     changed: false
     offers:
-    - there is no thing lying here
+    - You are already carrying the copy-room apron.
     carrying:
     - Ward Office 12 daybook
     - copy-room apron

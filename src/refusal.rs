@@ -2,6 +2,7 @@
 //! it. A refused line does nothing: the player is answered in the engine's
 //! own words, built from records it already holds.
 
+use crate::cascade::Leave;
 use crate::intent::{Intent, Unread};
 use crate::playthrough::Ended;
 use crate::room::{Person, Record};
@@ -69,6 +70,9 @@ pub fn empty(action: &str) -> Option<&'static str> {
 }
 
 const NOTHING_MATCHED: &str = "That resolved to nothing.";
+
+/// A line that only leaves, in a room with more than one way out.
+const ONE_OF_SEVERAL: &str = "There is more than one way out of here, so that does not say which.";
 
 fn no_protagonist(action: &str) -> Option<&'static str> {
     match action {
@@ -158,8 +162,16 @@ impl Refusal {
     }
 
     /// The refusal a read line earns, or `None` when the engine can play it.
-    /// `offered` is the closed set the intent's action reads against.
-    pub fn for_intent(intent: &Intent, typed: &str, offered: &[Record]) -> Option<Refusal> {
+    /// `offered` is the closed set the intent's action reads against;
+    /// `carried` is what the player holds, and `named` the one of those the
+    /// line's name lands on: a take that found nothing lying here says so.
+    pub fn for_intent(
+        intent: &Intent,
+        typed: &str,
+        offered: &[Record],
+        carried: &[Record],
+        named: Option<&Record>,
+    ) -> Option<Refusal> {
         if intent.named_more_than_one() {
             let fact = format!(
                 "You asked for two things at once: {}, and {}. One line is one act -- \
@@ -170,16 +182,32 @@ impl Refusal {
             return Some(Refusal::of("named_more_than_one", typed, fact, None));
         }
         if intent.reached_for_nothing() {
+            let taking = intent.action == "take";
+            if let (true, Some(held)) = (taking, named) {
+                return Some(Refusal::of(
+                    "unresolved",
+                    typed,
+                    already_carrying(held),
+                    None,
+                ));
+            }
             let fact = if offered.is_empty() {
                 empty(&intent.action)
             } else {
                 missed(&intent.action)
             };
-            let offer = if offered.is_empty() {
+            let mut offer = if offered.is_empty() {
                 None
             } else {
                 offers(&intent.action).map(|template| template.replace("%s", &labels(offered)))
             };
+            if taking && !carried.is_empty() {
+                let held = format!("You are already carrying: {}.", labels(carried));
+                offer = Some(match offer {
+                    Some(lying) => format!("{lying} {held}"),
+                    None => held,
+                });
+            }
             return Some(Refusal::of(
                 "unresolved",
                 typed,
@@ -228,6 +256,25 @@ impl Refusal {
             return Some(Refusal::of("immovable", typed, fact, None));
         }
         None
+    }
+
+    /// What a line that only leaves the room the player stands in is told,
+    /// or `None` where the engine walks it through the one way out. `here`
+    /// is that room's name and `exits` its ways out.
+    pub fn leaving(leave: &Leave, typed: &str, here: &str, exits: &[Record]) -> Option<Refusal> {
+        let fact = match leave {
+            Leave::Through(_) => return None,
+            Leave::Nowhere => empty("move").unwrap_or(NOTHING_MATCHED).to_string(),
+            Leave::Which => ONE_OF_SEVERAL.to_string(),
+            Leave::Either(thing) => format!(
+                "That could mean leaving {here} or putting down {}.",
+                own_name(thing)
+            ),
+        };
+        let offer = (!exits.is_empty())
+            .then(|| offers("move").map(|template| template.replace("%s", &labels(exits))))
+            .flatten();
+        Some(Refusal::of("unresolved", typed, fact, offer))
     }
 
     /// The act this game cannot perform at all, or `None` when it can: a
@@ -298,6 +345,18 @@ impl Refusal {
     }
 }
 
+/// A take of a thing the player already holds.
+pub fn already_carrying(held: &Record) -> String {
+    format!("You are already carrying {}.", own_name(held))
+}
+
+fn own_name(record: &Record) -> String {
+    match record.thing() {
+        Some(thing) => thing.own_name(),
+        None => record.definite_name(),
+    }
+}
+
 fn phrase(action: &str, record: Option<&Record>) -> String {
     asked(action).replace("%s", &record.map(Record::label).unwrap_or_default())
 }
@@ -348,4 +407,74 @@ pub fn stopped_sentence(character: Option<&Person>) -> String {
         "{whose} stopped before it reached an ending, and this playthrough with it. Nothing \
          you type can change it. Start a new playthrough to play this world again."
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::room::Thing;
+
+    fn thing(id: i64, name: &str, carried: bool) -> Record {
+        Record::Thing(Thing::new(id, name, carried))
+    }
+
+    fn take(offered: &[Record], carried: &[Record], named: Option<&Record>) -> String {
+        Refusal::for_intent(&Intent::new("take"), "a line", offered, carried, named)
+            .expect("a take of nothing is refused")
+            .text()
+    }
+
+    #[test]
+    fn a_take_of_a_carried_thing_says_it_is_carried() {
+        let daybook = thing(1, "Ward Office 12 daybook", true);
+        let lying = [thing(2, "ward stamp", false)];
+        assert_eq!(
+            take(&lying, std::slice::from_ref(&daybook), Some(&daybook)),
+            "You are already carrying the Ward Office 12 daybook. Nothing has changed."
+        );
+    }
+
+    #[test]
+    fn a_take_that_names_nothing_carried_lists_what_is() {
+        let carried = [
+            thing(1, "Ward Office 12 daybook", true),
+            thing(3, "Perrin's private index", true),
+        ];
+        let lying = [
+            thing(2, "blank closure writ", false),
+            thing(4, "ward stamp", false),
+        ];
+        assert_eq!(
+            take(&lying, &carried, None),
+            "That did not resolve to anything lying here. Lying here: blank closure writ, \
+             ward stamp. You are already carrying: Ward Office 12 daybook, Perrin's private \
+             index. Nothing has changed."
+        );
+        assert_eq!(
+            take(&[], &carried[..1], None),
+            "There is nothing lying here to pick up. You are already carrying: Ward Office 12 \
+             daybook. Nothing has changed."
+        );
+        assert_eq!(
+            take(&lying[..1], &[], None),
+            "That did not resolve to anything lying here. Lying here: blank closure writ. \
+             Nothing has changed."
+        );
+    }
+
+    #[test]
+    fn a_name_with_its_owner_in_it_takes_no_article() {
+        assert_eq!(
+            already_carrying(&thing(3, "Perrin's private index", true)),
+            "You are already carrying Perrin's private index."
+        );
+        assert_eq!(
+            already_carrying(&thing(5, "the clerk's ledger", true)),
+            "You are already carrying the clerk's ledger."
+        );
+        assert_eq!(
+            already_carrying(&thing(6, "Ward Office 12 daybook", true)),
+            "You are already carrying the Ward Office 12 daybook."
+        );
+    }
 }
