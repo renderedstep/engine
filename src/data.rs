@@ -334,7 +334,36 @@ pub struct Physics {
     pub break_die: i64,
     pub height_step: Vec<(String, i64)>,
     pub surface: Vec<(String, i64)>,
+    pub carry: Carry,
 }
+
+/// `data/physics.yml`'s `carry`: what a body can hold, and where.
+#[derive(Debug)]
+pub struct Carry {
+    pub hands: i64,
+    pub hands_for: Vec<(String, i64)>,
+    pub weight: Vec<(String, i64)>,
+    pub load_divisor: i64,
+    pub size: Vec<(String, i64)>,
+    pub storage: Vec<(String, Storage)>,
+}
+
+/// One storage place: the bulks that fit in it and how much room it has.
+#[derive(Debug)]
+pub struct Storage {
+    pub fits: Vec<String>,
+    pub room: i64,
+}
+
+/// `carry`'s shape: every key, and nothing else.
+const CARRY_KEYS: &[&str] = &[
+    "hands",
+    "hands_for",
+    "weight",
+    "load_divisor",
+    "size",
+    "storage",
+];
 
 /// The file's shape: every top-level key, and nothing else.
 const PHYSICS_KEYS: &[&str] = &[
@@ -350,6 +379,7 @@ const PHYSICS_KEYS: &[&str] = &[
     "break_die",
     "height_step",
     "surface",
+    "carry",
 ];
 
 pub fn physics() -> &'static Physics {
@@ -408,6 +438,7 @@ fn read_physics(source: &str) -> Physics {
         break_die: number("break_die"),
         height_step: whole("height_step"),
         surface: whole("surface"),
+        carry: read_carry(&file["carry"]),
     };
     // A thing that moves strikes for a die and flies a range; one that does
     // not has neither.
@@ -433,7 +464,77 @@ fn read_physics(source: &str) -> Physics {
     {
         assert!(die > 0, "physics.yml: a die of {die} sides");
     }
+    // A thing that moves can be held; one that does not cannot.
+    let carry = &physics.carry;
+    for (key, table) in [
+        ("hands_for", &carry.hands_for),
+        ("weight", &carry.weight),
+        ("size", &carry.size),
+    ] {
+        assert_eq!(rows(table), moving, "physics.yml: carry.{key}");
+    }
+    for (place, storage) in &carry.storage {
+        for bulk in &storage.fits {
+            assert!(
+                moving.contains(&bulk.as_str()),
+                "physics.yml: carry.storage.{place} fits {bulk}, which does not move"
+            );
+        }
+    }
     physics
+}
+
+fn read_carry(file: &Yaml) -> Carry {
+    let keys: Vec<String> = file
+        .as_hash()
+        .expect("physics.yml: carry is not a map")
+        .keys()
+        .map(|key| string(key, "physics.yml: carry"))
+        .collect();
+    assert_eq!(keys, CARRY_KEYS, "physics.yml: carry's keys, in order");
+    let number = |value: &Yaml, what: &str| {
+        value
+            .as_i64()
+            .unwrap_or_else(|| panic!("physics.yml: carry.{what} is not a whole number"))
+    };
+    let whole = |key: &str| -> Vec<(String, i64)> {
+        file[key]
+            .as_hash()
+            .unwrap_or_else(|| panic!("physics.yml: carry.{key} is not a map"))
+            .iter()
+            .map(|(row, value)| {
+                let row = string(row, key);
+                let value = number(value, &format!("{key}.{row}"));
+                (row, value)
+            })
+            .collect()
+    };
+    let storage = file["storage"]
+        .as_hash()
+        .expect("physics.yml: carry.storage is not a map")
+        .iter()
+        .map(|(place, value)| {
+            let place = string(place, "carry.storage");
+            let fits = value["fits"]
+                .as_vec()
+                .unwrap_or_else(|| panic!("physics.yml: carry.storage.{place}.fits is not a list"))
+                .iter()
+                .map(|bulk| string(bulk, "carry.storage"))
+                .collect();
+            let room = number(&value["room"], &format!("storage.{place}.room"));
+            (place, Storage { fits, room })
+        })
+        .collect();
+    let carry = Carry {
+        hands: number(&file["hands"], "hands"),
+        hands_for: whole("hands_for"),
+        weight: whole("weight"),
+        load_divisor: number(&file["load_divisor"], "load_divisor"),
+        size: whole("size"),
+        storage,
+    };
+    assert!(carry.load_divisor > 0, "physics.yml: carry.load_divisor");
+    carry
 }
 
 /// A table's rows, without their values.
@@ -824,6 +925,43 @@ mod tests {
         assert_eq!(damage, [("light", 4), ("handy", 6), ("heavy", 8)]);
         assert_eq!(physics.fall_save, "dexterity");
         assert_eq!(physics.fragility[0], ("sturdy".to_string(), None));
+    }
+
+    #[test]
+    fn carry_loads_hands_weight_and_room_for_every_bulk_that_moves() {
+        let carry = &physics().carry;
+        assert_eq!(carry.hands, 2);
+        assert_eq!(carry.load_divisor, 2);
+        let of = |rows: [(&str, i64); 3]| -> Vec<(String, i64)> {
+            rows.iter()
+                .map(|(bulk, n)| (bulk.to_string(), *n))
+                .collect()
+        };
+        assert_eq!(
+            carry.hands_for,
+            of([("light", 1), ("handy", 1), ("heavy", 2)])
+        );
+        assert_eq!(carry.weight, of([("light", 0), ("handy", 1), ("heavy", 4)]));
+        assert_eq!(carry.size, of([("light", 1), ("handy", 2), ("heavy", 4)]));
+        let (place, about) = &carry.storage[0];
+        assert_eq!(place, "about the person");
+        assert_eq!(about.fits, ["light"]);
+        assert_eq!(about.room, 2);
+    }
+
+    #[test]
+    #[should_panic(expected = "carry.weight")]
+    fn physics_refuses_a_moving_bulk_with_no_weight() {
+        read_physics(&PHYSICS.replace("    heavy: 4\n  load_divisor", "  load_divisor"));
+    }
+
+    #[test]
+    #[should_panic(expected = "does not move")]
+    fn physics_refuses_storage_that_fits_what_does_not_move() {
+        read_physics(&PHYSICS.replace(
+            "fits: [light, handy, heavy]",
+            "fits: [light, handy, heavy, immovable]",
+        ));
     }
 
     #[test]

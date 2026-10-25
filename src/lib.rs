@@ -27,6 +27,7 @@
 
 pub mod arrival;
 pub mod boxes;
+pub mod carry;
 pub mod cascade;
 pub mod cast;
 pub mod classifier;

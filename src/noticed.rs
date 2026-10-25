@@ -214,9 +214,9 @@ pub fn noticed_on(records: &Records, playthrough: i64, scene: i64) -> Vec<i64> {
         .collect()
 }
 
-/// One thing the doctor reports about a noticed record (`Story::Doctor`'s
-/// `Finding`): its code, how bad, in words, whether clearing it is safe,
-/// and the row it is about.
+/// One thing the doctor reports about a noticed record, or any other this
+/// engine judges (`Story::Doctor`'s `Finding`): its code, how bad, in
+/// words, whether clearing it is safe, and the row it is about.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Finding {
     pub code: &'static str,

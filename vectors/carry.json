@@ -1,0 +1,32 @@
+{
+  "format": "engine-vectors",
+  "version": 1,
+  "portion": "carry",
+  "sources": ["src/carry.rs","data/physics.yml"],
+  "notes": "Whether one more thing fits about a body, where it goes, and why not. A case gives the thing's bulk, the body's strength, its storage places (words of the storage constant, in order), and what it already holds: each thing's bulk, and the index of the storage place it is stowed in (null for in hand). No die is thrown. A bulk with no hands_for row is refused as immovable. The body bears strength / load_divisor, rounded down; a thing whose weight is more than that is refused as heavy (weight, bears), and one whose weight with everything held (carried, in hand or stowed) is more than that as load. Otherwise a light thing goes into the first storage place that fits its bulk with room for its size (stowed is that place's index); anything else, or a light thing with no such room, goes into hand (stowed null) when the hands free (hands less the hands_for of everything in hand) are at least its own hands_for; failing that, into the first storage place that fits it; failing that it is refused as hands (free, needs). A storage place the constant does not name holds nothing. What is already held is never judged, only the next thing.",
+  "constants": {"hands":2,"hands_for":[["light",1],["handy",1],["heavy",2]],"weight":[["light",0],["handy",1],["heavy",4]],"load_divisor":2,"size":[["light",1],["handy",2],["heavy",4]],"storage":[["about the person",{"fits":["light"],"room":2}],["pocket",{"fits":["light"],"room":1}],["pouch",{"fits":["light"],"room":3}],["satchel",{"fits":["light","handy"],"room":6}],["basket",{"fits":["light","handy"],"room":6}],["sack",{"fits":["light","handy","heavy"],"room":8}]]},
+  "cases": [
+    {"name":"an immovable thing","input":{"bulk":"immovable","strength":18,"storage":["about the person"],"held":[]},"output":{"fits":false,"reason":"immovable"}},
+    {"name":"a bulk the table does not name","input":{"bulk":"enormous","strength":18,"storage":["about the person"],"held":[]},"output":{"fits":false,"reason":"immovable"}},
+    {"name":"a light thing, empty-handed","input":{"bulk":"light","strength":9,"storage":["about the person"],"held":[]},"output":{"fits":true,"stowed":0}},
+    {"name":"a third light thing goes into a hand","input":{"bulk":"light","strength":9,"storage":["about the person"],"held":[{"bulk":"light","stowed":0},{"bulk":"light","stowed":0}]},"output":{"fits":true,"stowed":null}},
+    {"name":"a handy thing goes into a hand","input":{"bulk":"handy","strength":9,"storage":["about the person"],"held":[]},"output":{"fits":true,"stowed":null}},
+    {"name":"a second handy thing","input":{"bulk":"handy","strength":9,"storage":["about the person"],"held":[{"bulk":"handy","stowed":null}]},"output":{"fits":true,"stowed":null}},
+    {"name":"a third handy thing, hands full","input":{"bulk":"handy","strength":12,"storage":["about the person"],"held":[{"bulk":"handy","stowed":null},{"bulk":"handy","stowed":null}]},"output":{"fits":false,"reason":"hands","free":0,"needs":1}},
+    {"name":"a heavy thing at strength 8","input":{"bulk":"heavy","strength":8,"storage":["about the person"],"held":[]},"output":{"fits":true,"stowed":null}},
+    {"name":"a heavy thing at strength 7","input":{"bulk":"heavy","strength":7,"storage":["about the person"],"held":[]},"output":{"fits":false,"reason":"heavy","weight":4,"bears":3}},
+    {"name":"a heavy thing beside a handy one in hand","input":{"bulk":"heavy","strength":13,"storage":["about the person"],"held":[{"bulk":"handy","stowed":null}]},"output":{"fits":false,"reason":"hands","free":1,"needs":2}},
+    {"name":"a handy thing beside a heavy one at strength 9","input":{"bulk":"handy","strength":9,"storage":["about the person"],"held":[{"bulk":"heavy","stowed":null}]},"output":{"fits":false,"reason":"load","carried":4,"weight":1,"bears":4}},
+    {"name":"a handy thing beside a heavy one at strength 13","input":{"bulk":"handy","strength":13,"storage":["about the person"],"held":[{"bulk":"heavy","stowed":null}]},"output":{"fits":false,"reason":"hands","free":0,"needs":1}},
+    {"name":"the Salt Assizes: the bell after the slate and the cord","input":{"bulk":"light","strength":13,"storage":["about the person"],"held":[{"bulk":"heavy","stowed":null},{"bulk":"light","stowed":0}]},"output":{"fits":true,"stowed":0}},
+    {"name":"a light thing with the slate in hand and no room about the person","input":{"bulk":"light","strength":13,"storage":["about the person"],"held":[{"bulk":"heavy","stowed":null},{"bulk":"light","stowed":0},{"bulk":"light","stowed":0}]},"output":{"fits":false,"reason":"hands","free":0,"needs":1}},
+    {"name":"a second handy thing at strength 3","input":{"bulk":"handy","strength":3,"storage":["about the person"],"held":[{"bulk":"handy","stowed":null}]},"output":{"fits":false,"reason":"load","carried":1,"weight":1,"bears":1}},
+    {"name":"a handy thing into a satchel when the hands are full","input":{"bulk":"handy","strength":18,"storage":["about the person","satchel"],"held":[{"bulk":"handy","stowed":null},{"bulk":"handy","stowed":null}]},"output":{"fits":true,"stowed":1}},
+    {"name":"a full satchel","input":{"bulk":"handy","strength":18,"storage":["satchel"],"held":[{"bulk":"handy","stowed":null},{"bulk":"handy","stowed":null},{"bulk":"handy","stowed":0},{"bulk":"handy","stowed":0},{"bulk":"handy","stowed":0}]},"output":{"fits":false,"reason":"hands","free":0,"needs":1}},
+    {"name":"a heavy thing into a sack when the hands are full","input":{"bulk":"heavy","strength":18,"storage":["sack"],"held":[{"bulk":"handy","stowed":null},{"bulk":"handy","stowed":null}]},"output":{"fits":true,"stowed":0}},
+    {"name":"a light thing into a pocket before the person","input":{"bulk":"light","strength":10,"storage":["pocket","about the person"],"held":[]},"output":{"fits":true,"stowed":0}},
+    {"name":"a storage place the table does not name","input":{"bulk":"light","strength":12,"storage":["hatbox"],"held":[]},"output":{"fits":true,"stowed":null}},
+    {"name":"no storage at all","input":{"bulk":"light","strength":12,"storage":[],"held":[{"bulk":"handy","stowed":null},{"bulk":"handy","stowed":null}]},"output":{"fits":false,"reason":"hands","free":0,"needs":1}},
+    {"name":"held over the limit already, a light thing still goes about the person","input":{"bulk":"light","strength":18,"storage":["about the person"],"held":[{"bulk":"heavy","stowed":null},{"bulk":"heavy","stowed":null}]},"output":{"fits":true,"stowed":0}}
+  ]
+}

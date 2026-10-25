@@ -8,7 +8,8 @@
 # by a thing coming down on a floor, which throws nothing for a sturdy thing;
 # and `throw_range`, `throw_reach_per_strength` and `throw_reach_cap` by a
 # throw's range, which holds nothing against a throw in a world with no
-# gravity (all in `src/physics.rs`).
+# gravity (all in `src/physics.rs`). `carry` is what a body can hold and
+# where (`src/carry.rs`), and no die is thrown over it.
 ---
 bulk:                    # items.bulk: the penalty taken off a thrower's strength
   light: 0
@@ -43,3 +44,37 @@ height_step:             # added to the share by how the thing came down
 surface:                 # locations.surface: added to the share; nil adds nothing
   soft: -2
   hard: 1
+carry:                   # what a body can hold, by items.bulk; immovable has no row
+  hands: 2               # every body's
+  hands_for:             # the hands a thing in hand takes
+    light: 1
+    handy: 1
+    heavy: 2
+  weight:                # what a thing counts against the load, in hand or stowed
+    light: 0
+    handy: 1
+    heavy: 4
+  load_divisor: 2        # the load a body bears is its strength over this, rounded down
+  size:                  # the room a thing takes in a storage place
+    light: 1
+    handy: 2
+    heavy: 4
+  storage:               # places that hold things without a hand: what fits, and how much room
+    about the person:    # every body's own, until it wears something with room
+      fits: [light]
+      room: 2
+    pocket:
+      fits: [light]
+      room: 1
+    pouch:
+      fits: [light]
+      room: 3
+    satchel:
+      fits: [light, handy]
+      room: 6
+    basket:
+      fits: [light, handy]
+      room: 6
+    sack:
+      fits: [light, handy, heavy]
+      room: 8
