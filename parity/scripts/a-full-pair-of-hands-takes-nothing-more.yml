@@ -1,0 +1,77 @@
+---
+story: The Weighing House
+steps:
+- id: a-scoop-in-the-other-hand
+  type: "/take brass scoop"
+  expect:
+    changed: true
+    carrying:
+    - tally board
+    - brass scoop
+- id: the-jug-is-more-than-she-can-bear
+  type: "/take pewter jug"
+  expect:
+    refused: true
+    offers: You are already carrying as much as you can bear at strength 5 (the tally
+      board and the brass scoop). Put something down first.
+    carrying:
+    - tally board
+    - brass scoop
+    here:
+    - market slate
+    - pewter jug
+- id: out-to-the-market-cross
+  type: "/move The Market Cross"
+  expect:
+    location: The Market Cross (realized)
+    here:
+    - copper coin
+    - silver coin
+    - tin token
+- id: a-coin-about-her-person
+  type: "/take copper coin"
+  expect:
+    changed: true
+    carrying:
+    - tally board
+    - brass scoop
+    - copper coin
+- id: and-a-second
+  type: "/take silver coin"
+  expect:
+    changed: true
+    carrying:
+    - tally board
+    - brass scoop
+    - copper coin
+    - silver coin
+- id: the-token-has-nowhere-to-go
+  type: "/take tin token"
+  expect:
+    refused: true
+    offers: 'Your hands are full: you are holding the tally board and the brass scoop,
+      and there is no room about you for the tin token. Put something down first.'
+    carrying:
+    - tally board
+    - brass scoop
+    - copper coin
+    - silver coin
+    here:
+    - tin token
+- id: the-scoop-put-down
+  type: "/drop brass scoop"
+  expect:
+    changed: true
+    carrying:
+    - tally board
+    - copper coin
+    - silver coin
+- id: now-the-token-fits
+  type: "/take tin token"
+  expect:
+    changed: true
+    carrying:
+    - tally board
+    - copper coin
+    - silver coin
+    - tin token

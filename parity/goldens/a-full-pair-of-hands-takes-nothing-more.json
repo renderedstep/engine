@@ -1,0 +1,604 @@
+{
+  "script": "a-full-pair-of-hands-takes-nothing-more",
+  "story": "The Weighing House",
+  "steps": [
+    {
+      "step": "step 1 a-scoop-in-the-other-hand",
+      "player": "first",
+      "typed": "/take brass scoop",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Weighing House",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Market Cross",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000011,
+            "name": "market slate"
+          },
+          {
+            "id": 1000000013,
+            "name": "pewter jug"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Bram Hale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {
+          "Bram Hale": 13
+        },
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: brass scoop (was lying in The Weighing House, now carried by Nell Fisk)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> brass scoop",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 the-jug-is-more-than-she-can-bear",
+      "player": "first",
+      "typed": "/take pewter jug",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Weighing House",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Market Cross",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000011,
+            "name": "market slate"
+          },
+          {
+            "id": 1000000013,
+            "name": "pewter jug"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Bram Hale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {
+          "Bram Hale": 13
+        },
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "You are already carrying as much as you can bear at strength 5 (the tally board and the brass scoop). Put something down first. Nothing has changed.",
+        "understood": "take -> pewter jug",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 out-to-the-market-cross",
+      "player": "first",
+      "typed": "/move The Market Cross",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Market Cross",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Weighing House",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000016,
+            "name": "copper coin"
+          },
+          {
+            "id": 1000000017,
+            "name": "silver coin"
+          },
+          {
+            "id": 1000000018,
+            "name": "tin token"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {},
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Weighing House -> The Market Cross",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Market Cross",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 a-coin-about-her-person",
+      "player": "first",
+      "typed": "/take copper coin",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Market Cross",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Weighing House",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000017,
+            "name": "silver coin"
+          },
+          {
+            "id": 1000000018,
+            "name": "tin token"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000016,
+            "name": "copper coin"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {},
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: copper coin (was lying in The Market Cross, now carried by Nell Fisk)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> copper coin",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 and-a-second",
+      "player": "first",
+      "typed": "/take silver coin",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Market Cross",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Weighing House",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000018,
+            "name": "tin token"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000016,
+            "name": "copper coin"
+          },
+          {
+            "id": 1000000017,
+            "name": "silver coin"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {},
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: silver coin (was lying in The Market Cross, now carried by Nell Fisk)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> silver coin",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 the-token-has-nowhere-to-go",
+      "player": "first",
+      "typed": "/take tin token",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Market Cross",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Weighing House",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000018,
+            "name": "tin token"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000016,
+            "name": "copper coin"
+          },
+          {
+            "id": 1000000017,
+            "name": "silver coin"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {},
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "Your hands are full: you are holding the tally board and the brass scoop, and there is no room about you for the tin token. Put something down first. Nothing has changed.",
+        "understood": "take -> tin token",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 the-scoop-put-down",
+      "player": "first",
+      "typed": "/drop brass scoop",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Market Cross",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Weighing House",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000018,
+            "name": "tin token"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000016,
+            "name": "copper coin"
+          },
+          {
+            "id": 1000000017,
+            "name": "silver coin"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {},
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "dropped: brass scoop (was carried by Nell Fisk, now lying in The Market Cross)",
+        "refused": false,
+        "offers": null,
+        "understood": "drop -> brass scoop",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 8 now-the-token-fits",
+      "player": "first",
+      "typed": "/take tin token",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Market Cross",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Weighing House",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000016,
+            "name": "copper coin"
+          },
+          {
+            "id": 1000000017,
+            "name": "silver coin"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          },
+          {
+            "id": 1000000018,
+            "name": "tin token"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {},
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: tin token (was lying in The Market Cross, now carried by Nell Fisk)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> tin token",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

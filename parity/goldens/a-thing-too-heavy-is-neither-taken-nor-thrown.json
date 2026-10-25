@@ -1,0 +1,237 @@
+{
+  "script": "a-thing-too-heavy-is-neither-taken-nor-thrown",
+  "story": "The Weighing House",
+  "steps": [
+    {
+      "step": "step 1 the-slate-will-not-come-up",
+      "player": "first",
+      "typed": "/take market slate",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Weighing House",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Market Cross",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000011,
+            "name": "market slate"
+          },
+          {
+            "id": 1000000013,
+            "name": "pewter jug"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Bram Hale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {
+          "Bram Hale": 13
+        },
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The market slate is heavy. At strength 5 you cannot lift something that heavy. Nothing has changed.",
+        "understood": "take -> market slate",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 nor-be-thrown-from-the-floor",
+      "player": "first",
+      "typed": "/throw market slate at Bram Hale",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Weighing House",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Market Cross",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000011,
+            "name": "market slate"
+          },
+          {
+            "id": 1000000013,
+            "name": "pewter jug"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Bram Hale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {
+          "Bram Hale": 13
+        },
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The market slate is heavy. At strength 5 you cannot lift something that heavy. Nothing has changed.",
+        "understood": "throw -> market slate at Bram Hale",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 a-scoop-is-light-enough",
+      "player": "first",
+      "typed": "/take brass scoop",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Weighing House",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Market Cross",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000011,
+            "name": "market slate"
+          },
+          {
+            "id": 1000000013,
+            "name": "pewter jug"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Bram Hale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {
+          "Bram Hale": 13
+        },
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: brass scoop (was lying in The Weighing House, now carried by Nell Fisk)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> brass scoop",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}
