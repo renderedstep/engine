@@ -726,8 +726,8 @@ fn at_the_cell(engine: &mut Engine) -> i64 {
     game
 }
 
-/// The way into the dry cell, told, and the ending answered with `ending`;
-/// the closing scene, and the scene before it.
+/// The way into the dry cell, told, then `/end`, the ending answered with
+/// `ending`; the closing scene, and the scene before it.
 fn into_the_cell(engine: &mut Engine, game: i64, ending: Value) -> (i64, i64) {
     let arrival = json!({
         "purpose": "arrival",
@@ -738,13 +738,9 @@ fn into_the_cell(engine: &mut Engine, game: i64, ending: Value) -> (i64, i64) {
     });
     let mut ending = ending;
     ending["purpose"] = json!("ending");
-    let submitted = submit(
-        engine,
-        game,
-        "/move the dry cell",
-        "cell",
-        &[arrival, ending],
-    );
+    let into = submit(engine, game, "/move the dry cell", "cell", &[arrival]);
+    let submitted = submit(engine, game, "/end", "end", &[ending]);
+    assert_ne!(submitted.turned.scene, into.turned.scene);
     let closing = submitted.turned.scene.expect("the closing scene");
     assert_eq!(current_scene(engine, game), Some(closing));
     let previous = column::<Option<i64>>(

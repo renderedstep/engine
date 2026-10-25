@@ -96,6 +96,7 @@ pub const HELP: &[&str] = &[
     "                 playthrough (also: hurt, damage)",
     "mend <n>         put n back, up to the maximum. It never raises the dead",
     "                 (also: heal)",
+    "end              end the story, once every goal it asked for is met",
     "help             this list",
     "",
     "A leading / is optional and is stripped: `/take slate` and `take slate` are",
@@ -134,6 +135,8 @@ pub struct Reading {
     pub refusal: Option<String>,
     /// The whole help text, where the reading carries it.
     pub help: bool,
+    /// `end`: the player taking the ending the story has fallen due with.
+    pub end: bool,
     pub understood: Option<String>,
     /// `harm` or `mend`, and a number of hit points.
     pub wound: Option<(String, u64)>,
@@ -185,6 +188,12 @@ pub fn unslashed(command: &str) -> String {
 
 pub fn slashed(command: &str) -> bool {
     ruby_strip(command).starts_with(SLASH)
+}
+
+/// Whether a line is `/end`, read the way every slashed line is read first
+/// where a model reads the rest: the slash, the word and nothing after it.
+pub fn ends(command: &str) -> bool {
+    slashed(command) && verb_of(&ruby_downcase(&normalize_line(&unslashed(command)))) == Some("end")
 }
 
 /// The word a player types after the slash for one action, or `None` where
@@ -440,6 +449,10 @@ impl<'a> Grammar<'a> {
             Some("look") => Reading::default(),
             Some("help") => Reading {
                 help: true,
+                ..Reading::default()
+            },
+            Some("end") if argument.is_empty() => Reading {
+                end: true,
                 ..Reading::default()
             },
             Some("go") => self.read_move(&argument),

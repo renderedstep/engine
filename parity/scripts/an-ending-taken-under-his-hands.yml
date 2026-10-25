@@ -125,6 +125,12 @@ steps:
       1: reached
       2: reached
       3: reached
+    ending: none
+    dead: false
+- id: and-the-player-ends-the-story
+  type: "/end"
+  expect:
+    changed: true
     ending: taken-under-his-hands
     ending_words:
     - while the Ringer was still standing over the rope

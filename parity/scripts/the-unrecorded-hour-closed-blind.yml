@@ -25,6 +25,12 @@ steps:
       1: reached
       2: reached
       3: reached
+    ending: none
+    dead: false
+- id: and-the-player-ends-the-story
+  type: "/end"
+  expect:
+    changed: true
     ending: closed-blind
     ending_words:
     - Query 1188 was closed on your own report

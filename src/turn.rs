@@ -416,6 +416,10 @@ impl<'s> Mechanics<'s> {
             let refusal = self.over_refusal(command);
             return Ok(Report::refuse(refusal.reason(), None));
         }
+        if Grammar::new(&self.room()).parse(command).end {
+            return self.end_line(command);
+        }
+        self.put_off_ending()?;
 
         self.catch_up_world()?;
         let here = self.here();
@@ -473,6 +477,26 @@ impl<'s> Mechanics<'s> {
         Ok(Report {
             resolved_by: reading.resolved_by.clone(),
             ..report
+        })
+    }
+
+    /// `/end`: the story ends on its due ending, or the line is refused
+    /// while none is due.
+    fn end_line(&mut self, command: &str) -> Result<Report, Error> {
+        let understood = Some("end -> the story".to_string());
+        if !self.end_the_story()? {
+            self.engine_refused = true;
+            let refusal = Refusal::nothing_due(command);
+            return Ok(Report {
+                resolved_by: Some("grammar".into()),
+                ..Report::refuse(refusal.reason(), understood)
+            });
+        }
+        let ended = self.ending_of_the_arc().unwrap_or_default();
+        Ok(Report {
+            note: vec![format!("the story is over: {ended}")],
+            resolved_by: Some("grammar".into()),
+            ..Report::change("ended the story".into(), understood)
         })
     }
 
@@ -2205,6 +2229,14 @@ impl<'s> Mechanics<'s> {
         } else {
             None
         };
+        let due = if self.ending_offered() && !beats.is_empty() {
+            self.due_ending()
+                .and_then(|due| int(&due, "quest_outcome_id"))
+                .and_then(|outcome| self.records.find("quest_outcomes", outcome))
+                .map(|outcome| string(outcome, "summary").to_string())
+        } else {
+            None
+        };
         let acts: Vec<&Volition> = volitions.iter().filter(|v| v.status == "applied").collect();
         if blows.is_empty()
             && closing.is_none()
@@ -2226,6 +2258,9 @@ impl<'s> Mechanics<'s> {
         }
         if let Some(ended) = ended {
             notes.push(format!("the story is over: {ended}"));
+        }
+        if let Some(due) = due {
+            notes.push(format!("the story can end here (/end): {due}"));
         }
         Ok(Report {
             note: notes,
@@ -3195,7 +3230,7 @@ impl<'s> Mechanics<'s> {
                 beats.push(string(&step, "summary").to_string());
             }
         }
-        self.conclude()?;
+        self.fall_due()?;
         Ok(beats)
     }
 
@@ -3296,35 +3331,110 @@ impl<'s> Mechanics<'s> {
         }
     }
 
-    /// `Playthrough::Arc#conclude!`: the main arc finished, its ending
-    /// recorded, the closing scene written and the game ended.
-    fn conclude(&mut self) -> Result<(), Error> {
+    /// The main arc's last beat is met: its outcome is decided now, so that
+    /// nothing played after can change which ending the game reaches, and
+    /// kept as due. Nothing ends here: the player ends the story with
+    /// `/end` ([`Mechanics::end_the_story`]).
+    fn fall_due(&mut self) -> Result<(), Error> {
         let Some(arc) = self.open_main_arc() else {
             return Ok(());
         };
         if self.over()
+            || self.due_ending().is_some()
             || outcome::steps(&self.records, &arc).is_empty()
             || self.next_step(&arc).is_some()
         {
             return Ok(());
         }
-        let quest = id(&arc);
+        let Some(reached) = self.outcome_reached(&arc) else {
+            return Ok(());
+        };
+        self.insert(
+            "playthrough_due_endings",
+            vec![
+                ("playthrough_id", Value::from(self.playthrough)),
+                ("quest_outcome_id", Value::from(id(&reached))),
+                ("due_at", Value::from(self.story_now())),
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// This game's due ending, while it is not over.
+    pub(crate) fn due_ending(&self) -> Option<Row> {
+        self.game()
+            .own("playthrough_due_endings")
+            .into_iter()
+            .next()
+            .cloned()
+    }
+
+    /// Whether the story waits on the player's answer to its due ending: due,
+    /// and neither taken nor put off.
+    pub(crate) fn ending_offered(&self) -> bool {
+        !self.over()
+            && self
+                .due_ending()
+                .is_some_and(|due| int(&due, "declined_at").is_none())
+    }
+
+    /// "Not yet": the player played on past the offer, so it is not made
+    /// again. `/end` still ends the story with the outcome decided when it
+    /// fell due.
+    pub(crate) fn put_off_ending(&mut self) -> Result<(), Error> {
+        if !self.ending_offered() {
+            return Ok(());
+        }
+        let due = self.due_ending().map(|due| id(&due)).unwrap_or_default();
+        let at = self.story_now();
+        self.update(
+            "playthrough_due_endings",
+            due,
+            vec![("declined_at", Value::from(at))],
+        )
+    }
+
+    /// `/end`: the story ends with the outcome decided when it fell due,
+    /// written exactly as a finished arc has always been written. False, and
+    /// nothing written, when no ending is due.
+    pub(crate) fn end_the_story(&mut self) -> Result<bool, Error> {
+        let Some(arc) = self.open_main_arc() else {
+            return Ok(false);
+        };
+        let due = self
+            .due_ending()
+            .and_then(|due| int(&due, "quest_outcome_id"))
+            .and_then(|outcome| self.records.find("quest_outcomes", outcome))
+            .cloned();
+        let Some(reached) = due.filter(|_| !self.over()) else {
+            return Ok(false);
+        };
+        self.conclude(arc, reached)?;
+        Ok(true)
+    }
+
+    /// `Playthrough::Arc#outcome`: the first conditional outcome whose rule
+    /// holds now, else the default.
+    fn outcome_reached(&self, arc: &Row) -> Option<Row> {
+        let quest = id(arc);
         let outcomes: Vec<Row> = self
             .records
             .select("quest_outcomes", |row| int(row, "quest_id") == Some(quest))
             .into_iter()
             .cloned()
             .collect();
-        let reached = outcomes
+        outcomes
             .iter()
             .filter(|outcome| text(outcome, "condition").is_some_and(|c| !c.is_empty()))
             .find(|outcome| self.satisfies(outcome))
             .or_else(|| outcomes.iter().find(|outcome| flag(outcome, "is_default")))
             .or_else(|| outcomes.first())
-            .cloned();
-        let Some(reached) = reached else {
-            return Ok(());
-        };
+            .cloned()
+    }
+
+    /// `Playthrough::Arc#conclude!`: the main arc finished, its ending
+    /// recorded, the closing scene written and the game ended.
+    fn conclude(&mut self, arc: Row, reached: Row) -> Result<(), Error> {
         let at = self.story_now();
         let story = self.story_id();
         let ending = self.insert(

@@ -1902,14 +1902,90 @@
           "dexterity": 14,
           "will": 13
         },
-        "dead": true,
+        "dead": false,
         "changed": true,
         "change": "took: bell-rope tally (was lying in The Bell of Saint Aravel, now carried by Isbet Marrow)",
         "refused": false,
         "offers": null,
         "understood": "take -> bell-rope tally",
         "resolved_by": "grammar",
-        "note": "the story: Get the Ringer's tally, twenty-nine years of hours counted from a fixed point.\nthe story is over: You took the bearing while the Ringer was still standing over the rope, and it shows. The tally is proof of what he was, but the figures you carried home beside it are the figures of somebody writing with their back to something, and they are off by the width of a flinch.",
+        "note": "the story: Get the Ringer's tally, twenty-nine years of hours counted from a fixed point.\nthe story can end here (/end): You took the bearing while the Ringer was still standing over the rope, and it shows. The tally is proof of what he was, but the figures you carried home beside it are the figures of somebody writing with their back to something, and they are off by the width of a flinch.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 1,
+        "fired": 1,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 26 and-the-player-ends-the-story",
+      "player": "first",
+      "typed": "/end",
+      "dump": {
+        "location": {
+          "id": 1000000007,
+          "name": "The Bell of Saint Aravel",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "Grenn's Boarding House hallway",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000003,
+            "name": "climbers' bearing book"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [
+          {
+            "id": 1000000004,
+            "name": "bell-rope tally",
+            "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
+          },
+          {
+            "id": 1000000003,
+            "name": "climbers' bearing book",
+            "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
+          }
+        ],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 11,
+          "dexterity": 14,
+          "will": 13
+        },
+        "dead": true,
+        "changed": true,
+        "change": "ended the story",
+        "refused": false,
+        "offers": null,
+        "understood": "end -> the story",
+        "resolved_by": "grammar",
+        "note": "the story is over: You took the bearing while the Ringer was still standing over the rope, and it shows. The tally is proof of what he was, but the figures you carried home beside it are the figures of somebody writing with their back to something, and they are off by the width of a flinch.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,

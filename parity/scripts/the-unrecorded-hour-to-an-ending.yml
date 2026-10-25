@@ -45,6 +45,12 @@ steps:
       1: reached
       2: reached
       3: reached
+    ending: none
+    dead: false
+- id: and-the-player-ends-the-story
+  type: "/end"
+  expect:
+    changed: true
     ending: query-answered
     ending_words:
     - the missing hour has a source at last

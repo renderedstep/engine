@@ -71,6 +71,9 @@ pub fn empty(action: &str) -> Option<&'static str> {
 
 const NOTHING_MATCHED: &str = "That resolved to nothing.";
 
+/// What `/end` says before the story has met everything it asked for.
+pub const NOTHING_DUE: &str = "The story cannot end here yet: it is still asking for something.";
+
 /// A line that only leaves, in a room with more than one way out.
 const ONE_OF_SEVERAL: &str = "There is more than one way out of here, so that does not say which.";
 
@@ -299,6 +302,11 @@ impl Refusal {
             }
         }
         None
+    }
+
+    /// `/end` typed while the story has no ending due.
+    pub fn nothing_due(typed: &str) -> Refusal {
+        Refusal::of("unplayable", typed, NOTHING_DUE.to_string(), None)
     }
 
     /// A line typed after the player died.

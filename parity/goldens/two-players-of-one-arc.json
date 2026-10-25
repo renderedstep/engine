@@ -582,7 +582,7 @@
       }
     },
     {
-      "step": "step 9 the-first-game-finishes-the-story",
+      "step": "step 9 the-first-game-meets-the-last-beat",
       "player": "first",
       "typed": "go to the dry cell",
       "dump": {
@@ -628,14 +628,87 @@
           "dexterity": 7,
           "will": 10
         },
-        "dead": true,
+        "dead": false,
         "changed": true,
         "change": "moved: Blackfang Warren room 2 -> the dry cell",
         "refused": false,
         "offers": null,
         "understood": "move -> the dry cell",
         "resolved_by": "grammar",
-        "note": "the story: Find the cell they are keeping him in.\nthe story is over: The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+        "note": "the story: Find the cell they are keeping him in.\nthe story can end here (/end): The prince is found alive in the dry cell, and the iron gate opens outward at last.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 10 the-first-game-finishes-the-story",
+      "player": "first",
+      "typed": "/end",
+      "dump": {
+        "location": {
+          "id": 1000000014,
+          "name": "the dry cell",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000013,
+            "name": "Blackfang Warren room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000015,
+            "name": "Blackfang Warren room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000014,
+            "name": "prince's signet ring"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000004,
+            "name": "Prince Aurel Durn"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 8,
+        "hp_of": {
+          "Prince Aurel Durn": 6
+        },
+        "abilities": {
+          "strength": 13,
+          "dexterity": 7,
+          "will": 10
+        },
+        "dead": true,
+        "changed": true,
+        "change": "ended the story",
+        "refused": false,
+        "offers": null,
+        "understood": "end -> the story",
+        "resolved_by": "grammar",
+        "note": "the story is over: The prince is found alive in the dry cell, and the iron gate opens outward at last.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -655,7 +728,7 @@
       }
     },
     {
-      "step": "step 10 and-the-second-game-is-still-being-played (second)",
+      "step": "step 11 and-the-second-game-is-still-being-played (second)",
       "player": "second",
       "typed": "go to the obsidian maw",
       "dump": {

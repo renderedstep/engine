@@ -366,14 +366,94 @@
           "dexterity": 10,
           "will": 14
         },
-        "dead": true,
+        "dead": false,
         "changed": true,
         "change": "took: Assize hand-bell (was lying in The Causeway Court, now carried by Coraith Vell)",
         "refused": false,
         "offers": null,
         "understood": "take -> Assize hand-bell",
         "resolved_by": "grammar",
-        "note": "the story: Take the hand-bell off its hook and ring the court up on the true figure.\nthe story is over: You ring the court up on the water's own figure, with Neb's cord for the count and nobody's chalk for the hour. Justicar Brace hears him with the stain band still dry above his head, and the seventy minutes go into the record as what they were -- somebody's hand, and not the sea's.",
+        "note": "the story: Take the hand-bell off its hook and ring the court up on the true figure.\nthe story can end here (/end): You ring the court up on the water's own figure, with Neb's cord for the count and nobody's chalk for the hour. Justicar Brace hears him with the stain band still dry above his head, and the seventy minutes go into the record as what they were -- somebody's hand, and not the sea's.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 and-the-player-ends-the-story",
+      "player": "first",
+      "typed": "/end",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Causeway Court",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Tide Post",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000003,
+            "name": "The Vestry Hulk",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000005,
+            "name": "Assize hand-bell"
+          },
+          {
+            "id": 1000000004,
+            "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000006,
+            "name": "Neb's knotted cord"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [
+          {
+            "id": 1000000004,
+            "name": "Assize tide-slate",
+            "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
+          }
+        ],
+        "hp": 17,
+        "hp_of": {},
+        "abilities": {
+          "strength": 13,
+          "dexterity": 10,
+          "will": 14
+        },
+        "dead": true,
+        "changed": true,
+        "change": "ended the story",
+        "refused": false,
+        "offers": null,
+        "understood": "end -> the story",
+        "resolved_by": "grammar",
+        "note": "the story is over: You ring the court up on the water's own figure, with Neb's cord for the count and nobody's chalk for the hour. Justicar Brace hears him with the stain band still dry above his head, and the seventy minutes go into the record as what they were -- somebody's hand, and not the sea's.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,

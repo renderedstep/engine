@@ -1874,14 +1874,90 @@
           "dexterity": 14,
           "will": 13
         },
-        "dead": true,
+        "dead": false,
         "changed": true,
         "change": "took: climbers' bearing book (was lying in The Bell of Saint Aravel, now carried by Isbet Marrow)",
         "refused": false,
         "offers": null,
         "understood": "take -> climbers' bearing book",
         "resolved_by": "grammar",
-        "note": "the story: Take the climbers' bearing book off the boards and carry the tower's bearing home.\nthe story is over: With the Ringer's tally and the tower's own bearing book in your satchel, the survey has its fixed point at last, and a measurement the Sovereigns cannot answer -- twenty-nine years counted from the one place in Nocturnis that holds still, and then no more counting at all.",
+        "note": "the story: Take the climbers' bearing book off the boards and carry the tower's bearing home.\nthe story can end here (/end): With the Ringer's tally and the tower's own bearing book in your satchel, the survey has its fixed point at last, and a measurement the Sovereigns cannot answer -- twenty-nine years counted from the one place in Nocturnis that holds still, and then no more counting at all.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached",
+          "3": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 1,
+        "fired": 1,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 26 and-the-player-ends-the-story",
+      "player": "first",
+      "typed": "/end",
+      "dump": {
+        "location": {
+          "id": 1000000007,
+          "name": "The Bell of Saint Aravel",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "Grenn's Boarding House hallway",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000003,
+            "name": "climbers' bearing book"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [
+          {
+            "id": 1000000004,
+            "name": "bell-rope tally",
+            "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
+          },
+          {
+            "id": 1000000003,
+            "name": "climbers' bearing book",
+            "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
+          }
+        ],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 11,
+          "dexterity": 14,
+          "will": 13
+        },
+        "dead": true,
+        "changed": true,
+        "change": "ended the story",
+        "refused": false,
+        "offers": null,
+        "understood": "end -> the story",
+        "resolved_by": "grammar",
+        "note": "the story is over: With the Ringer's tally and the tower's own bearing book in your satchel, the survey has its fixed point at last, and a measurement the Sovereigns cannot answer -- twenty-nine years counted from the one place in Nocturnis that holds still, and then no more counting at all.",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
