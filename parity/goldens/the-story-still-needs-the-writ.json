@@ -1,0 +1,346 @@
+{
+  "script": "the-story-still-needs-the-writ",
+  "story": "A Writ On The Copying Desk",
+  "steps": [
+    {
+      "step": "step 1 tear-the-writ-the-story-needs",
+      "player": "first",
+      "typed": "/tear the blank writ",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The story still needs the blank writ, so it cannot be torn up yet. Nothing has changed.",
+        "understood": null,
+        "resolved_by": null,
+        "note": "tear-writ: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 burn-the-writ-the-story-needs",
+      "player": "first",
+      "typed": "/burn the blank writ with the tinderbox",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The story still needs the blank writ, so it cannot be burned yet. Nothing has changed.",
+        "understood": "use -> nothing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 take-the-writ",
+      "player": "first",
+      "typed": "take blank writ",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: blank writ (was lying in The Copying Room, now carried by Tamsin Rook)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> blank writ",
+        "resolved_by": "grammar",
+        "note": "the story: Take up the blank writ.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 tear-the-writ-once-the-step-is-reached",
+      "player": "first",
+      "typed": "/tear the blank writ",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000015,
+            "name": "scraps of the blank writ"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You tore apart the blank writ. It is gone; you are holding the scraps of the blank writ.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> blank writ",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

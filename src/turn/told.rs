@@ -17,6 +17,7 @@ use crate::cascade::{Leave, ENGINE_LEAVE};
 use crate::command::{self, Journal, Produced};
 use crate::data;
 use crate::dialogue::sanitize;
+use crate::divide;
 use crate::engine::Error;
 use crate::facts::{self, definite_name};
 use crate::grammar::{self, Grammar};
@@ -167,6 +168,8 @@ fn resolved_action(intent: &Intent) -> &str {
         Some(choice) if matches!(choice.kind.as_str(), "search" | "open") => "search",
         Some(choice) if choice.kind == "break" => "break",
         Some(choice) if choice.kind == WAIT => WAIT,
+        Some(choice) if choice.kind == divide::TEAR => divide::TEAR,
+        Some(choice) if choice.kind == divide::SMASH => divide::SMASH,
         _ => intent.action.as_str(),
     }
 }
@@ -847,6 +850,10 @@ impl<'s, 'm> Turn<'s, 'm> {
             (Some(part), "break") => Some(self.m.row("items", part.id)?),
             _ => None,
         };
+        let whole = match (&choice.item, choice.kind.as_str()) {
+            (Some(thing), divide::TEAR | divide::SMASH) => Some(self.m.row("items", thing.id)?),
+            _ => None,
+        };
         let mut thrown = None;
         let kept::Effect { fact, .. } = self.commit("physical_effect", |turn| {
             let (status, fact) = turn.m.apply_physical(choice)?;
@@ -896,6 +903,12 @@ impl<'s, 'm> Turn<'s, 'm> {
             if let Some(told) = self.broke_off(&part, thrown)? {
                 return self.narrate(command, Some(told), Some("use"), None, Some(fact));
             }
+        }
+        if let Some(whole) = whole {
+            // The narrator is told what the thing became; the engine's own
+            // sentence stands only where no narrator answers.
+            let told = self.broke_apart(&whole, &choice.kind)?;
+            return self.narrate(command, Some(told), Some("use"), None, Some(fact));
         }
         self.narrate(command, Some(fact.clone()), Some("use"), None, Some(fact))
     }
@@ -952,6 +965,38 @@ impl<'s, 'm> Turn<'s, 'm> {
             before,
             left,
         )))
+    }
+
+    /// The fact a narrator is handed after a `tear` or a `smash`: whether it
+    /// came apart, read off the thing's row now, and what it left. `whole`
+    /// is the thing's row as the turn found it. What it left is the newest
+    /// row of this game's of the name its material leaves.
+    fn broke_apart(&self, whole: &Row, kind: &str) -> Result<String, Error> {
+        let player = self.m.player();
+        let now = self.m.row("items", id(whole))?;
+        let pieces = (text(&now, "disposition") == Some(divide::DIVIDED))
+            .then(|| {
+                let material = text(whole, "material")?;
+                let name = divide::leaves_name(divide::act(material, kind)?, string(whole, "name"));
+                self.m
+                    .records()
+                    .select("items", |item| {
+                        int(item, "playthrough_id") == Some(self.m.playthrough)
+                            && string(item, "name") == name
+                    })
+                    .into_iter()
+                    .max_by_key(|item| id(item))
+                    .cloned()
+            })
+            .flatten();
+        let carried = int(whole, "location_id").is_none() && int(whole, "character_id").is_none();
+        Ok(facts::divided(
+            whole,
+            kind,
+            player.as_ref(),
+            pieces.as_ref(),
+            carried,
+        ))
     }
 
     /// The fixed piece lying here that a part's kit key names it attached

@@ -659,6 +659,7 @@ mod tests {
             lying: Vec::new(),
             carried: Vec::new(),
             parts: Vec::new(),
+            abilities: Vec::new(),
             over: false,
         }
     }

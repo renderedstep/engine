@@ -1,0 +1,261 @@
+{
+  "script": "a-jar-smashed-into-shards",
+  "story": "A Writ On The Copying Desk",
+  "steps": [
+    {
+      "step": "step 1 smash-the-glass-jar",
+      "player": "first",
+      "typed": "/smash the glass jar",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          },
+          {
+            "id": 1000000015,
+            "name": "shards of the glass jar"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "smash -> glass jar",
+        "resolved_by": "grammar",
+        "note": "smash-jar: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 smash-the-clay-pot",
+      "player": "first",
+      "typed": "/smash the clay pot",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          },
+          {
+            "id": 1000000015,
+            "name": "shards of the glass jar"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000016,
+            "name": "shards of the clay pot"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You smashed the clay pot. It is gone; you are holding the shards of the clay pot.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> clay pot",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 take-the-shards",
+      "player": "first",
+      "typed": "take shards of the glass jar",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000016,
+            "name": "shards of the clay pot"
+          },
+          {
+            "id": 1000000015,
+            "name": "shards of the glass jar"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: shards of the glass jar (was lying in The Copying Room, now carried by Tamsin Rook)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> shards of the glass jar",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

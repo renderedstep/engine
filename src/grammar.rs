@@ -105,6 +105,11 @@ pub const HELP: &[&str] = &[
     "                 (also: heal)",
     "wait             let time pass where you stand, and the world takes its",
     "                 turn (also: rest, idle, think, pray)",
+    "tear <thing>     tear paper or cloth apart, in your hands or lying here,",
+    "                 into scraps or strips (also: tear up, rip, rip up). Cloth",
+    "                 takes a strength check",
+    "smash <thing>    smash glass or pottery, in your hands or lying here, into",
+    "                 shards",
     "end              end the story, once every goal it asked for is met",
     "help             this list",
     "",
@@ -117,6 +122,10 @@ pub const HELP: &[&str] = &[
     "fallback -- drop it to have the classifier read what you type and the",
     "world generate as you walk.",
 ];
+
+/// The attempts the beat guard can keep off a room's list
+/// ([`Grammar::guarded`]).
+const GUARDED: &[&str] = &["tear", "smash", "burn"];
 
 /// Words taken off the front of a typed name, and nowhere else.
 const LEADING_WORDS: &[&str] = &["the", "a", "an", "to", "into", "through", "onto", "at"];
@@ -482,7 +491,7 @@ impl<'a> Grammar<'a> {
             Some("throw") => self.read_throw(&argument),
             Some(
                 kind @ ("consume" | "offer" | "burn" | "unlock" | "pick" | "pry" | "force"
-                | "break"),
+                | "break" | "tear" | "smash"),
             ) => self.read_physical(kind, &argument),
             Some(WAIT) => self.read_wait(&argument),
             Some(kind @ (WEAR | REMOVE)) => self.read_dressing(kind, &argument),
@@ -642,11 +651,28 @@ impl<'a> Grammar<'a> {
         }
     }
 
+    /// The attempt the beat guard keeps off the room's list that a line
+    /// asks for ([`Room::guarded_actions`]): a `tear`, `smash` or `burn` of
+    /// a thing the story still needs, which is refused in the engine's
+    /// words. `None` for any other line.
+    pub fn guarded(&self, command: &str) -> Option<Choice> {
+        let text = normalize_line(&unslashed(command));
+        let verb = self.verb_for(&text)?;
+        let kind = verb_of(verb).filter(|kind| GUARDED.contains(kind))?;
+        let argument = ruby_strip(chars_after(&text, verb.chars().count()));
+        self.read_among(kind, argument, self.room.guarded_actions())
+            .intent
+            .and_then(|intent| intent.physical)
+    }
+
     fn read_physical(&self, kind: &str, argument: &str) -> Reading {
+        self.read_among(kind, argument, self.room.physical_actions())
+    }
+
+    /// A physical attempt of `kind` read among `offered`.
+    fn read_among(&self, kind: &str, argument: &str, offered: Vec<Choice>) -> Reading {
         let offer = kind == "offer";
-        let mut choices: Vec<Choice> = self
-            .room
-            .physical_actions()
+        let mut choices: Vec<Choice> = offered
             .into_iter()
             .filter(|choice| choice.kind == kind)
             .collect();

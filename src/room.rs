@@ -48,6 +48,13 @@ pub struct Thing {
     pub wear: Option<String>,
     /// The party is wearing it (`items.worn`): a kind of carried.
     pub worn: bool,
+    /// What it is made of (`items.material`); none where that is unknown.
+    pub material: Option<String>,
+    /// Fixed in place (`items.tier` `fixture`): it is never broken apart.
+    pub fixture: bool,
+    /// A step of an open arc this game has not reached names it, so it is
+    /// neither broken apart nor burned ([`crate::divide`]).
+    pub bound: bool,
 }
 
 pub const USE_KINDS: &[&str] = &[
@@ -76,9 +83,15 @@ pub const WEAR: &str = "wear";
 pub const REMOVE: &str = "remove";
 
 /// The attempts no reader is handed until the readers are retrained on
-/// them (the owner's call of 2026-10-25): each is reached through the
+/// them (the owner's calls of 2026-10-25): each is reached through the
 /// grammar alone.
-pub const GRAMMAR_ONLY: &[&str] = &[WEAR, REMOVE, WAIT];
+pub const GRAMMAR_ONLY: &[&str] = &[
+    WEAR,
+    REMOVE,
+    WAIT,
+    crate::divide::TEAR,
+    crate::divide::SMASH,
+];
 
 impl Thing {
     /// A thing with the columns' defaults.
@@ -97,6 +110,9 @@ impl Thing {
             hold: None,
             wear: None,
             worn: false,
+            material: None,
+            fixture: false,
+            bound: false,
         }
     }
 
@@ -282,6 +298,8 @@ impl Choice {
                 self.recipient_name()
             ),
             "burn" => format!("Burn {} with {}", self.item_name(), tool()),
+            crate::divide::TEAR => format!("Tear {}", self.item_definite()),
+            crate::divide::SMASH => format!("Smash {}", self.item_definite()),
             "unlock" => format!("Unlock the way to {} with {}", place(), tool()),
             "pick" => format!("Pick the lock to {} with {}", place(), tool()),
             "pry" => format!("Pry open the way to {} with {}", place(), tool()),
@@ -435,6 +453,9 @@ pub struct Room {
     /// them. In no closed set of its own: [`Room::physical_actions`] offers
     /// a `break` for each sort.
     pub parts: Vec<Thing>,
+    /// The player character's abilities and their scores, empty for a body
+    /// with none: what a check an attempt would take is held against.
+    pub abilities: Vec<(String, i64)>,
     /// The game has ended.
     pub over: bool,
 }
@@ -496,10 +517,10 @@ impl Room {
     }
 
     /// The physical attempts a reader is handed: every one the room offers
-    /// but the [`GRAMMAR_ONLY`] ones (`wear`, `remove` and `wait`), which
-    /// join the readers' lists with their retrain (the owner's call of
-    /// 2026-10-25). Until then they are reached through the grammar alone,
-    /// and every reader request stays as it was.
+    /// but the [`GRAMMAR_ONLY`] ones (`wear`, `remove`, `wait`, `tear` and
+    /// `smash`), which join the readers' lists with their retrain (the
+    /// owner's calls of 2026-10-25). Until then they are reached through the
+    /// grammar alone, and every reader request stays as it was.
     pub fn reader_actions(&self) -> Vec<Choice> {
         let mut choices = self.physical_actions();
         choices.retain(|choice| !GRAMMAR_ONLY.contains(&choice.kind.as_str()));
@@ -520,7 +541,9 @@ impl Room {
     }
 
     /// Every physical attempt this room offers, in the order the engine
-    /// lists them: consuming, offering, burning, each closed doorway in the
+    /// lists them: consuming, offering, burning, tearing and smashing each
+    /// thing that may be broken apart ([`crate::divide::offered`]), in the
+    /// player's hands and then lying here, each closed doorway in the
     /// order the doorways were written, then each fixed piece here a search
     /// would find something new in, as a `search`, and a shut one as an
     /// `open` beside it, in the order the pieces lie, then a `break` for each
@@ -565,7 +588,11 @@ impl Room {
             }
         }
         for tool in carried.iter().filter(|t| t.use_kind == "firestarter") {
-            for item in carried.iter().chain(&self.lying).filter(|i| i.combustible) {
+            for item in carried
+                .iter()
+                .chain(&self.lying)
+                .filter(|i| i.combustible && !i.bound)
+            {
                 if item.id != tool.id {
                     result.push(Choice {
                         item: Some(item.clone()),
@@ -575,6 +602,9 @@ impl Room {
                 }
             }
         }
+        result.extend(
+            self.breaking_apart(|kind, thing| crate::divide::offered(kind, thing, &self.abilities)),
+        );
         let mut doorways: Vec<&Exit> = self.exits.iter().collect();
         doorways.sort_by_key(|edge| edge.edge);
         for edge in doorways {
@@ -703,6 +733,57 @@ impl Room {
             .and_then(crate::wear::under)
             .and_then(|above| self.worn_on(above))
             .map(Dressing::Over)
+    }
+
+    /// A `tear` or a `smash` of each thing in the player's hands, then of
+    /// each lying here, where `keep` lets it be.
+    fn breaking_apart(&self, keep: impl Fn(&str, &Thing) -> bool) -> Vec<Choice> {
+        let mut result = Vec::new();
+        for thing in self.carried.iter().chain(&self.lying) {
+            for kind in crate::divide::KINDS {
+                if keep(kind, thing) {
+                    result.push(Choice {
+                        kind: kind.to_string(),
+                        item: Some(thing.clone()),
+                        recipient: None,
+                        connection: None,
+                        tool: None,
+                    });
+                }
+            }
+        }
+        result
+    }
+
+    /// What the beat guard keeps off the list ([`crate::divide`]): each
+    /// `tear`, `smash` or `burn` the room would offer if no open beat of the
+    /// story were bound to its thing, of a thing one is. A line asking for
+    /// one of these is refused in the engine's words.
+    pub fn guarded_actions(&self) -> Vec<Choice> {
+        if self.protagonist.is_none() || self.here.is_none() || self.over {
+            return Vec::new();
+        }
+        let mut result = Vec::new();
+        for tool in self.carried.iter().filter(|t| t.use_kind == "firestarter") {
+            for item in self
+                .carried
+                .iter()
+                .chain(&self.lying)
+                .filter(|i| i.combustible && i.bound && i.id != tool.id)
+            {
+                result.push(Choice {
+                    kind: "burn".into(),
+                    item: Some(item.clone()),
+                    recipient: None,
+                    connection: None,
+                    tool: Some(tool.clone()),
+                });
+            }
+        }
+        result.extend(self.breaking_apart(|kind, thing| {
+            thing.bound && crate::divide::possible(kind, thing, &self.abilities)
+        }));
+        result
     }
 }
 

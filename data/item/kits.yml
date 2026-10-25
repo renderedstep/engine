@@ -51,11 +51,20 @@
 # (`items.material`; a thing with none is unknown, and plays as it always
 # has). Each says what a thing of it always is, where that is settled --
 # `combustible` true or false, and the fragilities it may have -- and `names`
-# the things a kit makes of it, which are written with it. No act reads a
-# material yet. A name is listed only where what it is made of is plain and
-# its other columns already agree: a jug or a bottle is left out, since a kit
-# writes it sturdy and glass and pottery never are, and the doctor would
-# report every one (`material::findings`).
+# the things a kit makes of it, which are written with it. A name is listed
+# only where what it is made of is plain and its other columns already agree:
+# a jug or a bottle is left out, since a kit writes it sturdy and glass and
+# pottery never are, and the doctor would report every one
+# (`material::findings`).
+#
+# `tear` and `smash` say a thing of the material can be broken apart that way
+# (`divide`): the thing ends, and one row of what it `leaves` begins where it
+# was -- "scraps of the letter", "shards of the jar". An ability named beside
+# it is the check the act takes, with what it takes off that ability
+# (`strength: 2`), thrown on the thing's own row (`Roll::TEAR`,
+# `Roll::SMASH`); none named, and it takes no check. A material that names
+# neither is never offered either, and nor is a thing whose material is
+# unknown.
 #
 # `wear` gives a thing that can be worn the place on a body it is worn on, one
 # of `item/wear.yml`'s places; a kit row is written with it, and nothing here
@@ -567,9 +576,11 @@ combustible: [folded note, letter, ledger, sheaf of papers, notice, handbill, ti
 materials:
   paper:
     combustible: true
+    tear: {leaves: scraps}
     names: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, scrap of paper, folded paper, twist of paper, bookmark, deck of cards]
   cloth:
     combustible: true
+    tear: {leaves: strips, strength: 2}
     names: [rag, cloth, folded cloth, scrap of cloth, blanket, saddle blanket, pillow, cushion, towel, bathrobe, folded shirt, coat, cap, hat, apron, scarf, sock, glove, handkerchief, scrap of wool, ribbon, tarpaulin]
   rope:
     combustible: true
@@ -581,10 +592,12 @@ materials:
   glass:
     combustible: false
     fragility: [fragile, brittle]
+    smash: {leaves: shards}
     names: []
   pottery:
     combustible: false
     fragility: [fragile, brittle]
+    smash: {leaves: shards}
     names: []
   metal:
     combustible: false

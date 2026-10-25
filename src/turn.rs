@@ -31,6 +31,7 @@ use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_m
 use serde_json::Value;
 
 pub mod chooser;
+mod divide;
 mod notice;
 mod search;
 mod snap;
@@ -621,7 +622,13 @@ impl<'s> Mechanics<'s> {
         room: &Room,
     ) -> Option<Refusal> {
         if intent.refused() {
-            let named = crate::grammar::Grammar::new(room).carried_named(command);
+            let grammar = crate::grammar::Grammar::new(room);
+            if let Some(kept) = grammar.guarded(command) {
+                let thing = kept.item.as_ref()?;
+                let fact = crate::refusal::still_needed(thing, &kept.kind);
+                return Refusal::new("unplayable", command, &fact, None).ok();
+            }
+            let named = grammar.carried_named(command);
             return Refusal::for_intent(
                 intent,
                 command,
@@ -1314,6 +1321,7 @@ impl<'s> Mechanics<'s> {
             "unlock" | "pick" | "pry" | "force" => self.open_passage(&choice),
             "search" | "open" => self.search(&choice),
             "break" => self.snap(&choice),
+            crate::divide::TEAR | crate::divide::SMASH => self.divide(&choice),
             WAIT => Ok(("applied", WAITED.into())),
             WEAR => self.put_on(item.unwrap_or_default()),
             REMOVE => self.take_off(item.unwrap_or_default()),
@@ -4184,12 +4192,14 @@ fn note_of(reading: &Reading) -> Vec<String> {
 /// panel, lists what the player has noticed and nothing else.
 pub fn room_of(records: &Records, playthrough: i64) -> Room {
     let game = Game::new(records, playthrough);
+    let whole = whole_room_of(records, playthrough);
+    // What lies here noticed is what lies here, less what was not noticed.
     let lying: Vec<Thing> = game
         .items_noticed_in(game.current_location())
         .into_iter()
-        .map(|item| thing_of(item, false))
+        .filter_map(|item| whole.lying.iter().find(|thing| thing.id == id(item)))
+        .cloned()
         .collect();
-    let whole = whole_room_of(records, playthrough);
     // A part is seen when the piece it is attached to is.
     let parts = whole
         .parts
@@ -4232,6 +4242,17 @@ pub fn whole_room_of(records: &Records, playthrough: i64) -> Room {
             })
             .collect(),
     };
+    let bound = bound_things(records, playthrough);
+    let abilities = game
+        .protagonist()
+        .filter(|who| ABILITIES.iter().all(|a| int(who, a).is_some()))
+        .map(|who| {
+            ABILITIES
+                .iter()
+                .filter_map(|a| int(who, a).map(|score| ((*a).to_string(), score)))
+                .collect()
+        })
+        .unwrap_or_default();
     Room {
         protagonist: game.protagonist().map(person_of),
         here: here.map(|room| Place {
@@ -4248,18 +4269,19 @@ pub fn whole_room_of(records: &Records, playthrough: i64) -> Room {
         lying: game
             .items_lying_in(here)
             .into_iter()
-            .map(|item| thing_of(item, false))
+            .map(|item| bind(thing_of(item, false), &bound))
             .collect(),
         carried: game
             .carried()
             .into_iter()
-            .map(|item| thing_of(item, true))
+            .map(|item| bind(thing_of(item, true), &bound))
             .collect(),
         parts: game
             .parts_in(here)
             .into_iter()
             .map(|item| part_of(records, item))
             .collect(),
+        abilities,
         over: int(game.row, "ended_at").is_some(),
     }
 }
@@ -4349,7 +4371,38 @@ pub fn thing_of(row: &Row, carried: bool) -> Thing {
         hold: None,
         wear: crate::wear::place_of(row).map(str::to_string),
         worn: carried && crate::wear::worn(row),
+        material: text(row, "material").map(str::to_string),
+        fixture: text(row, "tier") == Some(crate::kit::FIXTURE),
+        bound: false,
     }
+}
+
+/// The things an open beat of the story is bound to, by id: the target of
+/// each step of an open arc this game has not reached that names a thing.
+/// A game's copy is bound by its template's id.
+fn bound_things(records: &Records, playthrough: i64) -> Vec<i64> {
+    let game = Game::new(records, playthrough);
+    let story = game.story_id();
+    let reached: Vec<i64> = game
+        .own("playthrough_beats")
+        .iter()
+        .filter_map(|beat| int(beat, "quest_step_id"))
+        .collect();
+    records
+        .select("quests", |quest| {
+            int(quest, "story_id") == Some(story) && text(quest, "status") == Some("open")
+        })
+        .into_iter()
+        .flat_map(|quest| outcome::steps(records, quest))
+        .filter(|step| !reached.contains(&id(step)) && text(step, "target_type") == Some("Item"))
+        .filter_map(|step| int(step, "target_id"))
+        .collect()
+}
+
+/// A thing as [`bound_things`] marks it.
+fn bind(mut thing: Thing, bound: &[i64]) -> Thing {
+    thing.bound = bound.contains(&thing.id) || thing.template.is_some_and(|t| bound.contains(&t));
+    thing
 }
 
 /// Whether the served turn writes a paragraph for this reading, which is

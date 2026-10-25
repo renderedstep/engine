@@ -11,6 +11,8 @@ pub const PHYSICAL_HINTS: &[(&str, &str)] = &[
     ("consume", "eat or drink something you carry"),
     ("offer", "offer something; its recipient may refuse"),
     ("burn", "burn a combustible thing with a firestarter"),
+    ("tear", "tear paper or cloth apart"),
+    ("smash", "smash glass or pottery apart"),
     ("unlock", "open a locked passage with its key"),
     ("pick", "try a lock with lockpicks"),
     ("pry", "try a jammed passage with a lever"),

@@ -677,13 +677,24 @@ pub struct Kits {
 }
 
 /// One material: whether a thing of it always or never burns (`None` where
-/// either may), the fragilities it may have (`None` for any), and the names
-/// a kit writes with it.
+/// either may), the fragilities it may have (`None` for any), how it may be
+/// broken apart (`None` where it may not), and the names a kit writes with
+/// it.
 #[derive(Debug)]
 pub struct Material {
     pub combustible: Option<bool>,
     pub fragility: Option<Vec<String>>,
+    pub tear: Option<Divide>,
+    pub smash: Option<Divide>,
     pub names: Vec<String>,
+}
+
+/// One way a material breaks apart (`divide`): what it leaves, and the
+/// check it takes, an ability and what is taken off it, or none.
+#[derive(Debug, PartialEq, Eq)]
+pub struct Divide {
+    pub leaves: String,
+    pub check: Option<(String, i64)>,
 }
 
 /// One sort of place: each piece and its share of the die, and the small
@@ -731,8 +742,38 @@ const KITS_KEYS: &[&str] = &[
     "wear",
 ];
 
-/// A material's keys: `names` always, the other two where they are settled.
-const MATERIAL_KEYS: &[&str] = &["combustible", "fragility", "names"];
+/// A material's keys: `names` always, the others where they are settled.
+const MATERIAL_KEYS: &[&str] = &["combustible", "fragility", "tear", "smash", "names"];
+
+/// One way of breaking apart: `leaves` always, and at most one ability with
+/// what it takes off.
+fn read_divide(material: &str, act: &str, spec: &Yaml) -> Option<Divide> {
+    if spec.is_badvalue() {
+        return None;
+    }
+    let mut leaves = None;
+    let mut check = None;
+    for (key, value) in entries(spec, "a way of breaking apart") {
+        if key == "leaves" {
+            leaves = Some(string(value, "what an act leaves"));
+            continue;
+        }
+        assert!(
+            crate::grammar::ABILITIES.contains(&key.as_str()) && check.is_none(),
+            "item/kits.yml: {material}'s {act} has a key {key:?}"
+        );
+        let penalty = value
+            .as_i64()
+            .filter(|penalty| *penalty >= 0)
+            .unwrap_or_else(|| panic!("item/kits.yml: {material}'s {act} takes off {value:?}"));
+        check = Some((key, penalty));
+    }
+    Some(Divide {
+        leaves: leaves
+            .unwrap_or_else(|| panic!("item/kits.yml: {material}'s {act} leaves nothing")),
+        check,
+    })
+}
 
 pub fn kits() -> &'static Kits {
     static TABLES: OnceLock<Kits> = OnceLock::new();
@@ -859,11 +900,15 @@ fn read_kits(source: &str) -> Kits {
                 });
                 let fragility = (!spec["fragility"].is_badvalue())
                     .then(|| strings(&spec["fragility"], "a material's fragility"));
+                let tear = read_divide(&material, "tear", &spec["tear"]);
+                let smash = read_divide(&material, "smash", &spec["smash"]);
                 (
                     material,
                     Material {
                         combustible,
                         fragility,
+                        tear,
+                        smash,
                         names: strings(&spec["names"], "a material's names"),
                     },
                 )
@@ -1137,8 +1182,8 @@ mod tests {
     #[should_panic(expected = "jug is glass, but it is sturdy")]
     fn kits_refuse_a_material_the_kit_written_thing_contradicts() {
         read_kits(&KITS.replace(
-            "    fragility: [fragile, brittle]\n    names: []\n  pottery:",
-            "    fragility: [fragile, brittle]\n    names: [jug]\n  pottery:",
+            "    smash: {leaves: shards}\n    names: []\n  pottery:",
+            "    smash: {leaves: shards}\n    names: [jug]\n  pottery:",
         ));
     }
 

@@ -1,0 +1,44 @@
+---
+story: A Writ On The Copying Desk
+steps:
+- id: smash-the-glass-jar
+  type: "/smash the glass jar"
+  browser:
+    token: smash-jar
+    replies:
+    - purpose: narration
+      content: The jar bursts on the boards, and the sand goes everywhere.
+      prompt_includes:
+      - smashed the glass jar apart
+      - What is left of it is the shards of the glass jar, lying where it was.
+  expect:
+    changed: true
+    refused: false
+    resolved_by: grammar
+    here:
+    - blank writ
+    - linen apron
+    - shards of the glass jar
+- id: smash-the-clay-pot
+  type: "/smash the clay pot"
+  expect:
+    changed: true
+    refused: false
+    carrying:
+    - letter
+    - tinderbox
+    - iron key
+    - shards of the clay pot
+- id: take-the-shards
+  type: take shards of the glass jar
+  expect:
+    changed: true
+    here:
+    - blank writ
+    - linen apron
+    carrying:
+    - letter
+    - tinderbox
+    - iron key
+    - shards of the clay pot
+    - shards of the glass jar

@@ -39,6 +39,12 @@ pub const CONTENTS: i128 = 16;
 /// `Roll::SNAP`: the strength check to break a part off a fixed piece, by
 /// the part's own row, at story time.
 pub const SNAP: i128 = 17;
+/// `Roll::TEAR`: the check to tear a thing apart, where its material takes
+/// one, by the thing's own row, at story time.
+pub const TEAR: i128 = 18;
+/// `Roll::SMASH`: the check to smash a thing apart, where its material takes
+/// one, by the thing's own row, at story time.
+pub const SMASH: i128 = 19;
 
 /// The five parts of a seed. Unset parts are 0.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

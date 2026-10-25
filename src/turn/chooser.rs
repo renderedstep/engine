@@ -10,9 +10,10 @@
 //! - **The verbs** are move, examine, take, drop and use. Talk and attack
 //!   are never chosen, and neither is an offer, which plays as a
 //!   conversation, nor a wait, which pursues nothing, nor putting a thing
-//!   on or taking it off, which no pursuit weighs yet. A move into a room
-//!   nobody has written is a candidate only when the caller says rooms may
-//!   be written on this turn.
+//!   on or taking it off, which no pursuit weighs yet, nor a tear or a
+//!   smash, which ends a thing for good and is the player's to type. A move
+//!   into a room nobody has written is a candidate only when the caller says
+//!   rooms may be written on this turn.
 //! - **The pursuit.** Each candidate weighs the protagonist's own
 //!   `desire_pursuit` row of the table the people in a room act by
 //!   (`data/playthrough/volition/weights.yml`), through the shape its verb
@@ -167,6 +168,7 @@ pub fn candidates(mechanics: &Mechanics, unwritten: bool) -> Vec<Candidate> {
                     let spends = matches!(choice.kind.as_str(), "consume" | "burn");
                     let spent = choice.item.clone().map(Record::Thing);
                     if matches!(choice.kind.as_str(), "offer" | WAIT | WEAR | REMOVE)
+                        || crate::divide::KINDS.contains(&choice.kind.as_str())
                         || (spends && spent.is_some_and(|item| held_for_arc(&item)))
                     {
                         continue;

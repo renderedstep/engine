@@ -2,11 +2,11 @@
 //! (`data/item/kits.yml`'s `materials`), or nothing, which is unknown and
 //! plays exactly as a thing always has.
 //!
-//! NO ACT READS IT YET. A kit writes it from the table's `names`, a seed file
-//! sets it by hand, and a game's copy of a thing brings it along; nothing
-//! offered, rolled or told turns on it, and no request a model is handed
-//! carries it. What it will decide -- what may be torn, smashed or cut, and
-//! what that leaves -- comes with the acts that read it.
+//! ONE FAMILY OF ACTS READS IT: BREAKING APART. A kit writes it from the
+//! table's `names`, a seed file sets it by hand, and a game's copy of a thing
+//! brings it along. What may be torn or smashed, and what that leaves, is
+//! the material's (`crate::divide`); nothing else offered, rolled or told
+//! turns on it, and no request a model is handed carries it.
 //!
 //! What it does decide now is what a thing's other columns may say. A
 //! material may settle whether a thing of it burns (paper always does, glass

@@ -428,6 +428,20 @@ impl Refusal {
     }
 }
 
+/// A `tear`, `smash` or `burn` of a thing an open beat of the story is bound
+/// to (the beat guard, [`crate::divide`]).
+pub fn still_needed(thing: &crate::room::Thing, kind: &str) -> String {
+    let done = match kind {
+        crate::divide::TEAR => "torn up",
+        crate::divide::SMASH => "smashed",
+        _ => "burned",
+    };
+    format!(
+        "The story still needs {}, so it cannot be {done} yet.",
+        thing.definite_name()
+    )
+}
+
 /// A take of a thing the player already holds.
 pub fn already_carrying(held: &Record) -> String {
     format!("You are already carrying {}.", own_name(held))

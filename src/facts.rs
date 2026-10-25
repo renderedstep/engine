@@ -206,6 +206,53 @@ pub fn broke_off(
     }
 }
 
+/// An attempt to break a thing apart (`tear`, `smash`; [`crate::divide`]):
+/// what was attempted, whether it came apart, and what it left. The narrator
+/// is not told the check behind it, only its outcome (the owner's call of
+/// 2026-10-25). `pieces` is the row of what it left, none where it held
+/// together; `carried` is whether the thing was in the breaker's hands.
+pub fn divided(
+    thing: &Row,
+    kind: &str,
+    breaker: Option<&Row>,
+    pieces: Option<&Row>,
+    carried: bool,
+) -> String {
+    let who = breaker.map_or("the player", |who| string(who, "fullname"));
+    let (verb, doing) = if kind == crate::divide::SMASH {
+        ("smash", "smashing")
+    } else {
+        ("tear", "tearing")
+    };
+    let the_thing = definite_name(thing);
+    let Some(pieces) = pieces else {
+        return format!(
+            "ON THIS TURN, and not before it, {who} tried to {verb} {the_thing} apart. \
+             {} held together: it is whole, and nothing changed. Do not write it {doing}, \
+             breaking or coming apart.",
+            upcase_first(&the_thing),
+        );
+    };
+    let done = if kind == crate::divide::SMASH {
+        "smashed"
+    } else {
+        "tore"
+    };
+    let lying = if carried {
+        "in their hands"
+    } else {
+        "lying where it was"
+    };
+    format!(
+        "ON THIS TURN, and not before it, {who} {done} {the_thing} apart. {} is gone: it \
+         is in no place now, and nobody can carry or use it whole again. What is left of it is \
+         {}, {lying}. The {doing} is what has just happened and it is what to narrate. Do not \
+         write {the_thing} whole again, or anything else being broken, picked up or carried.",
+        upcase_first(&the_thing),
+        definite_name(pieces),
+    )
+}
+
 /// What is still attached to each fixed piece told, one line a piece in the
 /// order the pieces are told, a piece with nothing on it saying nothing:
 /// "Attached to the old tree, and could be broken off: two branches, bark."

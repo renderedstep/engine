@@ -1,0 +1,261 @@
+{
+  "script": "an-iron-key-is-not-torn",
+  "story": "A Writ On The Copying Desk",
+  "steps": [
+    {
+      "step": "step 1 tear-the-iron-key",
+      "player": "first",
+      "typed": "/tear the iron key",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "That did not resolve to an available physical action with these items and doorways. Nothing has changed. A Playthrough::Drift row was written.",
+        "understood": "use -> nothing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 smash-the-letter",
+      "player": "first",
+      "typed": "/smash the letter",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "That did not resolve to an available physical action with these items and doorways. Nothing has changed. A Playthrough::Drift row was written.",
+        "understood": "use -> nothing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 smash-nothing",
+      "player": "first",
+      "typed": "/smash",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "That did not resolve to an available physical action with these items and doorways. Nothing has changed. A Playthrough::Drift row was written.",
+        "understood": "use -> nothing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

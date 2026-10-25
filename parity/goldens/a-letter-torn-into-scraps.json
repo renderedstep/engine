@@ -1,0 +1,427 @@
+{
+  "script": "a-letter-torn-into-scraps",
+  "story": "A Writ On The Copying Desk",
+  "steps": [
+    {
+      "step": "step 1 rip-the-apron",
+      "player": "first",
+      "typed": "/rip the linen apron",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000013,
+            "name": "linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "tear -> linen apron",
+        "resolved_by": "grammar",
+        "note": "rip-apron-1: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 rip-the-apron-again",
+      "player": "first",
+      "typed": "/rip the linen apron",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000015,
+            "name": "strips of the linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000008,
+            "name": "letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "tear -> linen apron",
+        "resolved_by": "grammar",
+        "note": "rip-apron-2: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 tear-up-the-letter",
+      "player": "first",
+      "typed": "/tear up the letter",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000015,
+            "name": "strips of the linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000016,
+            "name": "scraps of the letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "tear -> letter",
+        "resolved_by": "grammar",
+        "note": "tear-letter: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 the-scraps-are-not-torn-again",
+      "player": "first",
+      "typed": "/tear the scraps of the letter",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000015,
+            "name": "strips of the linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000016,
+            "name": "scraps of the letter"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "That did not resolve to an available physical action with these items and doorways. Nothing has changed. A Playthrough::Drift row was written.",
+        "understood": "use -> nothing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 burn-the-scraps",
+      "player": "first",
+      "typed": "/burn the scraps of the letter with the tinderbox",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Copying Room",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Archive",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "blank writ"
+          },
+          {
+            "id": 1000000014,
+            "name": "glass jar"
+          },
+          {
+            "id": 1000000015,
+            "name": "strips of the linen apron"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "clay pot"
+          },
+          {
+            "id": 1000000011,
+            "name": "iron key"
+          },
+          {
+            "id": 1000000009,
+            "name": "tinderbox"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 15,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You burned scraps of the letter using tinderbox. The burned item is gone; you still carry tinderbox.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> scraps of the letter",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

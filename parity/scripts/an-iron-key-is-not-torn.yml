@@ -1,0 +1,32 @@
+---
+story: A Writ On The Copying Desk
+steps:
+- id: tear-the-iron-key
+  type: "/tear the iron key"
+  expect:
+    changed: false
+    refused: true
+    carrying:
+    - letter
+    - tinderbox
+    - clay pot
+    - iron key
+- id: smash-the-letter
+  type: "/smash the letter"
+  expect:
+    changed: false
+    refused: true
+    carrying:
+    - letter
+    - tinderbox
+    - clay pot
+    - iron key
+- id: smash-nothing
+  type: "/smash"
+  expect:
+    changed: false
+    refused: true
+    here:
+    - blank writ
+    - linen apron
+    - glass jar
