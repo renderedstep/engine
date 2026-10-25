@@ -1,11 +1,14 @@
 //! What one typed line turned out to be, whichever reader read it, and how
 //! a model's answer is resolved back to the room's records.
 
-use crate::room::{Choice, Record, Room, INTENTS, NOTHING};
+use crate::room::{Choice, Record, Room, Thing, INTENTS, NOTHING};
 use crate::text::{casecmp, ruby_strip};
 
 /// The actions a reach that resolved to nothing is counted for.
 pub const DRIFT_ACTIONS: &[&str] = &["move", "talk", "take", "drop", "attack", "use"];
+
+/// The physical attempts that let a thing out of the party's hands.
+const HAND_ACTS: &[&str] = &["offer", "burn", "consume"];
 
 /// Which slot an action's resolved record lands in. `use` binds a whole
 /// attempt instead, and `other` and `throw` have no single slot.
@@ -44,6 +47,10 @@ pub struct Intent {
     /// Why the local reader would not read the line at all, when it would
     /// not.
     pub unread: Option<Unread>,
+    /// The engine's own sentence for a line the grammar read and will not
+    /// play, where it already knows why: a `wear` or a `remove` of a thing
+    /// in the wrong state for it.
+    pub declined: Option<String>,
 }
 
 /// A line the local reader leaves unread, and refuses in the engine's own
@@ -151,13 +158,27 @@ impl Intent {
         self.is_throw() && (self.item.is_none() || self.at.is_none())
     }
 
+    /// The worn thing a hand act would let go of: a drop, a throw, an
+    /// offer, a burn or a consuming of something the party is wearing,
+    /// which is taken off first, as an act of its own.
+    pub fn lets_go_of_the_worn(&self) -> Option<&Thing> {
+        let thing = match (&self.physical, self.action.as_str()) {
+            (Some(choice), _) if HAND_ACTS.contains(&choice.kind.as_str()) => choice.item.as_ref(),
+            (None, "drop" | "throw") => self.item.as_ref().and_then(Record::thing),
+            _ => None,
+        };
+        thing.filter(|thing| thing.worn)
+    }
+
     /// Whether the engine will refuse to play the line.
     pub fn refused(&self) -> bool {
-        self.named_more_than_one()
+        self.declined.is_some()
+            || self.named_more_than_one()
             || self.reached_for_nothing()
             || self.unreadable()
             || self.throws_at_nothing()
             || self.moves_the_immovable()
+            || self.lets_go_of_the_worn().is_some()
     }
 }
 

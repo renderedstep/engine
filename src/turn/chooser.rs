@@ -9,8 +9,10 @@
 //!
 //! - **The verbs** are move, examine, take, drop and use. Talk and attack
 //!   are never chosen, and neither is an offer, which plays as a
-//!   conversation, nor a wait, which pursues nothing. A move into a room nobody has written is a candidate only
-//!   when the caller says rooms may be written on this turn.
+//!   conversation, nor a wait, which pursues nothing, nor putting a thing
+//!   on or taking it off, which no pursuit weighs yet. A move into a room
+//!   nobody has written is a candidate only when the caller says rooms may
+//!   be written on this turn.
 //! - **The pursuit.** Each candidate weighs the protagonist's own
 //!   `desire_pursuit` row of the table the people in a room act by
 //!   (`data/playthrough/volition/weights.yml`), through the shape its verb
@@ -42,7 +44,7 @@ use crate::grammar;
 use crate::intent::{slot_for, Intent};
 use crate::noticed;
 use crate::records::{id, int, text};
-use crate::room::{Record, Room, WAIT};
+use crate::room::{Record, Room, REMOVE, WAIT, WEAR};
 use crate::{roll, volition};
 use std::collections::{HashMap, VecDeque};
 
@@ -164,8 +166,7 @@ pub fn candidates(mechanics: &Mechanics, unwritten: bool) -> Vec<Candidate> {
                 Some(choice) => {
                     let spends = matches!(choice.kind.as_str(), "consume" | "burn");
                     let spent = choice.item.clone().map(Record::Thing);
-                    if choice.kind == "offer"
-                        || choice.kind == WAIT
+                    if matches!(choice.kind.as_str(), "offer" | WAIT | WEAR | REMOVE)
                         || (spends && spent.is_some_and(|item| held_for_arc(&item)))
                     {
                         continue;

@@ -43,6 +43,11 @@ pub struct Thing {
     pub piece: Option<(i64, String)>,
     /// How hard a part holds on (`hold_penalty` in `data/item/kits.yml`).
     pub hold: Option<String>,
+    /// The place on a body it is worn on (`items.wear`); none for a thing
+    /// nobody wears.
+    pub wear: Option<String>,
+    /// The party is wearing it (`items.worn`): a kind of carried.
+    pub worn: bool,
 }
 
 pub const USE_KINDS: &[&str] = &[
@@ -63,6 +68,18 @@ const CONSUMABLES: &[&str] = &["food", "drink", "healing"];
 /// within reach, so every room offers it, last.
 pub const WAIT: &str = "wait";
 
+/// The attempt that puts a thing on: one the party carries, or one lying
+/// here that can be picked up, which the same act picks up first.
+pub const WEAR: &str = "wear";
+
+/// The attempt that takes a worn thing off. It stays in the party's hands.
+pub const REMOVE: &str = "remove";
+
+/// The attempts no reader is handed until the readers are retrained on
+/// them (the owner's call of 2026-10-25): each is reached through the
+/// grammar alone.
+pub const GRAMMAR_ONLY: &[&str] = &[WEAR, REMOVE, WAIT];
+
 impl Thing {
     /// A thing with the columns' defaults.
     pub fn new(id: i64, name: &str, carried: bool) -> Thing {
@@ -78,7 +95,17 @@ impl Thing {
             searched: false,
             piece: None,
             hold: None,
+            wear: None,
+            worn: false,
         }
+    }
+
+    /// The place on a body it would be worn on, where that is one of the
+    /// places `data/item/wear.yml` lists.
+    pub fn wear_place(&self) -> Option<&str> {
+        self.wear
+            .as_deref()
+            .filter(|place| crate::wear::is_place(place))
     }
 
     /// Whether a search would find anything this game has not looked in: a
@@ -267,6 +294,8 @@ impl Choice {
                 self.piece_name()
             ),
             WAIT => "Wait and let time pass".into(),
+            WEAR => format!("Put on {}", self.item_definite()),
+            REMOVE => format!("Take off {}", self.item_definite()),
             _ => String::new(),
         }
     }
@@ -467,17 +496,18 @@ impl Room {
     }
 
     /// The physical attempts a reader is handed: every one the room offers
-    /// but the `wait`, which joins the readers' lists with their retrain
-    /// (the owner's call of 2026-10-25). Until then a wait is reached through
-    /// the grammar alone, and every reader request stays as it was.
+    /// but the [`GRAMMAR_ONLY`] ones (`wear`, `remove` and `wait`), which
+    /// join the readers' lists with their retrain (the owner's call of
+    /// 2026-10-25). Until then they are reached through the grammar alone,
+    /// and every reader request stays as it was.
     pub fn reader_actions(&self) -> Vec<Choice> {
         let mut choices = self.physical_actions();
-        choices.retain(|choice| choice.kind != WAIT);
+        choices.retain(|choice| !GRAMMAR_ONLY.contains(&choice.kind.as_str()));
         choices
     }
 
     /// The closed set a reader is handed for one action: [`Room::offered_for`],
-    /// less the `wait` ([`Room::reader_actions`]).
+    /// less the [`GRAMMAR_ONLY`] attempts ([`Room::reader_actions`]).
     pub fn reader_offered_for(&self, action: &str) -> Vec<Record> {
         if action == "use" {
             return self
@@ -496,7 +526,10 @@ impl Room {
     /// `open` beside it, in the order the pieces lie, then a `break` for each
     /// sort of part still attached to a piece lying here, in the order the
     /// pieces lie: one attempt for a tree's branches however many it has
-    /// left, on the first of them; and last, a `wait`, which needs nothing
+    /// left, on the first of them; then a `wear` for each thing carried,
+    /// then lying here, that could be put on now ([`Room::wear_refused`]),
+    /// and a `remove` for each worn thing that could be taken off now
+    /// ([`Room::remove_refused`]); and last, a `wait`, which needs nothing
     /// and so is always offered.
     pub fn physical_actions(&self) -> Vec<Choice> {
         if self.protagonist.is_none() || self.here.is_none() || self.over {
@@ -611,7 +644,80 @@ impl Room {
             }
         }
         result.extend(breaks);
+        for item in carried.iter().chain(&self.lying) {
+            if self.wear_refused(item).is_none() {
+                result.push(Choice {
+                    item: Some(item.clone()),
+                    ..choice(WEAR)
+                });
+            }
+        }
+        for item in carried.iter().filter(|item| item.worn) {
+            if self.remove_refused(item).is_none() {
+                result.push(Choice {
+                    item: Some(item.clone()),
+                    ..choice(REMOVE)
+                });
+            }
+        }
         result.push(choice(WAIT));
         result
     }
+
+    /// What the party wears on a place, if anything.
+    pub fn worn_on(&self, place: &str) -> Option<&Thing> {
+        self.carried
+            .iter()
+            .find(|item| item.worn && item.wear_place() == Some(place))
+    }
+
+    /// Why a thing carried or lying here cannot be put on now, or `None`
+    /// where it can: it is worn nowhere, it is worn already, it is lying
+    /// here and cannot be picked up, its place is taken, or the place it
+    /// lies under is worn over ([`crate::wear::under`]).
+    pub fn wear_refused(&self, item: &Thing) -> Option<Dressing<'_>> {
+        let Some(place) = item.wear_place() else {
+            return Some(Dressing::Unwearable);
+        };
+        if !item.carried && !item.throwable() {
+            return Some(Dressing::Unwearable);
+        }
+        if item.worn {
+            return Some(Dressing::Worn);
+        }
+        if let Some(other) = self.worn_on(place) {
+            return Some(Dressing::Taken(other));
+        }
+        crate::wear::under(place)
+            .and_then(|above| self.worn_on(above))
+            .map(Dressing::Over)
+    }
+
+    /// Why a thing carried cannot be taken off now, or `None` where it can:
+    /// it is not worn, or the place it lies under is worn over.
+    pub fn remove_refused(&self, item: &Thing) -> Option<Dressing<'_>> {
+        if !item.worn {
+            return Some(Dressing::NotWorn);
+        }
+        item.wear_place()
+            .and_then(crate::wear::under)
+            .and_then(|above| self.worn_on(above))
+            .map(Dressing::Over)
+    }
+}
+
+/// Why a `wear` or a `remove` is not offered on a thing.
+#[derive(Clone, Copy, Debug)]
+pub enum Dressing<'a> {
+    /// It names no place on a body, or it is lying here and cannot be
+    /// picked up.
+    Unwearable,
+    /// It is worn already.
+    Worn,
+    /// It is not worn.
+    NotWorn,
+    /// Another thing is worn on its place.
+    Taken(&'a Thing),
+    /// Its place lies under one this thing is worn on.
+    Over(&'a Thing),
 }

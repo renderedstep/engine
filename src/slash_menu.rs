@@ -18,6 +18,8 @@ pub const PHYSICAL_HINTS: &[(&str, &str)] = &[
     ("search", "look inside something fixed here"),
     ("open", "open something fixed here that is shut"),
     ("break", "try to break a part off something fixed here"),
+    ("wear", "put on something you carry or that lies here"),
+    ("remove", "take off something you are wearing"),
     ("wait", "let time pass where you stand"),
 ];
 
