@@ -101,7 +101,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -299,7 +300,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []

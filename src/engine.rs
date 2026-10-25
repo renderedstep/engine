@@ -369,6 +369,19 @@ impl Engine {
         })
     }
 
+    /// What the game's doctor reports about the materials of a story's
+    /// things, both layers ([`crate::material::findings`]). Writes nothing.
+    pub fn material_findings(&self, story: i64) -> Result<Vec<crate::noticed::Finding>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let records = store.load()?;
+            if records.find("stories", story).is_none() {
+                return Err(Error::NoSuchStory(format!("#{story}")));
+            }
+            Ok(crate::material::findings(&records, story))
+        })
+    }
+
     /// What the move answered with `scene` found changed since the game last
     /// left the room it walked back into ([`crate::revisit::since_on`]), in
     /// a game told either way: none for any other scene, and for a move into

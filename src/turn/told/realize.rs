@@ -559,6 +559,9 @@ impl Turn<'_, '_> {
                 if let Some(fragility) = &thing.fragility {
                     values.push(("fragility", Value::from(fragility.as_str())));
                 }
+                if let Some(material) = thing.material() {
+                    values.push(("material", Value::from(material)));
+                }
                 let row = self.m.insert("items", values)?;
                 if within.is_none() {
                     let placed = self.placement(location, spot::Record::Item(id(&row)));

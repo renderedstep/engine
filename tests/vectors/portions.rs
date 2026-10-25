@@ -43,6 +43,7 @@ pub const NAMES: &[&str] = &[
     "breakage",
     "range",
     "carry",
+    "material",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -805,5 +806,46 @@ fn carry() {
                 answer
             }
         }
+    });
+}
+
+#[test]
+fn material() {
+    use renderedstep_engine::material;
+    use renderedstep_engine::records::Records;
+    let constants = json!({
+        "materials": renderedstep_engine::data::kits()
+            .materials
+            .iter()
+            .map(|(name, rule)| json!({
+                "material": name,
+                "combustible": rule.combustible,
+                "fragility": rule.fragility,
+                "names": rule.names,
+            }))
+            .collect::<Vec<Value>>(),
+    });
+    check("material", constants, |input| {
+        if let Some(name) = input["name"].as_str() {
+            return json!({ "material": material::of(name) });
+        }
+        if let Some(story) = input["story"].as_i64() {
+            let records = Records::from_json(&input["records"]);
+            let findings: Vec<Value> = material::findings(&records, story)
+                .into_iter()
+                .map(|found| {
+                    json!({
+                        "code": found.code,
+                        "severity": found.severity,
+                        "message": found.message,
+                        "remedy": found.remedy,
+                        "subject": [found.subject.0, found.subject.1],
+                    })
+                })
+                .collect();
+            return json!({ "findings": findings });
+        }
+        let row = input.as_object().expect("a row").clone();
+        json!({ "against": material::against(&row) })
     });
 }

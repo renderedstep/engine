@@ -158,6 +158,10 @@ impl Mechanics<'_> {
                     ("use_kind", Value::from(thing.use_kind())),
                     ("combustible", Value::Bool(thing.combustible())),
                     ("readable", Value::Bool(thing.readable())),
+                    (
+                        "material",
+                        thing.material().map_or(Value::Null, Value::from),
+                    ),
                 ],
             )?;
         }

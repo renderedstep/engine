@@ -44,7 +44,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -71,7 +72,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -160,7 +162,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -187,7 +190,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -214,7 +218,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -241,7 +246,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -330,7 +336,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -357,7 +364,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -384,7 +392,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -411,7 +420,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -438,7 +448,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -465,7 +476,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -554,7 +566,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -581,7 +594,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -608,7 +622,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -635,7 +650,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -662,7 +678,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -689,7 +706,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -784,7 +802,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -811,7 +830,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -838,7 +858,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -865,7 +886,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -892,7 +914,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -919,7 +942,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -1071,7 +1095,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -1098,7 +1123,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -1125,7 +1151,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -1152,7 +1179,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -1179,7 +1207,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -1206,7 +1235,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -1367,7 +1397,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -1394,7 +1425,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -1421,7 +1453,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -1448,7 +1481,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -1475,7 +1509,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -1502,7 +1537,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -1692,7 +1728,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -1719,7 +1756,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -1746,7 +1784,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -1773,7 +1812,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -1800,7 +1840,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -1827,7 +1868,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -1854,7 +1896,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000020,
@@ -1881,7 +1924,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -2077,7 +2121,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -2104,7 +2149,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -2131,7 +2177,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -2158,7 +2205,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -2185,7 +2233,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -2212,7 +2261,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -2239,7 +2289,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000020,
@@ -2266,7 +2317,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000021,
@@ -2293,7 +2345,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000022,
@@ -2320,7 +2373,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -2516,7 +2570,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -2543,7 +2598,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -2570,7 +2626,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -2597,7 +2654,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -2624,7 +2682,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -2651,7 +2710,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -2678,7 +2738,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000020,
@@ -2705,7 +2766,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000021,
@@ -2732,7 +2794,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000022,
@@ -2759,7 +2822,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -2786,7 +2850,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000024,
@@ -2813,7 +2878,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -3009,7 +3075,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -3036,7 +3103,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -3063,7 +3131,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -3090,7 +3159,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -3117,7 +3187,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -3144,7 +3215,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -3171,7 +3243,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000020,
@@ -3198,7 +3271,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000021,
@@ -3225,7 +3299,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000022,
@@ -3252,7 +3327,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -3279,7 +3355,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000024,
@@ -3306,7 +3383,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -3508,7 +3586,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -3535,7 +3614,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -3562,7 +3642,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -3589,7 +3670,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -3616,7 +3698,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -3643,7 +3726,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -3670,7 +3754,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000020,
@@ -3697,7 +3782,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000021,
@@ -3724,7 +3810,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000022,
@@ -3751,7 +3838,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -3778,7 +3866,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000024,
@@ -3805,7 +3894,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -4038,7 +4128,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -4065,7 +4156,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -4092,7 +4184,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -4119,7 +4212,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -4146,7 +4240,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -4173,7 +4268,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -4200,7 +4296,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000020,
@@ -4227,7 +4324,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000021,
@@ -4254,7 +4352,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000022,
@@ -4281,7 +4380,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -4308,7 +4408,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000024,
@@ -4335,7 +4436,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -4575,7 +4677,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -4602,7 +4705,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -4629,7 +4733,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -4656,7 +4761,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -4683,7 +4789,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -4710,7 +4817,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -4737,7 +4845,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000020,
@@ -4764,7 +4873,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000021,
@@ -4791,7 +4901,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000022,
@@ -4818,7 +4929,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -4845,7 +4957,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000024,
@@ -4872,7 +4985,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []

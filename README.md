@@ -35,6 +35,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `interior` | `Location::Interior` | a building's rooms and doorways, returned rather than written |
 | `kind` | `Location::Kind` | what sort of place a room may be and how cluttered, and the sort each room of a building is dealt |
 | `kit` | `Item::Kit`, `Item::Contents` | what stands in a room of a kind and what lies about in it, rolled on the room's name from `data/item/kits.yml`, and the parts each piece is born with (`kit::furnish`); and what lies inside a closed piece, drawn on the piece's own row (`Roll::CONTENTS`) |
+| `material` | none: it was written here | what a thing is made of (`items.material`), one of ten or unknown: the material a kit writes each name with, what a material settles about a thing's other columns (paper always burns, glass is never sturdy), and the doctor's findings for a thing they contradict. No act reads it yet |
 | `shuffle_connections` | `WorldMechanic::ShuffleConnections` | how a shuffle rearranges the mobile rooms' doorways |
 | `world_mechanic` | `WorldMechanic` | the cadence boundaries a mechanic has to run for |
 | `deadline` | `Quest::Deadline` | the hops walk and the anchor room an overdue step is placed from |

@@ -450,7 +450,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000002,
@@ -477,7 +478,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000003,
@@ -504,7 +506,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000004,
@@ -531,7 +534,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000005,
@@ -558,7 +562,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000006,
@@ -585,7 +590,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000007,
@@ -612,7 +618,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000008,
@@ -639,7 +646,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000009,
@@ -666,7 +674,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000010,
@@ -693,7 +702,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000011,
@@ -720,7 +730,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000012,
@@ -747,7 +758,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000013,
@@ -774,7 +786,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000014,
@@ -801,7 +814,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             }
           ],
           "removed": []
@@ -932,7 +946,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000002,
@@ -959,7 +974,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000003,
@@ -986,7 +1002,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000004,
@@ -1013,7 +1030,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000005,
@@ -1040,7 +1058,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000006,
@@ -1067,7 +1086,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000007,
@@ -1094,7 +1114,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000008,
@@ -1121,7 +1142,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000009,
@@ -1148,7 +1170,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000010,
@@ -1175,7 +1198,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000011,
@@ -1202,7 +1226,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000012,
@@ -1229,7 +1254,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000013,
@@ -1256,7 +1282,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000014,
@@ -1283,7 +1310,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             }
           ],
           "removed": []
@@ -1414,7 +1442,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000002,
@@ -1441,7 +1470,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000003,
@@ -1468,7 +1498,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000004,
@@ -1495,7 +1526,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000005,
@@ -1522,7 +1554,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000006,
@@ -1549,7 +1582,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000007,
@@ -1576,7 +1610,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000008,
@@ -1603,7 +1638,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000009,
@@ -1630,7 +1666,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000010,
@@ -1657,7 +1694,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000011,
@@ -1684,7 +1722,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000012,
@@ -1711,7 +1750,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000013,
@@ -1738,7 +1778,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000014,
@@ -1765,7 +1806,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000015,
@@ -1792,7 +1834,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000016,
@@ -1819,7 +1862,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -1846,7 +1890,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000018,
@@ -1873,7 +1918,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -1900,7 +1946,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -1927,7 +1974,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -1954,7 +2002,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             }
           ],
           "removed": []
@@ -2085,7 +2134,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000002,
@@ -2112,7 +2162,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000003,
@@ -2139,7 +2190,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000004,
@@ -2166,7 +2218,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000005,
@@ -2193,7 +2246,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000006,
@@ -2220,7 +2274,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000007,
@@ -2247,7 +2302,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000008,
@@ -2274,7 +2330,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000009,
@@ -2301,7 +2358,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000010,
@@ -2328,7 +2386,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000011,
@@ -2355,7 +2414,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000012,
@@ -2382,7 +2442,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000013,
@@ -2409,7 +2470,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000014,
@@ -2436,7 +2498,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000015,
@@ -2463,7 +2526,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000016,
@@ -2490,7 +2554,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -2517,7 +2582,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000018,
@@ -2544,7 +2610,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -2571,7 +2638,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -2598,7 +2666,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -2625,7 +2694,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             }
           ],
           "removed": []
@@ -2756,7 +2826,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000002,
@@ -2783,7 +2854,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000003,
@@ -2810,7 +2882,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000004,
@@ -2837,7 +2910,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000005,
@@ -2864,7 +2938,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000006,
@@ -2891,7 +2966,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000007,
@@ -2918,7 +2994,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000008,
@@ -2945,7 +3022,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000009,
@@ -2972,7 +3050,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000010,
@@ -2999,7 +3078,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000011,
@@ -3026,7 +3106,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000012,
@@ -3053,7 +3134,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000013,
@@ -3080,7 +3162,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000014,
@@ -3107,7 +3190,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             },
             {
               "id": 1000000015,
@@ -3134,7 +3218,8 @@
               "kit_key": "forest/old tree",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000016,
@@ -3161,7 +3246,8 @@
               "kit_key": "forest/undergrowth",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -3188,7 +3274,8 @@
               "kit_key": "forest/fallen log",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000018,
@@ -3215,7 +3302,8 @@
               "kit_key": "forest/loose/snail shell",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -3242,7 +3330,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -3269,7 +3358,8 @@
               "kit_key": "forest/old tree/attached/branch",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "firm"
+              "hold": "firm",
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -3296,7 +3386,8 @@
               "kit_key": "forest/old tree/attached/bark",
               "noticed_at": null,
               "searched_at": null,
-              "hold": "loose"
+              "hold": "loose",
+              "material": "wood"
             }
           ],
           "removed": []

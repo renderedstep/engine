@@ -67,6 +67,12 @@ impl Thing {
     pub fn readable(&self) -> bool {
         data::kits().readable.contains(&self.name)
     }
+
+    /// What it is made of (`materials`), or none where the table does not
+    /// say.
+    pub fn material(&self) -> Option<&'static str> {
+        crate::material::of(&self.name)
+    }
 }
 
 /// The generator a room's kit is thrown from.
