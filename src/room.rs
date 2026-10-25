@@ -466,6 +466,29 @@ impl Room {
         }
     }
 
+    /// The physical attempts a reader is handed: every one the room offers
+    /// but the `wait`, which joins the readers' lists with their retrain
+    /// (the owner's call of 2026-10-25). Until then a wait is reached through
+    /// the grammar alone, and every reader request stays as it was.
+    pub fn reader_actions(&self) -> Vec<Choice> {
+        let mut choices = self.physical_actions();
+        choices.retain(|choice| choice.kind != WAIT);
+        choices
+    }
+
+    /// The closed set a reader is handed for one action: [`Room::offered_for`],
+    /// less the `wait` ([`Room::reader_actions`]).
+    pub fn reader_offered_for(&self, action: &str) -> Vec<Record> {
+        if action == "use" {
+            return self
+                .reader_actions()
+                .into_iter()
+                .map(|choice| Record::Attempt(Box::new(choice)))
+                .collect();
+        }
+        self.offered_for(action)
+    }
+
     /// Every physical attempt this room offers, in the order the engine
     /// lists them: consuming, offering, burning, each closed doorway in the
     /// order the doorways were written, then each fixed piece here a search

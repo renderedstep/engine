@@ -2,12 +2,18 @@
 //! `rest`, `idle`, `think` and `pray`. It changes no thing, person or door;
 //! a told turn writes its scene, the clock moves on, and the world takes its
 //! turn as after any other line.
+//!
+//! No reader is handed it yet: it joins the readers' lists with their
+//! retrain, so every reader request is as it was before the wait existed.
 
+use renderedstep_engine::cascade;
+use renderedstep_engine::classifier;
 use renderedstep_engine::engine::Engine;
 use renderedstep_engine::grammar::{Grammar, MORE_THAN_ONE_ACT};
 use renderedstep_engine::model::{Replay, Reply};
 use renderedstep_engine::parity::{open_world, TITLE_SUFFIX};
 use renderedstep_engine::playthrough::Mode;
+use renderedstep_engine::records::Records;
 use renderedstep_engine::room::{Person, Place, Room, Thing, WAIT};
 use renderedstep_engine::turn::{chooser, Mechanics};
 use std::path::Path;
@@ -253,4 +259,54 @@ fn the_game_never_chooses_a_wait_for_the_player() {
     assert!(candidates
         .iter()
         .all(|c| c.intent.physical.as_ref().is_none_or(|p| p.kind != WAIT)));
+}
+
+/// Every request a reader is sent for `typed` in `room`: the classifier
+/// call's prompt and schema, and System One's state and questions.
+fn reader_requests(room: &Room, typed: &str) -> String {
+    let call = classifier::call(&Records::default(), room, typed);
+    let state = cascade::State::new(room, typed);
+    let questions = cascade::request(&state);
+    format!(
+        "{}\n{}\n{}\n{}\n{}",
+        call.system.unwrap_or_default(),
+        call.user,
+        call.schema.unwrap_or_default(),
+        state.to_json(),
+        questions
+    )
+}
+
+#[test]
+fn no_reader_request_carries_the_wait() {
+    let bare = Room {
+        cast: Vec::new(),
+        carried: Vec::new(),
+        ..office()
+    };
+    assert_eq!(bare.physical_actions().len(), 1, "the room offers its wait");
+    assert!(bare.reader_actions().is_empty());
+    assert!(bare.reader_offered_for("use").is_empty());
+    let sent = reader_requests(&bare, "wait for him to leave");
+    assert!(sent.contains("## Physical Actions (token: one attempt)\nNone are available.\n"));
+    let state = cascade::State::new(&bare, "wait").to_json();
+    assert_eq!(state["physical_actions"], serde_json::json!({}));
+    assert!(
+        !sent.contains("target_use"),
+        "no attempt question without attempts"
+    );
+
+    let room = office();
+    assert_eq!(
+        room.reader_actions(),
+        room.physical_actions()[..room.physical_actions().len() - 1]
+    );
+    let sent = [bare, room]
+        .iter()
+        .map(|room| reader_requests(room, "wait"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    for word in ["use:wait", "Wait and let time pass", "attempt_2"] {
+        assert!(!sent.contains(word), "a reader was handed {word:?}");
+    }
 }
