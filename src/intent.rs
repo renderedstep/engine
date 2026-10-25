@@ -115,9 +115,12 @@ impl Intent {
         self.also_named.is_some() && self.subject().is_some()
     }
 
-    /// The line reached for a record and the closed set had none.
+    /// The line reached for a record and the closed set had none. A `wait`
+    /// binds no record and still reached its attempt.
     pub fn reached_for_nothing(&self) -> bool {
-        DRIFT_ACTIONS.contains(&self.action.as_str()) && self.subject().is_none()
+        DRIFT_ACTIONS.contains(&self.action.as_str())
+            && self.subject().is_none()
+            && self.physical.is_none()
     }
 
     /// The model answered outside the table, or the line was left unread.

@@ -1,0 +1,234 @@
+{
+  "script": "a-wait-lets-the-world-take-its-turn",
+  "story": "A Clerk With Somewhere To Be",
+  "steps": [
+    {
+      "step": "step 1 wait-by-the-counter",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Records Office",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000002,
+            "name": "quarter receipt"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 1,
+        "acts": 1,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 rest-in-the-empty-office",
+      "player": "first",
+      "typed": "/rest a moment longer",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Records Office",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000002,
+            "name": "quarter receipt"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "rest: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 pray-in-the-empty-office",
+      "player": "first",
+      "typed": "/pray for the rain to stop",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Records Office",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000002,
+            "name": "quarter receipt"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You let time pass where you stand. Nothing else changed.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> Wait and let time pass",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 wait-and-take-is-two-acts",
+      "player": "first",
+      "typed": "/wait and take the quarter receipt",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Records Office",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000002,
+            "name": "quarter receipt"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "that line joins two things together, and reading it is the model's job",
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

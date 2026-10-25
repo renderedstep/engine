@@ -58,6 +58,11 @@ pub const USE_KINDS: &[&str] = &[
 
 const CONSUMABLES: &[&str] = &["food", "drink", "healing"];
 
+/// The attempt that lets time pass where the player stands: waiting,
+/// resting, idling, thinking or praying. It binds no record and is always
+/// within reach, so every room offers it, last.
+pub const WAIT: &str = "wait";
+
 impl Thing {
     /// A thing with the columns' defaults.
     pub fn new(id: i64, name: &str, carried: bool) -> Thing {
@@ -218,6 +223,9 @@ impl Choice {
         if self.kind == "break" {
             return format!("{} off {}", self.item_name(), self.piece_name());
         }
+        if self.kind == WAIT {
+            return String::new();
+        }
         let target = self.subject().map(|s| s.label()).unwrap_or_default();
         match &self.tool {
             Some(tool) => format!("{target} with {}", tool.name),
@@ -258,6 +266,7 @@ impl Choice {
                 self.item_definite(),
                 self.piece_name()
             ),
+            WAIT => "Wait and let time pass".into(),
             _ => String::new(),
         }
     }
@@ -464,7 +473,8 @@ impl Room {
     /// `open` beside it, in the order the pieces lie, then a `break` for each
     /// sort of part still attached to a piece lying here, in the order the
     /// pieces lie: one attempt for a tree's branches however many it has
-    /// left, on the first of them.
+    /// left, on the first of them; and last, a `wait`, which needs nothing
+    /// and so is always offered.
     pub fn physical_actions(&self) -> Vec<Choice> {
         if self.protagonist.is_none() || self.here.is_none() || self.over {
             return Vec::new();
@@ -578,6 +588,7 @@ impl Room {
             }
         }
         result.extend(breaks);
+        result.push(choice(WAIT));
         result
     }
 }

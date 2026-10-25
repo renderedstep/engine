@@ -109,6 +109,15 @@ verbs:
   # a model's list. Not `pull`: "pull the door shut" is no break.
   break: break
   snap: break
+  # LETTING TIME PASS: `wait` plays the attempt `Room::physical_actions`
+  # offers in every room, whatever follows the word. It writes the scene and
+  # moves the clock, and the world takes its turn. Resting, idling, thinking
+  # and praying are the same act (the owner's call of 2026-10-25).
+  wait: wait
+  rest: wait
+  idle: wait
+  think: wait
+  pray: wait
   # TAKING THE ENDING THE STORY HAS FALLEN DUE WITH. The line that meets the
   # main arc's last beat decides the outcome and keeps it as due; `end` is the
   # player saying to end the story there, and nothing else ends it. It takes

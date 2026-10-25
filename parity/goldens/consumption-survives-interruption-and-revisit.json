@@ -516,7 +516,7 @@
         "changed": false,
         "change": null,
         "refused": true,
-        "offers": "These items and doorways offer no matching physical action. Nothing has changed.",
+        "offers": "That did not resolve to an available physical action with these items and doorways. Available attempts: Wait and let time pass. Nothing has changed.",
         "understood": null,
         "resolved_by": null,
         "note": "drink-again: completed",

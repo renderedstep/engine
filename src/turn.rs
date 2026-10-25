@@ -22,7 +22,7 @@ use crate::playthrough::{max_hp, stat_block, Condition, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::roll::{self, Seed};
-use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing};
+use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing, WAIT};
 use crate::spot;
 use crate::store::Store;
 use crate::text::to_sentence;
@@ -64,6 +64,9 @@ const DOORWAY_HAZARDS: [(&str, &str); 2] = [("drop", "dexterity"), ("undertow", 
 
 /// `Item::HEALING_POINTS`: what a healing thing mends when it is consumed.
 const HEALING_POINTS: i64 = 8;
+
+/// What a `wait` did, in the engine's words: nothing but the time it took.
+pub const WAITED: &str = "You let time pass where you stand. Nothing else changed.";
 
 /// What a refused line left behind, said only in this mode
 /// (`Playthrough::Mechanics::ROW_WRITTEN`).
@@ -1243,6 +1246,7 @@ impl<'s> Mechanics<'s> {
             "unlock" | "pick" | "pry" | "force" => self.open_passage(&choice),
             "search" | "open" => self.search(&choice),
             "break" => self.snap(&choice),
+            WAIT => Ok(("applied", WAITED.into())),
             _ => Ok((
                 "rejected",
                 "The item remains in your hands until its recipient accepts it.".into(),

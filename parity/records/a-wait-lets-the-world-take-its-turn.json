@@ -1,0 +1,666 @@
+{
+  "script": "a-wait-lets-the-world-take-its-turn",
+  "steps": [
+    {
+      "step": "step 1 wait-by-the-counter",
+      "requests": [
+        {
+          "purpose": "narration",
+          "system": "You are the narrator of a text adventure. Write in the second person,\npresent tense, addressing the player as \"you\". Describe what happens in\nresponse to what they did, in one or two short paragraphs of prose.\n\nNever break character, never offer the player a numbered menu, and never\nmention that you are an AI or a narrator. The ways out of here, the people\npresent and what the player carries are listed in the prompt: do not add a\nway out, a person or a possession that is not on those lists. If the\nplayer tries something impossible, narrate the failure rather than\nrefusing.\n",
+          "user": "Story: A Clerk With Somewhere To Be (engine sweep) (town adventure)\n\nPremise: Wick came for a receipt; Bell is due upstairs and the day is going.\n\nThe player is in The Records Office: A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.\n\nWays out of here: The Landing. There are no others.\n\nThe player is Wick.\n\nWick is unhurt.\n\nAlso here: Bell (Bell). Nobody else is present.\n\nLying here, and takeable: quarter receipt.\n\nThe player is carrying: nothing.\n\nWhat just happened: You are standing at the counter of the records office. Bell is behind it, already half turned toward the landing.\n\n\nThe player types: wait\n\nNarrate what happens.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:05:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null,
+              "surface": null,
+              "kind": null,
+              "density": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You stand by the counter and let the minutes go.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "wait",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:05:00",
+              "summary": null,
+              "typed": "wait"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001,
+              "noticed_at": null
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 rest-in-the-empty-office",
+      "requests": [
+        {
+          "purpose": "narration",
+          "system": "You are the narrator of a text adventure. Write in the second person,\npresent tense, addressing the player as \"you\". Describe what happens in\nresponse to what they did, in one or two short paragraphs of prose.\n\nNever break character, never offer the player a numbered menu, and never\nmention that you are an AI or a narrator. The ways out of here, the people\npresent and what the player carries are listed in the prompt: do not add a\nway out, a person or a possession that is not on those lists. If the\nplayer tries something impossible, narrate the failure rather than\nrefusing.\n",
+          "user": "Story: A Clerk With Somewhere To Be (engine sweep) (town adventure)\n\nPremise: Wick came for a receipt; Bell is due upstairs and the day is going.\n\nThe player is in The Records Office: A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.\n\nWays out of here: The Landing. There are no others.\n\nThe player is Wick.\n\nWick is unhurt.\n\nNobody else is here.\n\nWhat else happened here, recorded by the game: Bell walked out of The Records Office to The Landing and is no longer in The Records Office.\n\nLying here, and takeable: quarter receipt.\n\nThe player is carrying: nothing.\n\nWhat just happened: You stand by the counter and let the minutes go.\n\nEarlier, in order:\nWick comes to the records office counter and finds Bell on her way out.\n\n\nThe player types: rest a moment longer\n\nNarrate what happens.\n",
+          "schema": null
+        }
+      ],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:10:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null,
+              "surface": null,
+              "kind": null,
+              "density": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You stand by the counter and let the minutes go.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "wait",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:05:00",
+              "summary": null,
+              "typed": "wait"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You lean on the counter a while longer.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "wait",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:10:00",
+              "summary": null,
+              "typed": "rest a moment longer"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001,
+              "noticed_at": null
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 pray-in-the-empty-office",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:10:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null,
+              "surface": null,
+              "kind": null,
+              "density": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You stand by the counter and let the minutes go.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "wait",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:05:00",
+              "summary": null,
+              "typed": "wait"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You lean on the counter a while longer.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "wait",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:10:00",
+              "summary": null,
+              "typed": "rest a moment longer"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001,
+              "noticed_at": null
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 4 wait-and-take-is-two-acts",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "danger": "safe",
+              "depth": null,
+              "description": "A counter, a wall of ledgers, and a door to the landing that nobody has shut all morning.",
+              "detail_level": "realized",
+              "generation_checkpoint": null,
+              "hazard": null,
+              "hazard_die": null,
+              "last_protagonist_visit": "2026-09-19 09:10:00",
+              "lore": "The office has kept the town's receipts since the town had any.",
+              "mobile": 0,
+              "name": "The Records Office",
+              "parent_location_id": null,
+              "population": null,
+              "story_id": 1000000001,
+              "teaser": "A counter and a wall of ledgers.",
+              "width": null,
+              "x": null,
+              "y": null,
+              "z": null,
+              "surface": null,
+              "kind": null,
+              "density": null
+            }
+          ],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A ruled slip with the quarter's date and no signature on it yet.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "quarter receipt",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [
+            {
+              "id": 1000000002,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You stand by the counter and let the minutes go.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000001,
+              "resolved_action": "wait",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:05:00",
+              "summary": null,
+              "typed": "wait"
+            },
+            {
+              "id": 1000000003,
+              "acted_on_id": null,
+              "acted_on_type": null,
+              "description": "You lean on the counter a while longer.",
+              "engine_fact": null,
+              "engine_fallback": 0,
+              "is_opening": 0,
+              "location_id": 1000000001,
+              "previous_scene_id": 1000000002,
+              "resolved_action": "wait",
+              "resolved_by": "grammar",
+              "story_id": 1000000001,
+              "story_timestamp": "2026-09-19 09:10:00",
+              "summary": null,
+              "typed": "rest a moment longer"
+            }
+          ],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000002,
+              "scene_id": 1000000002
+            },
+            {
+              "character_id": 1000000001,
+              "scene_id": 1000000003
+            }
+          ],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [
+            {
+              "id": 1000000001,
+              "ceasefire": 0,
+              "character_id": 1000000002,
+              "following": 0,
+              "location_id": 1000000002,
+              "peace_after_blow_id": 0,
+              "playthrough_id": 1000000001,
+              "noticed_at": null
+            }
+          ],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    }
+  ]
+}

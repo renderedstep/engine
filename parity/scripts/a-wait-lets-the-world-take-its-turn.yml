@@ -1,0 +1,44 @@
+---
+story: A Clerk With Somewhere To Be
+steps:
+- id: wait-by-the-counter
+  type: "/wait"
+  browser:
+    token: wait
+    replies:
+    - purpose: narration
+      content: You stand by the counter and let the minutes go.
+      prompt_excludes:
+      - What has ALREADY happened
+      - You let time pass
+  expect:
+    changed: true
+    refused: false
+    resolved_by: grammar
+    volitions: 1
+    acts: 1
+    elapsed_minutes: 5.0
+    present: []
+    here:
+    - quarter receipt
+- id: rest-in-the-empty-office
+  type: "/rest a moment longer"
+  browser:
+    token: rest
+    replies:
+    - purpose: narration
+      content: You lean on the counter a while longer.
+  expect:
+    changed: true
+    refused: false
+    volitions: 0
+    elapsed_minutes: 5.0
+- id: pray-in-the-empty-office
+  type: "/pray for the rain to stop"
+  expect:
+    changed: true
+    refused: false
+- id: wait-and-take-is-two-acts
+  type: "/wait and take the quarter receipt"
+  expect:
+    refused: true
