@@ -169,7 +169,7 @@ const GROUPS: &[Group] = &[
 
 /// The position written out as records a question can point at, each under
 /// a key the answers come back naming. Every membership fact is the room's
-/// [`Room::offered_for`] and nothing else.
+/// [`Room::reader_offered_for`] and nothing else.
 pub struct State<'a> {
     room: &'a Room,
     command: String,
@@ -181,7 +181,7 @@ impl<'a> State<'a> {
     pub fn new(room: &'a Room, command: &str) -> State<'a> {
         let offered: Vec<(&'static str, Vec<Record>)> = INTENTS
             .iter()
-            .map(|intent| (*intent, room.offered_for(intent)))
+            .map(|intent| (*intent, room.reader_offered_for(intent)))
             .collect();
         let mut state = State {
             room,

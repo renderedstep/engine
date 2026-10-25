@@ -11,7 +11,7 @@
 use crate::cascade::{self, Leave, HERE_WORDS};
 use crate::data;
 use crate::intent::Intent;
-use crate::room::{Choice, Record, Room};
+use crate::room::{Choice, Record, Room, WAIT};
 use crate::text::{
     inspect, is_blank, is_ruby_space, ruby_downcase, ruby_strip, split_words, squish_ascii,
 };
@@ -96,6 +96,8 @@ pub const HELP: &[&str] = &[
     "                 playthrough (also: hurt, damage)",
     "mend <n>         put n back, up to the maximum. It never raises the dead",
     "                 (also: heal)",
+    "wait             let time pass where you stand, and the world takes its",
+    "                 turn (also: rest, idle, think, pray)",
     "end              end the story, once every goal it asked for is met",
     "help             this list",
     "",
@@ -154,9 +156,12 @@ impl Reading {
         }
     }
 
-    /// A record was named and found, so a caller can act on it with no model.
+    /// A record was named and found, or an attempt that binds none was
+    /// read, so a caller can act on it with no model.
     pub fn resolved(&self) -> bool {
-        self.intent.as_ref().is_some_and(|i| i.subject().is_some())
+        self.intent
+            .as_ref()
+            .is_some_and(|i| i.subject().is_some() || i.physical.is_some())
     }
 }
 
@@ -213,6 +218,7 @@ pub fn describe(intent: &Intent) -> String {
         intent
             .subject()
             .map(|s| s.label())
+            .or_else(|| intent.physical.as_ref().map(Choice::name))
             .unwrap_or_else(|| "nothing".into())
     );
     if let Some(at) = &intent.at {
@@ -409,7 +415,10 @@ impl<'a> Grammar<'a> {
     /// The line that plays one physical attempt, or `None` where the line
     /// would play a different one.
     pub fn line_for(&self, choice: &Choice) -> Option<String> {
-        let line = format!("{SLASH}{} {}", choice.kind, choice.argument());
+        let line = match choice.argument() {
+            argument if argument.is_empty() => format!("{SLASH}{}", choice.kind),
+            argument => format!("{SLASH}{} {argument}", choice.kind),
+        };
         let physical = self
             .reading_first(&line)
             .and_then(|reading| reading.intent)
@@ -468,6 +477,7 @@ impl<'a> Grammar<'a> {
                 kind @ ("consume" | "offer" | "burn" | "unlock" | "pick" | "pry" | "force"
                 | "break"),
             ) => self.read_physical(kind, &argument),
+            Some(WAIT) => self.read_wait(&argument),
             // A piece's inside, unless the line names no piece and does name
             // a way out ("open the narrow door into the closet"), which reads
             // as the move it always did.
@@ -538,6 +548,29 @@ impl<'a> Grammar<'a> {
         table
             .into_iter()
             .find(|verb| downcased == *verb || downcased.starts_with(&format!("{verb} ")))
+    }
+
+    /// `wait` and its synonyms: the room's one `wait`, whatever follows the
+    /// word ("wait for him to leave" waits all the same), unless what
+    /// follows joins a second act on.
+    fn read_wait(&self, argument: &str) -> Reading {
+        if joins(argument) {
+            return Reading::refused(MORE_THAN_ONE_ACT.into());
+        }
+        let found = self
+            .room
+            .physical_actions()
+            .into_iter()
+            .find(|choice| choice.kind == WAIT);
+        let intent = Intent {
+            physical: found,
+            ..Intent::new("use")
+        };
+        Reading {
+            understood: Some(describe(&intent)),
+            intent: Some(intent),
+            ..Reading::default()
+        }
     }
 
     fn read_physical(&self, kind: &str, argument: &str) -> Reading {

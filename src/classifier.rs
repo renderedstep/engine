@@ -188,7 +188,7 @@ pub fn call(records: &Records, room: &Room, typed: &str) -> Call {
     }
     targets.extend(room.lying.iter().map(|thing| thing.name.clone()));
     targets.extend(room.carried.iter().map(|thing| thing.name.clone()));
-    targets.extend(room.physical_actions().iter().map(|choice| choice.token()));
+    targets.extend(room.reader_actions().iter().map(|choice| choice.token()));
     let names: Vec<&str> = targets.iter().map(String::as_str).collect();
     Call {
         system: Some(data::classifier_instructions().to_string()),
@@ -252,7 +252,7 @@ fn command_prompt(records: &Records, room: &Room, typed: &str) -> String {
             .collect()
     };
     let physical: Vec<String> = room
-        .physical_actions()
+        .reader_actions()
         .iter()
         .map(|choice| format!("{}: {}", choice.token(), choice.name()))
         .collect();

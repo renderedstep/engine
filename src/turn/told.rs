@@ -30,7 +30,7 @@ use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::revisit::{self, Since};
-use crate::room::{Choice, Record};
+use crate::room::{Choice, Record, WAIT};
 use crate::store::Store;
 use crate::text::{is_blank, presence, ruby_strip};
 use crate::turn::chooser;
@@ -166,6 +166,7 @@ fn resolved_action(intent: &Intent) -> &str {
     match &intent.physical {
         Some(choice) if matches!(choice.kind.as_str(), "search" | "open") => "search",
         Some(choice) if choice.kind == "break" => "break",
+        Some(choice) if choice.kind == WAIT => WAIT,
         _ => intent.action.as_str(),
     }
 }
@@ -867,6 +868,12 @@ impl<'s, 'm> Turn<'s, 'm> {
                 text(&row, "holds") == Some("closed"),
             );
             return self.narrate(command, Some(told), Some("use"), None, Some(fact));
+        }
+        if choice.kind == WAIT {
+            // Nothing happened but the time, so the narrator is asked as for
+            // any line the engine does nothing with; the engine's sentence
+            // stands only where no narrator answers.
+            return self.narrate(command, None, None, None, Some(fact));
         }
         if let Some(part) = part {
             // The narrator is told what came away; the engine's own sentence

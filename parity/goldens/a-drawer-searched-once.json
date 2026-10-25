@@ -1110,7 +1110,7 @@
         "changed": false,
         "change": null,
         "refused": true,
-        "offers": "These items and doorways offer no matching physical action. Nothing has changed. A Playthrough::Drift row was written.",
+        "offers": "That did not resolve to an available physical action with these items and doorways. Nothing has changed. A Playthrough::Drift row was written.",
         "understood": "use -> nothing",
         "resolved_by": "grammar",
         "note": null,

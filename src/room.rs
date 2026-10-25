@@ -58,6 +58,11 @@ pub const USE_KINDS: &[&str] = &[
 
 const CONSUMABLES: &[&str] = &["food", "drink", "healing"];
 
+/// The attempt that lets time pass where the player stands: waiting,
+/// resting, idling, thinking or praying. It binds no record and is always
+/// within reach, so every room offers it, last.
+pub const WAIT: &str = "wait";
+
 impl Thing {
     /// A thing with the columns' defaults.
     pub fn new(id: i64, name: &str, carried: bool) -> Thing {
@@ -218,6 +223,9 @@ impl Choice {
         if self.kind == "break" {
             return format!("{} off {}", self.item_name(), self.piece_name());
         }
+        if self.kind == WAIT {
+            return String::new();
+        }
         let target = self.subject().map(|s| s.label()).unwrap_or_default();
         match &self.tool {
             Some(tool) => format!("{target} with {}", tool.name),
@@ -258,6 +266,7 @@ impl Choice {
                 self.item_definite(),
                 self.piece_name()
             ),
+            WAIT => "Wait and let time pass".into(),
             _ => String::new(),
         }
     }
@@ -457,6 +466,29 @@ impl Room {
         }
     }
 
+    /// The physical attempts a reader is handed: every one the room offers
+    /// but the `wait`, which joins the readers' lists with their retrain
+    /// (the owner's call of 2026-10-25). Until then a wait is reached through
+    /// the grammar alone, and every reader request stays as it was.
+    pub fn reader_actions(&self) -> Vec<Choice> {
+        let mut choices = self.physical_actions();
+        choices.retain(|choice| choice.kind != WAIT);
+        choices
+    }
+
+    /// The closed set a reader is handed for one action: [`Room::offered_for`],
+    /// less the `wait` ([`Room::reader_actions`]).
+    pub fn reader_offered_for(&self, action: &str) -> Vec<Record> {
+        if action == "use" {
+            return self
+                .reader_actions()
+                .into_iter()
+                .map(|choice| Record::Attempt(Box::new(choice)))
+                .collect();
+        }
+        self.offered_for(action)
+    }
+
     /// Every physical attempt this room offers, in the order the engine
     /// lists them: consuming, offering, burning, each closed doorway in the
     /// order the doorways were written, then each fixed piece here a search
@@ -464,7 +496,8 @@ impl Room {
     /// `open` beside it, in the order the pieces lie, then a `break` for each
     /// sort of part still attached to a piece lying here, in the order the
     /// pieces lie: one attempt for a tree's branches however many it has
-    /// left, on the first of them.
+    /// left, on the first of them; and last, a `wait`, which needs nothing
+    /// and so is always offered.
     pub fn physical_actions(&self) -> Vec<Choice> {
         if self.protagonist.is_none() || self.here.is_none() || self.over {
             return Vec::new();
@@ -578,6 +611,7 @@ impl Room {
             }
         }
         result.extend(breaks);
+        result.push(choice(WAIT));
         result
     }
 }
