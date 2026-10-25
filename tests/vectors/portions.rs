@@ -42,6 +42,7 @@ pub const NAMES: &[&str] = &[
     "physics",
     "breakage",
     "range",
+    "carry",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -734,5 +735,75 @@ fn range() {
                 json!({ "x": landed.x, "y": landed.y })
             }),
         })
+    });
+}
+
+#[test]
+fn carry() {
+    use renderedstep_engine::carry::{self, Body, Held, Place, Refused};
+    let table = carry::table();
+    let constants = json!({
+        "hands": table.hands,
+        "hands_for": table.hands_for,
+        "weight": table.weight,
+        "load_divisor": table.load_divisor,
+        "size": table.size,
+        "storage": table
+            .storage
+            .iter()
+            .map(|(place, storage)| json!([place, {"fits": storage.fits, "room": storage.room}]))
+            .collect::<Vec<_>>(),
+    });
+    let place = |value: &Value| match value.as_u64() {
+        Some(index) => Place::Stowed(index as usize),
+        None => Place::Hands,
+    };
+    check("carry", constants, |input| {
+        let body = Body {
+            strength: int(&input["strength"]),
+            storage: input["storage"]
+                .as_array()
+                .expect("storage")
+                .iter()
+                .map(|place| place.as_str().expect("a storage word").to_string())
+                .collect(),
+        };
+        let held: Vec<Held> = input["held"]
+            .as_array()
+            .expect("held")
+            .iter()
+            .map(|thing| Held {
+                bulk: thing["bulk"].as_str().expect("a bulk"),
+                place: place(&thing["stowed"]),
+            })
+            .collect();
+        match carry::fits(input["bulk"].as_str().expect("a bulk"), &held, &body) {
+            Ok(Place::Hands) => json!({ "fits": true, "stowed": null }),
+            Ok(Place::Stowed(index)) => json!({ "fits": true, "stowed": index }),
+            Err(refused) => {
+                let mut answer = json!({ "fits": false, "reason": refused.reason() });
+                match refused {
+                    Refused::Immovable => {}
+                    Refused::Heavy { weight, bears } => {
+                        answer["weight"] = json!(weight);
+                        answer["bears"] = json!(bears);
+                    }
+                    Refused::Load {
+                        carried,
+                        weight,
+                        bears,
+                    } => {
+                        answer["carried"] = json!(carried);
+                        answer["weight"] = json!(weight);
+                        answer["bears"] = json!(bears);
+                    }
+                    Refused::Hands { free, needs } => {
+                        answer["free"] = json!(free);
+                        answer["needs"] = json!(needs);
+                    }
+                }
+                answer
+            }
+        }
     });
 }

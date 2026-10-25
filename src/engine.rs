@@ -355,6 +355,20 @@ impl Engine {
         })
     }
 
+    /// What the game's doctor reports about a story's arcs asking the player
+    /// to hold a thing nothing can pick up ([`crate::carry::findings`]).
+    /// Writes nothing.
+    pub fn carry_findings(&self, story: i64) -> Result<Vec<crate::noticed::Finding>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let records = store.load()?;
+            if records.find("stories", story).is_none() {
+                return Err(Error::NoSuchStory(format!("#{story}")));
+            }
+            Ok(crate::carry::findings(&records, story))
+        })
+    }
+
     /// What the move answered with `scene` found changed since the game last
     /// left the room it walked back into ([`crate::revisit::since_on`]), in
     /// a game told either way: none for any other scene, and for a move into
