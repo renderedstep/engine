@@ -52,7 +52,9 @@ hold: the line the player typed and the character's stored answer. Those are
 in `tests/fixtures/dialogue_replay.json`, which names the files they come
 from. `speech_choices`, what a person may say unasked and the speech die
 thrown over it, never had a Ruby original: it is this crate's from the start,
-and its cases stand on `volition_request`'s rows.
+and its cases stand on `volition_request`'s rows. So is `wear`, the places
+on a body and what the doctor reports about worn things, whose cases carry
+their own rows.
 
 Never edit the game's portions by hand. To refresh them, in the game's
 repository:

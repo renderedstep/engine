@@ -73,6 +73,16 @@ impl Thing {
     pub fn material(&self) -> Option<&'static str> {
         crate::material::of(&self.name)
     }
+
+    /// The place on a body it is worn on, or `None` for a thing nobody
+    /// wears.
+    pub fn wear(&self) -> Option<&'static str> {
+        data::kits()
+            .wear
+            .iter()
+            .find(|(name, _)| *name == self.name)
+            .map(|(_, place)| place.as_str())
+    }
 }
 
 /// The generator a room's kit is thrown from.

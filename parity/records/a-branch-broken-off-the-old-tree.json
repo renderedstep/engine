@@ -451,7 +451,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -479,7 +481,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -507,7 +511,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -535,7 +541,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -563,7 +571,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -591,7 +601,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -619,7 +631,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -647,7 +661,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -675,7 +691,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -703,7 +721,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -731,7 +751,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -759,7 +781,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -787,7 +811,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -815,7 +841,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -947,7 +975,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -975,7 +1005,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -1003,7 +1035,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -1031,7 +1065,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -1059,7 +1095,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -1087,7 +1125,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -1115,7 +1155,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -1143,7 +1185,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -1171,7 +1215,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -1199,7 +1245,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -1227,7 +1275,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -1255,7 +1305,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -1283,7 +1335,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -1311,7 +1365,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -1450,7 +1506,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -1478,7 +1536,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -1506,7 +1566,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -1534,7 +1596,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -1562,7 +1626,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -1590,7 +1656,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -1618,7 +1686,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -1646,7 +1716,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -1674,7 +1746,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -1702,7 +1776,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -1730,7 +1806,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -1758,7 +1836,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -1786,7 +1866,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -1814,7 +1896,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -1974,7 +2058,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -2002,7 +2088,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -2030,7 +2118,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -2058,7 +2148,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -2086,7 +2178,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -2114,7 +2208,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -2142,7 +2238,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -2170,7 +2268,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -2198,7 +2298,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -2226,7 +2328,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -2254,7 +2358,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -2282,7 +2388,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -2310,7 +2418,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -2338,7 +2448,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -2519,7 +2631,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -2547,7 +2661,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -2575,7 +2691,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -2603,7 +2721,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -2631,7 +2751,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -2659,7 +2781,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -2687,7 +2811,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -2715,7 +2841,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -2743,7 +2871,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -2771,7 +2901,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -2799,7 +2931,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -2827,7 +2961,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -2855,7 +2991,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -2883,7 +3021,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -3085,7 +3225,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -3113,7 +3255,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -3141,7 +3285,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -3169,7 +3315,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -3197,7 +3345,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -3225,7 +3375,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -3253,7 +3405,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -3281,7 +3435,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -3309,7 +3465,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -3337,7 +3495,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -3365,7 +3525,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -3393,7 +3555,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -3421,7 +3585,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -3449,7 +3615,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -3665,7 +3833,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -3693,7 +3863,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -3721,7 +3893,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -3749,7 +3923,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -3777,7 +3953,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -3805,7 +3983,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -3833,7 +4013,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -3861,7 +4043,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -3889,7 +4073,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -3917,7 +4103,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -3945,7 +4133,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -3973,7 +4163,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -4001,7 +4193,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -4029,7 +4223,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -4245,7 +4441,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -4273,7 +4471,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -4301,7 +4501,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -4329,7 +4531,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -4357,7 +4561,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -4385,7 +4591,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -4413,7 +4621,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -4441,7 +4651,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -4469,7 +4681,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -4497,7 +4711,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -4525,7 +4741,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -4553,7 +4771,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -4581,7 +4801,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -4609,7 +4831,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -4825,7 +5049,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -4853,7 +5079,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -4881,7 +5109,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -4909,7 +5139,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -4937,7 +5169,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -4965,7 +5199,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -4993,7 +5229,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -5021,7 +5259,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -5049,7 +5289,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -5077,7 +5319,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -5105,7 +5349,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -5133,7 +5379,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -5161,7 +5409,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -5189,7 +5439,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -5405,7 +5657,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000002,
@@ -5433,7 +5687,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -5461,7 +5717,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -5489,7 +5747,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -5517,7 +5777,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -5545,7 +5807,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000007,
@@ -5573,7 +5837,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "loose",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000008,
@@ -5601,7 +5867,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000009,
@@ -5629,7 +5897,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000010,
@@ -5657,7 +5927,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000011,
@@ -5685,7 +5957,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000012,
@@ -5713,7 +5987,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000013,
@@ -5741,7 +6017,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": "firm",
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000014,
@@ -5769,7 +6047,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": "wood"
+              "material": "wood",
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []

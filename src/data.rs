@@ -12,11 +12,12 @@ const REQUEST: &str = include_str!("../data/playthrough/classifier/request.yml")
 /// Every data file, by its path under `data/` without `.yml`, and its
 /// text exactly as compiled in: what a host that reads the same words
 /// (the game's `EngineData`) reads.
-pub fn files() -> [(&'static str, &'static str); 14] {
+pub fn files() -> [(&'static str, &'static str); 15] {
     [
         ("character/desires", DESIRES),
         ("item/inscriber", INSCRIBER),
         ("item/kits", KITS),
+        ("item/wear", WEAR),
         ("location/generator", LOCATION_GENERATOR),
         ("location/kind", LOCATION_KIND),
         ("physics", PHYSICS),
@@ -595,6 +596,54 @@ pub fn location_kind() -> &'static LocationKind {
     })
 }
 
+const WEAR: &str = include_str!("../data/item/wear.yml");
+
+/// `data/item/wear.yml`: the closed list of places on a body a thing is
+/// worn on, head to foot, and which place lies under which.
+#[derive(Debug)]
+pub struct Wear {
+    pub places: Vec<String>,
+    /// Each place beneath another, and the place above it, in file order.
+    pub under: Vec<(String, String)>,
+}
+
+/// The file's shape: every top-level key, and nothing else.
+const WEAR_KEYS: &[&str] = &["places", "under"];
+
+pub fn wear() -> &'static Wear {
+    static TABLES: OnceLock<Wear> = OnceLock::new();
+    TABLES.get_or_init(|| read_wear(WEAR))
+}
+
+fn read_wear(source: &str) -> Wear {
+    let file = load("item/wear.yml", source);
+    let keys: Vec<String> = entries(&file, "item/wear.yml")
+        .into_iter()
+        .map(|(key, _)| key)
+        .collect();
+    assert_eq!(keys, WEAR_KEYS, "item/wear.yml: its keys");
+    let wear = Wear {
+        places: strings(&file["places"], "places"),
+        under: pairs(&file["under"], "under"),
+    };
+    for (index, place) in wear.places.iter().enumerate() {
+        assert!(
+            !wear.places[..index].contains(place),
+            "item/wear.yml: {place} is listed twice"
+        );
+    }
+    for (below, above) in &wear.under {
+        for place in [below, above] {
+            assert!(
+                wear.places.contains(place),
+                "item/wear.yml: {place} is under or over a place, and is no place"
+            );
+        }
+        assert!(below != above, "item/wear.yml: {below} is under itself");
+    }
+    wear
+}
+
 const KITS: &str = include_str!("../data/item/kits.yml");
 
 /// `data/item/kits.yml`: what stands in a room of each sort, what lies on or
@@ -622,6 +671,9 @@ pub struct Kits {
     /// What a thing may be made of, the closed list in file order, each
     /// with what a thing of it always is and the names a kit makes of it.
     pub materials: Vec<(String, Material)>,
+    /// The place on a body each wearable thing is worn on
+    /// (`data/item/wear.yml`).
+    pub wear: Vec<(String, String)>,
 }
 
 /// One material: whether a thing of it always or never burns (`None` where
@@ -676,6 +728,7 @@ const KITS_KEYS: &[&str] = &[
     "use_kinds",
     "combustible",
     "materials",
+    "wear",
 ];
 
 /// A material's keys: `names` always, the other two where they are settled.
@@ -816,6 +869,7 @@ fn read_kits(source: &str) -> Kits {
                 )
             })
             .collect(),
+        wear: pairs(&file["wear"], "wear"),
     };
     check_kits(&kits);
     kits
@@ -993,6 +1047,16 @@ fn check_kits(kits: &Kits) {
             "item/kits.yml: density {word} is not a density"
         );
     }
+    for (name, place) in &kits.wear {
+        assert!(
+            wear().places.contains(place),
+            "item/kits.yml: {name} is worn on {place:?}, which is no place on a body"
+        );
+        assert!(
+            piece(name).is_none_or(|w| ["light", "handy"].contains(&w.as_str())),
+            "item/kits.yml: {name} is worn and is fixed or too heavy to carry"
+        );
+    }
 }
 
 #[cfg(test)]
@@ -1104,6 +1168,60 @@ mod tests {
     #[should_panic(expected = "thrown_damage")]
     fn physics_refuses_a_moving_bulk_with_no_damage_die() {
         read_physics(&PHYSICS.replace("  heavy: 8\n", ""));
+    }
+
+    #[test]
+    fn wear_names_the_places_on_a_body_head_to_foot() {
+        let wear = wear();
+        assert_eq!(
+            wear.places,
+            ["head", "face", "neck", "outer", "body", "hands", "waist", "legs", "feet", "back"]
+        );
+        assert_eq!(wear.under, [("body".to_string(), "outer".to_string())]);
+    }
+
+    #[test]
+    #[should_panic(expected = "its keys")]
+    fn wear_refuses_a_key_it_does_not_declare() {
+        read_wear(&format!("{WEAR}over: {{}}\n"));
+    }
+
+    #[test]
+    #[should_panic(expected = "is no place")]
+    fn wear_refuses_a_layer_over_no_place() {
+        read_wear(&WEAR.replace("body: outer", "body: cloak"));
+    }
+
+    #[test]
+    fn a_kit_garment_is_worn_on_a_place_and_nothing_else_is() {
+        let thing = |name: &str| crate::kit::Thing {
+            name: name.to_string(),
+            tier: crate::kit::PORTABLE,
+            holds: None,
+            bulk: "light".to_string(),
+            within: None,
+            how: None,
+            kit_key: format!("loose/{name}"),
+            hold: None,
+            fragility: None,
+        };
+        assert_eq!(thing("coat").wear(), Some("outer"));
+        assert_eq!(thing("apron").wear(), Some("waist"));
+        assert_eq!(thing("breathing mask").wear(), Some("face"));
+        assert_eq!(thing("hand-bell").wear(), None);
+        assert_eq!(thing("coin").wear(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "which is no place on a body")]
+    fn kits_refuse_a_garment_worn_on_no_place() {
+        read_kits(&KITS.replace("  coat: outer\n", "  coat: shoulders\n"));
+    }
+
+    #[test]
+    #[should_panic(expected = "is worn and is fixed")]
+    fn kits_refuse_a_fixed_piece_that_is_worn() {
+        read_kits(&KITS.replace("  coat: outer\n", "  coat: outer\n  wardrobe: body\n"));
     }
 
     /// Every YAML file under `data/` is one `files` hands out, byte for

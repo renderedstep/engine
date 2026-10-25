@@ -50,7 +50,7 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), "searched_at" datetime(6), "hold" varchar, "material" varchar, CONSTRAINT "fk_rails_e8ed83a2e6"
+CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), "searched_at" datetime(6), "hold" varchar, "material" varchar, "wear" varchar, "worn" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_e8ed83a2e6"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_35423c7ef8"
@@ -60,8 +60,8 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-10-02 13:25:50.785625','A ledger of every traveller through the gate, open on its stand.','intact',NULL,1000000002,'lodge book',NULL,'{}',0,NULL,'2026-10-02 13:25:50.785625','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000002,'handy',1000000001,0,'2026-10-02 13:25:50.921224','A brass token stamped with the gate''s mark, good for one passage.','intact',NULL,NULL,'toll token',NULL,'{}',0,NULL,'2026-10-02 13:25:50.921224','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000001,'handy',NULL,0,'2026-10-02 13:25:50.785625','A ledger of every traveller through the gate, open on its stand.','intact',NULL,1000000002,'lodge book',NULL,'{}',0,NULL,'2026-10-02 13:25:50.785625','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+INSERT INTO items VALUES(1000000002,'handy',1000000001,0,'2026-10-02 13:25:50.921224','A brass token stamped with the gate''s mark, good for one passage.','intact',NULL,NULL,'toll token',NULL,'{}',0,NULL,'2026-10-02 13:25:50.921224','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -411,6 +411,7 @@ INSERT INTO schema_migrations VALUES('20261015200000');
 INSERT INTO schema_migrations VALUES('20261015213000');
 INSERT INTO schema_migrations VALUES('20261024120000');
 INSERT INTO schema_migrations VALUES('20261025120000');
+INSERT INTO schema_migrations VALUES('20261025200000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');

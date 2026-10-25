@@ -1,0 +1,18 @@
+# Where on a body a thing is worn: the closed list of places an item's `wear`
+# column may name. Owned by this engine and read by `src/wear.rs`, and by the
+# game through its extension. Nothing here is stated to a model.
+#
+# A thing is worn on one place, and a body wears one thing on each place: a
+# cap on the head, a coat over everything (`outer`), a shirt or a dress on the
+# body, an apron or a belt at the waist, a pack or a bag on the back. A pair
+# (gloves, boots) is one thing. A worn thing is still carried: `worn` is a
+# kind of carried, never a fourth place a thing can be.
+#
+# `places` lists them, head to foot. `under` names a place that lies beneath
+# another: what is worn there is put on or taken off only while nothing is
+# worn on the place above it. It is the one layering rule, and it is not a
+# second thing on the same place: a coat and a shirt are worn together.
+---
+places: [head, face, neck, outer, body, hands, waist, legs, feet, back]
+under:
+  body: outer

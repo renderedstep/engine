@@ -102,7 +102,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -130,7 +132,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -158,7 +162,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -301,7 +307,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -329,7 +337,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -357,7 +367,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []
@@ -525,7 +537,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000003,
@@ -553,7 +567,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000004,
@@ -581,7 +597,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000005,
@@ -609,7 +627,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             },
             {
               "id": 1000000006,
@@ -637,7 +657,9 @@
               "noticed_at": null,
               "searched_at": null,
               "hold": null,
-              "material": null
+              "material": null,
+              "wear": null,
+              "worn": 0
             }
           ],
           "removed": []

@@ -56,6 +56,10 @@
 # its other columns already agree: a jug or a bottle is left out, since a kit
 # writes it sturdy and glass and pottery never are, and the doctor would
 # report every one (`material::findings`).
+#
+# `wear` gives a thing that can be worn the place on a body it is worn on, one
+# of `item/wear.yml`'s places; a kit row is written with it, and nothing here
+# is worn until somebody puts it on.
 ---
 kit_die: 6
 visible: 21
@@ -590,3 +594,17 @@ materials:
     names: [pebble, stone, smooth stone, carved stone, loose stone, stalagmite tip, slate, boulder, cairn, milestone, marker stone, rock outcrop, rock shelf, stalagmite, broken wall, column stump]
   food:
     names: [apple, bruised apple, heel of bread, crust of bread, loaf, wedge of cheese, turnip, carrot, onion, bunch of onions, cabbage, cabbage leaf, mushroom]
+wear:
+  coat: outer
+  bathrobe: body
+  folded shirt: body
+  cap: head
+  hat: head
+  helmet lamp: head
+  mask: face
+  breathing mask: face
+  spectacles: face
+  scarf: neck
+  glove: hands
+  apron: waist
+  bag: back

@@ -162,6 +162,7 @@ impl Mechanics<'_> {
                         "material",
                         thing.material().map_or(Value::Null, Value::from),
                     ),
+                    ("wear", thing.wear().map_or(Value::Null, Value::from)),
                 ],
             )?;
         }
