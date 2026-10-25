@@ -74,6 +74,7 @@ column items.id integer not null pk=1
 column items.inscription text pk=0
 column items.kit_key varchar pk=0
 column items.location_id integer pk=0
+column items.material varchar pk=0
 column items.name varchar pk=0
 column items.noticed_at datetime(6) pk=0
 column items.playthrough_id integer pk=0

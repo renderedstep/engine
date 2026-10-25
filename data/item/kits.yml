@@ -46,6 +46,16 @@
 # `readable` names the things with words on them: born with none, written
 # once the first time somebody reads one. `use_kinds` gives a thing a use
 # other than `ordinary`, and `combustible` names what a firestarter burns.
+#
+# `materials` is the closed list of what a thing may be made of, ten of them
+# (`items.material`; a thing with none is unknown, and plays as it always
+# has). Each says what a thing of it always is, where that is settled --
+# `combustible` true or false, and the fragilities it may have -- and `names`
+# the things a kit makes of it, which are written with it. No act reads a
+# material yet. A name is listed only where what it is made of is plain and
+# its other columns already agree: a jug or a bottle is left out, since a kit
+# writes it sturdy and glass and pottery never are, and the doctor would
+# report every one (`material::findings`).
 ---
 kit_die: 6
 visible: 21
@@ -550,3 +560,33 @@ use_kinds:
   crowbar: lever
   tinderbox: firestarter
 combustible: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, scrap of paper, folded paper, twist of paper, twist of salt, bookmark, deck of cards, rag, cloth, folded cloth, scrap of cloth, blanket, saddle blanket, pillow, cushion, towel, bathrobe, folded shirt, coat, cap, hat, apron, scarf, sock, glove, handkerchief, scrap of wool, straw, hay, sack of grain, tarpaulin, candle, candle stub, spent candle, log, driftwood, stick, burnt stick, offcut, wood shaving, wooden spoon, wooden sword, pine cone, moss, bird's nest, dried flowers, dried petal, dried thorn, ribbon, bootlace, coil of rope, tangle of rope, old rope end, rope halter, length of twine, length of string, roll of twine, bundle of herbs, basket, branch, bark, twig, paling]
+materials:
+  paper:
+    combustible: true
+    names: [folded note, letter, ledger, sheaf of papers, notice, handbill, timetable, map, bound volume, pamphlet, bundle of letters, atlas, journal, book, open book, sheet of notes, exercise book, notebook, logbook, manual, chart, script, prayer card, price card, receipt, docket, crumpled page, loose page, playbill, ticket, scrap of paper, folded paper, twist of paper, bookmark, deck of cards]
+  cloth:
+    combustible: true
+    names: [rag, cloth, folded cloth, scrap of cloth, blanket, saddle blanket, pillow, cushion, towel, bathrobe, folded shirt, coat, cap, hat, apron, scarf, sock, glove, handkerchief, scrap of wool, ribbon, tarpaulin]
+  rope:
+    combustible: true
+    names: [coil of rope, tangle of rope, old rope end, rope halter, length of twine, length of string, roll of twine, bootlace]
+  wood:
+    names: [log, driftwood, stick, burnt stick, offcut, wood shaving, wooden spoon, wooden sword, wooden box, oar, branch, bark, twig, paling, table, long table, reading table, bedside table, chart table, workbench, bench, benches, chair, stool, ladder, crate, barrel, desk, cupboard, wardrobe, chest, bookcase, lectern, school desks, fence, stile, trellis, signpost, upturned boat, stump, fallen log, driftwood log, tree, old tree, stunted tree, dead tree, mooring post, manger]
+  leather:
+    names: [saddle, bridle]
+  glass:
+    combustible: false
+    fragility: [fragile, brittle]
+    names: []
+  pottery:
+    combustible: false
+    fragility: [fragile, brittle]
+    names: []
+  metal:
+    combustible: false
+    names: [knife, coin, hammer, chisel, file, box of nails, coil of wire, pliers, nail, bent nail, rusted nail, rusted hinge, horseshoe, kettle, pan, pot, blackened pot, trivet, poker, tongs, crowbar, saw, wrench, spanner, padlock, hand bell, small bell, tin, tin cup, coin tray, letter opener, razor, pin, hairpin, bolt, rivet, washer, length of wire, tether clip, garden fork, trowel, pair of dividers, empty canister, safe, filing cabinet, locker, suit locker, oil drum, anvil, vice, chain ring, lamp post, weather vane, pipes, valve wheel]
+  stone:
+    combustible: false
+    names: [pebble, stone, smooth stone, carved stone, loose stone, stalagmite tip, slate, boulder, cairn, milestone, marker stone, rock outcrop, rock shelf, stalagmite, broken wall, column stump]
+  food:
+    names: [apple, bruised apple, heel of bread, crust of bread, loaf, wedge of cheese, turnip, carrot, onion, bunch of onions, cabbage, cabbage leaf, mushroom]

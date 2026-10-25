@@ -450,7 +450,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -477,7 +478,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -504,7 +506,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -531,7 +534,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -558,7 +562,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -585,7 +590,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -612,7 +618,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -639,7 +646,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -666,7 +674,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000022,
@@ -693,7 +702,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -720,7 +730,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000024,
@@ -747,7 +758,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000025,
@@ -774,7 +786,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000026,
@@ -801,7 +814,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000027,
@@ -828,7 +842,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000028,
@@ -855,7 +870,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000029,
@@ -882,7 +898,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000030,
@@ -909,7 +926,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000031,
@@ -936,7 +954,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000032,
@@ -963,7 +982,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000033,
@@ -990,7 +1010,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000034,
@@ -1017,7 +1038,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000035,
@@ -1044,7 +1066,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000036,
@@ -1071,7 +1094,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -1202,7 +1226,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -1229,7 +1254,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -1256,7 +1282,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -1283,7 +1310,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -1310,7 +1338,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -1337,7 +1366,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -1364,7 +1394,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -1391,7 +1422,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -1418,7 +1450,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000022,
@@ -1445,7 +1478,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -1472,7 +1506,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000024,
@@ -1499,7 +1534,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000025,
@@ -1526,7 +1562,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000026,
@@ -1553,7 +1590,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000027,
@@ -1580,7 +1618,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000028,
@@ -1607,7 +1646,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000029,
@@ -1634,7 +1674,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000030,
@@ -1661,7 +1702,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000031,
@@ -1688,7 +1730,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000032,
@@ -1715,7 +1758,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000033,
@@ -1742,7 +1786,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000034,
@@ -1769,7 +1814,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000035,
@@ -1796,7 +1842,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000036,
@@ -1823,7 +1870,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -1954,7 +2002,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -1981,7 +2030,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -2008,7 +2058,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -2035,7 +2086,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -2062,7 +2114,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -2089,7 +2142,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -2116,7 +2170,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -2143,7 +2198,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -2170,7 +2226,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000022,
@@ -2197,7 +2254,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -2224,7 +2282,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000024,
@@ -2251,7 +2310,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000025,
@@ -2278,7 +2338,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000026,
@@ -2305,7 +2366,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000027,
@@ -2332,7 +2394,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000028,
@@ -2359,7 +2422,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000029,
@@ -2386,7 +2450,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000030,
@@ -2413,7 +2478,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000031,
@@ -2440,7 +2506,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000032,
@@ -2467,7 +2534,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000033,
@@ -2494,7 +2562,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000034,
@@ -2521,7 +2590,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000035,
@@ -2548,7 +2618,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000036,
@@ -2575,7 +2646,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -2706,7 +2778,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -2733,7 +2806,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -2760,7 +2834,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -2787,7 +2862,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -2814,7 +2890,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -2841,7 +2918,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -2868,7 +2946,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -2895,7 +2974,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -2922,7 +3002,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000022,
@@ -2949,7 +3030,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -2976,7 +3058,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000024,
@@ -3003,7 +3086,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000025,
@@ -3030,7 +3114,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000026,
@@ -3057,7 +3142,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000027,
@@ -3084,7 +3170,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000028,
@@ -3111,7 +3198,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000029,
@@ -3138,7 +3226,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000030,
@@ -3165,7 +3254,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000031,
@@ -3192,7 +3282,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000032,
@@ -3219,7 +3310,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000033,
@@ -3246,7 +3338,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000034,
@@ -3273,7 +3366,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000035,
@@ -3300,7 +3394,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000036,
@@ -3327,7 +3422,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []
@@ -3458,7 +3554,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000014,
@@ -3485,7 +3582,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000015,
@@ -3512,7 +3610,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000016,
@@ -3539,7 +3638,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000017,
@@ -3566,7 +3666,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000018,
@@ -3593,7 +3694,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000019,
@@ -3620,7 +3722,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000020,
@@ -3647,7 +3750,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000021,
@@ -3674,7 +3778,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000022,
@@ -3701,7 +3806,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000023,
@@ -3728,7 +3834,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000024,
@@ -3755,7 +3862,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000025,
@@ -3782,7 +3890,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000026,
@@ -3809,7 +3918,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000027,
@@ -3836,7 +3946,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000028,
@@ -3863,7 +3974,8 @@
               "kit_key": "study/desk",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000029,
@@ -3890,7 +4002,8 @@
               "kit_key": "study/bookcase",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000030,
@@ -3917,7 +4030,8 @@
               "kit_key": "study/chair",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "wood"
             },
             {
               "id": 1000000031,
@@ -3944,7 +4058,8 @@
               "kit_key": "study/lamp",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             },
             {
               "id": 1000000032,
@@ -3971,7 +4086,8 @@
               "kit_key": "study/desk/ledger",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000033,
@@ -3998,7 +4114,8 @@
               "kit_key": "study/bookcase/journal",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000034,
@@ -4025,7 +4142,8 @@
               "kit_key": "study/bookcase/atlas",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "paper"
             },
             {
               "id": 1000000035,
@@ -4052,7 +4170,8 @@
               "kit_key": "study/loose/letter opener",
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": "metal"
             },
             {
               "id": 1000000036,
@@ -4079,7 +4198,8 @@
               "kit_key": null,
               "noticed_at": null,
               "searched_at": null,
-              "hold": null
+              "hold": null,
+              "material": null
             }
           ],
           "removed": []

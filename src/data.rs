@@ -619,6 +619,19 @@ pub struct Kits {
     pub readable: Vec<String>,
     pub use_kinds: Vec<(String, String)>,
     pub combustible: Vec<String>,
+    /// What a thing may be made of, the closed list in file order, each
+    /// with what a thing of it always is and the names a kit makes of it.
+    pub materials: Vec<(String, Material)>,
+}
+
+/// One material: whether a thing of it always or never burns (`None` where
+/// either may), the fragilities it may have (`None` for any), and the names
+/// a kit writes with it.
+#[derive(Debug)]
+pub struct Material {
+    pub combustible: Option<bool>,
+    pub fragility: Option<Vec<String>>,
+    pub names: Vec<String>,
 }
 
 /// One sort of place: each piece and its share of the die, and the small
@@ -662,7 +675,11 @@ const KITS_KEYS: &[&str] = &[
     "readable",
     "use_kinds",
     "combustible",
+    "materials",
 ];
+
+/// A material's keys: `names` always, the other two where they are settled.
+const MATERIAL_KEYS: &[&str] = &["combustible", "fragility", "names"];
 
 pub fn kits() -> &'static Kits {
     static TABLES: OnceLock<Kits> = OnceLock::new();
@@ -773,6 +790,32 @@ fn read_kits(source: &str) -> Kits {
         readable: strings(&file["readable"], "readable"),
         use_kinds: pairs(&file["use_kinds"], "use_kinds"),
         combustible: strings(&file["combustible"], "combustible"),
+        materials: entries(&file["materials"], "materials")
+            .into_iter()
+            .map(|(material, spec)| {
+                for (key, _) in entries(spec, "a material") {
+                    assert!(
+                        MATERIAL_KEYS.contains(&key.as_str()),
+                        "item/kits.yml: {material} has a key {key:?}"
+                    );
+                }
+                let combustible = (!spec["combustible"].is_badvalue()).then(|| {
+                    spec["combustible"].as_bool().unwrap_or_else(|| {
+                        panic!("item/kits.yml: {material}'s combustible is not true or false")
+                    })
+                });
+                let fragility = (!spec["fragility"].is_badvalue())
+                    .then(|| strings(&spec["fragility"], "a material's fragility"));
+                (
+                    material,
+                    Material {
+                        combustible,
+                        fragility,
+                        names: strings(&spec["names"], "a material's names"),
+                    },
+                )
+            })
+            .collect(),
     };
     check_kits(&kits);
     kits
@@ -888,6 +931,62 @@ fn check_kits(kits: &Kits) {
             );
         }
     }
+    let made = |name: &str| {
+        piece(name).is_some()
+            || kits
+                .pools
+                .iter()
+                .any(|(_, pool)| pool.from.iter().any(|n| n == name))
+            || kits
+                .kinds
+                .iter()
+                .any(|(_, kit)| kit.loose.iter().any(|n| n == name))
+            || kits
+                .parts
+                .iter()
+                .any(|(_, parts)| parts.iter().any(|(n, _)| n == name))
+    };
+    let part = |name: &str| {
+        kits.parts
+            .iter()
+            .flat_map(|(_, parts)| parts)
+            .find(|(n, _)| n == name)
+            .map(|(_, spec)| spec)
+    };
+    let mut listed: Vec<&str> = Vec::new();
+    for (material, spec) in &kits.materials {
+        for fragility in spec.fragility.iter().flatten() {
+            assert!(
+                physics().fragility.iter().any(|(f, _)| f == fragility),
+                "item/kits.yml: {material} may be {fragility:?}, which is no fragility"
+            );
+        }
+        for name in &spec.names {
+            assert!(
+                made(name),
+                "item/kits.yml: {material} names {name}, which no kit makes"
+            );
+            assert!(
+                !listed.contains(&name.as_str()),
+                "item/kits.yml: {name} is made of two materials"
+            );
+            listed.push(name);
+            // What a kit writes it as: a part's own fragility, and anything
+            // else the column's default.
+            let fragility = part(name).map_or(&physics().fragility[0].0, |spec| &spec.fragility);
+            let wrong = crate::material::contradictions(
+                material,
+                spec,
+                kits.combustible.contains(name),
+                fragility,
+            );
+            assert!(
+                wrong.is_empty(),
+                "item/kits.yml: {name} is {material}, but {}",
+                wrong.join("; ")
+            );
+        }
+    }
     for (word, _) in &kits.density {
         assert!(
             location_kind().densities.contains(word),
@@ -968,6 +1067,37 @@ mod tests {
     #[should_panic(expected = "its keys")]
     fn physics_refuses_a_key_it_does_not_declare() {
         read_physics(&format!("{PHYSICS}wind: 3\n"));
+    }
+
+    #[test]
+    #[should_panic(expected = "jug is glass, but it is sturdy")]
+    fn kits_refuse_a_material_the_kit_written_thing_contradicts() {
+        read_kits(&KITS.replace(
+            "    fragility: [fragile, brittle]\n    names: []\n  pottery:",
+            "    fragility: [fragile, brittle]\n    names: [jug]\n  pottery:",
+        ));
+    }
+
+    #[test]
+    #[should_panic(expected = "candle is cloth, but it is not combustible")]
+    fn kits_refuse_paper_cloth_or_rope_that_does_not_burn() {
+        read_kits(
+            &KITS
+                .replace("[rag, cloth,", "[candle, rag, cloth,")
+                .replace("candle, candle stub,", "candle stub,"),
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "names writ, which no kit makes")]
+    fn kits_refuse_a_material_name_no_kit_makes() {
+        read_kits(&KITS.replace("names: [saddle, bridle]", "names: [saddle, bridle, writ]"));
+    }
+
+    #[test]
+    #[should_panic(expected = "knife is made of two materials")]
+    fn kits_refuse_a_name_under_two_materials() {
+        read_kits(&KITS.replace("names: [saddle, bridle]", "names: [saddle, bridle, knife]"));
     }
 
     #[test]

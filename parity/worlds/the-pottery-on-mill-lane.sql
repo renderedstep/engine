@@ -47,7 +47,7 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), "searched_at" datetime(6), "hold" varchar, CONSTRAINT "fk_rails_e8ed83a2e6"
+CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), "searched_at" datetime(6), "hold" varchar, "material" varchar, CONSTRAINT "fk_rails_e8ed83a2e6"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_35423c7ef8"
@@ -57,11 +57,11 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 );
-INSERT INTO items VALUES(1000000001,'light',NULL,0,'2026-10-02 13:26:01.366725','A blue-glazed bowl on the nearest trestle, the best piece in the room.','intact',NULL,1000000005,'glazed bowl',NULL,'{}',0,NULL,'2026-10-02 13:26:01.366725','ordinary',NULL,NULL,'fragile','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000002,'light',1000000001,0,'2026-10-02 13:26:01.479593','A dented pewter mug from the inn, which has been dropped more times than anybody has counted.','intact',NULL,NULL,'pewter mug',NULL,'{}',0,NULL,'2026-10-02 13:26:01.479593','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000003,'light',1000000001,0,'2026-10-02 13:26:01.484569','A jar fresh from the kiln, thin-walled and still faintly warm.','intact',NULL,NULL,'clay jar',NULL,'{}',0,NULL,'2026-10-02 13:26:01.484569','ordinary',NULL,NULL,'brittle','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000004,'light',1000000001,0,'2026-10-02 13:26:01.489593','A green glass fishing float, bought off a pedlar for the showroom window.','intact',NULL,NULL,'glass float',NULL,'{}',0,NULL,'2026-10-02 13:26:01.489593','ordinary',NULL,NULL,'fragile','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO items VALUES(1000000005,'handy',1000000001,0,'2026-10-02 13:26:01.493117','A salt-glazed crock the size of a loaf, heavier than it looks.','intact',NULL,NULL,'stoneware crock',NULL,'{}',0,NULL,'2026-10-02 13:26:01.493117','ordinary',NULL,NULL,'brittle','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000001,'light',NULL,0,'2026-10-02 13:26:01.366725','A blue-glazed bowl on the nearest trestle, the best piece in the room.','intact',NULL,1000000005,'glazed bowl',NULL,'{}',0,NULL,'2026-10-02 13:26:01.366725','ordinary',NULL,NULL,'fragile','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000002,'light',1000000001,0,'2026-10-02 13:26:01.479593','A dented pewter mug from the inn, which has been dropped more times than anybody has counted.','intact',NULL,NULL,'pewter mug',NULL,'{}',0,NULL,'2026-10-02 13:26:01.479593','ordinary',NULL,NULL,'sturdy','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000003,'light',1000000001,0,'2026-10-02 13:26:01.484569','A jar fresh from the kiln, thin-walled and still faintly warm.','intact',NULL,NULL,'clay jar',NULL,'{}',0,NULL,'2026-10-02 13:26:01.484569','ordinary',NULL,NULL,'brittle','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000004,'light',1000000001,0,'2026-10-02 13:26:01.489593','A green glass fishing float, bought off a pedlar for the showroom window.','intact',NULL,NULL,'glass float',NULL,'{}',0,NULL,'2026-10-02 13:26:01.489593','ordinary',NULL,NULL,'fragile','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO items VALUES(1000000005,'handy',1000000001,0,'2026-10-02 13:26:01.493117','A salt-glazed crock the size of a loaf, heavier than it looks.','intact',NULL,NULL,'stoneware crock',NULL,'{}',0,NULL,'2026-10-02 13:26:01.493117','ordinary',NULL,NULL,'brittle','portable',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "lab_exits_judgements" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aspects" text, "created_at" datetime(6) NOT NULL, "expects_inside" text, "expects_population" text, "name" varchar NOT NULL, "name_key" varchar NOT NULL, "note" text, "updated_at" datetime(6) NOT NULL, "vantage_id" integer NOT NULL, "verdict" varchar, CONSTRAINT "fk_rails_cbf2b734ae"
 FOREIGN KEY ("vantage_id")
   REFERENCES "lab_exits_vantages" ("id")
@@ -416,6 +416,7 @@ INSERT INTO schema_migrations VALUES('20261015180000');
 INSERT INTO schema_migrations VALUES('20261015200000');
 INSERT INTO schema_migrations VALUES('20261015213000');
 INSERT INTO schema_migrations VALUES('20261024120000');
+INSERT INTO schema_migrations VALUES('20261025120000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');

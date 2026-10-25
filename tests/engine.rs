@@ -512,6 +512,60 @@ fn every_world_has_the_shape_the_engine_is_written_against() {
     }
 }
 
+/// Every story of a world, by id.
+fn stories(engine: &Engine) -> Vec<i64> {
+    let connection = engine.store().connection();
+    let mut statement = connection
+        .prepare("SELECT id FROM stories ORDER BY id")
+        .unwrap();
+    statement
+        .query_map([], |row| row.get(0))
+        .unwrap()
+        .map(Result::unwrap)
+        .collect()
+}
+
+#[test]
+fn the_doctor_finds_no_material_out_of_line_in_any_world() {
+    let worlds = Path::new(env!("CARGO_MANIFEST_DIR")).join("parity/worlds");
+    for entry in std::fs::read_dir(worlds).unwrap() {
+        let path = entry.unwrap().path();
+        let engine = open_world(&std::fs::read_to_string(&path).unwrap()).unwrap();
+        for story in stories(&engine) {
+            assert_eq!(
+                engine.material_findings(story).unwrap(),
+                Vec::new(),
+                "{}",
+                path.display()
+            );
+        }
+    }
+}
+
+#[test]
+fn the_doctor_reports_a_thing_its_material_contradicts() {
+    let mut sql = world("the-unrecorded-hour");
+    sql.push_str("UPDATE items SET material = 'glass' WHERE id = (SELECT MIN(id) FROM items);\n");
+    let engine = open_world(&sql).unwrap();
+    let story = engine
+        .story_titled(&format!("The Unrecorded Hour{TITLE_SUFFIX}"))
+        .unwrap();
+    let found = engine.material_findings(story).unwrap();
+    assert_eq!(found.len(), 1, "{found:?}");
+    assert_eq!(found[0].code, "item_material_contradicts");
+    assert!(
+        found[0].message.ends_with(
+            "is made of glass, but it is sturdy, and glass is only ever fragile or brittle"
+        ),
+        "{}",
+        found[0].message
+    );
+    assert!(matches!(
+        engine.material_findings(story + 1_000),
+        Err(Error::NoSuchStory(_))
+    ));
+}
+
 #[test]
 fn a_newer_schema_that_only_adds_a_table_the_engine_never_touches_is_opened() {
     let conn = migrated(
