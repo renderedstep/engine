@@ -53,13 +53,13 @@ fn a_furnished_room_tells_its_fixed_pieces_apart_from_what_lies_in_it() {
     narrate(
         &mut engine,
         playthrough,
-        "/take ward stamp",
+        "/examine ward stamp",
         json!({
             "purpose": "narration",
-            "content": "You lift the stamp off the desk.",
+            "content": "You look at the stamp on the desk.",
             "prompt_includes": [
                 "Fixed here, and not takeable: desk, windowsill, coal scuttle.",
-                "Lying here, and takeable: potted fern, lump of coal.",
+                "Lying here, and takeable: ward stamp, potted fern, lump of coal.",
             ],
             "prompt_excludes": ["Lying here, and takeable: desk"],
         }),

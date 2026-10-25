@@ -328,7 +328,10 @@ impl<'a> Moment<'a> {
             }
         ));
         if let Some(previous) = self.what_just_happened() {
-            parts.push(format!("What just happened: {}", self.told(previous)));
+            parts.push(format!(
+                "What just happened: {}",
+                self.just_happened(previous)
+            ));
         }
         if let Some(recap) = self.recap() {
             parts.push(format!("Earlier, in order:\n{recap}"));
@@ -641,6 +644,18 @@ impl<'a> Moment<'a> {
         string(scene, "description")
     }
 
+    /// What the request is told just happened. The ending is told the
+    /// concluding turn's fact rather than its paragraph, unless that turn
+    /// was a move, whose fact is a list of the room, or stated none.
+    fn just_happened(&self, scene: &'a Row) -> &'a str {
+        if self.ending.is_some() && text(scene, "resolved_action") != Some("move") {
+            if let Some(fact) = presence(text(scene, "engine_fact")) {
+                return fact;
+            }
+        }
+        self.told(scene)
+    }
+
     fn what_just_happened(&self) -> Option<&'a Row> {
         let scene = self.game.current_scene()?;
         if self.ending.is_none() {
@@ -757,6 +772,26 @@ pub fn definite_name(name: &str) -> String {
         }
     }
     format!("the {name}")
+}
+
+/// What a sentence in the engine's own words calls a thing: its
+/// [`definite_name`], but a name that opens with somebody's own name in the
+/// possessive ("Perrin's private index") is definite already and takes no
+/// "the". A common noun's keeps it: "the clerk's ledger".
+pub fn own_name(name: &str) -> String {
+    let definite = definite_name(name);
+    let bare = &definite["the ".len()..];
+    let possessive = bare.split_whitespace().next().is_some_and(|word| {
+        word.starts_with(char::is_uppercase)
+            && ["'s", "\u{2019}s", "s'", "s\u{2019}"]
+                .iter()
+                .any(|ending| word.len() > ending.len() && word.ends_with(ending))
+    });
+    if possessive {
+        bare.to_string()
+    } else {
+        definite
+    }
 }
 
 /// `strftime("%-l %P")` in UTC: the hour on a twelve-hour clock and "am" or

@@ -1113,20 +1113,21 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         .unwrap();
     let untold = "SELECT COUNT(*) FROM playthrough_volitions WHERE scene_id IS NULL";
     let spoken = "SELECT COUNT(*) FROM playthrough_volitions WHERE chosen LIKE 'speak:%'";
-    let play = |engine: &mut Engine, line: &str, token: &str, reply: serde_json::Value| {
-        let mut replay = Replay::new(vec![Reply::from_value(&reply).unwrap()]);
+    let play = |engine: &mut Engine, line: &str, token: &str, replies: Vec<serde_json::Value>| {
+        let replies = replies
+            .iter()
+            .map(|reply| Reply::from_value(reply).unwrap())
+            .collect();
+        let mut replay = Replay::new(replies);
         engine
             .submit(playthrough, line, token, &mut replay, &mut |_| {})
             .unwrap();
         replay.finish().unwrap();
     };
 
-    play(
-        &mut engine,
-        "/take quarter receipt",
-        "take",
-        serde_json::json!({"purpose": "narration", "content": "You take the receipt."}),
-    );
+    // Nothing else happened before the take, so it is told in the engine's
+    // own sentence and no narrator is asked.
+    play(&mut engine, "/take quarter receipt", "take", Vec::new());
     assert_eq!(count(&engine, spoken), 0, "the clerk says nothing");
     assert_eq!(count(&engine, untold), 1, "the clerk acts after the take");
 
@@ -1134,7 +1135,7 @@ fn an_act_waits_out_a_paragraph_in_the_engines_own_words() {
         &mut engine,
         "/drop quarter receipt",
         "drop",
-        serde_json::json!({"purpose": "narration", "unavailable": true}),
+        vec![serde_json::json!({"purpose": "narration", "unavailable": true})],
     );
     assert_eq!(
         count(
@@ -1221,6 +1222,64 @@ fn a_fixed_reading_stands_in_for_the_classifier_and_nothing_else() {
             .unwrap(),
         "take|fixed"
     );
+}
+
+/// A plain take asks no narrator, but the same take on a fixed reading does:
+/// a bench plays a fixed reading to measure the narrator's request.
+#[test]
+fn a_fixed_reading_take_is_narrated_where_a_plain_take_is_not() {
+    use renderedstep_engine::model::{Replay, Reply};
+    use renderedstep_engine::turn::Fixed;
+    // Maren made peaceable, so no foe strikes back and the take is plain.
+    let peaceable = || {
+        let mut engine = open_world(&format!(
+            "{}UPDATE characters SET hostile = 0;",
+            world("a-turn-at-the-gate")
+        ))
+        .unwrap();
+        let story = engine
+            .story_titled(&format!("A Turn at the Gate{TITLE_SUFFIX}"))
+            .unwrap();
+        let playthrough = engine.start(story).unwrap();
+        (engine, playthrough)
+    };
+    let (mut plain, playthrough) = peaceable();
+    let mut replay = Replay::new(Vec::new());
+    plain
+        .submit(
+            playthrough,
+            "/take red coin",
+            "plain",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert!(replay.calls().is_empty(), "a plain take asks nobody");
+
+    let (mut benched, playthrough) = peaceable();
+    let reply = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![reply]);
+    let fixed = Fixed {
+        action: "take".into(),
+        target: Some("red coin".into()),
+    };
+    benched
+        .submit_fixed(
+            playthrough,
+            "/take red coin",
+            "fixed",
+            &fixed,
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert_eq!(replay.calls(), ["narration"]);
 }
 
 /// A free-typed line read through the local reader, in a whole turn: a throw

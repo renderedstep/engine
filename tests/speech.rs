@@ -169,6 +169,22 @@ fn submit(
     submitted.turned.scene
 }
 
+/// The take a clock is searched with: a take nobody spoke over is told in
+/// the engine's own words and asks no narrator, so the replay is not held
+/// to having been asked.
+fn probe_take(engine: &mut Engine, playthrough: i64) {
+    let mut replay = Replay::new(vec![narration("You take it.")]);
+    engine
+        .submit(
+            playthrough,
+            "/take quarter receipt",
+            "take",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+}
+
 fn look(engine: &mut Engine, playthrough: i64, token: &str) -> Option<i64> {
     submit(
         engine,
@@ -318,7 +334,7 @@ fn the_engines_own_words_leave_what_was_said_for_the_next_paragraph() {
             )],
         );
     };
-    let steps = when_spoken(false, take);
+    let steps = when_spoken(false, probe_take);
     let (mut engine, playthrough) = office(false, steps);
     take(&mut engine, playthrough);
     let said = speech(&engine);
@@ -380,18 +396,7 @@ fn a_worker_killed_after_speaking_does_not_speak_twice() {
 /// `false` as a prompt that stated none.
 #[test]
 fn a_kept_scene_claims_the_volitions_its_prompt_stated() {
-    let take = |engine: &mut Engine, playthrough: i64| {
-        submit(
-            engine,
-            playthrough,
-            "/take quarter receipt",
-            "take",
-            vec![reply(
-                json!({ "purpose": "narration", "unavailable": true }),
-            )],
-        );
-    };
-    let steps = when_spoken(false, take);
+    let steps = when_spoken(false, probe_take);
     let (mut engine, playthrough) = office(false, steps);
     let mut replay = Replay::new(vec![reply(
         json!({ "purpose": "narration", "unavailable": true }),
@@ -494,7 +499,7 @@ fn both_modes_say_the_same() {
             vec![narration("You take it.")],
         );
     };
-    let steps = when_spoken(false, take);
+    let steps = when_spoken(false, probe_take);
     let (mut submitted, playthrough) = office(false, steps);
     take(&mut submitted, playthrough);
     let (mut played, playthrough) = office(false, steps);

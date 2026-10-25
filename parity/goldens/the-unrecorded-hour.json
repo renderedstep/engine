@@ -708,7 +708,7 @@
         "changed": false,
         "change": null,
         "refused": true,
-        "offers": "there is no thing lying here called \"the apron\". There is: ward stamp, Perrin's private index",
+        "offers": "You are already carrying the copy-room apron.",
         "understood": null,
         "resolved_by": "grammar",
         "note": null,

@@ -1,0 +1,75 @@
+---
+story: The Unrecorded Hour
+steps:
+- id: into-the-closet
+  type: go to the Supply Closet
+  expect:
+    changed: true
+    location: The Supply Closet (realized)
+    exits:
+    - Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: leave-the-closet-by-its-one-way-out
+  type: Leave the closet
+  browser:
+    token: leave-the-closet
+    replies:
+    - purpose: arrival
+      content:
+        description: You come back into the office.
+        summary: Back in the office.
+  expect:
+    changed: true
+    refused: false
+    resolved_by: engine_leave
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: leave-the-office-could-be-either-act
+  type: leave the office
+  browser:
+    token: leave-the-office
+  expect:
+    changed: false
+    refused: true
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: exit-from-two-ways-out-asks-which
+  type: exit
+  browser:
+    token: exit
+  expect:
+    changed: false
+    refused: true
+    location: Ward Office 12 (realized)
+    carrying:
+    - Ward Office 12 daybook
+- id: a-slashed-leave-is-read-the-same
+  type: "/leave this place"
+  browser:
+    token: slashed-leave
+  expect:
+    changed: false
+    refused: true
+    location: Ward Office 12 (realized)
+- id: leaving-a-thing-somewhere-goes-to-the-reader
+  type: leave the daybook open on the desk
+  browser:
+    token: leave-the-daybook
+    replies:
+    - purpose: local_classifier
+      content:
+        intent: drop
+        target_drop: player_item_1
+        named_more_than_one: 0
+        target_present: 0.97
+    - purpose: narration
+      content: You leave the daybook open on the desk.
+  expect:
+    changed: true
+    refused: false
+    resolved_by: typed_model
+    location: Ward Office 12 (realized)
+    carrying: []

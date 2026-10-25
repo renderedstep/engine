@@ -60,6 +60,72 @@ pub fn thrown(command: &str) -> bool {
         .any(|word| THROW_VERBS.contains(&word))
 }
 
+/// The words a line opens with when the player is leaving where they stand.
+pub const LEAVE_VERBS: &[&str] = &["leave", "exit"];
+
+/// The verbs that leave when `out` follows them: "get out", "go out".
+pub const OUT_VERBS: &[&str] = &["get", "go", "walk", "head", "step"];
+
+/// What a leaving line may name instead of the room itself.
+pub const HERE_WORDS: &[&str] = &["here", "place", "room"];
+
+/// `scenes.resolved_by` for a line the engine read as leaving the room the
+/// player stands in, with no reader asked.
+pub const ENGINE_LEAVE: &str = "engine_leave";
+
+/// A line that opens by leaving ([`leaving`]).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Leaving {
+    /// It opens with `leave`, which is also a word for putting a thing down.
+    pub leave: bool,
+    /// What follows the opener, an `of` after it and one the/this/a/an,
+    /// downcased: empty, or what the line says it is leaving.
+    pub rest: String,
+}
+
+/// Whether the line opens by leaving -- `leave` or `exit`, or `get`, `go`,
+/// `walk`, `head` or `step` and then `out`, with an `of` after it or not --
+/// and what follows. Whether that is the room the player stands in is the
+/// room's question, not this one's: "go out to Mournwell Lane" opens by
+/// leaving and names somewhere else.
+pub fn leaving(command: &str) -> Option<Leaving> {
+    let line = crate::text::ruby_downcase(&crate::grammar::unslashed(command));
+    let line = line.trim_matches(|c: char| !c.is_alphanumeric());
+    let words: Vec<&str> = line.split_whitespace().collect();
+    let (leave, mut at) = match words.as_slice() {
+        [verb, ..] if LEAVE_VERBS.contains(verb) => (*verb == "leave", 1),
+        [verb, "out", ..] if OUT_VERBS.contains(verb) => (false, 2),
+        _ => return None,
+    };
+    if words.get(at) == Some(&"of") {
+        at += 1;
+    }
+    if words
+        .get(at)
+        .is_some_and(|word| ["the", "this", "a", "an"].contains(word))
+    {
+        at += 1;
+    }
+    Some(Leaving {
+        leave,
+        rest: words[at.min(words.len())..].join(" "),
+    })
+}
+
+/// What a line that only leaves the room the player stands in comes to.
+#[derive(Clone, Debug, PartialEq)]
+pub enum Leave {
+    /// The only way out, to be walked through.
+    Through(Record),
+    /// There is no way out at all.
+    Nowhere,
+    /// More than one way out, and the line does not say which.
+    Which,
+    /// The line also names this thing the player carries: leaving the room
+    /// or putting it down.
+    Either(Record),
+}
+
 /// The state blocks, and the intent whose closed set is each one.
 struct Group {
     key: &'static str,
@@ -769,5 +835,109 @@ mod tests {
         let outcome = read_as_attack("throw the daybook at Halkett Rowe", Escalation::Off);
         assert_eq!(outcome.path, "typed_model");
         assert_eq!(outcome.intent.expect("composed").action, "attack");
+    }
+
+    fn rest(line: &str) -> Option<(bool, String)> {
+        leaving(line).map(|leaving| (leaving.leave, leaving.rest))
+    }
+
+    #[test]
+    fn a_line_that_opens_by_leaving_says_what_it_leaves() {
+        assert_eq!(rest("Leave the closet"), Some((true, "closet".into())));
+        assert_eq!(rest("/leave"), Some((true, String::new())));
+        assert_eq!(rest("exit."), Some((false, String::new())));
+        assert_eq!(rest("leave this place"), Some((true, "place".into())));
+        assert_eq!(rest("get out of here!"), Some((false, "here".into())));
+        assert_eq!(
+            rest("walk out of the closet"),
+            Some((false, "closet".into()))
+        );
+        assert_eq!(
+            rest("Go out to Mournwell Lane"),
+            Some((false, "to mournwell lane".into()))
+        );
+        assert_eq!(rest("go to the office"), None);
+        assert_eq!(rest("put down the daybook and leave"), None);
+        assert_eq!(rest("out"), None);
+    }
+
+    /// The office with `ways` ways out, carrying the daybook.
+    fn office(ways: usize) -> Room {
+        let mut room = room(vec![rowe()]);
+        let hallway = Exit {
+            place: Place {
+                id: 12,
+                name: "The Long Hallway".into(),
+            },
+            ..room.exits[0].clone()
+        };
+        room.exits.push(hallway);
+        room.exits.truncate(ways);
+        room.carried = vec![crate::room::Thing::new(20, "Ward Office 12 daybook", true)];
+        room
+    }
+
+    fn leave(room: &Room, line: &str) -> Option<Leave> {
+        crate::grammar::Grammar::new(room).leaving(line)
+    }
+
+    fn told(room: &Room, line: &str) -> Option<String> {
+        let leave = leave(room, line)?;
+        let here = room.here.as_ref().map_or("", |place| place.name.as_str());
+        crate::refusal::Refusal::leaving(&leave, line, here, &room.exits_here())
+            .map(|refusal| refusal.text())
+    }
+
+    #[test]
+    fn the_one_way_out_is_walked() {
+        let room = office(1);
+        let Some(Leave::Through(Record::Place(place))) = leave(&room, "exit the office") else {
+            panic!("the one way out");
+        };
+        assert_eq!(place.name, "The Supply Closet");
+        assert_eq!(told(&room, "leave"), None);
+        assert!(matches!(leave(&room, "head out"), Some(Leave::Through(_))));
+    }
+
+    #[test]
+    fn no_way_out_is_said() {
+        assert_eq!(
+            told(&office(0), "leave").as_deref(),
+            Some("There is no way out of here at all. Nothing has changed.")
+        );
+    }
+
+    #[test]
+    fn several_ways_out_are_asked_after() {
+        assert_eq!(
+            told(&office(2), "exit").as_deref(),
+            Some(
+                "There is more than one way out of here, so that does not say which. \
+                 The ways out are: The Supply Closet, The Long Hallway. Nothing has changed."
+            )
+        );
+        assert_eq!(leave(&office(2), "leave the room"), Some(Leave::Which));
+    }
+
+    #[test]
+    fn a_leave_that_names_a_carried_thing_asks_which_act() {
+        assert_eq!(
+            told(&office(2), "leave the office").as_deref(),
+            Some(
+                "That could mean leaving Ward Office 12 or putting down the Ward Office 12 \
+                 daybook. The ways out are: The Supply Closet, The Long Hallway. Nothing has \
+                 changed."
+            )
+        );
+        // Only `leave` puts a thing down: an exit is never that.
+        assert_eq!(leave(&office(2), "exit the office"), Some(Leave::Which));
+    }
+
+    #[test]
+    fn a_leaving_line_that_names_somewhere_else_is_the_readers() {
+        let room = office(2);
+        assert_eq!(leave(&room, "leave the daybook open on the desk"), None);
+        assert_eq!(leave(&room, "go out to Mournwell Lane"), None);
+        assert_eq!(leave(&room, "leave the daybook"), None);
     }
 }

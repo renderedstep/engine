@@ -240,7 +240,10 @@ fn grammar_corpus() {
         let refusal = match &parsed.intent {
             Some(intent) if intent.refused() => {
                 let offered = built.room.offered_for(&intent.action);
-                Refusal::for_intent(intent, &typed, &offered).map(|r| r.text())
+                let named = grammar.carried_named(&typed);
+                let carried = built.room.items_carried();
+                Refusal::for_intent(intent, &typed, &offered, &carried, named.as_ref())
+                    .map(|r| r.text())
             }
             _ => parsed.refusal.clone(),
         };
@@ -276,7 +279,13 @@ fn classifier_intent() {
             input["also_named"].as_str(),
             input["thrown_at"].as_str(),
         );
-        let refusal = Refusal::for_intent(&intent, "the line", &room.offered_for(&intent.action));
+        let refusal = Refusal::for_intent(
+            &intent,
+            "the line",
+            &room.offered_for(&intent.action),
+            &room.items_carried(),
+            None,
+        );
         json!({
             "intent": intent_json(Some(&intent)),
             "refused": intent.refused(),
@@ -444,7 +453,14 @@ fn refusal() {
                     .iter()
                     .map(|id| built.record(id))
                     .collect();
-                Refusal::for_intent(&intent_of(&built, &input["intent"]), &typed, &offered)
+                let named = Grammar::new(&built.room).carried_named(&typed);
+                Refusal::for_intent(
+                    &intent_of(&built, &input["intent"]),
+                    &typed,
+                    &offered,
+                    &built.room.items_carried(),
+                    named.as_ref(),
+                )
             }
             Some("unplayable") => Refusal::unplayable(
                 &text(&input["intent"]["action"]),
