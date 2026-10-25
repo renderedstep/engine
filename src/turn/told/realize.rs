@@ -552,6 +552,7 @@ impl Turn<'_, '_> {
                     ("use_kind", Value::from(thing.use_kind())),
                     ("combustible", Value::Bool(thing.combustible())),
                     ("readable", Value::Bool(thing.readable())),
+                    ("wear", thing.wear().map_or(Value::Null, Value::from)),
                 ];
                 if let Some(hold) = &thing.hold {
                     values.push(("hold", Value::from(hold.as_str())));

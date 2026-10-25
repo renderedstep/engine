@@ -44,6 +44,7 @@ pub const NAMES: &[&str] = &[
     "range",
     "carry",
     "material",
+    "wear",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -847,5 +848,35 @@ fn material() {
         }
         let row = input.as_object().expect("a row").clone();
         json!({ "against": material::against(&row) })
+    });
+}
+
+#[test]
+fn wear() {
+    use renderedstep_engine::{data, records::Records, wear};
+    let table = |rows: &[(String, String)]| {
+        let rows: Vec<(&str, &String)> = rows.iter().map(|(k, v)| (k.as_str(), v)).collect();
+        pairs(&rows, |value| json!(value))
+    };
+    let constants = json!({
+        "places": wear::places(),
+        "under": table(&data::wear().under),
+        "kit_wear": table(&data::kits().wear),
+    });
+    check("wear", constants, |input| {
+        let records = Records::from_json(&input["records"]);
+        let found: Vec<Value> = wear::findings(&records, int(&input["story"]))
+            .into_iter()
+            .map(|finding| {
+                json!({
+                    "code": finding.code,
+                    "severity": finding.severity,
+                    "remedy": finding.remedy,
+                    "subject": [finding.subject.0, finding.subject.1],
+                    "message": finding.message,
+                })
+            })
+            .collect();
+        Value::Array(found)
     });
 }

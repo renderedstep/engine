@@ -78,4 +78,5 @@ pub mod store;
 pub mod text;
 pub mod turn;
 pub mod volition;
+pub mod wear;
 pub mod world_mechanic;
