@@ -133,24 +133,34 @@ pub fn searched(
 /// What became of a part somebody tried to break off a fixed piece.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Snapped {
-    /// The check failed, or no die could be thrown: it is still attached.
+    /// The check failed: it is still attached.
     Held,
+    /// No die could be thrown, so it could never have come away: it is
+    /// still attached.
+    Beyond,
     /// It came away and is in the hand.
     InHand,
     /// It came away brittle or fragile and broke as it came loose.
     InPieces,
 }
 
-/// An attempt to break a part off a fixed piece: the strength check, what
-/// came away, and how many more of its kind the piece has left (`left`,
-/// told only of a part that came away). `before` is how many of its kind
-/// the piece had before the attempt: one of several is "a branch", the only
-/// one "the bark". `check` is none where the breaker has no abilities.
+impl Snapped {
+    /// Whether it is still attached.
+    pub fn held(self) -> bool {
+        matches!(self, Snapped::Held | Snapped::Beyond)
+    }
+}
+
+/// An attempt to break a part off a fixed piece: whether it came away, and
+/// how many more of its kind the piece has left (`left`, told only of a part
+/// that came away). `before` is how many of its kind the piece had before
+/// the attempt: one of several is "a branch", the only one "the bark". The
+/// strength check behind it is the engine's own and is not told, only that
+/// an attempt that could never succeed was beyond them.
 pub fn broke_off(
     part: &Row,
     piece: &Row,
     breaker: Option<&Row>,
-    check: Option<&crate::turn::Check>,
     outcome: Snapped,
     before: i64,
     left: i64,
@@ -163,51 +173,30 @@ pub fn broke_off(
         definite_name(part)
     };
     let the_piece = definite_name(piece);
-    let start = if outcome == Snapped::Held {
+    let start = if outcome.held() {
         format!("ON THIS TURN, and not before it, {who} tried to break {named} off {the_piece}.")
     } else {
         format!("ON THIS TURN, and not before it, {who} broke {named} off {the_piece}.")
     };
-    let rolled = check.map(|check| {
-        let hold = match presence(text(part, "hold")) {
-            Some(hold) => format!(" for {} {hold} hold", indefinite_article(hold)),
-            None => String::new(),
-        };
-        let less = if check.penalty == 0 {
-            String::new()
-        } else {
-            format!(" less {}", check.penalty)
-        };
-        match check.die {
-            Some(die) => format!(
-                " It was {} {} check, a d{} under {}{less}{hold}: it came up {die}, and {}.",
-                indefinite_article(&check.ability),
-                check.ability,
-                crate::turn::CHECK_DIE,
-                check.score,
-                if check.passed() { "passed" } else { "failed" },
-            ),
-            None => format!(
-                " It was beyond them: {} {}{less}{hold} leaves nothing to roll under.",
-                check.ability, check.score,
-            ),
-        }
-    });
-    let rolled = rolled.unwrap_or_default();
+    let beyond = if outcome == Snapped::Beyond {
+        " It was far beyond their strength."
+    } else {
+        ""
+    };
     let it = upcase_first(&definite_name(part));
     match outcome {
-        Snapped::Held => format!(
-            "{start}{rolled} {it} held: it is still on {the_piece}, nothing came away and they are \
-             holding nothing new. Do not write it breaking, bending away or coming loose."
+        Snapped::Held | Snapped::Beyond => format!(
+            "{start}{beyond} {it} held: it is still on {the_piece}, nothing came away and they \
+             are holding nothing new. Do not write it breaking, bending away or coming loose."
         ),
         Snapped::InHand => format!(
-            "{start}{rolled} {it} is in their hands now. {} has {} left that could be broken off. \
+            "{start} {it} is in their hands now. {} has {} left that could be broken off. \
              Do not write anything else coming away, being picked up or being carried.",
             upcase_first(&the_piece),
             how_many(left, &noun),
         ),
         Snapped::InPieces => format!(
-            "{start}{rolled} It came away in pieces: {}, it broke as it came loose, and they are \
+            "{start} It came away in pieces: {}, it broke as it came loose, and they are \
              holding nothing new. There {} {} left on {the_piece} that could be broken off. Do not \
              write them holding it.",
             string(part, "fragility"),

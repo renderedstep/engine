@@ -9,7 +9,7 @@ use renderedstep_engine::grammar::Grammar;
 use renderedstep_engine::model::{Answer, Call, Failure, Unavailable};
 use renderedstep_engine::records::{Records, Row};
 use renderedstep_engine::room::{Place, Record, Room, Thing};
-use renderedstep_engine::turn::{room_of, Check};
+use renderedstep_engine::turn::room_of;
 use serde_json::{json, Value};
 
 /// A row from a JSON object.
@@ -136,67 +136,47 @@ fn the_attached_line_counts_each_sort_on_each_piece_told() {
 }
 
 /// A part broken off a fixed piece, in each of its forms: in the hand with
-/// one of its kind left, a failed check, too weak to roll, a brittle part
-/// that came away in pieces, and the last of its kind.
+/// one of its kind left, held, a brittle part that came away in pieces, and
+/// the last of its kind. The check behind it is never told.
 #[test]
 fn the_break_fact_says_what_came_away_and_what_is_left() {
     let tamsin = row(json!({ "id": 2, "fullname": "Tamsin Rook" }));
     let tree = row(json!({ "id": 1, "name": "old tree" }));
     let branch = row(json!({ "id": 3, "name": "branch", "hold": "firm", "fragility": "sturdy" }));
     let bark = row(json!({ "id": 4, "name": "bark", "hold": "loose", "fragility": "brittle" }));
-    let check = |score, penalty, die| Check {
-        ability: "strength".into(),
-        score,
-        penalty,
-        die,
-    };
-    let broke = |part: &Row, check: &Check, outcome, before, left| {
-        facts::broke_off(
-            part,
-            &tree,
-            Some(&tamsin),
-            Some(check),
-            outcome,
-            before,
-            left,
-        )
+    let broke = |part: &Row, outcome, before, left| {
+        facts::broke_off(part, &tree, Some(&tamsin), outcome, before, left)
     };
     assert_eq!(
-        broke(&branch, &check(10, 3, Some(4)), Snapped::InHand, 2, 1),
-        "ON THIS TURN, and not before it, Tamsin Rook broke a branch off the old tree. It was a \
-         strength check, a d20 under 10 less 3 for a firm hold: it came up 4, and passed. The \
+        broke(&branch, Snapped::InHand, 2, 1),
+        "ON THIS TURN, and not before it, Tamsin Rook broke a branch off the old tree. The \
          branch is in their hands now. The old tree has one branch left that could be broken \
          off. Do not write anything else coming away, being picked up or being carried."
     );
     assert_eq!(
-        broke(&branch, &check(10, 3, Some(15)), Snapped::Held, 2, 2),
+        broke(&branch, Snapped::Held, 2, 2),
         "ON THIS TURN, and not before it, Tamsin Rook tried to break a branch off the old tree. \
-         It was a strength check, a d20 under 10 less 3 for a firm hold: it came up 15, and \
-         failed. The branch held: it is still on the old tree, nothing came away and they are \
-         holding nothing new. Do not write it breaking, bending away or coming loose."
-    );
-    assert_eq!(
-        broke(&branch, &check(3, 3, None), Snapped::Held, 2, 2),
-        "ON THIS TURN, and not before it, Tamsin Rook tried to break a branch off the old tree. \
-         It was beyond them: strength 3 less 3 for a firm hold leaves nothing to roll under. The \
-         branch held: it is still on the old tree, nothing came away and they are holding \
+         The branch held: it is still on the old tree, nothing came away and they are holding \
          nothing new. Do not write it breaking, bending away or coming loose."
     );
     assert_eq!(
-        broke(&bark, &check(10, 0, Some(8)), Snapped::InPieces, 1, 0),
-        "ON THIS TURN, and not before it, Tamsin Rook broke the bark off the old tree. It was a \
-         strength check, a d20 under 10 for a loose hold: it came up 8, and passed. It came away \
-         in pieces: brittle, it broke as it came loose, and they are holding nothing new. There \
-         is no bark left on the old tree that could be broken off. Do not write them holding it."
+        broke(&branch, Snapped::Beyond, 2, 2),
+        "ON THIS TURN, and not before it, Tamsin Rook tried to break a branch off the old tree. \
+         It was far beyond their strength. The branch held: it is still on the old tree, nothing \
+         came away and they are holding nothing new. Do not write it breaking, bending away or \
+         coming loose."
     );
-    assert!(
-        broke(&branch, &check(10, 3, Some(4)), Snapped::InHand, 1, 0)
-            .contains(" The old tree has no branch left that could be broken off. ")
+    assert_eq!(
+        broke(&bark, Snapped::InPieces, 1, 0),
+        "ON THIS TURN, and not before it, Tamsin Rook broke the bark off the old tree. It came \
+         away in pieces: brittle, it broke as it came loose, and they are holding nothing new. \
+         There is no bark left on the old tree that could be broken off. Do not write them \
+         holding it."
     );
-    assert!(
-        broke(&branch, &check(10, 3, Some(4)), Snapped::InHand, 3, 2)
-            .contains(" The old tree has two branches left that could be broken off. ")
-    );
+    assert!(broke(&branch, Snapped::InHand, 1, 0)
+        .contains(" The old tree has no branch left that could be broken off. "));
+    assert!(broke(&branch, Snapped::InHand, 3, 2)
+        .contains(" The old tree has two branches left that could be broken off. "));
 }
 
 /// A look at a thing with nothing written on it, in each of its four forms:

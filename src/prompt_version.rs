@@ -96,53 +96,14 @@ pub fn scaffold() -> String {
             false,
         ),
     ]);
-    // A part broken off: in the hand, in pieces, held on a failed check, on
-    // no die at all and with no abilities, one of several and the last.
+    // A part broken off: in the hand, in pieces, held and beyond them, one of several
+    // and the last.
     let part = row(json!({ "name": ITEM, "hold": "firm", "fragility": "brittle" }));
-    let rolled = |die| crate::turn::Check {
-        ability: "strength".into(),
-        score: 10,
-        penalty: 3,
-        die,
-    };
     texts.extend([
-        facts::broke_off(
-            &part,
-            &plain,
-            Some(&somebody),
-            Some(&rolled(Some(4))),
-            Snapped::InHand,
-            2,
-            1,
-        ),
-        facts::broke_off(
-            &part,
-            &plain,
-            None,
-            Some(&rolled(Some(4))),
-            Snapped::InPieces,
-            1,
-            0,
-        ),
-        facts::broke_off(
-            &part,
-            &plain,
-            Some(&somebody),
-            Some(&rolled(Some(15))),
-            Snapped::Held,
-            2,
-            2,
-        ),
-        facts::broke_off(
-            &part,
-            &plain,
-            Some(&somebody),
-            Some(&rolled(None)),
-            Snapped::Held,
-            1,
-            1,
-        ),
-        facts::broke_off(&part, &plain, None, None, Snapped::Held, 1, 1),
+        facts::broke_off(&part, &plain, Some(&somebody), Snapped::InHand, 2, 1),
+        facts::broke_off(&part, &plain, None, Snapped::InPieces, 1, 0),
+        facts::broke_off(&part, &plain, Some(&somebody), Snapped::Held, 2, 2),
+        facts::broke_off(&part, &plain, None, Snapped::Beyond, 1, 1),
     ]);
     texts.extend([
         facts::read(&plain, WORDS),
