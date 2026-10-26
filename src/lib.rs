@@ -64,6 +64,7 @@ pub mod playthrough;
 pub mod population;
 pub mod prompt_version;
 pub mod random;
+pub mod reach;
 pub mod realization;
 pub mod records;
 pub mod refusal;

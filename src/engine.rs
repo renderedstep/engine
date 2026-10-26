@@ -396,6 +396,20 @@ impl Engine {
         })
     }
 
+    /// What the game's doctor reports about the places of a story the party
+    /// could stand in with no layout ([`crate::reach::findings`]), as
+    /// warnings that change nothing. Writes nothing.
+    pub fn layout_findings(&self, story: i64) -> Result<Vec<crate::noticed::Finding>, Error> {
+        let store = &self.store;
+        guarded(|| {
+            let records = store.load()?;
+            if records.find("stories", story).is_none() {
+                return Err(Error::NoSuchStory(format!("#{story}")));
+            }
+            Ok(crate::reach::findings(&records, story))
+        })
+    }
+
     /// What the move answered with `scene` found changed since the game last
     /// left the room it walked back into ([`crate::revisit::since_on`]), in
     /// a game told either way: none for any other scene, and for a move into

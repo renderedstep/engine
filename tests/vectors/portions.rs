@@ -46,6 +46,7 @@ pub const NAMES: &[&str] = &[
     "material",
     "wear",
     "divide",
+    "reach",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -938,5 +939,63 @@ fn wear() {
             })
             .collect();
         Value::Array(found)
+    });
+}
+
+#[test]
+fn reach() {
+    use renderedstep_engine::{reach, records::Records};
+    let constants = json!({ "step_back_paces": reach::STEP_BACK_PACES });
+    check("reach", constants, |input| {
+        let spot = |value: &Value| Spot {
+            x: int(&value["x"]),
+            y: int(&value["y"]),
+        };
+        let spots = |value: &Value| -> Vec<Spot> {
+            value.as_array().expect("spots").iter().map(spot).collect()
+        };
+        let spot_json = |at: Spot| json!({ "x": at.x, "y": at.y });
+        match input["ask"].as_str().expect("an ask") {
+            "within" => json!(reach::within_reach(
+                spot(&input["from"]),
+                spot(&input["to"])
+            )),
+            "nearest_free" => json!(reach::nearest_free(
+                &box_of(&input["room"]),
+                spot(&input["target"]),
+                spot(&input["from"]),
+                &spots(&input["taken"]),
+            )
+            .map(spot_json)),
+            "step_back" => match reach::step_back(
+                &box_of(&input["room"]),
+                spot(&input["from"]),
+                spot(&input["away"]),
+            ) {
+                Ok(at) => json!({ "at": spot_json(at) }),
+                Err(reach::Refused::NoRoomBehind) => json!({ "refused": "no_room_behind" }),
+            },
+            "nearest_within_reach" => json!(reach::nearest_within_reach(
+                spot(&input["from"]),
+                &spots(&input["people"]),
+            )),
+            "findings" => {
+                let records = Records::from_json(&input["records"]);
+                let found: Vec<Value> = reach::findings(&records, int(&input["story"]))
+                    .into_iter()
+                    .map(|finding| {
+                        json!({
+                            "code": finding.code,
+                            "severity": finding.severity,
+                            "remedy": finding.remedy,
+                            "subject": [finding.subject.0, finding.subject.1],
+                            "message": finding.message,
+                        })
+                    })
+                    .collect();
+                Value::Array(found)
+            }
+            ask => panic!("no ask {ask}"),
+        }
     });
 }
