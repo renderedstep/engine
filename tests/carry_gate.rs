@@ -178,6 +178,26 @@ fn a_person_is_offered_no_take_that_would_not_fit_them_and_no_give_that_would_no
 }
 
 #[test]
+fn a_wear_of_a_thing_lying_here_picks_it_up_and_is_held_to_the_gate() {
+    let wearable = "UPDATE items SET wear = 'head' WHERE name = 'pewter jug';";
+    let (mut limited, game) = house(wearable);
+    assert_eq!(refusal(&mut limited, game, "/take brass scoop"), None);
+    assert_eq!(
+        refusal(&mut limited, game, "/wear pewter jug").as_deref(),
+        Some(
+            "You are already carrying as much as you can bear at strength 5 (the tally board \
+             and the brass scoop). Put something down first. Nothing has changed."
+        )
+    );
+
+    let (mut unlimited, game) = house(&format!("{wearable}{UNLIMITED}"));
+    assert_eq!(refusal(&mut unlimited, game, "/take brass scoop"), None);
+    assert_eq!(refusal(&mut unlimited, game, "/wear pewter jug"), None);
+    let carrying = unlimited.read(game, Vec::new()).unwrap().state.carrying;
+    assert_eq!(carrying.len(), 3, "the board, the scoop and the jug, worn");
+}
+
+#[test]
 fn a_body_with_no_strength_recorded_is_not_limited() {
     let (mut engine, game) = house("UPDATE characters SET strength = NULL WHERE id = 1000000001;");
     assert_eq!(refusal(&mut engine, game, "/take market slate"), None);

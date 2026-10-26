@@ -663,12 +663,16 @@ impl<'s> Mechanics<'s> {
         .or_else(|| self.cannot_carry(intent, command, room))
     }
 
-    /// The carrying gate, in a world that turns it on: a take, a throw of a
-    /// thing lying here, or a break, of a thing the player could not then
-    /// hold, is refused before anything is thrown or moved.
+    /// The carrying gate, in a world that turns it on: a take, a throw or a
+    /// wear of a thing lying here (each picks it up first), or a break, of a
+    /// thing the player could not then hold, is refused before anything is
+    /// thrown or moved.
     fn cannot_carry(&self, intent: &Intent, command: &str, room: &Room) -> Option<Refusal> {
         let thing = match (&intent.physical, &intent.item) {
             (Some(choice), _) if choice.kind == "break" => choice.item.as_ref()?,
+            (Some(choice), _) if choice.kind == WEAR => {
+                choice.item.as_ref().filter(|thing| !thing.carried)?
+            }
             (None, Some(Record::Thing(thing)))
                 if !thing.carried && (intent.action == "take" || intent.is_throw()) =>
             {
