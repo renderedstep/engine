@@ -1,0 +1,75 @@
+---
+story: A Writ On The Copying Desk
+steps:
+- id: rip-the-apron
+  type: "/rip the linen apron"
+  browser:
+    token: rip-apron-1
+    replies:
+    - purpose: narration
+      content: You haul at the apron, and the old linen holds.
+      prompt_includes:
+      - tried to tear the linen apron apart
+      - The linen apron held together
+  expect:
+    refused: false
+    resolved_by: grammar
+    here:
+    - blank writ
+    - linen apron
+    - glass jar
+- id: rip-the-apron-again
+  type: "/rip the linen apron"
+  browser:
+    token: rip-apron-2
+    replies:
+    - purpose: narration
+      content: The seam gives, and the apron comes apart in strips.
+      prompt_includes:
+      - tore the linen apron apart
+      - the strips of the linen apron, lying where it was
+  expect:
+    changed: true
+    refused: false
+    here:
+    - blank writ
+    - strips of the linen apron
+    - glass jar
+- id: tear-up-the-letter
+  type: "/tear up the letter"
+  browser:
+    token: tear-letter
+    replies:
+    - purpose: narration
+      content: You tear the letter across, and across again, until it is scraps.
+      prompt_includes:
+      - tore the letter apart
+      - What is left of it is the scraps of the letter, in their hands.
+  expect:
+    changed: true
+    refused: false
+    resolved_by: grammar
+    carrying:
+    - tinderbox
+    - clay pot
+    - iron key
+    - scraps of the letter
+- id: the-scraps-are-not-torn-again
+  type: "/tear the scraps of the letter"
+  expect:
+    changed: false
+    refused: true
+    carrying:
+    - tinderbox
+    - clay pot
+    - iron key
+    - scraps of the letter
+- id: burn-the-scraps
+  type: "/burn the scraps of the letter with the tinderbox"
+  expect:
+    changed: true
+    refused: false
+    carrying:
+    - tinderbox
+    - clay pot
+    - iron key

@@ -1,0 +1,44 @@
+---
+story: A Writ On The Copying Desk
+steps:
+- id: tear-the-writ-the-story-needs
+  type: "/tear the blank writ"
+  browser:
+    token: tear-writ
+  expect:
+    changed: false
+    refused: true
+    here:
+    - blank writ
+    - linen apron
+    - glass jar
+- id: burn-the-writ-the-story-needs
+  type: "/burn the blank writ with the tinderbox"
+  expect:
+    changed: false
+    refused: true
+    here:
+    - blank writ
+    - linen apron
+    - glass jar
+- id: take-the-writ
+  type: take blank writ
+  expect:
+    changed: true
+    carrying:
+    - letter
+    - tinderbox
+    - clay pot
+    - iron key
+    - blank writ
+- id: tear-the-writ-once-the-step-is-reached
+  type: "/tear the blank writ"
+  expect:
+    changed: true
+    refused: false
+    carrying:
+    - letter
+    - tinderbox
+    - clay pot
+    - iron key
+    - scraps of the blank writ

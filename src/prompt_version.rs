@@ -105,6 +105,21 @@ pub fn scaffold() -> String {
         facts::broke_off(&part, &plain, Some(&somebody), Snapped::Held, 2, 2),
         facts::broke_off(&part, &plain, None, Snapped::Beyond, 1, 1),
     ]);
+    // A thing broken apart, told by outcome alone: torn in the hand, smashed
+    // where it lay with nobody playing, and each held together.
+    let pieces = row(json!({ "name": format!("<what it left> of {ITEM}") }));
+    texts.extend([
+        facts::divided(
+            &plain,
+            crate::divide::TEAR,
+            Some(&somebody),
+            Some(&pieces),
+            true,
+        ),
+        facts::divided(&plain, crate::divide::SMASH, None, Some(&pieces), false),
+        facts::divided(&plain, crate::divide::TEAR, Some(&somebody), None, true),
+        facts::divided(&plain, crate::divide::SMASH, Some(&somebody), None, false),
+    ]);
     texts.extend([
         facts::read(&plain, WORDS),
         facts::examined(&plain, None, false),

@@ -69,6 +69,9 @@ fn thing(value: &Value, carried: bool) -> Thing {
         .as_array()
         .map(|pair| (pair[0].as_i64().expect("a piece's id"), text(&pair[1])));
     thing.hold = value["hold"].as_str().map(str::to_string);
+    thing.material = value["material"].as_str().map(str::to_string);
+    thing.fixture = value["fixture"].as_bool().unwrap_or(false);
+    thing.bound = value["bound"].as_bool().unwrap_or(false);
     thing
 }
 
@@ -108,6 +111,15 @@ fn build(worlds: &Value, name: &Value) -> Built {
             .iter()
             .map(|t| thing(t, false))
             .collect(),
+        abilities: world["abilities"]
+            .as_object()
+            .map(|scores| {
+                scores
+                    .iter()
+                    .map(|(ability, score)| (ability.clone(), score.as_i64().expect("a score")))
+                    .collect()
+            })
+            .unwrap_or_default(),
         over: false,
     };
     let mut records: Vec<Record> = Vec::new();

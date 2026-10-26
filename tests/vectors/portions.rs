@@ -45,6 +45,7 @@ pub const NAMES: &[&str] = &[
     "carry",
     "material",
     "wear",
+    "divide",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -848,6 +849,65 @@ fn material() {
         }
         let row = input.as_object().expect("a row").clone();
         json!({ "against": material::against(&row) })
+    });
+}
+
+#[test]
+fn divide() {
+    use renderedstep_engine::divide;
+    use renderedstep_engine::room::Thing;
+    let act = |act: Option<&renderedstep_engine::data::Divide>| {
+        act.map(|act| {
+            json!({
+                "leaves": act.leaves,
+                "check": act.check.as_ref().map(|(ability, penalty)| json!([ability, penalty])),
+            })
+        })
+    };
+    let constants = json!({
+        "kinds": divide::KINDS,
+        "disposition": divide::DIVIDED,
+        "acts": renderedstep_engine::data::kits()
+            .materials
+            .iter()
+            .map(|(name, rule)| json!({
+                "material": name,
+                "tear": act(rule.tear.as_ref()),
+                "smash": act(rule.smash.as_ref()),
+            }))
+            .collect::<Vec<Value>>(),
+    });
+    check("divide", constants, |input| {
+        let kind = input["kind"].as_str().expect("a kind");
+        if let Some(row) = input["row"].as_object() {
+            let pieces = divide::pieces(row, kind).map(|columns| {
+                columns
+                    .into_iter()
+                    .map(|(column, value)| (column.to_string(), value))
+                    .collect::<serde_json::Map<String, Value>>()
+            });
+            return json!({ "pieces": pieces });
+        }
+        let thing = &input["thing"];
+        let thing = Thing {
+            material: opt_str(&thing["material"]),
+            fixture: thing["fixture"].as_bool().unwrap_or(false),
+            bound: thing["bound"].as_bool().unwrap_or(false),
+            ..Thing::new(1, thing["name"].as_str().expect("a name"), true)
+        };
+        let abilities: Vec<(String, i64)> = input["abilities"]
+            .as_object()
+            .map(|scores| {
+                scores
+                    .iter()
+                    .map(|(ability, score)| (ability.clone(), int(score)))
+                    .collect()
+            })
+            .unwrap_or_default();
+        json!({
+            "offered": divide::offered(kind, &thing, &abilities),
+            "possible": divide::possible(kind, &thing, &abilities),
+        })
     });
 }
 

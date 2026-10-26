@@ -122,6 +122,18 @@ verbs:
   remove: remove
   doff: remove
   take off: remove
+  # BREAKING A THING APART: `tear` names paper or cloth, `smash` glass or
+  # pottery, in the player's hands or lying here, and plays the attempt
+  # `Room::physical_actions` offers on it (`divide`): the thing ends and one
+  # row of its scraps, strips or shards begins where it was. Reached only
+  # through these words until the readers are retrained on them (the owner's
+  # call of 2026-10-25). A thing the story still needs is refused in the
+  # engine's words.
+  tear: tear
+  tear up: tear
+  rip: tear
+  rip up: tear
+  smash: smash
   # LETTING TIME PASS: `wait` plays the attempt `Room::physical_actions`
   # offers in every room, whatever follows the word. It writes the scene and
   # moves the clock, and the world takes its turn. Resting, idling, thinking
