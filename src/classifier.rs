@@ -38,6 +38,10 @@ pub const LOCAL_UNSURE: &str = "typed_model_unsure";
 /// `scenes.resolved_by` for a free-typed throw the local reader left unread.
 pub const LOCAL_THROW: &str = "typed_model_throw";
 
+/// `scenes.resolved_by` for a free-typed line that puts a thing on or takes
+/// it off ([`cascade::dressed`]): no reader was asked.
+pub const DRESS: &str = "typed_model_dress";
+
 /// `scenes.resolved_by` for a line refused because the local reader is down
 /// or not set up.
 pub const LOCAL_DOWN: &str = "typed_model_down";
@@ -74,6 +78,8 @@ pub struct Reading {
 /// call `call` where System One did not compose an intent.
 ///
 /// The local reader's line never reaches the model call ([`read_locally`]).
+/// A line that puts a thing on or takes it off is asked of no reader
+/// ([`DRESS`]).
 pub fn read(
     room: &Room,
     call: &Call,
@@ -82,6 +88,9 @@ pub fn read(
 ) -> Result<Reading, Failure> {
     if reader.local() {
         return Ok(read_locally(room, typed, reader));
+    }
+    if cascade::dressed(room, typed) {
+        return Ok(unread(Unread::Dress, DRESS, None, None));
     }
     let (composed, path, target_present, named_more_than_one) = if reader.system_one() {
         let state = cascade::State::new(room, typed);
@@ -135,21 +144,17 @@ pub fn read(
 /// The local reader's reading: the presence gate on its own
 /// ([`Escalation::Off`]), so a line it is unsure of is played on its own
 /// reading ([`LOCAL_UNSURE`]), and a target it reads as absent is refused
-/// with the list of what is here. Two lines it does not read at all: a
-/// free-typed throw, which is asked nothing and pointed at `/throw`, and any
-/// line while the reader is down or answers nothing it can compose.
+/// with the list of what is here. Three lines it does not read at all: a
+/// free-typed throw, which is asked nothing and pointed at `/throw`; a line
+/// that puts a thing on or takes it off, asked nothing and pointed at
+/// `/wear` and `/remove`; and any line while the reader is down or answers
+/// nothing it can compose.
 pub fn read_locally(room: &Room, typed: &str, reader: &mut dyn Reader) -> Reading {
-    let unread = |unread, path, target_present, named_more_than_one| Reading {
-        intent: Intent {
-            unread: Some(unread),
-            ..Intent::new("other")
-        },
-        path,
-        target_present,
-        named_more_than_one,
-    };
     if cascade::thrown(typed) {
         return unread(Unread::Throw, LOCAL_THROW, None, None);
+    }
+    if cascade::dressed(room, typed) {
+        return unread(Unread::Dress, DRESS, None, None);
     }
     let state = cascade::State::new(room, typed);
     let questions = cascade::request(&state);
@@ -173,6 +178,24 @@ pub fn read_locally(room: &Room, typed: &str, reader: &mut dyn Reader) -> Readin
         path: if unsure { LOCAL_UNSURE } else { outcome.path },
         target_present: presence,
         named_more_than_one: two_name,
+    }
+}
+
+/// A line left unread, refused in the engine's own words.
+fn unread(
+    unread: Unread,
+    path: &'static str,
+    target_present: Option<f64>,
+    named_more_than_one: Option<f64>,
+) -> Reading {
+    Reading {
+        intent: Intent {
+            unread: Some(unread),
+            ..Intent::new("other")
+        },
+        path,
+        target_present,
+        named_more_than_one,
     }
 }
 

@@ -1337,14 +1337,15 @@ fn a_fixed_reading_take_is_narrated_where_a_plain_take_is_not() {
 }
 
 /// A free-typed line read through the local reader, in a whole turn: a throw
-/// is asked nothing and pointed at `/throw`; a down reader refuses the line
+/// is asked nothing and pointed at `/throw`, and a put-on is asked nothing
+/// and pointed at `/wear` and `/remove`; a down reader refuses the line
 /// and points at the slash menu; an unsure reading is played as read, so a
 /// target it reads as absent is refused with what is here; and the model call
 /// is never made.
 #[test]
 fn the_local_reader_reads_a_typed_line_alone() {
     use renderedstep_engine::model::{Replay, Reply};
-    use renderedstep_engine::refusal::{READER_DOWN, THROW_UNREAD};
+    use renderedstep_engine::refusal::{DRESS_UNREAD, READER_DOWN, THROW_UNREAD};
     let local = |reply: serde_json::Value| {
         let mut reply = reply;
         reply["purpose"] = serde_json::json!("local_classifier");
@@ -1367,6 +1368,7 @@ fn the_local_reader_reads_a_typed_line_alone() {
         let kept = journal(engine);
         [
             "typed_model_throw",
+            "typed_model_dress",
             "typed_model_down",
             "typed_model_unsure",
         ]
@@ -1396,6 +1398,29 @@ fn the_local_reader_reads_a_typed_line_alone() {
     assert_eq!(resolved_by(&engine), "typed_model_throw");
     assert!(
         journal(&engine).contains(r#"{"symbol":"throw"}"#),
+        "a resumed turn reads the line as unread again"
+    );
+
+    let mut replay = Replay::new(Vec::new()).with_local_classifier();
+    let submitted = engine
+        .submit(
+            playthrough,
+            "put on my coat",
+            "dress",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert!(replay.calls().is_empty(), "a put-on asks nothing");
+    let refusal = submitted.turned.refusal.expect("a refusal");
+    assert_eq!(
+        (refusal.kind.as_str(), refusal.fact.as_str()),
+        ("unreadable", DRESS_UNREAD)
+    );
+    assert_eq!(resolved_by(&engine), "typed_model_dress");
+    assert!(
+        journal(&engine).contains(r#"{"symbol":"dress"}"#),
         "a resumed turn reads the line as unread again"
     );
 
@@ -1496,6 +1521,19 @@ fn a_line_is_read_over_rows_as_a_turn_reads_it() {
         assert_eq!(
             reading.intent.subject().map(|record| record.label()),
             Some("red coin".to_string())
+        );
+
+        // A line that takes a coat off is asked of neither.
+        let mut answers = Answers {
+            system_one,
+            asked: Vec::new(),
+        };
+        let reading = classifier::read(&room, &call, "take off my coat", &mut answers).unwrap();
+        assert_eq!(reading.path, classifier::DRESS);
+        assert!(answers.asked.is_empty(), "{:?}", answers.asked);
+        assert_eq!(
+            reading.intent.unread,
+            Some(renderedstep_engine::intent::Unread::Dress)
         );
     }
 }

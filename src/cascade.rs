@@ -11,6 +11,8 @@
 //! at or above [`TWO_NAME_THRESHOLD`], or `target_present` below
 //! [`PRESENCE_THRESHOLD`]. That is escalation, not refusal. A line that
 //! names a throw ([`thrown`]) goes on too: System One has no throw to read.
+//! A line that puts a thing on or takes it off ([`dressed`]) is asked of no
+//! reader at all ([`crate::classifier::read`]).
 //!
 //! A move read off a line that opens by speaking to somebody ([`spoken`]) is
 //! composed as the talk it is.
@@ -58,6 +60,171 @@ pub fn thrown(command: &str) -> bool {
     let line = crate::text::ruby_downcase(command);
     line.split(|c: char| !c.is_alphanumeric())
         .any(|word| THROW_VERBS.contains(&word))
+}
+
+/// The words that put a thing on or take it off whatever the line names.
+/// `wearing`, `wore` and `worn` are left out: each is as often a word about
+/// somebody else, or about how old a thing is.
+pub const DRESS_WORDS: &[&str] = &[
+    "wear",
+    "wears",
+    "doff",
+    "doffs",
+    "doffed",
+    "doffing",
+    "undress",
+    "undresses",
+    "undressed",
+    "undressing",
+];
+
+/// The same, as two words: "get dressed", "dress myself".
+pub const DRESS_PHRASES: &[&[&str]] = &[
+    &["get", "dressed"],
+    &["got", "dressed"],
+    &["getting", "dressed"],
+    &["get", "undressed"],
+    &["dress", "myself"],
+];
+
+/// The verbs that put a garment on when `on` follows them, at once or at the
+/// end of the line: "put on the cap", "put the coat back on".
+pub const ON_VERBS: &[&str] = &["put", "pull", "slip", "tie"];
+
+/// The verbs that take a garment off the same way: "take off my coat",
+/// "take my coat off".
+pub const OFF_VERBS: &[&str] = &["take", "pull", "slip", "shrug", "peel", "strip"];
+
+/// The words that name one dress act or another only beside a garment:
+/// each has a common sense that dresses nobody ("Don", "remove the panel",
+/// "change into a run").
+pub const GARMENT_WORDS: &[&str] = &[
+    "don",
+    "dons",
+    "donned",
+    "donning",
+    "remove",
+    "removes",
+    "removed",
+    "removing",
+    "disguise",
+    "disguises",
+];
+
+/// The words of a line, downcased, each with what is not a letter or a
+/// digit trimmed off its ends, so "don't" is not "don" and "hand-bell" is
+/// one word.
+fn words_of(command: &str) -> Vec<String> {
+    crate::text::ruby_downcase(command)
+        .replace('\u{2019}', "'")
+        .split_whitespace()
+        .map(|word| {
+            word.trim_matches(|c: char| !c.is_alphanumeric())
+                .to_string()
+        })
+        .filter(|word| !word.is_empty())
+        .collect()
+}
+
+/// Where `phrase` starts among `words`, if it is there.
+fn find_phrase<S: AsRef<str>>(words: &[String], phrase: &[S]) -> Option<usize> {
+    if phrase.is_empty() {
+        return None;
+    }
+    words.windows(phrase.len()).position(|window| {
+        window
+            .iter()
+            .zip(phrase)
+            .all(|(word, want)| word == want.as_ref())
+    })
+}
+
+/// Whether the line names a garment: a thing here or carried that has a
+/// place on a body, by its whole name or its last word, or any name in the
+/// kits' `wear` table, one or several of it.
+fn names_garment(room: &Room, words: &[String]) -> bool {
+    let named = |name: &[String]| {
+        let plural = name
+            .split_last()
+            .map(|(last, rest)| [rest, &[format!("{last}s")]].concat());
+        find_phrase(words, name).is_some()
+            || plural.is_some_and(|plural| find_phrase(words, &plural).is_some())
+    };
+    let worn_here = room
+        .lying
+        .iter()
+        .chain(&room.carried)
+        .filter(|thing| thing.wear_place().is_some())
+        .any(|thing| {
+            let name = words_of(&thing.name);
+            named(&name)
+                || name
+                    .last()
+                    .is_some_and(|last| named(std::slice::from_ref(last)))
+        });
+    worn_here
+        || data::kits()
+            .wear
+            .iter()
+            .any(|(name, _)| named(&words_of(name)))
+}
+
+/// Whether the line puts a thing on or takes it off: a dress word anywhere
+/// ([`DRESS_WORDS`], [`DRESS_PHRASES`]), or, where it names a garment, a
+/// verb with `on` or `off` straight after it or ending the line
+/// ([`ON_VERBS`], [`OFF_VERBS`]), a [`GARMENT_WORDS`] word ("remove" only
+/// with no `from` after it), "change into", "hang up", or a wrap around the
+/// player. No reader is asked any of them: none is taught them, and each
+/// reads "put on the cap" as a take and "take off my coat" as a drop. Such a
+/// line is pointed at `/wear` and `/remove`. A take or a put of a thing off
+/// or on something else ("take the stamp off the desk") is not one.
+pub fn dressed(room: &Room, command: &str) -> bool {
+    let words = words_of(command);
+    if words
+        .iter()
+        .any(|word| DRESS_WORDS.contains(&word.as_str()))
+        || DRESS_PHRASES
+            .iter()
+            .any(|phrase| find_phrase(&words, phrase).is_some())
+    {
+        return true;
+    }
+    if !names_garment(room, &words) {
+        return false;
+    }
+    let has = |word: &str| words.iter().any(|w| w.as_str() == word);
+    let last = words.last().map(String::as_str);
+    let verb_with = |verbs: &[&str], particle: &str| {
+        words.iter().enumerate().any(|(at, word)| {
+            verbs.contains(&word.as_str())
+                && (words.get(at + 1).map(String::as_str) == Some(particle)
+                    || (at + 1 < words.len() && last == Some(particle)))
+        })
+    };
+    // A word somebody here is called by is that person: "Don, look at my
+    // coat".
+    let called: Vec<String> = room
+        .cast
+        .iter()
+        .flat_map(|person| [Some(&person.fullname), person.nickname.as_ref()])
+        .flatten()
+        .flat_map(|name| words_of(name))
+        .collect();
+    let removes = words.iter().enumerate().any(|(at, word)| {
+        GARMENT_WORDS.contains(&word.as_str())
+            && !called.contains(word)
+            && !(word.starts_with("remov") && words[at..].iter().any(|w| w == "from"))
+    });
+    let wraps = (has("wrap") || has("wraps"))
+        && (has("around") || has("round"))
+        && (has("my") || has("me") || has("myself"));
+    verb_with(ON_VERBS, "on")
+        || verb_with(OFF_VERBS, "off")
+        || removes
+        || find_phrase(&words, &["change", "into"]).is_some()
+        || find_phrase(&words, &["change", "out", "of"]).is_some()
+        || ((has("hang") || has("hangs")) && has("up"))
+        || wraps
 }
 
 /// The words a line opens with when the player is leaving where they stand.
@@ -633,7 +800,7 @@ fn intent_for(action: &str, target: Option<Record>, also: Option<Record>) -> Int
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::room::{Exit, Person, Place};
+    use crate::room::{Exit, Person, Place, Thing};
 
     fn room(cast: Vec<Person>) -> Room {
         Room {
@@ -795,6 +962,109 @@ mod tests {
         ] {
             assert!(!thrown(typed), "{typed}");
         }
+    }
+
+    /// The harbour office of the bench's dress lines: a coat and a scarf in
+    /// the hands, a cap and an apron by the door beside a bell, none of them
+    /// given a place on a body, and the warden.
+    fn pegs() -> Room {
+        let mut room = room(vec![Person {
+            id: 3,
+            fullname: "Orrin Tace".into(),
+            nickname: Some("Warden Tace".into()),
+        }]);
+        room.carried = vec![
+            Thing::new(20, "oilskin coat", true),
+            Thing::new(21, "wool scarf", true),
+        ];
+        room.lying = vec![
+            Thing::new(22, "flat cap", false),
+            Thing::new(23, "canvas apron", false),
+            Thing::new(24, "hand-bell", false),
+        ];
+        room
+    }
+
+    #[test]
+    fn a_line_that_dresses_or_undresses_is_named() {
+        let room = pegs();
+        for typed in [
+            "put on the cap",
+            "wear the cap",
+            "put the cap on",
+            "don the apron",
+            "tie on the apron",
+            "wear the apron",
+            "put on my scarf",
+            "wrap the scarf around my neck",
+            "wear the scarf",
+            "take off my coat",
+            "take off the oilskin coat",
+            "take my coat off",
+            "remove my coat",
+            "remove the oilskin coat",
+            "shrug off the coat",
+            "take off the scarf",
+            "get dressed",
+            "undress",
+            "change into the apron",
+            "put the coat back on",
+            "hang up my coat",
+            "disguise myself with the apron",
+            "Doff the cap to the warden",
+            "pull on my gloves",
+            "I wear the hand-bell",
+        ] {
+            assert!(dressed(&room, typed), "{typed}");
+        }
+    }
+
+    #[test]
+    fn a_line_that_only_takes_puts_or_names_clothes_is_not() {
+        let room = pegs();
+        for typed in [
+            "pick up the cap",
+            "drop the coat",
+            "give the scarf to the warden",
+            "take the cap off the peg",
+            "put the coat on the counter",
+            "take the ward stamp off the desk",
+            "Did you put seventy minutes on that slate yourself?",
+            "tell him to back off",
+            "remove the panel",
+            "remove the cap from the peg",
+            "don't touch the apron",
+            "talk to the man wearing the cap",
+            "look at the worn coat",
+            "button my coat",
+            "pull my hood up",
+            "",
+        ] {
+            assert!(!dressed(&room, typed), "{typed}");
+        }
+    }
+
+    #[test]
+    fn a_word_somebody_here_answers_to_is_that_person() {
+        let mut room = pegs();
+        room.cast.push(Person {
+            id: 4,
+            fullname: "Don Pell".into(),
+            nickname: None,
+        });
+        assert!(!dressed(&room, "Don, look at my coat"));
+        assert!(dressed(&room, "remove my coat"));
+    }
+
+    #[test]
+    fn a_thing_with_a_place_on_a_body_is_a_garment_by_its_last_word() {
+        let mut room = pegs();
+        assert!(!dressed(&room, "take off the cloak"));
+        let mut cloak = Thing::new(25, "sealskin cloak", true);
+        cloak.wear = Some("outer".into());
+        room.carried.push(cloak);
+        assert!(dressed(&room, "take off the cloak"));
+        assert!(dressed(&room, "remove the sealskin cloak"));
     }
 
     /// The line read as a blow at Rowe, clearly present and single, as
