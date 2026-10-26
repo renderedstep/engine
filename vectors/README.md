@@ -54,8 +54,10 @@ from. `speech_choices`, what a person may say unasked and the speech die
 thrown over it, never had a Ruby original: it is this crate's from the start,
 and its cases stand on `volition_request`'s rows. So is `wear`, the places
 on a body and what the doctor reports about worn things, whose cases carry
-their own rows, and `divide`, how each material breaks apart, whether a
-tear or a smash is offered on a thing and what it leaves.
+their own rows, `divide`, how each material breaks apart, whether a tear or
+a smash is offered on a thing and what it leaves, and `reach`, what is within
+arm's length in a laid-out room, where walking up to something or stepping
+back from it puts you, and the doctor's warning for a place with no layout.
 
 Never edit the game's portions by hand. To refresh them, in the game's
 repository:
