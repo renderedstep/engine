@@ -119,6 +119,11 @@ const UNREADABLE: &str = "That did not come back as anything the game knows how 
 pub const THROW_UNREAD: &str =
     "A throw is read only when it is typed as a command: /throw <thing> at <somebody here, or a way out>.";
 
+/// A free-typed line that puts a thing on or takes it off, which no reader
+/// reads.
+pub const DRESS_UNREAD: &str = "Putting a thing on or taking it off is read only when it is typed \
+     as a command: /wear <thing> or /remove <thing>.";
+
 /// Any free-typed line while the local reader is down or not set up.
 pub const READER_DOWN: &str = "The game cannot read free-typed lines right now. \
      Type the line as a command instead: the slash menu lists them.";
@@ -226,6 +231,7 @@ impl Refusal {
         if intent.unreadable() {
             let fact = match intent.unread {
                 Some(Unread::Throw) => THROW_UNREAD,
+                Some(Unread::Dress) => DRESS_UNREAD,
                 Some(Unread::ReaderDown) => READER_DOWN,
                 None => UNREADABLE,
             };

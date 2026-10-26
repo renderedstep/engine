@@ -59,6 +59,9 @@ pub struct Intent {
 pub enum Unread {
     /// A free-typed throw: no reader reads one right, and `/throw` does.
     Throw,
+    /// A free-typed line that puts a thing on or takes it off: no reader is
+    /// taught either, and `/wear` and `/remove` play them.
+    Dress,
     /// The reader is down or not set up.
     ReaderDown,
 }
@@ -68,6 +71,7 @@ impl Unread {
     pub fn name(self) -> &'static str {
         match self {
             Unread::Throw => "throw",
+            Unread::Dress => "dress",
             Unread::ReaderDown => "reader_down",
         }
     }
@@ -75,6 +79,7 @@ impl Unread {
     pub fn named(name: &str) -> Option<Unread> {
         match name {
             "throw" => Some(Unread::Throw),
+            "dress" => Some(Unread::Dress),
             "reader_down" => Some(Unread::ReaderDown),
             _ => None,
         }
