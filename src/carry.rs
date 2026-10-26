@@ -1,7 +1,8 @@
 //! Carrying: whether one more thing fits about a body, given what it already
 //! holds, its strength and the storage places it has, where it would go, and
-//! why not when it does not. And the doctor's finding for an arc that asks
-//! the player to hold a thing nothing can pick up.
+//! why not when it does not. And the doctor's findings: an arc that asks the
+//! player to hold a thing nothing can pick up, and, where the limits hold, a
+//! person the world starts out holding more than fits.
 //!
 //! Three checks, read off `data/physics.yml`'s `carry` table by the thing's
 //! bulk (`items.bulk`), and no die, so a refusal says the same thing every
@@ -55,6 +56,10 @@ const SMALL: &str = "light";
 
 /// The doctor's code for an arc beat whose thing nothing can pick up.
 pub const UNCARRIABLE: &str = "hold_item_target_cannot_be_carried";
+
+/// The doctor's code for a person a world whose carrying is limited starts
+/// out holding more than fits them.
+pub const OVER_THE_LIMIT: &str = "starts_carrying_more_than_fits";
 
 /// `data/physics.yml`'s `carry`.
 pub fn table() -> &'static Carry {
@@ -229,6 +234,25 @@ pub fn arrange<'a>(bulks: &[&'a str], body: &Body) -> Vec<Held<'a>> {
     placed.into_iter().flatten().collect()
 }
 
+/// The first of the things a body holds that would not fit it were it
+/// picked up last, in the order [`arrange`] puts them away, with why: none
+/// where all of them fit together.
+pub fn over(bulks: &[&str], body: &Body) -> Option<(usize, Refused)> {
+    let small = (0..bulks.len()).filter(|&at| bulks[at] == SMALL);
+    let rest = (0..bulks.len()).filter(|&at| bulks[at] != SMALL);
+    let mut held: Vec<Held> = Vec::new();
+    for at in small.chain(rest) {
+        match fits(bulks[at], &held, body) {
+            Ok(place) => held.push(Held {
+                bulk: bulks[at],
+                place,
+            }),
+            Err(refused) => return Some((at, refused)),
+        }
+    }
+    None
+}
+
 /// Whether the carrying limits hold in this story's world.
 pub fn limited(records: &Records, story: i64) -> bool {
     records
@@ -287,10 +311,19 @@ pub fn may_hold(records: &Records, story: i64, holder: &Row, thing: &Row, held: 
     int(holder, "strength").is_none_or(|strength| fits_row(thing, strength, held).is_ok())
 }
 
+/// The doctor's carrying findings for a story: every beat of its arcs that
+/// asks the player to hold a thing nothing can pick up, and in a world whose
+/// carrying is limited every person it starts out holding more than fits.
+pub fn findings(records: &Records, story: i64) -> Vec<Finding> {
+    let mut found = uncarriable(records, story);
+    found.extend(over_the_limit(records, story));
+    found
+}
+
 /// Every beat of a story's arcs that asks the player to hold a thing nothing
 /// can pick up, which leaves the arc unfinishable: a `hold_item` step bound
 /// to a thing whose bulk has no row of hands.
-pub fn findings(records: &Records, story: i64) -> Vec<Finding> {
+fn uncarriable(records: &Records, story: i64) -> Vec<Finding> {
     let mut found = Vec::new();
     for quest in records.select("quests", |quest| int(quest, "story_id") == Some(story)) {
         let quest_id = id(quest);
@@ -321,6 +354,72 @@ pub fn findings(records: &Records, story: i64) -> Vec<Finding> {
                 subject: ("quest_steps", id(step)),
             });
         }
+    }
+    found
+}
+
+/// Every person of a world whose carrying is limited who starts out holding
+/// more than fits them: the world's own things in their hands, less what
+/// they wear, would not all be let through the gate together. A warning,
+/// since the rule gates acts and never state: they keep it all, and only
+/// their next pickup is refused. A body with no strength recorded is not
+/// limited, and a game's own copies are the game's, never the world's start.
+fn over_the_limit(records: &Records, story: i64) -> Vec<Finding> {
+    if !limited(records, story) {
+        return Vec::new();
+    }
+    let mut found = Vec::new();
+    for person in records.select("characters", |who| int(who, "story_id") == Some(story)) {
+        let Some(strength) = int(person, "strength") else {
+            continue;
+        };
+        let who = id(person);
+        let held = records.select("items", |item| {
+            int(item, "character_id") == Some(who)
+                && int(item, "playthrough_id").is_none()
+                && text(item, "disposition") == Some("intact")
+        });
+        let held = counted(&held);
+        let bulks: Vec<&str> = held.iter().map(|row| bulk_of(row)).collect();
+        let Some((at, refused)) = over(&bulks, &Body::bare(strength)) else {
+            continue;
+        };
+        let thing = string(held[at], "name");
+        let why = match refused {
+            Refused::Immovable => format!("{thing:?} is {}, and nothing can hold it", bulks[at]),
+            Refused::Heavy { weight, bears } => {
+                format!("{thing:?} weighs {weight} on its own and the body bears {bears}")
+            }
+            Refused::Load {
+                carried,
+                weight,
+                bears,
+            } => format!(
+                "{thing:?} brings the load to {}, over the {bears} the body bears",
+                carried + weight
+            ),
+            Refused::Hands { free, needs } => format!(
+                "{thing:?} takes {needs} hand{} and {free} {} free, with no room about the person",
+                if needs == 1 { "" } else { "s" },
+                if free == 1 { "is" } else { "are" }
+            ),
+        };
+        let names: Vec<String> = held
+            .iter()
+            .map(|row| format!("{:?}", string(row, "name")))
+            .collect();
+        found.push(Finding {
+            code: OVER_THE_LIMIT,
+            severity: "warning",
+            message: format!(
+                "{} starts out holding {}, more than fits a body of strength {strength}: {why}; \
+                 nothing is taken from them, and only what they pick up next is held to the limit",
+                string(person, "fullname"),
+                names.join(", ")
+            ),
+            remedy: "manual",
+            subject: ("characters", who),
+        });
     }
     found
 }
@@ -489,6 +588,42 @@ mod tests {
             places(&["heavy", "heavy", "light"]),
             [Place::Hands, Place::Hands, Place::Stowed(0)],
             "what is held over the limit is in hand all the same"
+        );
+    }
+
+    #[test]
+    fn what_is_held_over_the_limit_is_named_by_the_first_thing_that_would_not_fit() {
+        assert_eq!(over(&["handy", "light", "light"], &Body::bare(9)), None);
+        assert_eq!(
+            over(&["heavy", "light", "light"], &Body::bare(13)),
+            None,
+            "the salt assizes' slate, cord and bell"
+        );
+        assert_eq!(
+            over(&["heavy", "handy", "light", "light"], &Body::bare(18)),
+            Some((1, Refused::Hands { free: 0, needs: 1 })),
+            "the ropewalk's sinker, twine, float and tar pot"
+        );
+        assert_eq!(
+            over(&["handy", "handy"], &Body::bare(3)),
+            Some((
+                1,
+                Refused::Load {
+                    carried: 1,
+                    weight: 1,
+                    bears: 1
+                }
+            ))
+        );
+        assert_eq!(
+            over(&["light", "heavy"], &Body::bare(6)),
+            Some((
+                1,
+                Refused::Heavy {
+                    weight: 4,
+                    bears: 3
+                }
+            ))
         );
     }
 

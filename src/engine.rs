@@ -355,9 +355,10 @@ impl Engine {
         })
     }
 
-    /// What the game's doctor reports about a story's arcs asking the player
-    /// to hold a thing nothing can pick up ([`crate::carry::findings`]).
-    /// Writes nothing.
+    /// What the game's doctor reports about carrying in a story
+    /// ([`crate::carry::findings`]): its arcs asking the player to hold a
+    /// thing nothing can pick up, and, where its world limits carrying, the
+    /// people it starts out holding more than fits. Writes nothing.
     pub fn carry_findings(&self, story: i64) -> Result<Vec<crate::noticed::Finding>, Error> {
         let store = &self.store;
         guarded(|| {
