@@ -318,7 +318,16 @@ impl<'a> Moment<'a> {
             "Lying here, and takeable: {}.",
             if floor.is_empty() { "nothing" } else { &floor }
         ));
-        let carried = self.item_list(&self.game.carried());
+        // A worn thing is told on a line of its own, only while something is
+        // worn, so a player wearing nothing is told exactly what they were
+        // before anything could be worn.
+        let held: Vec<&Row> = self
+            .game
+            .carried()
+            .into_iter()
+            .filter(|item| !crate::wear::worn(item))
+            .collect();
+        let carried = self.item_list(&held);
         parts.push(format!(
             "The player is carrying: {}.",
             if carried.is_empty() {
@@ -327,6 +336,10 @@ impl<'a> Moment<'a> {
                 &carried
             }
         ));
+        let worn = self.game.worn();
+        if !worn.is_empty() {
+            parts.push(format!("The player is wearing: {}.", self.item_list(&worn)));
+        }
         if let Some(previous) = self.what_just_happened() {
             parts.push(format!(
                 "What just happened: {}",

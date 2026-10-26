@@ -414,6 +414,23 @@ impl<'a> Game<'a> {
         self.items(|item| int(item, "character_id").is_none() && int(item, "location_id").is_none())
     }
 
+    /// What the party is wearing, of what it carries, head to foot
+    /// (`data/item/wear.yml`'s places), a place no body has last.
+    pub fn worn(&self) -> Vec<&'a Row> {
+        let mut worn: Vec<&'a Row> = self
+            .carried()
+            .into_iter()
+            .filter(|item| crate::wear::worn(item))
+            .collect();
+        let places = crate::wear::places();
+        worn.sort_by_key(|item| {
+            crate::wear::place_of(item)
+                .and_then(|place| places.iter().position(|known| known == place))
+                .unwrap_or(places.len())
+        });
+        worn
+    }
+
     /// `#items_lying_in`.
     pub fn items_lying_in(&self, location: Option<&Row>) -> Vec<&'a Row> {
         let Some(location) = location else {

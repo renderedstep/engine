@@ -1,0 +1,771 @@
+{
+  "script": "what-wren-wears-is-told",
+  "story": "The Cloakroom at the Ferry",
+  "steps": [
+    {
+      "step": "step 1 the-ferryman-sees-the-coat",
+      "player": "first",
+      "typed": "/talk Abel",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "talk -> Abel Moss",
+        "resolved_by": "grammar",
+        "note": "coat: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 10.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 the-narrator-is-told-the-coat",
+      "player": "first",
+      "typed": "/examine hand-bell",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "examine -> hand-bell",
+        "resolved_by": "grammar",
+        "note": "bell: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 the-coat-comes-off",
+      "player": "first",
+      "typed": "/remove oilskin coat",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You take off the oilskin coat. It stays in your hands.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> oilskin coat",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 wearing-nothing-is-not-told",
+      "player": "first",
+      "typed": "/examine hand-bell",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "examine -> hand-bell",
+        "resolved_by": "grammar",
+        "note": "bare: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 the-shirt-goes-on",
+      "player": "first",
+      "typed": "/wear linen shirt",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You put on the linen shirt.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> linen shirt",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 the-coat-goes-on-over-it",
+      "player": "first",
+      "typed": "/wear oilskin coat",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You put on the oilskin coat.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> oilskin coat",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 the-scarf-goes-on",
+      "player": "first",
+      "typed": "/wear wool scarf",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You put on the wool scarf.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> wool scarf",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 8 layers-are-told-head-to-foot",
+      "player": "first",
+      "typed": "/examine hand-bell",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "examine -> hand-bell",
+        "resolved_by": "grammar",
+        "note": "layers: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 9 the-ferryman-sees-the-layers",
+      "player": "first",
+      "typed": "/talk Abel",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Abel Moss": 6
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "talk -> Abel Moss",
+        "resolved_by": "grammar",
+        "note": "layers-talk: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 10.0,
+        "shown": null
+      }
+    }
+  ]
+}

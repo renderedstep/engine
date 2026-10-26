@@ -103,7 +103,10 @@ fn race<'a>(records: &'a Records, character: &Row) -> Option<&'a Row> {
 }
 
 /// `Character#interaction_instructions`: the character pass's system prompt.
-pub fn interaction_instructions(records: &Records, character: &Row) -> String {
+/// What the player is wearing in `game` is told beside what can be seen of
+/// them, only while something is worn.
+pub fn interaction_instructions(game: &Game, character: &Row) -> String {
+    let records = game.records;
     let story = records
         .find("stories", int(character, "story_id").unwrap())
         .expect("the character's story");
@@ -140,13 +143,23 @@ pub fn interaction_instructions(records: &Records, character: &Row) -> String {
             let nickname = presence(text(them, "nickname"))
                 .map(|nick| format!(" ({nick})"))
                 .unwrap_or_default();
+            let worn: Vec<&str> = game
+                .worn()
+                .into_iter()
+                .map(|item| string(item, "name"))
+                .collect();
+            let wearing = if worn.is_empty() {
+                String::new()
+            } else {
+                format!("what they are wearing: {}\n", worn.join(", "))
+            };
             format!(
                 "\n## Who you are talking to\n\
                  The person speaking to you is {name}{nickname}.\n\
                  Refer to {name} as {}. Use those pronouns and no others.\n\
                  apparent age: about {}\n\
                  race: {}\n\
-                 what you can see of them: {}\n\n\
+                 what you can see of them: {}\n{wearing}\n\
                  That is what meeting {name} tells you, and it is the whole of\n\
                  what you know by sight. You do not know what {name} wants, is\n\
                  afraid of, or has done, and you do not invent any of it. Anything more\n\
@@ -439,7 +452,7 @@ pub fn character_request_offering(
         listed.join("\n"),
     );
     json!({
-        "system": interaction_instructions(records, character),
+        "system": interaction_instructions(game, character),
         "user": user,
         "schema": schemas::interaction_with_actions(&tokens),
         "history": history(game, character),

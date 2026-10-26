@@ -162,12 +162,16 @@ pub struct Turn<'s, 'm> {
 
 /// What a scene records the turn did (`scenes.resolved_action`): the
 /// intent, but `search` for a search or an opening and `break` for breaking
-/// a part off, which the game reports as outcomes of their own.
+/// a part off, which the game reports as outcomes of their own, and `wear`
+/// or `remove` for a thing put on or taken off, which the game's audit
+/// reads prose about dressing against.
 fn resolved_action(intent: &Intent) -> &str {
     match &intent.physical {
         Some(choice) if matches!(choice.kind.as_str(), "search" | "open") => "search",
         Some(choice) if choice.kind == "break" => "break",
         Some(choice) if choice.kind == WAIT => WAIT,
+        Some(choice) if choice.kind == WEAR => WEAR,
+        Some(choice) if choice.kind == REMOVE => REMOVE,
         Some(choice) if choice.kind == divide::TEAR => divide::TEAR,
         Some(choice) if choice.kind == divide::SMASH => divide::SMASH,
         _ => intent.action.as_str(),
@@ -885,9 +889,9 @@ impl<'s, 'm> Turn<'s, 'm> {
         if matches!(choice.kind.as_str(), WEAR | REMOVE) {
             // Told in the engine's own sentence where nothing else on the
             // turn waits to be told, as a plain take is. Otherwise the
-            // narrator is asked as for any line the engine does nothing
-            // with: what it would be told of a worn thing waits for its own
-            // change, and the engine's sentence stands where none answers.
+            // narrator is told that sentence as done, and the moment says
+            // what the player is wearing now; the engine's sentence stands
+            // where none answers.
             if self.done("narrated") {
                 return self.saved("narrated").map(Option::flatten);
             }
@@ -895,7 +899,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             if self.fixed.is_none() && !self.m.game().player_narrates() && self.plain() {
                 return self.tell_in_engine_words(&fact, None).map(Some);
             }
-            return self.narrate(command, None, None, None, Some(fact));
+            return self.narrate(command, Some(fact.clone()), None, None, Some(fact));
         }
         if let Some(part) = part {
             // The narrator is told what came away; the engine's own sentence
