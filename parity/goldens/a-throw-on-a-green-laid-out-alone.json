@@ -1,0 +1,224 @@
+{
+  "script": "a-throw-on-a-green-laid-out-alone",
+  "story": "The Green at Saltmarsh",
+  "steps": [
+    {
+      "step": "step 1 the-pot-at-the-ropewalk",
+      "player": "first",
+      "typed": "throw the tar pot at the ropewalk",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "Saltmarsh Green",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ropewalk",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [
+          {
+            "id": 1000000007,
+            "name": "cork float"
+          },
+          {
+            "id": 1000000006,
+            "name": "hank of twine"
+          },
+          {
+            "id": 1000000005,
+            "name": "lead sinker"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Wat Coyle"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {
+          "Wat Coyle": 6
+        },
+        "abilities": {
+          "strength": 18,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "it fell short, carrying 16 paces of the 25 paces to the way out, hit nobody and broke",
+        "refused": false,
+        "offers": null,
+        "understood": "throw -> tar pot at The Ropewalk",
+        "resolved_by": "grammar",
+        "note": "threw: tar pot at The Ropewalk -- strength -> d20(17) <= 18 PASS\nrange: tar pot -- light, 16 paces at ordinary gravity; 25 paces to The Ropewalk, SHORT\nbreak: tar pot -- brittle, thrown on the floor: d6(1) <= 5 BROKE",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 the-sinker-at-wat",
+      "player": "first",
+      "typed": "throw the lead sinker at wat coyle",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "Saltmarsh Green",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ropewalk",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000005,
+            "name": "lead sinker"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000007,
+            "name": "cork float"
+          },
+          {
+            "id": 1000000006,
+            "name": "hank of twine"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Wat Coyle"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {
+          "Wat Coyle": 6
+        },
+        "abilities": {
+          "strength": 18,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "it fell short, carrying 7 paces of the 18 paces to Wat Coyle, hit nobody and is lying in Saltmarsh Green",
+        "refused": false,
+        "offers": null,
+        "understood": "throw -> lead sinker at Wat Coyle",
+        "resolved_by": "grammar",
+        "note": "threw: lead sinker at Wat Coyle -- strength -> d20(12) <= 13 PASS\nrange: lead sinker -- heavy, 7 paces at ordinary gravity; 18 paces to Wat Coyle, SHORT",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 the-twine-set-down",
+      "player": "first",
+      "typed": "drop the hank of twine",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "Saltmarsh Green",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ropewalk",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000006,
+            "name": "hank of twine"
+          },
+          {
+            "id": 1000000005,
+            "name": "lead sinker"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000007,
+            "name": "cork float"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Wat Coyle"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {
+          "Wat Coyle": 6
+        },
+        "abilities": {
+          "strength": 18,
+          "dexterity": 11,
+          "will": 10
+        },
+        "dead": false,
+        "changed": true,
+        "change": "dropped: hank of twine (was carried by Jory Pask, now lying in Saltmarsh Green)",
+        "refused": false,
+        "offers": null,
+        "understood": "drop -> hank of twine",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

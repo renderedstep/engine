@@ -411,6 +411,53 @@ impl Engine {
         })
     }
 
+    /// Gives every room of a story that stands on its own and has no
+    /// layout yet its own box, and a spot to each of the world's own things
+    /// and people in it that has none ([`crate::layout::lay_out`]), in one
+    /// transaction; with `dry_run`, says what it would do and writes
+    /// nothing. Asks no model. Run again, it finds nothing to do.
+    pub fn lay_out_rooms(
+        &mut self,
+        story: i64,
+        dry_run: bool,
+    ) -> Result<Vec<crate::layout::LaidOut>, Error> {
+        let store = &self.store;
+        transaction(store, || {
+            let records = store.load()?;
+            if records.find("stories", story).is_none() {
+                return Err(Error::NoSuchStory(format!("#{story}")));
+            }
+            let laid = crate::layout::lay_out(&records, story);
+            if dry_run {
+                return Ok(laid);
+            }
+            for room in &laid {
+                let r#box = room.r#box;
+                store.update(
+                    "locations",
+                    room.location,
+                    &[
+                        ("x", Value::from(r#box.x)),
+                        ("y", Value::from(r#box.y)),
+                        ("z", Value::from(r#box.z)),
+                        ("width", Value::from(r#box.width)),
+                        ("depth", Value::from(r#box.depth)),
+                    ],
+                )?;
+                for (table, placed) in [("items", &room.items), ("characters", &room.people)] {
+                    for (row, at) in placed {
+                        store.update(
+                            table,
+                            *row,
+                            &[("x", Value::from(at.x)), ("y", Value::from(at.y))],
+                        )?;
+                    }
+                }
+            }
+            Ok(laid)
+        })
+    }
+
     /// What the move answered with `scene` found changed since the game last
     /// left the room it walked back into ([`crate::revisit::since_on`]), in
     /// a game told either way: none for any other scene, and for a move into

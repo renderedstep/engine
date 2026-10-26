@@ -12,7 +12,7 @@ const REQUEST: &str = include_str!("../data/playthrough/classifier/request.yml")
 /// Every data file, by its path under `data/` without `.yml`, and its
 /// text exactly as compiled in: what a host that reads the same words
 /// (the game's `EngineData`) reads.
-pub fn files() -> [(&'static str, &'static str); 15] {
+pub fn files() -> [(&'static str, &'static str); 16] {
     [
         ("character/desires", DESIRES),
         ("item/inscriber", INSCRIBER),
@@ -20,6 +20,7 @@ pub fn files() -> [(&'static str, &'static str); 15] {
         ("item/wear", WEAR),
         ("location/generator", LOCATION_GENERATOR),
         ("location/kind", LOCATION_KIND),
+        ("location/size", LOCATION_SIZE),
         ("physics", PHYSICS),
         ("playthrough/classifier", CLASSIFIER),
         ("playthrough/classifier/request", REQUEST),
@@ -594,6 +595,94 @@ pub fn location_kind() -> &'static LocationKind {
             buildings,
         }
     })
+}
+
+const LOCATION_SIZE: &str = include_str!("../data/location/size.yml");
+
+/// One side's band in whole paces, lowest first, both ends included.
+pub type Band = (i64, i64);
+
+/// `data/location/size.yml`: how big a room that stands on its own is, by
+/// its sort, and for a room with no sort or one the table does not know.
+#[derive(Debug)]
+pub struct LocationSize {
+    pub default: Sides,
+    pub kinds: Vec<(String, Sides)>,
+}
+
+/// A room's width (west to east) and depth (north to south) bands.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Sides {
+    pub width: Band,
+    pub depth: Band,
+}
+
+/// The file's shape: every top-level key, and nothing else.
+const LOCATION_SIZE_KEYS: &[&str] = &["default", "kinds"];
+
+pub fn location_size() -> &'static LocationSize {
+    static TABLES: OnceLock<LocationSize> = OnceLock::new();
+    TABLES.get_or_init(|| read_location_size(LOCATION_SIZE))
+}
+
+fn read_location_size(source: &str) -> LocationSize {
+    let file = load("location/size.yml", source);
+    let keys: Vec<String> = entries(&file, "location/size.yml")
+        .into_iter()
+        .map(|(key, _)| key)
+        .collect();
+    assert_eq!(keys, LOCATION_SIZE_KEYS, "location/size.yml: its keys");
+    let sides = |value: &Yaml, what: &str| -> Sides {
+        let keys: Vec<String> = entries(value, what)
+            .into_iter()
+            .map(|(key, _)| key)
+            .collect();
+        assert_eq!(keys, ["width", "depth"], "location/size.yml: {what}'s keys");
+        let band = |key: &str| -> Band {
+            let ends: Vec<i64> = value[key]
+                .as_vec()
+                .unwrap_or_else(|| panic!("location/size.yml: {what}.{key} is not a list"))
+                .iter()
+                .map(|end| {
+                    end.as_i64().unwrap_or_else(|| {
+                        panic!("location/size.yml: {what}.{key} is not whole numbers")
+                    })
+                })
+                .collect();
+            let [low, high] = ends[..] else {
+                panic!("location/size.yml: {what}.{key} is not two ends");
+            };
+            assert!(
+                1 <= low && low <= high,
+                "location/size.yml: {what}.{key} runs from {low} to {high}"
+            );
+            (low, high)
+        };
+        Sides {
+            width: band("width"),
+            depth: band("depth"),
+        }
+    };
+    let kinds: Vec<(String, Sides)> = entries(&file["kinds"], "location/size.yml: kinds")
+        .into_iter()
+        .map(|(kind, value)| {
+            let sides = sides(value, &kind);
+            (kind, sides)
+        })
+        .collect();
+    // One band for each sort a room may be, and none for a sort it may not.
+    let mut named: Vec<&str> = kinds.iter().map(|(kind, _)| kind.as_str()).collect();
+    let mut every: Vec<&str> = location_kind().kinds.iter().map(String::as_str).collect();
+    named.sort_unstable();
+    every.sort_unstable();
+    assert_eq!(
+        named, every,
+        "location/size.yml: one band for each sort in location/kind.yml"
+    );
+    LocationSize {
+        default: sides(&file["default"], "default"),
+        kinds,
+    }
 }
 
 const WEAR: &str = include_str!("../data/item/wear.yml");

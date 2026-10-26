@@ -514,8 +514,8 @@ impl<'a> Game<'a> {
             .and_then(|edge| self.records.find("location_connections", edge))
             .and_then(|edge| {
                 physics::storeys(
-                    int(self.location(int(edge, "location_id")?), "z"),
-                    int(self.location(int(edge, "connected_location_id")?), "z"),
+                    crate::plan::storey(self.location(int(edge, "location_id")?)),
+                    crate::plan::storey(self.location(int(edge, "connected_location_id")?)),
                 )
             });
         physics::words(

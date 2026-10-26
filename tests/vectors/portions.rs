@@ -47,6 +47,7 @@ pub const NAMES: &[&str] = &[
     "wear",
     "divide",
     "reach",
+    "layout",
 ];
 
 fn int(value: &Value) -> i64 {
@@ -994,6 +995,71 @@ fn reach() {
                     })
                     .collect();
                 Value::Array(found)
+            }
+            ask => panic!("no ask {ask}"),
+        }
+    });
+}
+
+#[test]
+fn layout() {
+    use renderedstep_engine::boxes::WALLS;
+    use renderedstep_engine::data::{self, Sides};
+    use renderedstep_engine::{layout, records::Records};
+    let sides_json = |sides: Sides| {
+        json!({
+            "width": [sides.width.0, sides.width.1],
+            "depth": [sides.depth.0, sides.depth.1],
+        })
+    };
+    let table = data::location_size();
+    let constants = json!({
+        "default": sides_json(table.default),
+        "kinds": pairs(&table.kinds.iter().map(|(kind, sides)| (kind.as_str(), *sides)).collect::<Vec<_>>(), |sides| sides_json(*sides)),
+        "sides": WALLS,
+    });
+    check("layout", constants, |input| {
+        let spot_json = |at: Spot| json!({ "x": at.x, "y": at.y });
+        match input["ask"].as_str().expect("an ask") {
+            "sides" => sides_json(layout::sides(input["kind"].as_str())),
+            "size" => {
+                let (width, depth) = layout::size(
+                    int(&input["story"]),
+                    int(&input["room"]),
+                    input["kind"].as_str(),
+                );
+                json!({ "width": width, "depth": depth })
+            }
+            "side" => json!(layout::side(int(&input["story"]), int(&input["way"]))),
+            "beside" => spot_json(layout::beside(
+                &box_of(&input["room"]),
+                input["side"].as_str().expect("a side"),
+            )),
+            "by_the_way_out" => spot_json(layout::by_the_way_out(
+                int(&input["story"]),
+                &box_of(&input["room"]),
+                int(&input["way"]),
+            )),
+            "lay_out" => {
+                let records = Records::from_json(&input["records"]);
+                let placed = |spots: &[(i64, Spot)]| -> Value {
+                    spots
+                        .iter()
+                        .map(|(id, at)| json!([id, spot_json(*at)]))
+                        .collect()
+                };
+                layout::lay_out(&records, int(&input["story"]))
+                    .into_iter()
+                    .map(|room| {
+                        json!({
+                            "location": room.location,
+                            "name": room.name,
+                            "box": box_json(&room.r#box),
+                            "items": placed(&room.items),
+                            "people": placed(&room.people),
+                        })
+                    })
+                    .collect()
             }
             ask => panic!("no ask {ask}"),
         }

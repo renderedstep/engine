@@ -1,0 +1,59 @@
+# How big a room that stands on its own is, by the sort of place it is: a
+# street, a field, a one-room shop -- any room that is not inside a building.
+# Owned by this engine and read by `src/layout.rs`; `src/data.rs`
+# (`location_size()`) declares its shape and refuses any other. No model
+# reads this file, and nothing a model reads names a size: the sort was
+# already picked from `location/kind.yml`'s closed list, and the engine rolls
+# the size from the band here (`Roll::ROOM_SIZE`, on the room's own row).
+#
+# A room outdoors is the stretch of ground you can act in, not the whole of
+# the place: a field's is the part of the field around you, and walking off
+# across it is a way out. Each side is a band of whole paces (one pace is
+# about 1.5 m), lowest first, both ends included, and every sort in
+# `location/kind.yml` has one. `default` is for a room with no sort, or one
+# this table does not know. A building's rooms are never sized here: the
+# building is divided into them (`src/interior.rs`).
+#
+# The numbers are a first cut, and moving one is a data change, not a code
+# change; bless the `layout` vector portion after it (`vectors/README.md`).
+---
+default: {width: [6, 12], depth: [6, 12]}
+kinds:
+  corridor: {width: [2, 3], depth: [8, 16]}
+  common room: {width: [6, 12], depth: [6, 12]}
+  assembly hall: {width: [12, 20], depth: [12, 24]}
+  kitchen: {width: [4, 8], depth: [4, 8]}
+  sleeping quarters: {width: [4, 8], depth: [4, 8]}
+  washroom: {width: [3, 5], depth: [3, 5]}
+  study: {width: [3, 6], depth: [3, 6]}
+  library: {width: [6, 12], depth: [8, 16]}
+  office: {width: [3, 6], depth: [3, 6]}
+  classroom: {width: [6, 10], depth: [6, 10]}
+  laboratory: {width: [6, 10], depth: [6, 12]}
+  infirmary: {width: [6, 10], depth: [8, 14]}
+  workshop: {width: [6, 10], depth: [6, 12]}
+  machine room: {width: [6, 12], depth: [6, 12]}
+  control room: {width: [4, 8], depth: [4, 8]}
+  storeroom: {width: [3, 6], depth: [3, 6]}
+  shop: {width: [4, 8], depth: [5, 10]}
+  shrine: {width: [4, 8], depth: [6, 12]}
+  auditorium: {width: [12, 20], depth: [16, 28]}
+  cell: {width: [2, 3], depth: [2, 4]}
+  stable: {width: [6, 10], depth: [8, 16]}
+  hangar: {width: [16, 30], depth: [16, 30]}
+  airlock: {width: [2, 3], depth: [2, 4]}
+  garden: {width: [8, 16], depth: [8, 16]}
+  courtyard: {width: [6, 14], depth: [6, 14]}
+  rooftop: {width: [6, 12], depth: [6, 12]}
+  street: {width: [4, 8], depth: [16, 30]}
+  road: {width: [4, 6], depth: [20, 40]}
+  square: {width: [16, 30], depth: [16, 30]}
+  market: {width: [12, 24], depth: [12, 24]}
+  crossing: {width: [8, 14], depth: [8, 14]}
+  field: {width: [20, 40], depth: [20, 40]}
+  forest: {width: [12, 24], depth: [12, 24]}
+  shore: {width: [8, 14], depth: [24, 40]}
+  mountainside: {width: [12, 24], depth: [12, 24]}
+  desert: {width: [20, 40], depth: [20, 40]}
+  cave: {width: [6, 14], depth: [6, 14]}
+  ruin: {width: [8, 16], depth: [8, 16]}

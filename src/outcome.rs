@@ -15,7 +15,8 @@ pub struct Room {
     pub name: String,
     /// `stub` or `realized`.
     pub detail: String,
-    /// Its storey, for a room with a box.
+    /// Its storey, for a room with a box inside a place; none for a room
+    /// that stands on its own (`plan::storey`).
     pub storey: Option<i64>,
 }
 
@@ -81,7 +82,7 @@ fn room(location: &Row) -> Room {
         id: id(location),
         name: string(location, "name").to_string(),
         detail: string(location, "detail_level").to_string(),
-        storey: int(location, "z"),
+        storey: crate::plan::storey(location),
     }
 }
 

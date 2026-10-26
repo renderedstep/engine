@@ -45,6 +45,13 @@ pub const TEAR: i128 = 18;
 /// `Roll::SMASH`: the check to smash a thing apart, where its material takes
 /// one, by the thing's own row, at story time.
 pub const SMASH: i128 = 19;
+/// `Roll::ROOM_SIZE`: the width and depth of a room that stands on its own,
+/// from its sort's band, by the room's own row.
+pub const ROOM_SIZE: i128 = 20;
+/// `Roll::WAY_OUT_SIDE`: which side of a room that stands on its own a way
+/// out leaves by, by the doorway's own row; worked out on every read and
+/// never kept.
+pub const WAY_OUT_SIDE: i128 = 21;
 
 /// The five parts of a seed. Unset parts are 0.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
