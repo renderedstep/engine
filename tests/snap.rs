@@ -205,7 +205,7 @@ fn narrated(
         "purpose": "narration",
         "content": words,
         "prompt_includes": includes,
-        "prompt_excludes": ["You broke", "You tried", "strength ->"],
+        "prompt_excludes": ["You broke", "You tried", "strength ->", "d20", "came up"],
     }))
     .unwrap()]);
     let submitted = engine
@@ -239,10 +239,8 @@ fn a_break_tells_the_narrator_what_came_away_and_what_is_left() {
         &[
             "The player is carrying: branch.",
             "What has ALREADY happened, recorded by the game: ON THIS TURN, and not before it, \
-             Mira Vell broke a branch off the old beech. It was a strength check, a d20 under 23 \
-             less 3 for a firm hold: it came up ",
-            ", and passed. The branch is in their hands now. The old beech has one branch left \
-             that could be broken off. Do not write anything else coming away, being picked up \
+             Mira Vell broke a branch off the old beech. The branch is in their hands now. The \
+             old beech has one branch left that could be broken off. Do not write anything else coming away, being picked up \
              or being carried.\nNarrate it as done.",
             "The physical result above belongs to this exact typed command.",
         ],
@@ -255,7 +253,7 @@ fn a_break_tells_the_narrator_what_came_away_and_what_is_left() {
 }
 
 #[test]
-fn a_break_resumed_after_its_effect_tells_the_narrator_the_check_it_threw() {
+fn a_break_resumed_after_its_effect_tells_the_narrator_what_came_away() {
     let (mut engine, playthrough) = clearing(23);
     let mut nobody = Replay::new(Vec::new());
     let stopped = engine.submit_stopping(
@@ -271,7 +269,7 @@ fn a_break_resumed_after_its_effect_tells_the_narrator_the_check_it_threw() {
         &mut engine,
         playthrough,
         "A branch cracks away in your hands.",
-        &["Mira Vell broke a branch off the old beech. It was a strength check, a d20 under 23"],
+        &["Mira Vell broke a branch off the old beech. The branch is in their hands now."],
     );
     let (mut engine, playthrough) = clearing(23);
     let (_, played, _) = narrated(
@@ -288,10 +286,9 @@ fn a_break_resumed_after_its_effect_tells_the_narrator_the_check_it_threw() {
 fn a_break_that_holds_tells_the_narrator_nothing_came_away() {
     let (mut engine, playthrough) = clearing(3);
     let held = "ON THIS TURN, and not before it, Mira Vell tried to break a branch off the old \
-                beech. It was beyond them: strength 3 less 3 for a firm hold leaves nothing to \
-                roll under. The branch held: it is still on the old beech, nothing came away and \
-                they are holding nothing new. Do not write it breaking, bending away or coming \
-                loose.";
+                beech. It was far beyond their strength. The branch held: it is still on the old \
+                beech, nothing came away and they are holding nothing new. Do not write it \
+                breaking, bending away or coming loose.";
     let (_, fact, action) = narrated(
         &mut engine,
         playthrough,

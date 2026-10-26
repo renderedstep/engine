@@ -905,7 +905,7 @@ impl<'s, 'm> Turn<'s, 'm> {
     /// and `thrown` the check the attempt threw, or none on a turn resumed
     /// after its effect, which reads the check back off the journal; the
     /// row it found then has come away already, so the piece is the one
-    /// here its kit key names, and the hold the one the check took off.
+    /// here its kit key names. The check says only whether it was beyond them.
     fn broke_off(&self, part: &Row, thrown: Option<super::Check>) -> Result<Option<String>, Error> {
         let player = self.m.player();
         let able = player
@@ -921,24 +921,19 @@ impl<'s, 'm> Turn<'s, 'm> {
         let Some(piece) = int(part, "within_id").or_else(|| self.piece_keyed(part)) else {
             return Ok(None);
         };
-        let mut part = part.clone();
-        if text(&part, "hold").is_none() {
-            if let Some(hold) = check
-                .as_ref()
-                .and_then(|check| crate::kit::hold_of_penalty(check.penalty))
-            {
-                part.insert("hold".into(), Value::from(hold));
-            }
-        }
-        let now = self.m.row("items", id(&part))?;
+        let now = self.m.row("items", id(part))?;
         let outcome = if text(&now, "how") == Some(crate::kit::ATTACHED) {
-            facts::Snapped::Held
+            if check.as_ref().is_some_and(super::Check::impossible) {
+                facts::Snapped::Beyond
+            } else {
+                facts::Snapped::Held
+            }
         } else if text(&now, "disposition") == Some(crate::physics::BROKEN) {
             facts::Snapped::InPieces
         } else {
             facts::Snapped::InHand
         };
-        let name = string(&part, "name");
+        let name = string(part, "name");
         let left = self
             .m
             .room()
@@ -948,12 +943,11 @@ impl<'s, 'm> Turn<'s, 'm> {
                 other.piece.as_ref().map(|(id, _)| *id) == Some(piece) && other.name == name
             })
             .count() as i64;
-        let before = left + i64::from(outcome != facts::Snapped::Held);
+        let before = left + i64::from(!outcome.held());
         Ok(Some(facts::broke_off(
-            &part,
+            part,
             &self.m.row("items", piece)?,
             player.as_ref(),
-            check.as_ref(),
             outcome,
             before,
             left,
