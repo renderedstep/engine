@@ -1,0 +1,128 @@
+---
+story: The Cloakroom at the Ferry
+steps:
+- id: the-shirt-waits-for-the-coat
+  type: "/wear linen shirt"
+  expect:
+    refused: true
+    resolved_by: grammar
+    offers: Take off the oilskin coat first.
+- id: a-bell-is-not-clothing
+  type: "/wear hand-bell"
+  expect:
+    refused: true
+    offers: The hand-bell is not something you can wear.
+    here:
+    - felt hat
+    - flat cap
+    - hand-bell
+- id: a-worn-coat-is-not-dropped
+  type: "/drop oilskin coat"
+  expect:
+    refused: true
+    offers: You are wearing the oilskin coat. Take it off first.
+    carrying:
+    - linen shirt
+    - oilskin coat
+    - wool scarf
+- id: a-worn-coat-is-not-given
+  type: "/give oilskin coat to Abel Moss"
+  expect:
+    refused: true
+    offers: You are wearing the oilskin coat. Take it off first.
+- id: a-worn-coat-is-not-thrown
+  type: "/throw oilskin coat at Abel Moss"
+  expect:
+    refused: true
+    offers: You are wearing the oilskin coat. Take it off first.
+    hp_of:
+      Abel Moss: 6
+- id: the-coat-comes-off
+  type: "/take off the oilskin coat"
+  expect:
+    changed: true
+    refused: false
+    resolved_by: grammar
+    change: You take off the oilskin coat. It stays in your hands.
+    carrying:
+    - linen shirt
+    - oilskin coat
+    - wool scarf
+- id: the-shirt-goes-on
+  type: "/wear linen shirt"
+  expect:
+    changed: true
+    change: You put on the linen shirt.
+- id: a-coat-in-hand-is-not-worn
+  type: "/remove oilskin coat"
+  expect:
+    refused: true
+    offers: You are not wearing the oilskin coat.
+- id: the-scarf-goes-on
+  type: "/don the scarf"
+  expect:
+    changed: true
+    change: You put on the wool scarf.
+- id: the-scarf-is-on-already
+  type: "/wear wool scarf"
+  expect:
+    refused: true
+    offers: You are already wearing the wool scarf.
+- id: the-cap-off-the-peg
+  type: "/put on the flat cap"
+  expect:
+    changed: true
+    change: You pick up the flat cap and put it on.
+    here:
+    - felt hat
+    - hand-bell
+    carrying:
+    - flat cap
+    - linen shirt
+    - oilskin coat
+    - wool scarf
+- id: one-thing-on-the-head
+  type: "/wear felt hat"
+  expect:
+    refused: true
+    offers: You are already wearing the flat cap on your head. Take it off first.
+    here:
+    - felt hat
+    - hand-bell
+- id: a-worn-scarf-is-not-dropped
+  type: "/drop scarf"
+  expect:
+    refused: true
+    offers: You are wearing the wool scarf. Take it off first.
+- id: nothing-worn-by-that-name
+  type: "/remove gloves"
+  expect:
+    refused: true
+    offers: You are not wearing anything called that.
+- id: the-cap-comes-off
+  type: "/doff the cap"
+  expect:
+    changed: true
+    change: You take off the flat cap. It stays in your hands.
+- id: the-cap-goes-down
+  type: "/drop flat cap"
+  expect:
+    changed: true
+    here:
+    - felt hat
+    - flat cap
+    - hand-bell
+- id: the-coat-goes-back-on
+  type: "/wear oilskin coat"
+  expect:
+    changed: true
+    change: You put on the oilskin coat.
+- id: the-shirt-is-under-the-coat
+  type: "/remove linen shirt"
+  expect:
+    refused: true
+    offers: Take off the oilskin coat first.
+    carrying:
+    - linen shirt
+    - oilskin coat
+    - wool scarf

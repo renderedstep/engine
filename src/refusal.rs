@@ -5,7 +5,7 @@
 use crate::cascade::Leave;
 use crate::intent::{Intent, Unread};
 use crate::playthrough::Ended;
-use crate::room::{Person, Record};
+use crate::room::{Dressing, Person, Record, Thing};
 use crate::text::upcase_first;
 
 pub const KINDS: &[&str] = &[
@@ -175,6 +175,9 @@ impl Refusal {
         carried: &[Record],
         named: Option<&Record>,
     ) -> Option<Refusal> {
+        if let Some(fact) = &intent.declined {
+            return Some(Refusal::of("unplayable", typed, fact.clone(), None));
+        }
         if intent.named_more_than_one() {
             let fact = format!(
                 "You asked for two things at once: {}, and {}. One line is one act -- \
@@ -257,6 +260,9 @@ impl Refusal {
                 thing.bulk
             );
             return Some(Refusal::of("immovable", typed, fact, None));
+        }
+        if let Some(worn) = intent.lets_go_of_the_worn() {
+            return Some(Refusal::of("unplayable", typed, wearing(worn), None));
         }
         None
     }
@@ -357,6 +363,47 @@ impl Refusal {
 pub fn already_carrying(held: &Record) -> String {
     format!("You are already carrying {}.", own_name(held))
 }
+
+/// A hand act on a thing the player is wearing: it comes off first, as an
+/// act of its own.
+pub fn wearing(worn: &Thing) -> String {
+    format!(
+        "You are wearing {}. Take {} off first.",
+        worn.own_name(),
+        crate::wear::it(&worn.name)
+    )
+}
+
+/// Why a `wear` or a `remove` of a thing is not played, in the engine's
+/// words. `wearing` says which of the two the line asked for.
+pub fn dressing(thing: &Thing, why: Dressing, wearing: bool) -> String {
+    let name = thing.own_name();
+    match why {
+        Dressing::Unwearable if wearing => {
+            format!("{} is not something you can wear.", upcase_first(&name))
+        }
+        Dressing::Unwearable | Dressing::NotWorn => format!("You are not wearing {name}."),
+        Dressing::Worn => format!("You are already wearing {name}."),
+        Dressing::Taken(other) => format!(
+            "You are already wearing {} {}. Take {} off first.",
+            other.own_name(),
+            thing
+                .wear_place()
+                .map_or_else(String::new, crate::wear::on_a_body),
+            crate::wear::it(&other.name)
+        ),
+        Dressing::Over(over) => format!("Take off {} first.", over.own_name()),
+    }
+}
+
+/// A `wear` with no name, when nothing carried or lying here can be put on.
+pub const NOTHING_TO_WEAR: &str = "You have nothing here you can wear.";
+
+/// A `remove` with no name, when the player wears nothing.
+pub const WEARING_NOTHING: &str = "You are not wearing anything.";
+
+/// A `remove` whose name lands on nothing the player wears.
+pub const NOT_WEARING_THAT: &str = "You are not wearing anything called that.";
 
 fn own_name(record: &Record) -> String {
     match record.thing() {

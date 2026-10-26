@@ -24,7 +24,7 @@ built against the commit it pins (`data::files`).
 | `physics.yml` | `room`, `turn`: the bulk and thrown-damage tables a throw reads; `carry`: what a body can hold and where |
 | `location/kind.yml` | `kind`: what sort of place a room may be, how cluttered, and the sort each room of a building is dealt; `schemas` offers the first two to the exits call and the buildings to the place call |
 | `item/kits.yml` | `kit`: what stands in a room of each sort, what lies on or in each fixed piece in plain view, the small stuff each density lies about, what lies inside each closed piece, and the parts each piece is born with and how hard they hold; `turn` furnishes a room from it as the room is realized, and `realization` states what it wrote, less the parts; `turn` draws a closed piece's inside from it the first time anybody searches it, and takes a hold's penalty off strength when somebody tries to break a part off; `material` reads what each material settles and the names a kit writes with it; and the place on a body each thing that can be worn is worn on, which a kit row is written with |
-| `item/wear.yml` | `wear`: the closed list of places on a body a thing is worn on, and which place lies under which; the doctor reads it (`wear::findings`), and so do `item/kits.yml`'s `wear` table and the `wear` vector portion |
+| `item/wear.yml` | `wear`: the closed list of places on a body a thing is worn on, and which place lies under which; the doctor reads it (`wear::findings`), `room` reads it for what can be put on or taken off now, and so do `item/kits.yml`'s `wear` table and the `wear` vector portion |
 
 Their comments name files in the game repository, where the reasons for
 each value were first written.

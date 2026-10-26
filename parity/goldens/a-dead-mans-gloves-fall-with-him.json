@@ -1,0 +1,440 @@
+{
+  "script": "a-dead-mans-gloves-fall-with-him",
+  "story": "The Cloakroom at the Ferry",
+  "steps": [
+    {
+      "step": "step 1 round-1",
+      "player": "first",
+      "typed": "/attack Abel Moss",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "foes": [
+          {
+            "id": 1000000002,
+            "name": "Abel Moss"
+          }
+        ],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {
+          "Abel Moss": 3
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "struck: Wren Calloway hit Abel Moss for 3 (round 1); Abel Moss is badly hurt (3 of 6)",
+        "refused": false,
+        "offers": null,
+        "understood": "attack -> Abel Moss",
+        "resolved_by": "grammar",
+        "note": "answered: Abel Moss hit Wren Calloway for 5 (round 1); Wren Calloway is hurt (13 of 18)",
+        "drifts": 0,
+        "blows": 2,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 round-2",
+      "player": "first",
+      "typed": "/attack Abel Moss",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000016,
+            "name": "brass token"
+          },
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          },
+          {
+            "id": 1000000015,
+            "name": "leather gloves"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "struck: Wren Calloway hit Abel Moss for 8 (round 2); Abel Moss is dead",
+        "refused": false,
+        "offers": null,
+        "understood": "attack -> Abel Moss",
+        "resolved_by": "grammar",
+        "note": "the fight is over: The fight in The Cloakroom is over after 2 rounds. Abel Moss is dead. 3 blows landed: Wren Calloway hit Abel Moss for 3 (round 1); Abel Moss is badly hurt (3 of 6); Abel Moss hit Wren Calloway for 5 (round 1); Wren Calloway is hurt (13 of 18); Wren Calloway hit Abel Moss for 8 (round 2); Abel Moss is dead.",
+        "drifts": 0,
+        "blows": 1,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 10.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 the-gloves-off-the-floor",
+      "player": "first",
+      "typed": "/wear leather gloves",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000016,
+            "name": "brass token"
+          },
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000015,
+            "name": "leather gloves"
+          },
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You pick up the leather gloves and put them on.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> leather gloves",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 worn-gloves-are-not-dropped",
+      "player": "first",
+      "typed": "/drop leather gloves",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000016,
+            "name": "brass token"
+          },
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000015,
+            "name": "leather gloves"
+          },
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "You are wearing the leather gloves. Take them off first. Nothing has changed.",
+        "understood": "drop -> leather gloves",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 the-gloves-come-off",
+      "player": "first",
+      "typed": "/take off the gloves",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Cloakroom",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Ferry Stairs",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000016,
+            "name": "brass token"
+          },
+          {
+            "id": 1000000013,
+            "name": "felt hat"
+          },
+          {
+            "id": 1000000012,
+            "name": "flat cap"
+          },
+          {
+            "id": 1000000014,
+            "name": "hand-bell"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000015,
+            "name": "leather gloves"
+          },
+          {
+            "id": 1000000010,
+            "name": "linen shirt"
+          },
+          {
+            "id": 1000000009,
+            "name": "oilskin coat"
+          },
+          {
+            "id": 1000000011,
+            "name": "wool scarf"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 13,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You take off the leather gloves. They stay in your hands.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> leather gloves",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

@@ -109,6 +109,19 @@ verbs:
   # a model's list. Not `pull`: "pull the door shut" is no break.
   break: break
   snap: break
+  # PUTTING A THING ON AND TAKING IT OFF: `wear` names a thing carried, or
+  # one lying here that the same act picks up, and plays the attempt
+  # `Room::physical_actions` offers on it; `remove` names a worn thing, which
+  # stays in the hands. The longest word wins, so `put on` and `take off` are
+  # never read as `put down` or `take`. Reached only through these words,
+  # never from a model's list, until the readers are retrained on them (the
+  # owner's call of 2026-10-25).
+  wear: wear
+  don: wear
+  put on: wear
+  remove: remove
+  doff: remove
+  take off: remove
   # LETTING TIME PASS: `wait` plays the attempt `Room::physical_actions`
   # offers in every room, whatever follows the word. It writes the scene and
   # moves the clock, and the world takes its turn. Resting, idling, thinking

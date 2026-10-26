@@ -30,7 +30,7 @@ use crate::playthrough::Game;
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::revisit::{self, Since};
-use crate::room::{Choice, Record, WAIT};
+use crate::room::{Choice, Record, REMOVE, WAIT, WEAR};
 use crate::store::Store;
 use crate::text::{is_blank, presence, ruby_strip};
 use crate::turn::chooser;
@@ -873,6 +873,21 @@ impl<'s, 'm> Turn<'s, 'm> {
             // Nothing happened but the time, so the narrator is asked as for
             // any line the engine does nothing with; the engine's sentence
             // stands only where no narrator answers.
+            return self.narrate(command, None, None, None, Some(fact));
+        }
+        if matches!(choice.kind.as_str(), WEAR | REMOVE) {
+            // Told in the engine's own sentence where nothing else on the
+            // turn waits to be told, as a plain take is. Otherwise the
+            // narrator is asked as for any line the engine does nothing
+            // with: what it would be told of a worn thing waits for its own
+            // change, and the engine's sentence stands where none answers.
+            if self.done("narrated") {
+                return self.saved("narrated").map(Option::flatten);
+            }
+            self.speak_up(None)?;
+            if self.fixed.is_none() && !self.m.game().player_narrates() && self.plain() {
+                return self.tell_in_engine_words(&fact, None).map(Some);
+            }
             return self.narrate(command, None, None, None, Some(fact));
         }
         if let Some(part) = part {

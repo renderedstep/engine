@@ -22,7 +22,7 @@ use crate::playthrough::{max_hp, stat_block, Condition, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::roll::{self, Seed};
-use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing, WAIT};
+use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing, REMOVE, WAIT, WEAR};
 use crate::spot;
 use crate::store::Store;
 use crate::text::to_sentence;
@@ -67,6 +67,32 @@ const HEALING_POINTS: i64 = 8;
 
 /// What a `wait` did, in the engine's words: nothing but the time it took.
 pub const WAITED: &str = "You let time pass where you stand. Nothing else changed.";
+
+/// What a `wear` did, in the engine's words: "You put on the cap.", or for
+/// a thing that was lying here, "You pick up the cap and put it on."
+pub fn put_on(item: &Row, lying: bool) -> String {
+    let name = crate::facts::own_name(item);
+    if lying {
+        let it = crate::wear::it(string(item, "name"));
+        format!("You pick up {name} and put {it} on.")
+    } else {
+        format!("You put on {name}.")
+    }
+}
+
+/// What a `remove` did, in the engine's words: "You take off the cap. It
+/// stays in your hands."
+pub fn took_off(item: &Row) -> String {
+    let stays = if crate::wear::plural(string(item, "name")) {
+        "They stay"
+    } else {
+        "It stays"
+    };
+    format!(
+        "You take off {}. {stays} in your hands.",
+        crate::facts::own_name(item)
+    )
+}
 
 /// What a refused line left behind, said only in this mode
 /// (`Playthrough::Mechanics::ROW_WRITTEN`).
@@ -832,6 +858,7 @@ impl<'s> Mechanics<'s> {
                 ("location_id", Value::from(id(room))),
                 ("x", spot.map_or(Value::Null, |spot| Value::from(spot.x))),
                 ("y", spot.map_or(Value::Null, |spot| Value::from(spot.y))),
+                ("worn", Value::Bool(false)),
             ],
         )
     }
@@ -1247,11 +1274,32 @@ impl<'s> Mechanics<'s> {
             "search" | "open" => self.search(&choice),
             "break" => self.snap(&choice),
             WAIT => Ok(("applied", WAITED.into())),
+            WEAR => self.put_on(item.unwrap_or_default()),
+            REMOVE => self.take_off(item.unwrap_or_default()),
             _ => Ok((
                 "rejected",
                 "The item remains in your hands until its recipient accepts it.".into(),
             )),
         }
+    }
+
+    /// A thing put on: one lying here is picked up as part of the same act,
+    /// as a throw picks up what it throws, and then it is worn.
+    fn put_on(&mut self, item: i64) -> Result<(&'static str, String), Error> {
+        let row = self.row("items", item)?;
+        let lying = int(&row, "location_id").is_some();
+        if lying {
+            self.take(item, None)?;
+        }
+        self.update("items", item, vec![("worn", Value::Bool(true))])?;
+        Ok(("applied", put_on(&row, lying)))
+    }
+
+    /// A worn thing taken off: it stays in the party's hands.
+    fn take_off(&mut self, item: i64) -> Result<(&'static str, String), Error> {
+        let row = self.row("items", item)?;
+        self.update("items", item, vec![("worn", Value::Bool(false))])?;
+        Ok(("applied", took_off(&row)))
     }
 
     /// `PhysicalAction#spend!`: a thing used up leaves every place.
@@ -1267,6 +1315,7 @@ impl<'s> Mechanics<'s> {
                 ("y", Value::Null),
                 ("within_id", Value::Null),
                 ("how", Value::Null),
+                ("worn", Value::Bool(false)),
             ],
         )
     }
@@ -1534,6 +1583,7 @@ impl<'s> Mechanics<'s> {
                         ("y", Value::Null),
                         ("within_id", Value::Null),
                         ("how", Value::Null),
+                        ("worn", Value::Bool(false)),
                     ],
                 )?;
                 format!(
@@ -1553,6 +1603,7 @@ impl<'s> Mechanics<'s> {
                         ("y", Value::Null),
                         ("within_id", Value::Null),
                         ("how", Value::Null),
+                        ("worn", Value::Bool(false)),
                     ],
                 )?;
                 format!("{who} gave {name} to {party}; the player now carries it.")
@@ -2880,6 +2931,7 @@ impl<'s> Mechanics<'s> {
                         ("y", Value::Null),
                         ("within_id", Value::Null),
                         ("how", Value::Null),
+                        ("worn", Value::Bool(false)),
                     ],
                 )?;
                 format!("{who} handed {name} to {player}; the player now carries it.")
@@ -4249,6 +4301,8 @@ pub fn thing_of(row: &Row, carried: bool) -> Thing {
         searched: int(row, "searched_at").is_some(),
         piece: None,
         hold: None,
+        wear: crate::wear::place_of(row).map(str::to_string),
+        worn: carried && crate::wear::worn(row),
     }
 }
 

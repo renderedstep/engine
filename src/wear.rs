@@ -4,10 +4,18 @@
 //!
 //! WORN IS A KIND OF CARRIED. A worn thing is in somebody's hands as far as
 //! every other rule reads it: the party's (a game's copy with no room and no
-//! person) or a person's (`character_id`). Nothing reads `worn` but the
-//! doctor yet, and no line puts a thing on or takes it off: a world sets
-//! both columns by hand, and a kit writes `wear` on what it furnishes
+//! person) or a person's (`character_id`). A world sets both columns by
+//! hand, and a kit writes `wear` on what it furnishes
 //! (`data/item/kits.yml`). A game's copy of a thing brings both along.
+//!
+//! PUT ON AND TAKEN OFF BY THE PARTY. The `wear` and `remove` attempts
+//! (`Room::physical_actions`) set and clear `worn` on a thing the party
+//! carries; a `wear` of a thing lying here picks it up in the same act. A
+//! worn thing comes off before a hand act lets go of it
+//! (`Intent::lets_go_of_the_worn`), and `worn` is cleared wherever a thing
+//! leaves a body: laid on a floor (a dead person's things spill there),
+//! spent, or handed between the party and a person. No reader is handed
+//! either attempt, and nothing a model reads names either column.
 //!
 //! ONE THING ON EACH PLACE. A body wears one thing on each place, and the
 //! one layering rule (`under`) says what lies beneath what: a coat and a
@@ -49,6 +57,33 @@ pub fn under(place: &str) -> Option<&'static str> {
         .iter()
         .find(|(below, _)| below == place)
         .map(|(_, above)| above.as_str())
+}
+
+/// Where a thing worn on a place sits, as an engine sentence says it: "on
+/// your head", "over your clothes".
+pub fn on_a_body(place: &str) -> String {
+    match place {
+        "neck" => "around your neck".into(),
+        "outer" => "over your clothes".into(),
+        "waist" => "at your waist".into(),
+        place => format!("on your {place}"),
+    }
+}
+
+/// Whether an engine sentence calls a thing "them" rather than "it": a
+/// pair is one thing with a plural name ("leather gloves", "boots"), and a
+/// name ending in a double s ("dress") is one.
+pub fn plural(name: &str) -> bool {
+    name.ends_with('s') && !name.ends_with("ss")
+}
+
+/// "it" or "them", for a thing by its name.
+pub fn it(name: &str) -> &'static str {
+    if plural(name) {
+        "them"
+    } else {
+        "it"
+    }
 }
 
 /// The place a thing is worn on, or `None` for a thing nobody wears.

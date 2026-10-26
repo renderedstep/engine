@@ -11,7 +11,7 @@
 use crate::cascade::{self, Leave, HERE_WORDS};
 use crate::data;
 use crate::intent::Intent;
-use crate::room::{Choice, Record, Room, WAIT};
+use crate::room::{Choice, Record, Room, REMOVE, WAIT, WEAR};
 use crate::text::{
     inspect, is_blank, is_ruby_space, ruby_downcase, ruby_strip, split_words, squish_ascii,
 };
@@ -62,6 +62,13 @@ pub const HELP: &[&str] = &[
     "go <exit>        move into one of the ways out (also: move, walk, enter)",
     "take <item>      pick up something lying here (also: get, grab, pick up)",
     "drop <item>      put down something you are carrying (also: put down, leave)",
+    "wear <item>      put on something you carry, or something lying here, which",
+    "                 is picked up as part of it (also: don, put on). One thing",
+    "                 on each place on a body, and what is worn over the body",
+    "                 comes off before what is under it",
+    "remove <item>    take off something you are wearing; it stays in your hands",
+    "                 (also: doff, take off). A worn thing comes off before it",
+    "                 is dropped, thrown, offered or burned",
     "talk <person>    resolve somebody standing here (also: speak, ask). The",
     "                 talking itself is prose, so this mode names them and stops",
     "inspect <item>   what is written on something, out of the records (also:",
@@ -478,6 +485,7 @@ impl<'a> Grammar<'a> {
                 | "break"),
             ) => self.read_physical(kind, &argument),
             Some(WAIT) => self.read_wait(&argument),
+            Some(kind @ (WEAR | REMOVE)) => self.read_dressing(kind, &argument),
             // A piece's inside, unless the line names no piece and does name
             // a way out ("open the narrow door into the closet"), which reads
             // as the move it always did.
@@ -570,6 +578,67 @@ impl<'a> Grammar<'a> {
             understood: Some(describe(&intent)),
             intent: Some(intent),
             ..Reading::default()
+        }
+    }
+
+    /// `wear` and `remove`: the attempt on the thing named, where the room
+    /// offers it; otherwise, where the name lands on a thing in the wrong
+    /// state for it, the line is declined in the engine's words
+    /// ([`crate::refusal::dressing`]). Every reading is a `use`, so no line
+    /// with either word goes on to a reader.
+    fn read_dressing(&self, kind: &str, argument: &str) -> Reading {
+        let reading = self.read_physical(kind, argument);
+        let found = reading
+            .intent
+            .as_ref()
+            .is_some_and(|intent| intent.physical.is_some());
+        if found {
+            return reading;
+        }
+        let wearing = kind == WEAR;
+        let declined = |fact: String| {
+            let intent = Intent {
+                declined: Some(fact),
+                ..Intent::new("use")
+            };
+            Reading {
+                understood: Some(describe(&intent)),
+                intent: Some(intent),
+                ..Reading::default()
+            }
+        };
+        let offered = self
+            .room
+            .physical_actions()
+            .iter()
+            .any(|choice| choice.kind == kind);
+        if is_blank(argument) {
+            return match (offered, wearing) {
+                (true, _) => reading,
+                (false, true) => declined(crate::refusal::NOTHING_TO_WEAR.into()),
+                (false, false) => declined(crate::refusal::WEARING_NOTHING.into()),
+            };
+        }
+        let things = if wearing {
+            [self.room.items_carried(), self.room.items_here()].concat()
+        } else {
+            self.room.items_carried()
+        };
+        let named = self.resolve(&things, argument);
+        let thing = named.record.as_ref().and_then(Record::thing);
+        let why = thing.and_then(|thing| {
+            if wearing {
+                self.room.wear_refused(thing)
+            } else {
+                self.room.remove_refused(thing)
+            }
+        });
+        match (thing, why) {
+            (Some(thing), Some(why)) => declined(crate::refusal::dressing(thing, why, wearing)),
+            (None, _) if !wearing && !named.ambiguous() => {
+                declined(crate::refusal::NOT_WEARING_THAT.into())
+            }
+            _ => reading,
         }
     }
 

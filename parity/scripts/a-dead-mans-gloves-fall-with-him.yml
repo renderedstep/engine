@@ -1,0 +1,57 @@
+---
+story: The Cloakroom at the Ferry
+steps:
+- id: round-1
+  type: "/attack Abel Moss"
+  expect:
+    changed: true
+    dead: false
+    hp_of:
+      Abel Moss: 3
+    here:
+    - felt hat
+    - flat cap
+    - hand-bell
+- id: round-2
+  type: "/attack Abel Moss"
+  expect:
+    changed: true
+    present: []
+    here:
+    - brass token
+    - felt hat
+    - flat cap
+    - hand-bell
+    - leather gloves
+- id: the-gloves-off-the-floor
+  type: "/wear leather gloves"
+  expect:
+    changed: true
+    refused: false
+    resolved_by: grammar
+    change: You pick up the leather gloves and put them on.
+    here:
+    - brass token
+    - felt hat
+    - flat cap
+    - hand-bell
+    carrying:
+    - leather gloves
+    - linen shirt
+    - oilskin coat
+    - wool scarf
+- id: worn-gloves-are-not-dropped
+  type: "/drop leather gloves"
+  expect:
+    refused: true
+    offers: You are wearing the leather gloves. Take them off first.
+- id: the-gloves-come-off
+  type: "/take off the gloves"
+  expect:
+    changed: true
+    change: You take off the leather gloves. They stay in your hands.
+    carrying:
+    - leather gloves
+    - linen shirt
+    - oilskin coat
+    - wool scarf

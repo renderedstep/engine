@@ -645,6 +645,10 @@ impl Kept for (Intent, String) {
         let unread = intent
             .unread
             .map(|unread| ("unread", encode::symbol(unread.name())));
+        let declined = intent
+            .declined
+            .as_deref()
+            .map(|fact| ("declined", Value::from(fact)));
         encode::array(vec![
             encode::data(
                 "Playthrough::Classifier::Intent",
@@ -669,6 +673,7 @@ impl Kept for (Intent, String) {
                 ]
                 .into_iter()
                 .chain(unread)
+                .chain(declined)
                 .collect(),
             ),
             Value::from(resolved_by.as_str()),
@@ -703,6 +708,10 @@ impl Kept for (Intent, String) {
                 .get("unread")
                 .and_then(symbol_or_string)
                 .and_then(|name| Unread::named(&name)),
+            declined: map
+                .get("declined")
+                .and_then(Value::as_str)
+                .map(str::to_string),
         };
         Ok((intent, items[1].as_str().unwrap_or_default().to_string()))
     }
