@@ -2,16 +2,18 @@
 //! it. A refused line does nothing: the player is answered in the engine's
 //! own words, built from records it already holds.
 
+use crate::carry::{self, Place, Refused};
 use crate::cascade::Leave;
 use crate::intent::{Intent, Unread};
 use crate::playthrough::Ended;
 use crate::room::{Dressing, Person, Record, Thing};
-use crate::text::upcase_first;
+use crate::text::{to_sentence, upcase_first};
 
 pub const KINDS: &[&str] = &[
     "named_more_than_one",
     "unresolved",
     "immovable",
+    "cannot_carry",
     "unreadable",
     "unplayable",
     "dead",
@@ -310,6 +312,73 @@ impl Refusal {
         None
     }
 
+    /// A thing the player cannot come to hold (`carry::fits`), in the
+    /// rule's own reason: `held` is what the rule counts, each where it is,
+    /// and `carried` everything in the player's hands, which the offer
+    /// lists.
+    pub fn cannot_carry(
+        typed: &str,
+        thing: &Thing,
+        refused: Refused,
+        strength: i64,
+        held: &[(Thing, Place)],
+        carried: &[Record],
+    ) -> Refusal {
+        let name = thing.own_name();
+        let in_hand: Vec<&Thing> = held
+            .iter()
+            .filter(|(_, place)| *place == Place::Hands)
+            .map(|(thing, _)| thing)
+            .collect();
+        let weighing: Vec<String> = held
+            .iter()
+            .filter(|(thing, _)| carry::weight(&thing.bulk) > 0)
+            .map(|(thing, _)| thing.own_name())
+            .collect();
+        let fact = match refused {
+            Refused::Immovable => format!(
+                "{} is {} and does not move for anybody: it cannot be picked up.",
+                upcase_first(&name),
+                thing.bulk
+            ),
+            Refused::Heavy { .. } if thing.bulk == "heavy" => format!(
+                "{} is heavy. At strength {strength} you cannot lift something that heavy.",
+                upcase_first(&name)
+            ),
+            Refused::Heavy { .. } => format!(
+                "{} is more than you can lift at strength {strength}.",
+                upcase_first(&name)
+            ),
+            Refused::Load { carried, bears, .. } if carried >= bears => format!(
+                "You are already carrying as much as you can bear at strength {strength} ({}). \
+                 Put something down first.",
+                to_sentence(&weighing)
+            ),
+            Refused::Load { .. } => format!(
+                "{} is more than you can bear at strength {strength} on top of {}. Put \
+                 something down first.",
+                upcase_first(&name),
+                to_sentence(&weighing)
+            ),
+            Refused::Hands { free: 0, .. } => format!(
+                "Your hands are full: you are holding {}, and there is no room about you for \
+                 {name}. Put something down first.",
+                holding(&in_hand)
+            ),
+            Refused::Hands { .. } => format!(
+                "{} takes both hands, and you are holding {}. Put something down first.",
+                upcase_first(&name),
+                holding(&in_hand)
+            ),
+        };
+        let offer = (!carried.is_empty()).then(|| {
+            offers("drop")
+                .expect("a drop offers what is carried")
+                .replace("%s", &labels(carried))
+        });
+        Refusal::of("cannot_carry", typed, fact, offer)
+    }
+
     /// `/end` typed while the story has no ending due.
     pub fn nothing_due(typed: &str) -> Refusal {
         Refusal::of("unplayable", typed, NOTHING_DUE.to_string(), None)
@@ -409,6 +478,22 @@ fn own_name(record: &Record) -> String {
     match record.thing() {
         Some(thing) => thing.own_name(),
         None => record.definite_name(),
+    }
+}
+
+/// What is in the player's hands, by name: a thing that takes both of them
+/// held alone says so.
+fn holding(in_hand: &[&Thing]) -> String {
+    match in_hand {
+        [one] if carry::hands_for(&one.bulk) > 1 => {
+            format!("{}, which takes both hands", one.own_name())
+        }
+        _ => to_sentence(
+            &in_hand
+                .iter()
+                .map(|thing| thing.own_name())
+                .collect::<Vec<_>>(),
+        ),
     }
 }
 
@@ -514,6 +599,112 @@ mod tests {
             take(&lying[..1], &[], None),
             "That did not resolve to anything lying here. Lying here: blank closure writ. \
              Nothing has changed."
+        );
+    }
+
+    fn bulky(id: i64, name: &str, bulk: &str) -> Thing {
+        Thing {
+            bulk: bulk.to_string(),
+            ..Thing::new(id, name, false)
+        }
+    }
+
+    fn cannot_carry(thing: &Thing, refused: Refused, strength: i64, held: &[Thing]) -> String {
+        let body = carry::Body::bare(strength);
+        let bulks: Vec<&str> = held.iter().map(|thing| thing.bulk.as_str()).collect();
+        let held: Vec<(Thing, Place)> = held
+            .iter()
+            .cloned()
+            .zip(carry::arrange(&bulks, &body).into_iter().map(|h| h.place))
+            .collect();
+        let carried: Vec<Record> = held
+            .iter()
+            .map(|(thing, _)| Record::Thing(thing.clone()))
+            .collect();
+        Refusal::cannot_carry("a line", thing, refused, strength, &held, &carried).text()
+    }
+
+    #[test]
+    fn a_thing_that_does_not_fit_is_refused_in_its_reason_with_what_is_carried() {
+        let slate = bulky(1, "Assize tide-slate", "heavy");
+        let lantern = bulky(2, "lantern", "handy");
+        let daybook = bulky(3, "daybook", "handy");
+        let stamp = bulky(4, "ward stamp", "handy");
+        let cord = bulky(5, "Neb's knotted cord", "light");
+        assert_eq!(
+            cannot_carry(
+                &lantern,
+                Refused::Hands { free: 0, needs: 1 },
+                13,
+                &[slate.clone(), cord.clone()]
+            ),
+            "Your hands are full: you are holding the Assize tide-slate, which takes both \
+             hands, and there is no room about you for the lantern. Put something down first. \
+             You are carrying: Assize tide-slate, Neb's knotted cord. Nothing has changed."
+        );
+        assert_eq!(
+            cannot_carry(
+                &slate,
+                Refused::Hands { free: 1, needs: 2 },
+                13,
+                std::slice::from_ref(&daybook)
+            ),
+            "The Assize tide-slate takes both hands, and you are holding the daybook. Put \
+             something down first. You are carrying: daybook. Nothing has changed."
+        );
+        assert_eq!(
+            cannot_carry(
+                &slate,
+                Refused::Heavy {
+                    weight: 4,
+                    bears: 3
+                },
+                6,
+                &[]
+            ),
+            "The Assize tide-slate is heavy. At strength 6 you cannot lift something that \
+             heavy. Nothing has changed."
+        );
+        assert_eq!(
+            cannot_carry(
+                &lantern,
+                Refused::Heavy {
+                    weight: 1,
+                    bears: 0
+                },
+                1,
+                &[]
+            ),
+            "The lantern is more than you can lift at strength 1. Nothing has changed."
+        );
+        assert_eq!(
+            cannot_carry(
+                &lantern,
+                Refused::Load {
+                    carried: 2,
+                    weight: 1,
+                    bears: 2
+                },
+                5,
+                &[daybook.clone(), stamp.clone(), cord.clone()]
+            ),
+            "You are already carrying as much as you can bear at strength 5 (the daybook and \
+             the ward stamp). Put something down first. You are carrying: daybook, ward stamp, \
+             Neb's knotted cord. Nothing has changed."
+        );
+        assert_eq!(
+            cannot_carry(
+                &slate,
+                Refused::Load {
+                    carried: 1,
+                    weight: 4,
+                    bears: 4
+                },
+                8,
+                std::slice::from_ref(&daybook)
+            ),
+            "The Assize tide-slate is more than you can bear at strength 8 on top of the \
+             daybook. Put something down first. You are carrying: daybook. Nothing has changed."
         );
     }
 

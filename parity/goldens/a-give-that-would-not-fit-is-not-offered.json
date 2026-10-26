@@ -1,0 +1,164 @@
+{
+  "script": "a-give-that-would-not-fit-is-not-offered",
+  "story": "The Weighing House",
+  "steps": [
+    {
+      "step": "step 1 the-yoke-is-not-offered",
+      "player": "first",
+      "typed": "talk to Bram",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Weighing House",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Market Cross",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000011,
+            "name": "market slate"
+          },
+          {
+            "id": 1000000013,
+            "name": "pewter jug"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Bram Hale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {
+          "Bram Hale": 13
+        },
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The proposed action was rejected: it is unavailable. No possessions, travel agreement or ceasefire changed.",
+        "understood": "talk -> Bram Hale",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 the-ticket-is",
+      "player": "first",
+      "typed": "talk to Bram",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Weighing House",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "The Market Cross",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000012,
+            "name": "brass scoop"
+          },
+          {
+            "id": 1000000011,
+            "name": "market slate"
+          },
+          {
+            "id": 1000000013,
+            "name": "pewter jug"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000010,
+            "name": "tally board"
+          },
+          {
+            "id": 1000000015,
+            "name": "weigh ticket"
+          }
+        ],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Bram Hale"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {
+          "Bram Hale": 13
+        },
+        "abilities": {
+          "strength": 5,
+          "dexterity": 13,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "Bram Hale gave weigh ticket to Nell Fisk; the player now carries it.",
+        "refused": false,
+        "offers": null,
+        "understood": "talk -> Bram Hale",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

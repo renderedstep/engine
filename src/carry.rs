@@ -23,11 +23,29 @@
 //!
 //! THE RULE GATES ACTS, NEVER STATE. It answers for the next thing only:
 //! nothing here says what is held is too much, and a body already carrying
-//! more than fits keeps it. No turn asks it yet.
+//! more than fits keeps it.
+//!
+//! A WORLD TURNS IT ON. Only a world whose `universes.carrying` is
+//! [`LIMITED`] asks it ([`limited`]); a world with none plays as it always
+//! has. Where it is on, the turn refuses a take, a throw of a thing lying
+//! here and a break that would put in hand what does not fit, and a person
+//! is offered no take of what would not fit them and no give of what would
+//! not fit the player.
+//!
+//! WHERE A HELD THING IS, IS READ, NOT KEPT. No row says which hand or
+//! which storage place: what a body holds is [`arrange`]d as a person would
+//! hold it, small things put away first. A worn thing is left out of the
+//! count: it takes no hand and weighs nothing until clothing says otherwise.
 
 use crate::data::{self, Carry};
 use crate::noticed::Finding;
-use crate::records::{id, int, string, text, Records};
+use crate::records::{flag, id, int, string, text, Records, Row};
+
+/// `universes.carrying`: the one word that turns the limits on.
+pub const LIMITED: &str = "limited";
+
+/// Every word `universes.carrying` may hold; none plays with no limits.
+pub const CARRYINGS: &[&str] = &[LIMITED];
 
 /// The storage place every body has of its own.
 pub const ABOUT_THE_PERSON: &str = "about the person";
@@ -117,6 +135,11 @@ pub fn liftable(bulk: &str) -> bool {
     row(&table().hands_for, bulk).is_some()
 }
 
+/// The hands a thing of this bulk takes; none for one nothing can hold.
+pub fn hands_for(bulk: &str) -> i64 {
+    row(&table().hands_for, bulk).unwrap_or(0)
+}
+
 /// The weight a body of `strength` bears.
 pub fn bears(strength: i64) -> i64 {
     strength.max(0) / table().load_divisor
@@ -132,10 +155,9 @@ pub fn weight(bulk: &str) -> i64 {
 /// does not fit. Weight is asked before room, since no rearranging makes a
 /// thing lighter.
 pub fn fits(bulk: &str, held: &[Held], body: &Body) -> Result<Place, Refused> {
-    let carry = table();
-    let Some(needs) = row(&carry.hands_for, bulk) else {
+    if !liftable(bulk) {
         return Err(Refused::Immovable);
-    };
+    }
     let bears = bears(body.strength);
     let carried: i64 = held.iter().map(|thing| weight(thing.bulk)).sum();
     let weight = weight(bulk);
@@ -149,6 +171,16 @@ pub fn fits(bulk: &str, held: &[Held], body: &Body) -> Result<Place, Refused> {
             bears,
         });
     }
+    room(bulk, held, body)
+}
+
+/// Where a thing of `bulk` would go about `body`, holding `held`, by room
+/// alone, with no weight asked.
+fn room(bulk: &str, held: &[Held], body: &Body) -> Result<Place, Refused> {
+    let carry = table();
+    let Some(needs) = row(&carry.hands_for, bulk) else {
+        return Err(Refused::Immovable);
+    };
     let in_hand: i64 = held
         .iter()
         .filter(|thing| thing.place == Place::Hands)
@@ -176,6 +208,83 @@ pub fn fits(bulk: &str, held: &[Held], body: &Body) -> Result<Place, Refused> {
         Some(place) => Ok(place),
         None => Err(Refused::Hands { free, needs }),
     }
+}
+
+/// Where each of the things a body holds is, in the order given: as a
+/// person would hold them, every light thing put away first, each where
+/// [`fits`] would put it with nothing asked of weight. A thing with no room
+/// left is in hand all the same, since what is held is never refused.
+pub fn arrange<'a>(bulks: &[&'a str], body: &Body) -> Vec<Held<'a>> {
+    let mut placed: Vec<Option<Held>> = vec![None; bulks.len()];
+    let small = (0..bulks.len()).filter(|&at| bulks[at] == SMALL);
+    let rest = (0..bulks.len()).filter(|&at| bulks[at] != SMALL);
+    for at in small.chain(rest) {
+        let held: Vec<Held> = placed.iter().flatten().copied().collect();
+        let place = room(bulks[at], &held, body).unwrap_or(Place::Hands);
+        placed[at] = Some(Held {
+            bulk: bulks[at],
+            place,
+        });
+    }
+    placed.into_iter().flatten().collect()
+}
+
+/// Whether the carrying limits hold in this story's world.
+pub fn limited(records: &Records, story: i64) -> bool {
+    records
+        .find("stories", story)
+        .and_then(|story| int(story, "universe_id"))
+        .and_then(|universe| records.find("universes", universe))
+        .is_some_and(|universe| text(universe, "carrying") == Some(LIMITED))
+}
+
+/// What a body holds that the rule counts: everything but what it wears.
+pub fn counted<'a>(held: &[&'a Row]) -> Vec<&'a Row> {
+    held.iter()
+        .copied()
+        .filter(|thing| !flag(thing, "worn"))
+        .collect()
+}
+
+/// What a bare body of `strength` holds that the rule counts, each with
+/// where it is ([`arrange`]), in the order given.
+pub fn arranged<'a>(held: &[&'a Row], strength: i64) -> Vec<(&'a Row, Place)> {
+    let counted = counted(held);
+    let bulks: Vec<&str> = counted.iter().map(|row| bulk_of(row)).collect();
+    let places = arrange(&bulks, &Body::bare(strength));
+    counted
+        .into_iter()
+        .zip(places)
+        .map(|(row, held)| (row, held.place))
+        .collect()
+}
+
+/// [`fits`] over rows: `thing` about a bare body of `strength` holding
+/// `held`.
+pub fn fits_row(thing: &Row, strength: i64, held: &[&Row]) -> Result<Place, Refused> {
+    let held: Vec<Held> = arranged(held, strength)
+        .into_iter()
+        .map(|(row, place)| Held {
+            bulk: bulk_of(row),
+            place,
+        })
+        .collect();
+    fits(bulk_of(thing), &held, &Body::bare(strength))
+}
+
+/// A row's bulk, `handy` where it names none (the column's default).
+pub fn bulk_of(row: &Row) -> &str {
+    text(row, "bulk").unwrap_or("handy")
+}
+
+/// Whether a person may come to hold `thing`: always in a world with no
+/// limits, and for a body with no strength recorded, which the rule has
+/// nothing to read.
+pub fn may_hold(records: &Records, story: i64, holder: &Row, thing: &Row, held: &[&Row]) -> bool {
+    if !limited(records, story) {
+        return true;
+    }
+    int(holder, "strength").is_none_or(|strength| fits_row(thing, strength, held).is_ok())
 }
 
 /// Every beat of a story's arcs that asks the player to hold a thing nothing
@@ -350,6 +459,36 @@ mod tests {
             fits("light", &held, &Body::bare(18)),
             Ok(Place::Stowed(0)),
             "a light thing weighs nothing and the room about the person is free"
+        );
+    }
+
+    #[test]
+    fn what_is_held_is_arranged_small_things_put_away_first() {
+        let body = Body::bare(9);
+        let places = |bulks: &[&str]| -> Vec<Place> {
+            arrange(bulks, &body)
+                .into_iter()
+                .map(|held| held.place)
+                .collect()
+        };
+        assert_eq!(
+            places(&["handy", "light", "handy", "light"]),
+            [
+                Place::Hands,
+                Place::Stowed(0),
+                Place::Hands,
+                Place::Stowed(0)
+            ]
+        );
+        assert_eq!(
+            places(&["light", "light", "light"]),
+            [Place::Stowed(0), Place::Stowed(0), Place::Hands],
+            "the third light thing has no room about the person"
+        );
+        assert_eq!(
+            places(&["heavy", "heavy", "light"]),
+            [Place::Hands, Place::Hands, Place::Stowed(0)],
+            "what is held over the limit is in hand all the same"
         );
     }
 

@@ -1,0 +1,19 @@
+---
+story: The Weighing House
+steps:
+- id: the-yoke-is-not-offered
+  type: talk to Bram
+  npc_action: give:yoke
+  expect:
+    refused: true
+    offers: 'The proposed action was rejected: it is unavailable.'
+    carrying:
+    - tally board
+- id: the-ticket-is
+  type: talk to Bram
+  npc_action: give:weigh ticket
+  expect:
+    changed: true
+    carrying:
+    - tally board
+    - weigh ticket

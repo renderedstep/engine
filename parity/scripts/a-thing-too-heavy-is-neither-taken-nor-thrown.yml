@@ -1,0 +1,35 @@
+---
+story: The Weighing House
+steps:
+- id: the-slate-will-not-come-up
+  type: "/take market slate"
+  expect:
+    refused: true
+    offers: The market slate is heavy. At strength 5 you cannot lift something that
+      heavy.
+    carrying:
+    - tally board
+    here:
+    - market slate
+    - brass scoop
+    - pewter jug
+- id: nor-be-thrown-from-the-floor
+  type: "/throw market slate at Bram Hale"
+  expect:
+    refused: true
+    offers: The market slate is heavy. At strength 5 you cannot lift something that
+      heavy.
+    carrying:
+    - tally board
+    blows: 0
+    here:
+    - market slate
+    - brass scoop
+    - pewter jug
+- id: a-scoop-is-light-enough
+  type: "/take brass scoop"
+  expect:
+    changed: true
+    carrying:
+    - tally board
+    - brass scoop

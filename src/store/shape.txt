@@ -413,6 +413,7 @@ column system_one_receipts.playthrough_id integer pk=0
 column system_one_receipts.purpose varchar pk=0
 column system_one_receipts.transport varchar pk=0
 column system_one_receipts.updated_at datetime(6) not null pk=0
+column universes.carrying varchar pk=0
 column universes.civilizations text pk=0
 column universes.created_at datetime(6) not null pk=0
 column universes.economics text pk=0

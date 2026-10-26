@@ -8,6 +8,7 @@
 //! carries) and moves nothing, and its fact says so. The narrator is told the
 //! fact and never why, so no speech act carries a desire.
 
+use crate::carry;
 use crate::data;
 use crate::dialogue;
 use crate::ledger;
@@ -125,8 +126,12 @@ fn acts(game: &Game, character: &Row, location: &Row, party: Option<i64>) -> Vec
         ));
     }
     let arc_items = arc_item_ids(game);
+    let holding = game.items_held_by(character);
     for item in game.items_lying_in(Some(location)) {
-        if !throwable(item) || int(item, "template_id").is_some_and(|t| arc_items.contains(&t)) {
+        if !throwable(item)
+            || int(item, "template_id").is_some_and(|t| arc_items.contains(&t))
+            || !carry::may_hold(game.records, game.story_id(), character, item, &holding)
+        {
             continue;
         }
         available.push((
@@ -139,7 +144,11 @@ fn acts(game: &Game, character: &Row, location: &Row, party: Option<i64>) -> Vec
         return available;
     };
     let player_name = string(player, "fullname");
-    for item in game.items_held_by(character) {
+    let carried = game.carried();
+    for item in holding {
+        if !carry::may_hold(game.records, game.story_id(), player, item, &carried) {
+            continue;
+        }
         available.push((
             format!("give:{}", id(item)),
             format!("Give {} to {player_name}.", string(item, "name")),

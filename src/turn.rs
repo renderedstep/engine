@@ -660,6 +660,47 @@ impl<'s> Mechanics<'s> {
             self.here().is_some(),
             command,
         )
+        .or_else(|| self.cannot_carry(intent, command, room))
+    }
+
+    /// The carrying gate, in a world that turns it on: a take, a throw or a
+    /// wear of a thing lying here (each picks it up first), or a break, of a
+    /// thing the player could not then hold, is refused before anything is
+    /// thrown or moved.
+    fn cannot_carry(&self, intent: &Intent, command: &str, room: &Room) -> Option<Refusal> {
+        let thing = match (&intent.physical, &intent.item) {
+            (Some(choice), _) if choice.kind == "break" => choice.item.as_ref()?,
+            (Some(choice), _) if choice.kind == WEAR => {
+                choice.item.as_ref().filter(|thing| !thing.carried)?
+            }
+            (None, Some(Record::Thing(thing)))
+                if !thing.carried && (intent.action == "take" || intent.is_throw()) =>
+            {
+                thing
+            }
+            _ => return None,
+        };
+        if !crate::carry::limited(&self.records, self.story_id()) {
+            return None;
+        }
+        let player = self.player()?;
+        let strength = int(&player, "strength")?;
+        let row = self.records.find("items", thing.id)?;
+        let game = self.game();
+        let carried = game.carried();
+        let refused = crate::carry::fits_row(row, strength, &carried).err()?;
+        let held: Vec<(Thing, crate::carry::Place)> = crate::carry::arranged(&carried, strength)
+            .into_iter()
+            .map(|(row, place)| (thing_of(row, true), place))
+            .collect();
+        Some(Refusal::cannot_carry(
+            command,
+            &thing_of(row, false),
+            refused,
+            strength,
+            &held,
+            &room.items_carried(),
+        ))
     }
 
     /// The move with no model: the row moves and the room stays unwritten.
@@ -1462,8 +1503,13 @@ impl<'s> Mechanics<'s> {
                 ),
             ));
         }
-        if let Some(player) = &player {
+        if let (Some(player), Some(receiver)) = (&player, game.protagonist()) {
+            let carried = game.carried();
             for item in game.items_held_by(character) {
+                if !crate::carry::may_hold(&self.records, self.story_id(), receiver, item, &carried)
+                {
+                    continue;
+                }
                 available.push((
                     format!("give:{}", id(item)),
                     format!("Give {} to {player}.", string(item, "name")),
