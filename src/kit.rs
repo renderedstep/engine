@@ -75,13 +75,9 @@ impl Thing {
     }
 
     /// The place on a body it is worn on, or `None` for a thing nobody
-    /// wears.
+    /// wears ([`crate::wear::place_for`]).
     pub fn wear(&self) -> Option<&'static str> {
-        data::kits()
-            .wear
-            .iter()
-            .find(|(name, _)| *name == self.name)
-            .map(|(_, place)| place.as_str())
+        crate::wear::place_for(&self.name)
     }
 }
 

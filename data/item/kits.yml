@@ -609,15 +609,34 @@ materials:
     names: [apple, bruised apple, heel of bread, crust of bread, loaf, wedge of cheese, turnip, carrot, onion, bunch of onions, cabbage, cabbage leaf, mushroom]
 wear:
   coat: outer
+  cloak: outer
+  mantle: outer
+  jerkin: outer
   bathrobe: body
   folded shirt: body
+  shirt: body
+  robe: body
+  tunic: body
+  dress: body
+  gown: body
+  vest: body
+  trousers: legs
+  breeches: legs
+  stocking: legs
+  boot: feet
+  shoe: feet
+  sock: feet
   cap: head
   hat: head
+  hood: head
+  helmet: head
   helmet lamp: head
   mask: face
   breathing mask: face
   spectacles: face
   scarf: neck
   glove: hands
+  gauntlet: hands
   apron: waist
+  belt: waist
   bag: back

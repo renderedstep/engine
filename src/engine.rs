@@ -458,6 +458,32 @@ impl Engine {
         })
     }
 
+    /// Gives every thing of a story, in the world and in each of its games,
+    /// that names no place on a body but whose name the kits' `wear` table
+    /// reads as a garment its place ([`crate::wear::unmarked`]), in one
+    /// transaction; with `dry_run`, says what it would mark and writes
+    /// nothing. Asks no model. Run again, it finds nothing to do.
+    pub fn mark_wearable(
+        &mut self,
+        story: i64,
+        dry_run: bool,
+    ) -> Result<Vec<crate::wear::Wearable>, Error> {
+        let store = &self.store;
+        transaction(store, || {
+            let records = store.load()?;
+            if records.find("stories", story).is_none() {
+                return Err(Error::NoSuchStory(format!("#{story}")));
+            }
+            let marked = crate::wear::unmarked(&records, story);
+            if !dry_run {
+                for thing in &marked {
+                    store.update("items", thing.item, &[("wear", Value::from(thing.place))])?;
+                }
+            }
+            Ok(marked)
+        })
+    }
+
     /// What the move answered with `scene` found changed since the game last
     /// left the room it walked back into ([`crate::revisit::since_on`]), in
     /// a game told either way: none for any other scene, and for a move into
