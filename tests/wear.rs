@@ -1,7 +1,8 @@
 //! Where a thing is worn and whether it is: the doctor finds every world
 //! the sweep walks clean, a game's copy of a worn thing brings both columns
-//! along, the doctor names what is out of line, and nothing a model reads
-//! moves when somebody is dressed.
+//! along, the doctor names what is out of line, and what a model reads
+//! moves only by the player's own worn things, each told on a line of its
+//! own that is not there while the player wears nothing.
 
 use renderedstep_engine::dialogue;
 use renderedstep_engine::engine::Engine;
@@ -28,12 +29,19 @@ fn stories(engine: &Engine) -> Vec<i64> {
         .collect()
 }
 
-/// The Salt Assizes with its people dressed by hand: Coraith Vell in an
-/// oilskin coat over court black, Ammon Brace (in the room the game starts
-/// in) in a brass-badged cap, and `more` after them.
-fn salt_assizes(dressed: bool, more: &str) -> Engine {
+/// Coraith Vell's oilskin coat and court black, and Ammon Brace's cap.
+const COAT: i64 = 1000000010;
+const COURT_BLACK: i64 = 1000000011;
+const CAP: i64 = 1000000012;
+const EVERYBODY: [i64; 3] = [COAT, COURT_BLACK, CAP];
+
+/// The Salt Assizes with its people dressed by hand, each of `dressed`
+/// worn and the rest worn nowhere: Coraith Vell in an oilskin coat over
+/// court black, Ammon Brace (in the room the game starts in) in a
+/// brass-badged cap, and `more` after them.
+fn salt_assizes(dressed: &[i64], more: &str) -> Engine {
     let row = |id: i64, name: &str, character: i64, place: &str| {
-        let (wear, worn) = if dressed {
+        let (wear, worn) = if dressed.contains(&id) {
             (format!("'{place}'"), 1)
         } else {
             ("NULL".to_string(), 0)
@@ -47,9 +55,9 @@ fn salt_assizes(dressed: bool, more: &str) -> Engine {
     let sql = format!(
         "{}{}{}{}{more}",
         world_sql("the-salt-assizes"),
-        row(1000000010, "oilskin coat", 1000000001, "outer"),
-        row(1000000011, "court black", 1000000001, "body"),
-        row(1000000012, "brass-badged cap", 1000000002, "head"),
+        row(COAT, "oilskin coat", 1000000001, "outer"),
+        row(COURT_BLACK, "court black", 1000000001, "body"),
+        row(CAP, "brass-badged cap", 1000000002, "head"),
     );
     open_world(&sql).unwrap()
 }
@@ -114,7 +122,7 @@ fn the_doctor_finds_every_world_the_sweep_walks_clean() {
 
 #[test]
 fn a_game_copies_what_its_people_wear_and_the_doctor_finds_nothing() {
-    let mut engine = salt_assizes(true, "");
+    let mut engine = salt_assizes(&EVERYBODY, "");
     let playthrough = start(&mut engine, Mode::Narrated);
     let records = engine.store().load().unwrap();
     let copy = |template: i64| {
@@ -151,7 +159,7 @@ fn the_doctor_names_a_worn_record_out_of_line() {
                 '2026-10-25 00:00:00');\n\
                 UPDATE items SET worn = 1 WHERE id = 1000000003;\n\
                 UPDATE items SET wear = 'tail' WHERE id = 1000000002;\n";
-    let engine = salt_assizes(true, more);
+    let engine = salt_assizes(&EVERYBODY, more);
     let story = stories(&engine)[0];
     let found: Vec<(&str, i64)> = engine
         .wear_findings(story)
@@ -171,15 +179,68 @@ fn the_doctor_names_a_worn_record_out_of_line() {
 }
 
 #[test]
-fn nothing_a_model_reads_moves_when_somebody_is_dressed() {
+fn nothing_a_model_reads_moves_when_only_somebody_else_is_dressed() {
     for mode in [Mode::Narrated, Mode::PlayerNarrates] {
         let mut read = Vec::new();
-        for dressed in [false, true] {
+        for dressed in [&[][..], &[CAP]] {
             let mut engine = salt_assizes(dressed, "");
             let playthrough = start(&mut engine, mode);
             read.push(model_reads(&engine.store().load().unwrap(), playthrough));
         }
         assert!(read[0].len() > 1, "nobody to speak to");
         assert_eq!(read[0], read[1]);
+    }
+}
+
+/// The line of `text` that opens with `start`.
+fn line_of<'a>(text: &'a str, start: &str) -> &'a str {
+    text.lines()
+        .find(|line| line.starts_with(start))
+        .unwrap_or_else(|| panic!("no line opens with {start:?}"))
+}
+
+#[test]
+fn what_the_player_wears_is_told_on_a_line_of_its_own_and_nothing_else_moves() {
+    for mode in [Mode::Narrated, Mode::PlayerNarrates] {
+        let mut read = Vec::new();
+        for dressed in [&[][..], &[COAT, COURT_BLACK]] {
+            let mut engine = salt_assizes(dressed, "");
+            let playthrough = start(&mut engine, mode);
+            read.push(model_reads(&engine.store().load().unwrap(), playthrough));
+        }
+        let (bare, dressed) = (&read[0], &read[1]);
+        assert_eq!(bare.len(), dressed.len());
+
+        // The narrator: what is worn leaves the carried list for a line of
+        // its own after it, head to foot.
+        let carrying = "The player is carrying: ";
+        let (was, is) = (line_of(&bare[0], carrying), line_of(&dressed[0], carrying));
+        assert!(
+            was.contains("oilskin coat") && was.contains("court black"),
+            "{was}"
+        );
+        assert!(
+            !is.contains("oilskin coat") && !is.contains("court black"),
+            "{is}"
+        );
+        assert!(!bare[0].contains("wearing"));
+        assert_eq!(
+            bare[0].replace(
+                was,
+                &format!("{is}\n\nThe player is wearing: oilskin coat, court black.")
+            ),
+            dressed[0]
+        );
+
+        // A person spoken to: one line beside what can be seen of the player.
+        for (bare, dressed) in bare[1..].iter().zip(&dressed[1..]) {
+            let seen = "what you can see of them: ";
+            let at = bare.find(seen).unwrap();
+            let end = at + bare[at..].find("\\n").unwrap() + "\\n".len();
+            assert!(!bare.contains("wearing"));
+            let mut told = bare.clone();
+            told.insert_str(end, "what they are wearing: oilskin coat, court black\\n");
+            assert_eq!(&told, dressed);
+        }
     }
 }

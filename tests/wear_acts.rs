@@ -392,14 +392,21 @@ fn a_told_wear_with_nothing_else_to_tell_is_said_in_the_engines_words() {
     assert_eq!(submitted.turned.refusal, None);
     let scene = submitted.turned.scene.expect("the wear's scene");
     let connection = engine.store().connection();
-    let told: (String, Option<String>) = connection
+    let told: (String, Option<String>, String) = connection
         .query_row(
-            "SELECT description, engine_fact FROM scenes WHERE id = ?1",
+            "SELECT description, engine_fact, resolved_action FROM scenes WHERE id = ?1",
             [scene],
-            |row| Ok((row.get(0)?, row.get(1)?)),
+            |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
         )
         .unwrap();
-    assert_eq!(told, ("You put on the wool scarf.".to_string(), None));
+    assert_eq!(
+        told,
+        (
+            "You put on the wool scarf.".to_string(),
+            None,
+            WEAR.to_string()
+        )
+    );
     let worn: bool = connection
         .query_row(
             "SELECT worn FROM items WHERE playthrough_id = ?1 AND name = 'wool scarf'",
@@ -419,10 +426,28 @@ fn a_told_wear_with_nothing_else_to_tell_is_said_in_the_engines_words() {
         submitted.turned.refusal.map(|refusal| refusal.fact),
         Some("You are wearing the wool scarf. Take it off first.".to_string())
     );
+
+    // Taken off, and recorded as what it was.
+    let mut replay = Replay::new(Vec::new());
+    let submitted = engine
+        .submit(playthrough, "/remove scarf", "r", &mut replay, &mut |_| {})
+        .unwrap();
+    replay.finish().unwrap();
+    let scene = submitted.turned.scene.expect("the remove's scene");
+    let resolved: String = engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT resolved_action FROM scenes WHERE id = ?1",
+            [scene],
+            |row| row.get(0),
+        )
+        .unwrap();
+    assert_eq!(resolved, REMOVE);
 }
 
 #[test]
-fn a_told_wear_with_more_to_tell_asks_the_narrator_with_no_fact_of_its_own() {
+fn a_told_wear_with_more_to_tell_asks_the_narrator_with_the_engines_sentence_as_done() {
     let (mut engine, playthrough) = ferry();
     // A foe in the room strikes back, so the turn is more than the act.
     engine
@@ -436,8 +461,11 @@ fn a_told_wear_with_more_to_tell_asks_the_narrator_with_no_fact_of_its_own() {
     let mut replay = Replay::new(vec![Reply::from_value(&serde_json::json!({
         "purpose": "narration",
         "content": "You wind the scarf twice about your throat.",
-        "prompt_includes": ["The player types: wear scarf"],
-        "prompt_excludes": ["What has ALREADY happened", "You put on", "wearing"],
+        "prompt_includes": [
+            "The player types: wear scarf",
+            "What has ALREADY happened, recorded by the game: You put on the wool scarf.\n",
+            "The player is carrying: linen shirt.\n\nThe player is wearing: wool scarf, oilskin coat.\n",
+        ],
     }))
     .unwrap()]);
     let submitted = engine
@@ -459,7 +487,7 @@ fn a_told_wear_with_more_to_tell_asks_the_narrator_with_no_fact_of_its_own() {
         told,
         (
             "You wind the scarf twice about your throat.".to_string(),
-            None
+            Some("You put on the wool scarf.".to_string())
         )
     );
 }

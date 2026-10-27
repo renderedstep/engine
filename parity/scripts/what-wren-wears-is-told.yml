@@ -1,0 +1,107 @@
+---
+story: The Cloakroom at the Ferry
+steps:
+- id: the-ferryman-sees-the-coat
+  type: "/talk Abel"
+  browser:
+    token: coat
+    replies:
+    - purpose: character
+      content:
+        pre_thought: Another one off the morning crossing.
+        pre_feeling: tired
+        action: Abel nods at the bench.
+        post_thought: She can wait like the rest.
+        post_feeling: indifferent
+        inner_resolution: I will let her sit.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Abel nods you toward the bench without a word.
+      prompt_includes:
+      - |-
+        The player is carrying: linen shirt, wool scarf.
+
+        The player is wearing: oilskin coat.
+  expect:
+    changed: true
+- id: the-narrator-is-told-the-coat
+  type: "/examine hand-bell"
+  browser:
+    token: bell
+    replies:
+    - purpose: narration
+      content: The hand-bell's brass is green at the lip.
+      prompt_includes:
+      - |-
+        The player is carrying: linen shirt, wool scarf.
+
+        The player is wearing: oilskin coat.
+  expect:
+    changed: true
+- id: the-coat-comes-off
+  type: "/remove oilskin coat"
+  expect:
+    changed: true
+    change: You take off the oilskin coat. It stays in your hands.
+- id: wearing-nothing-is-not-told
+  type: "/examine hand-bell"
+  browser:
+    token: bare
+    replies:
+    - purpose: narration
+      content: The bell hangs quiet on its hook.
+      prompt_includes:
+      - 'The player is carrying: oilskin coat, linen shirt, wool scarf.'
+      prompt_excludes:
+      - wearing
+  expect:
+    changed: true
+- id: the-shirt-goes-on
+  type: "/wear linen shirt"
+  expect:
+    changed: true
+    change: You put on the linen shirt.
+- id: the-coat-goes-on-over-it
+  type: "/wear oilskin coat"
+  expect:
+    changed: true
+    change: You put on the oilskin coat.
+- id: the-scarf-goes-on
+  type: "/wear wool scarf"
+  expect:
+    changed: true
+    change: You put on the wool scarf.
+- id: layers-are-told-head-to-foot
+  type: "/examine hand-bell"
+  browser:
+    token: layers
+    replies:
+    - purpose: narration
+      content: You turn the bell over in your hands.
+      prompt_includes:
+      - |-
+        The player is carrying: nothing.
+
+        The player is wearing: wool scarf, oilskin coat, linen shirt.
+  expect:
+    changed: true
+- id: the-ferryman-sees-the-layers
+  type: "/talk Abel"
+  browser:
+    token: layers-talk
+    replies:
+    - purpose: character
+      content:
+        pre_thought: She has bundled up for the crossing.
+        pre_feeling: approving
+        action: Abel says, "You'll want all of that on the water."
+        post_thought: At least she listens.
+        post_feeling: content
+        inner_resolution: I will tell her when the ferry docks.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Abel looks you over and grunts, "You'll want all of that on the water."
+      prompt_includes:
+      - 'The player is wearing: wool scarf, oilskin coat, linen shirt.'
+  expect:
+    changed: true

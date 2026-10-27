@@ -15,7 +15,12 @@
 //! (`Intent::lets_go_of_the_worn`), and `worn` is cleared wherever a thing
 //! leaves a body: laid on a floor (a dead person's things spill there),
 //! spent, or handed between the party and a person. No reader is handed
-//! either attempt, and nothing a model reads names either column.
+//! either attempt.
+//!
+//! TOLD FROM THE RECORDS. What the party wears (`Game::worn`) is told to the
+//! narrator on a line of its own after what it carries, and to a person
+//! spoken to beside what they can see of the player; neither line is there
+//! while the party wears nothing. What a person wears is told to nobody yet.
 //!
 //! ONE THING ON EACH PLACE. A body wears one thing on each place, and the
 //! one layering rule (`under`) says what lies beneath what: a coat and a
