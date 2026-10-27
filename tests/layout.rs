@@ -1,16 +1,18 @@
-//! The doctor's warning for a place with no layout: every place of the three
-//! handmade worlds has none yet, and a world laid out by hand is warned only
-//! about the places outside its buildings. And laying out the rooms that
+//! The doctor's warning for a place with no layout: the three handmade
+//! worlds are laid out as they load, by the rule a generated world's rooms
+//! are, and a world laid out by hand is warned only about the places
+//! outside its buildings. And laying out the rooms that
 //! stand on their own (`Engine::lay_out_rooms`, what the game runs after it
 //! pulls): once it has run, no world the sweep plays is warned about any
 //! room at all, and running it again does nothing.
 
 use renderedstep_engine::boxes::{Box, Spot};
 use renderedstep_engine::engine::Engine;
+use renderedstep_engine::layout;
 use renderedstep_engine::parity::open_world;
 use renderedstep_engine::plan::box_of;
 use renderedstep_engine::reach::ROOM_WITHOUT_A_LAYOUT;
-use renderedstep_engine::records::{id, int, Records};
+use renderedstep_engine::records::{id, int, text, Records};
 use std::path::Path;
 
 /// The worlds the sweep plays, by file name.
@@ -88,18 +90,35 @@ fn counts(engine: &Engine) -> Vec<(usize, usize)> {
 }
 
 #[test]
-fn every_place_of_the_three_handmade_worlds_is_without_a_layout() {
+fn the_three_handmade_worlds_are_laid_out_as_a_generated_world_is() {
     for world in [
         "the-salt-assizes",
         "the-lunar-cartographer",
         "the-unrecorded-hour",
     ] {
-        let counted = counts(&open(world));
+        let mut engine = open(world);
+        let counted = counts(&engine);
         println!("{world}: {counted:?}");
         assert!(!counted.is_empty(), "{world}");
         for (places, warned) in counted {
             assert!(places > 0, "{world}");
-            assert_eq!(warned, places, "{world}");
+            assert_eq!(warned, 0, "{world}");
+        }
+        // Their rooms stand on their own and name no sort, so each is
+        // sized from the default band, as the loader lays it out.
+        let records = engine.store().load().unwrap();
+        for story in stories(&engine) {
+            for room in records.select("locations", |row| int(row, "story_id") == Some(story)) {
+                assert_eq!(
+                    box_of(room),
+                    Some(layout::own_box(story, id(room), text(room, "kind"))),
+                    "{world}"
+                );
+            }
+            assert!(
+                engine.lay_out_rooms(story, true).unwrap().is_empty(),
+                "{world}"
+            );
         }
     }
 }
