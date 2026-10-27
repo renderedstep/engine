@@ -231,3 +231,103 @@ fn body(records: &Records, person: Option<i64>) -> String {
 fn in_game(game: Option<i64>) -> String {
     game.map_or(String::new(), |game| format!(" in playthrough #{game}"))
 }
+
+/// Words that make a name more than one thing, or a thing beside another
+/// ("box of gloves", "hat with a feather"): a name holding one is never
+/// read as a garment.
+const JOINING: &[&str] = &["of", "with", "for", "and", "or", "in", "on", "from"];
+
+/// A word as one of it: "boots" is "boot", "sashes" is "sash", "dress"
+/// stays "dress".
+fn one_of(word: &str) -> &str {
+    for ending in ["sses", "shes", "ches", "xes"] {
+        if word.ends_with(ending) {
+            return &word[..word.len() - 2];
+        }
+    }
+    match word.strip_suffix('s') {
+        Some(stem) if !stem.ends_with('s') && !stem.is_empty() => stem,
+        _ => word,
+    }
+}
+
+/// The place on a body a thing of this name is worn on, read off the kits'
+/// `wear` table and nothing else: the whole name as the table lists it, or,
+/// for a single-word entry, the name's last word, either one or several of
+/// it ("a tattered wool coat" and "gloves" both match; "oil lamp" does not
+/// match "helmet lamp"). A name that joins things ("box of gloves") is
+/// refused rather than guessed at.
+pub fn place_for(name: &str) -> Option<&'static str> {
+    let lower = name.trim().to_lowercase();
+    let mut words: Vec<&str> = lower.split_whitespace().collect();
+    while matches!(
+        words.first(),
+        Some(&("a" | "an" | "the" | "some" | "pair" | "pairs" | "of"))
+    ) {
+        words.remove(0);
+    }
+    if words.is_empty() || words.iter().any(|word| JOINING.contains(word)) {
+        return None;
+    }
+    let table = &crate::data::kits().wear;
+    let whole = words.join(" ");
+    let last = *words.last()?;
+    let listed = |wanted: &str| {
+        table
+            .iter()
+            .find(|(name, _)| name == wanted)
+            .map(|(_, place)| place.as_str())
+    };
+    let single = |wanted: &str| {
+        table
+            .iter()
+            .find(|(name, _)| !name.contains(' ') && name == wanted)
+            .map(|(_, place)| place.as_str())
+    };
+    let plural_whole = words[..words.len() - 1]
+        .iter()
+        .copied()
+        .chain([one_of(last)])
+        .collect::<Vec<_>>()
+        .join(" ");
+    listed(&whole)
+        .or_else(|| listed(&plural_whole))
+        .or_else(|| single(last))
+        .or_else(|| single(one_of(last)))
+        .filter(|place| is_place(place))
+}
+
+/// A thing of a story with no place on a body that [`place_for`] gives one,
+/// by id.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Wearable {
+    pub item: i64,
+    pub name: String,
+    pub place: &'static str,
+}
+
+/// Every thing of `story`, in the world and in each of its games, that
+/// names no place it is worn on and that [`place_for`] reads as a garment,
+/// in id order. Only a thing light or handy enough to carry is one.
+pub fn unmarked(records: &Records, story: i64) -> Vec<Wearable> {
+    let mut found: Vec<Wearable> = records
+        .select("items", |item| {
+            place_of(item).is_none() && story_of(records, item) == Some(story)
+        })
+        .into_iter()
+        .filter(|item| {
+            matches!(text(item, "bulk").unwrap_or("handy"), "light" | "handy")
+                && text(item, "tier") != Some(crate::kit::FIXTURE)
+        })
+        .filter_map(|item| {
+            let name = string(item, "name");
+            place_for(name).map(|place| Wearable {
+                item: id(item),
+                name: name.to_string(),
+                place,
+            })
+        })
+        .collect();
+    found.sort_by_key(|wearable| wearable.item);
+    found
+}

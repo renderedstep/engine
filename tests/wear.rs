@@ -244,3 +244,93 @@ fn what_the_player_wears_is_told_on_a_line_of_its_own_and_nothing_else_moves() {
         }
     }
 }
+
+#[test]
+fn a_name_is_read_as_a_garment_only_off_the_kits_table() {
+    for (name, place) in [
+        ("coat", "outer"),
+        ("a tattered wool coat", "outer"),
+        ("Oilskin Coat", "outer"),
+        ("gloves", "hands"),
+        ("a pair of leather gloves", "hands"),
+        ("brass-badged cap", "head"),
+        ("folded shirts", "body"),
+        ("breathing mask", "face"),
+        ("the helmet lamp", "head"),
+        ("aprons", "waist"),
+    ] {
+        assert_eq!(wear::place_for(name), Some(place), "{name}");
+    }
+    for name in [
+        "",
+        "court black",
+        "oil lamp",
+        "box of gloves",
+        "hat with a feather",
+        "coat and hat",
+        "glove box",
+        "hat stand",
+        "coat hook",
+        "shirt",
+        "capstan",
+    ] {
+        assert_eq!(wear::place_for(name), None, "{name}");
+    }
+}
+
+#[test]
+fn marking_the_wearable_gives_a_stored_game_its_wear_and_remove() {
+    let more = "INSERT INTO items (id, name, character_id, created_at, updated_at) VALUES \
+                (1000000013, 'a pair of leather gloves', 1000000001, '2026-10-25 00:00:00', \
+                '2026-10-25 00:00:00'), (1000000014, 'box of gloves', 1000000001, \
+                '2026-10-25 00:00:00', '2026-10-25 00:00:00');\n";
+    let mut engine = salt_assizes(&[], more);
+    let playthrough = start(&mut engine, Mode::Narrated);
+    let menu = |engine: &Engine| engine.glance(playthrough).unwrap().slash_menu;
+    let completes = |engine: &Engine, word: &str| {
+        menu(engine)
+            .targets
+            .into_iter()
+            .find(|(verb, _)| verb == word)
+            .map(|(_, names)| names)
+    };
+    assert_eq!(completes(&engine, "wear"), None);
+    assert_eq!(completes(&engine, "remove"), None);
+
+    let story = engine
+        .story_titled(&format!("The Salt Assizes{TITLE_SUFFIX}"))
+        .unwrap();
+    let named = |marked: &[wear::Wearable]| {
+        let mut named: Vec<(String, &str)> = marked
+            .iter()
+            .map(|thing| (thing.name.clone(), thing.place))
+            .collect();
+        named.sort();
+        named
+    };
+    let would = engine.mark_wearable(story, true).unwrap();
+    let expected = vec![
+        ("a pair of leather gloves".to_string(), "hands"),
+        ("a pair of leather gloves".to_string(), "hands"),
+        ("brass-badged cap".to_string(), "head"),
+        ("brass-badged cap".to_string(), "head"),
+        ("oilskin coat".to_string(), "outer"),
+        ("oilskin coat".to_string(), "outer"),
+    ];
+    assert_eq!(named(&would), expected);
+    assert_eq!(completes(&engine, "wear"), None, "a dry run writes nothing");
+
+    assert_eq!(engine.mark_wearable(story, false).unwrap(), would);
+    assert_eq!(
+        completes(&engine, "wear"),
+        Some(vec![
+            "oilskin coat".to_string(),
+            "a pair of leather gloves".into()
+        ])
+    );
+    assert_eq!(completes(&engine, "remove"), None, "nothing is worn yet");
+    assert_eq!(engine.mark_wearable(story, true).unwrap(), Vec::new());
+    for story in stories(&engine) {
+        assert_eq!(engine.wear_findings(story).unwrap(), Vec::new());
+    }
+}
