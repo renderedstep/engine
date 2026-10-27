@@ -1,0 +1,24 @@
+---
+story: The Green at Saltmarsh
+steps:
+- id: the-pot-at-the-ropewalk
+  type: throw the tar pot at the ropewalk
+  expect:
+    refused: false
+    note:
+    - 'threw: tar pot at The Ropewalk'
+    - 'range: tar pot -- light, 16 paces at ordinary gravity;'
+    - paces to The Ropewalk,
+- id: the-sinker-at-wat
+  type: throw the lead sinker at wat coyle
+  expect:
+    refused: false
+    note:
+    - 'threw: lead sinker at Wat Coyle'
+    - 'range: lead sinker -- heavy, 7 paces at ordinary gravity;'
+    - paces to Wat Coyle,
+- id: the-twine-set-down
+  type: drop the hank of twine
+  expect:
+    changed: true
+    refused: false

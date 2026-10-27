@@ -23,6 +23,7 @@ use crate::engine::Error;
 use crate::interior::{self, Place};
 use crate::kind;
 use crate::kit;
+use crate::layout;
 use crate::model::{Agent, Book, Call, Failure, Filed};
 use crate::parameters::Parameters;
 use crate::plan::box_of;
@@ -409,6 +410,7 @@ impl Turn<'_, '_> {
     fn write_detail(&mut self, location: i64, agent: &mut Agent) -> Result<(), Error> {
         let row = self.location(location)?;
         if checkpoint(&row).is_empty() {
+            self.lay_out_alone(location)?;
             self.furnish(location)?;
             let slots = if Self::is_place(&row) {
                 Vec::new()
@@ -499,6 +501,29 @@ impl Turn<'_, '_> {
                 Err(error)
             }
         }
+    }
+
+    /// A room that stands on its own is given its own box as it is first
+    /// written, before anything is placed in it (`layout`). A place keeps
+    /// its footprint and its rooms are laid out inside it instead; a room
+    /// that already has a box keeps it.
+    fn lay_out_alone(&mut self, location: i64) -> Result<(), Error> {
+        let row = self.location(location)?;
+        if !layout::wants_one(&row) {
+            return Ok(());
+        }
+        let laid = layout::own_box(self.m.story_id(), location, text(&row, "kind"));
+        self.m.update(
+            "locations",
+            location,
+            vec![
+                ("x", Value::from(laid.x)),
+                ("y", Value::from(laid.y)),
+                ("z", Value::from(laid.z)),
+                ("width", Value::from(laid.width)),
+                ("depth", Value::from(laid.depth)),
+            ],
+        )
     }
 
     /// `Location::Generator#furnish!` and `Item::Kit#furnish!`: what stands

@@ -392,7 +392,7 @@
             {
               "id": 1000000003,
               "danger": "safe",
-              "depth": null,
+              "depth": 9,
               "description": "A square cloister of worn flagstones around a dry fountain.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -406,10 +406,10 @@
               "population": "a person or two",
               "story_id": 1000000001,
               "teaser": "A cloister below the hall, where the older brothers walk.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 11,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -503,8 +503,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 10,
-              "x": null,
-              "y": null
+              "x": 3,
+              "y": 7
             }
           ],
           "removed": []
@@ -586,8 +586,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 7,
+              "y": 3,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -616,8 +616,8 @@
               "readable": 0,
               "template_id": 1000000005,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 7,
+              "y": 3,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -744,7 +744,7 @@
             {
               "id": 1000000003,
               "danger": "safe",
-              "depth": null,
+              "depth": 9,
               "description": "A square cloister of worn flagstones around a dry fountain.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -758,10 +758,10 @@
               "population": "a person or two",
               "story_id": 1000000001,
               "teaser": "A cloister below the hall, where the older brothers walk.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 11,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -855,8 +855,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 10,
-              "x": null,
-              "y": null
+              "x": 3,
+              "y": 7
             }
           ],
           "removed": []
@@ -938,8 +938,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 7,
+              "y": 3,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -1173,7 +1173,7 @@
             {
               "id": 1000000003,
               "danger": "safe",
-              "depth": null,
+              "depth": 9,
               "description": "A square cloister of worn flagstones around a dry fountain.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -1187,10 +1187,10 @@
               "population": "a person or two",
               "story_id": 1000000001,
               "teaser": "A cloister below the hall, where the older brothers walk.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 11,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -1284,8 +1284,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 10,
-              "x": null,
-              "y": null
+              "x": 3,
+              "y": 7
             }
           ],
           "removed": []
@@ -1367,8 +1367,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 7,
+              "y": 3,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -1961,7 +1961,7 @@
             {
               "id": 1000000003,
               "danger": "safe",
-              "depth": null,
+              "depth": 9,
               "description": "A square cloister of worn flagstones around a dry fountain.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -1975,10 +1975,10 @@
               "population": "a person or two",
               "story_id": 1000000001,
               "teaser": "A cloister below the hall, where the older brothers walk.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 11,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -1986,7 +1986,7 @@
             {
               "id": 1000000004,
               "danger": "uneasy",
-              "depth": null,
+              "depth": 9,
               "description": "A narrow stone tower with a rope hanging from the dark.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -2000,10 +2000,10 @@
               "population": null,
               "story_id": 1000000001,
               "teaser": "A narrow tower over the cloister.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 7,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -2072,8 +2072,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 10,
-              "x": null,
-              "y": null
+              "x": 3,
+              "y": 7
             }
           ],
           "removed": []
@@ -2155,8 +2155,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 7,
+              "y": 3,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -2403,7 +2403,7 @@
             {
               "id": 1000000003,
               "danger": "safe",
-              "depth": null,
+              "depth": 9,
               "description": "A square cloister of worn flagstones around a dry fountain.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -2417,10 +2417,10 @@
               "population": "a person or two",
               "story_id": 1000000001,
               "teaser": "A cloister below the hall, where the older brothers walk.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 11,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -2428,7 +2428,7 @@
             {
               "id": 1000000004,
               "danger": "uneasy",
-              "depth": null,
+              "depth": 9,
               "description": "A narrow stone tower with a rope hanging from the dark.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -2442,10 +2442,10 @@
               "population": null,
               "story_id": 1000000001,
               "teaser": "A narrow tower over the cloister.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 7,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -2514,8 +2514,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 10,
-              "x": null,
-              "y": null
+              "x": 3,
+              "y": 7
             }
           ],
           "removed": []
@@ -2597,8 +2597,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 7,
+              "y": 3,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,

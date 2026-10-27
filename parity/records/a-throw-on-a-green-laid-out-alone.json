@@ -1,0 +1,530 @@
+{
+  "script": "a-throw-on-a-green-laid-out-alone",
+  "steps": [
+    {
+      "step": "step 1 the-pot-at-the-ropewalk",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000005,
+              "bulk": "heavy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A lead net sinker the size of a fist, heavier than anything that size should be.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "lead sinker",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A hank of tarred twine for whipping rope ends.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "hank of twine",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000007,
+              "bulk": "light",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A cork net float, grey with salt.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "cork float",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000008,
+              "bulk": "light",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small earthenware pot of tar, with a brush through the lid.",
+              "disposition": "broken",
+              "inscription": null,
+              "location_id": null,
+              "name": "tar pot",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "brittle",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 2 the-sinker-at-wat",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000005,
+              "bulk": "heavy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A lead net sinker the size of a fist, heavier than anything that size should be.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "lead sinker",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": 5,
+              "y": 20,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A hank of tarred twine for whipping rope ends.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "hank of twine",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000007,
+              "bulk": "light",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A cork net float, grey with salt.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "cork float",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000008,
+              "bulk": "light",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small earthenware pot of tar, with a brush through the lid.",
+              "disposition": "broken",
+              "inscription": null,
+              "location_id": null,
+              "name": "tar pot",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "brittle",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    },
+    {
+      "step": "step 3 the-twine-set-down",
+      "requests": [],
+      "written": {
+        "locations": {
+          "rows": [],
+          "removed": []
+        },
+        "location_connections": {
+          "rows": [],
+          "removed": []
+        },
+        "characters": {
+          "rows": [],
+          "removed": []
+        },
+        "items": {
+          "rows": [
+            {
+              "id": 1000000005,
+              "bulk": "heavy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A lead net sinker the size of a fist, heavier than anything that size should be.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "lead sinker",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000001,
+              "use_kind": "ordinary",
+              "x": 5,
+              "y": 20,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000006,
+              "bulk": "handy",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A hank of tarred twine for whipping rope ends.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": 1000000001,
+              "name": "hank of twine",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000002,
+              "use_kind": "ordinary",
+              "x": 4,
+              "y": 17,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000007,
+              "bulk": "light",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A cork net float, grey with salt.",
+              "disposition": "intact",
+              "inscription": null,
+              "location_id": null,
+              "name": "cork float",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000003,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "sturdy",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            },
+            {
+              "id": 1000000008,
+              "bulk": "light",
+              "character_id": null,
+              "combustible": 0,
+              "description": "A small earthenware pot of tar, with a brush through the lid.",
+              "disposition": "broken",
+              "inscription": null,
+              "location_id": null,
+              "name": "tar pot",
+              "playthrough_id": 1000000001,
+              "properties": "{}",
+              "readable": 0,
+              "template_id": 1000000004,
+              "use_kind": "ordinary",
+              "x": null,
+              "y": null,
+              "fragility": "brittle",
+              "tier": "portable",
+              "holds": null,
+              "within_id": null,
+              "how": null,
+              "kit_key": null,
+              "noticed_at": null,
+              "searched_at": null,
+              "hold": null,
+              "material": null,
+              "wear": null,
+              "worn": 0
+            }
+          ],
+          "removed": []
+        },
+        "quest_steps": {
+          "rows": [],
+          "removed": []
+        },
+        "scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "characters_scenes": {
+          "rows": [],
+          "removed": []
+        },
+        "interactions": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_endings": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_beats": {
+          "rows": [],
+          "removed": []
+        },
+        "playthrough_npc_states": {
+          "rows": [],
+          "removed": []
+        },
+        "world_events": {
+          "rows": [],
+          "removed": []
+        }
+      }
+    }
+  ]
+}

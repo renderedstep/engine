@@ -22,6 +22,14 @@ pub fn box_of(location: &Row) -> Option<Box> {
     })
 }
 
+/// The storey a room is on within the place around it: none for a room
+/// that stands on its own, whose box is its own plane (`layout`), so that a
+/// storey is never compared between two planes.
+pub fn storey(location: &Row) -> Option<i64> {
+    int(location, "parent_location_id")?;
+    int(location, "z")
+}
+
 /// `Location#interior?`: whether a place has an extent.
 pub fn interior(location: &Row) -> bool {
     int(location, "width").is_some() && int(location, "depth").is_some()

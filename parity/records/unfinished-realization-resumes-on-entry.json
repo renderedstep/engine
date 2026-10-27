@@ -362,7 +362,7 @@
             {
               "id": 1000000002,
               "danger": "safe",
-              "depth": null,
+              "depth": 7,
               "description": "Sella stands beside a brass token on the workbench.",
               "detail_level": "stub",
               "generation_checkpoint": "{\"prompt\":\"## Universe Details\\nphysics: Ordinary physics.\\ntechnology: Keys, locks and lanterns.\\ngeographies: A market and its workshop.\\nraces: Townsfolk\\ncivilizations: A small trading town.\\n\\n\\n## Story Details\\ntitle: The Unfinished Workshop (engine sweep)\\ngenre: town adventure\\npreface: A workshop opens onto the market.\\nsummary: Cal visits Sella's workshop.\\n\\n\\n## The Place\\nname: Workshop\\nteaser: A low door opens onto a workbench.\\n\\n## Instructions\\nWrite this place out in full.\\n- The description is what the player reads on arrival. Address them as \\\"you\\\"\\n- Describe what is here now, not the history -- the history is the lore\\n- Stay consistent with the universe and with the teaser above\\n- Respect the stated length of each field\\n\\n## What Is Lying Here\\nList AT MOST 3 portable things a player could pick up and carry away.\\n- Nothing is the right answer for most rooms. An empty list is a complete answer\\n- Only loose, portable things. Not the door, not the floor, not the machinery\\n  bolted to it -- something a person could put in a pocket or under an arm\\n- Each one must be consistent with the description you just wrote, and worth\\n  the player noticing\\n- Pick its use_kind from the supplied physical profiles. Ordinary is the\\n  default. Food and drink can be consumed without healing; healing is only\\n  a restorative dose this world permits. Firestarters burn combustible\\n  objects, levers pry jammed passages, lockpicks try locks, and a key only\\n  opens a passage explicitly matched to it. Mark combustible only when an\\n  ordinary firestarter can destroy the object. The engine owns the effects\\n  and their amounts; its description cannot grant extra powers\\n- If a thing has WRITING on it -- a note, a letter, a handbill, a label, a\\n  docket, a page, a sign -- mark it readable and WRITE OUT WHAT IS WRITTEN\\n  ON IT, exactly as it appears on the thing. The words themselves, not a\\n  description of them, and short enough to finish -- a few words, a line,\\n  or a few short lines. The game keeps those words and a player reading it\\n  twice reads the same ones\\n- Never name it after a person or after a place. Already spoken for in this story, so do not reuse: Cal\\n\\n## Who Is Here\\nWrite EXACTLY 2 people who are in this place right now.\\n- Anyone you write is somebody the player can walk up to and talk to, so they\\n  have to have a reason to be standing here and an enduring aim that today's\\n  reason serves, threatens or exposes\\n- Do not write the player, and do not write somebody passing through\\n- Never give them the name of a place, of a thing, or any name already\\n  spoken for above\\n\\nWho they are is already decided. Write these people and do not change them:\\n  the 1st is Townsfolk, about 35, male\\n  the 2nd is Townsfolk, about 22, non-binary\\n\\n## Their Four Objects of Desire\\n\\nWrite four STORY-SCALE things this person is after, then pick two TURN-SCALE labels.\\nWork from everything above -- especially the years in their backstory, their repeated\\nchoices, what they fear losing, the future they imagine, and where today's situation\\npresses on that life.\\n\\nAn object of desire must satisfy both tests:\\n1. It was shaping this person before the opening scene.\\n2. Finishing today's errand would not finish it; it can drive choices across the\\n   whole story.\\n\\nThe two labels are picked from this list and nothing else:\\n\\n  keep     They are holding on to something they already have.\\n  obtain   They are trying to get hold of something they do not have.\\n  reach    They are trying to get to a particular place.\\n  attend   They are trying to stay near a particular person.\\n  avoid    They are trying to get away from a person or a place.\\n  withhold They are trying to stop somebody else getting something.\\n  offer    They are trying to put something into somebody else's hands.\\n\\nconscious_desire\\n  The future, standing, relationship, legacy, place or way of life they knowingly\\n  organize their choices around and would name if asked what they want from their\\n  life. Make it specific to this person and world. Do not substitute the clue,\\n  deadline, delivery, payment or room they are dealing with today. One sentence.\\n\\nunconscious_desire\\n  The deeper reward their choices have pursued for years and they would deny: the\\n  recognition, absolution, dependence, belonging, power or intimacy beneath the\\n  conscious account. It must explain a repeated pattern in the backstory and pull at\\n  an angle to the conscious desire, not merely restate today's hidden motive. One\\n  sentence.\\n\\nrecognized_need\\n  The duty, oath, debt, craft, family burden or bodily discipline they believe they\\n  must keep over years whether they want to or not. It predates today's assignment,\\n  survives it, and can repeatedly obstruct the conscious desire. One sentence.\\n\\nunrecognized_need\\n  The enduring change, truth or relationship their life requires and their repeated\\n  pattern prevents them from seeing. A reader can infer it from the backstory. It\\n  cannot be completed by one confession, realization or errand: it demands a new way\\n  of choosing across the story. If they never move toward it, pursuit of the\\n  conscious desire ruins them. One sentence.\\n\\ndesire_pursuit\\n  Pick the listed ENGINE ACT that could repeatedly advance or protect the conscious\\n  desire in ordinary rooms. The label is the next-step expression of the larger\\n  desire, not its timescale.\\n\\nneed_pursuit\\n  Pick the listed ENGINE ACT that could repeatedly move them toward the unrecognized\\n  need in ordinary rooms. It may match desire_pursuit, but a different label should\\n  reflect a real conflict rather than manufactured variety.\\n\\nRules:\\n- Every field names something to move TOWARD. State what lies beyond a fear, refusal\\n  or escape.\\n- The object is larger than any single room act. Picking something up, handing it\\n  over, walking, waiting or staying near somebody may advance, protect, rehearse or\\n  betray it; that act must not become the whole desire.\\n- Use today's room as pressure or evidence, not as the horizon of the person's life.\\n- Keep the four consistent with the backstory, fears and dislikes. A fear is often\\n  the shadow of an object, but is not the object itself.\\n- The conscious desire and unrecognized need must not be the same thing said twice.\\n- Write in the third person, by name.\\n- Do not resolve any object or say how the story ends.\\n- Respect the stated length of each field.\\n- Each person in this room gets their own four. Two people in one room must not\\n  want the same thing in the same words.\\n- At least one person's enduring object should be visibly pressed by something in\\n  this room or one step away. The nearby thing is today's tactic or test, not the\\n  whole object.\\n\",\"detail\":{\"description\":\"Sella stands beside a brass token on the workbench.\",\"lore\":\"Sella keeps the town's oldest workshop.\",\"items\":[{\"name\":\"brass token\",\"description\":\"A small brass disc.\"}],\"people\":[{\"fullname\":\"Unusable Proposal\",\"nickname\":\"Unusable\",\"appearance\":\"A patched apron.\",\"personality\":\"🙂\",\"backstory\":\"A passing worker.\",\"likes\":\"Honest work.\",\"dislikes\":\"Waste.\",\"fears\":\"Fire.\"},{\"fullname\":\"Sella Reed\",\"nickname\":\"Sella\",\"appearance\":\"A patched apron.\",\"personality\":\"Patient and careful.\",\"backstory\":\"A lifelong maker of keys.\",\"likes\":\"Honest work.\",\"dislikes\":\"Waste.\",\"fears\":\"Fire.\"}]},\"phase\":\"exits_pending\"}",
@@ -376,10 +376,10 @@
               "population": "a crowd",
               "story_id": 1000000001,
               "teaser": "A low door opens onto a workbench.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 9,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -423,8 +423,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 12,
-              "x": null,
-              "y": null
+              "x": 0,
+              "y": 3
             }
           ],
           "removed": []
@@ -446,8 +446,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 2,
+              "y": 4,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -684,7 +684,7 @@
             {
               "id": 1000000002,
               "danger": "safe",
-              "depth": null,
+              "depth": 7,
               "description": "Sella stands beside a brass token on the workbench.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -698,10 +698,10 @@
               "population": "a crowd",
               "story_id": 1000000001,
               "teaser": "A low door opens onto a workbench.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 9,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -745,8 +745,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 12,
-              "x": null,
-              "y": null
+              "x": 0,
+              "y": 3
             }
           ],
           "removed": []
@@ -768,8 +768,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 2,
+              "y": 4,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -798,8 +798,8 @@
               "readable": 0,
               "template_id": 1000000001,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 2,
+              "y": 4,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -886,7 +886,7 @@
             {
               "id": 1000000002,
               "danger": "safe",
-              "depth": null,
+              "depth": 7,
               "description": "Sella stands beside a brass token on the workbench.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -900,10 +900,10 @@
               "population": "a crowd",
               "story_id": 1000000001,
               "teaser": "A low door opens onto a workbench.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 9,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -947,8 +947,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 12,
-              "x": null,
-              "y": null
+              "x": 0,
+              "y": 3
             }
           ],
           "removed": []
@@ -970,8 +970,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 2,
+              "y": 4,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -1144,7 +1144,7 @@
             {
               "id": 1000000002,
               "danger": "safe",
-              "depth": null,
+              "depth": 7,
               "description": "Sella stands beside a brass token on the workbench.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -1158,10 +1158,10 @@
               "population": "a crowd",
               "story_id": 1000000001,
               "teaser": "A low door opens onto a workbench.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 9,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -1205,8 +1205,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 12,
-              "x": null,
-              "y": null
+              "x": 0,
+              "y": 3
             }
           ],
           "removed": []
@@ -1228,8 +1228,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 2,
+              "y": 4,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,
@@ -1423,7 +1423,7 @@
             {
               "id": 1000000002,
               "danger": "safe",
-              "depth": null,
+              "depth": 7,
               "description": "Sella stands beside a brass token on the workbench.",
               "detail_level": "realized",
               "generation_checkpoint": null,
@@ -1437,10 +1437,10 @@
               "population": "a crowd",
               "story_id": 1000000001,
               "teaser": "A low door opens onto a workbench.",
-              "width": null,
-              "x": null,
-              "y": null,
-              "z": null,
+              "width": 9,
+              "x": 0,
+              "y": 0,
+              "z": 0,
               "surface": null,
               "kind": null,
               "density": null
@@ -1484,8 +1484,8 @@
               "unconscious_desire": "",
               "unrecognized_need": "",
               "will": 12,
-              "x": null,
-              "y": null
+              "x": 0,
+              "y": 3
             }
           ],
           "removed": []
@@ -1507,8 +1507,8 @@
               "readable": 0,
               "template_id": null,
               "use_kind": "ordinary",
-              "x": null,
-              "y": null,
+              "x": 2,
+              "y": 4,
               "fragility": "sturdy",
               "tier": "portable",
               "holds": null,

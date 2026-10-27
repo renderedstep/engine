@@ -47,6 +47,7 @@ pub mod intent;
 pub mod interior;
 pub mod kind;
 pub mod kit;
+pub mod layout;
 pub mod ledger;
 pub mod material;
 pub mod memory;

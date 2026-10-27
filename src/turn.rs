@@ -27,7 +27,7 @@ use crate::spot;
 use crate::store::Store;
 use crate::text::to_sentence;
 use crate::volition::{Asked, Judgment};
-use crate::{data, outcome, physics, plan, shuffle_connections, volition, world_mechanic};
+use crate::{data, layout, outcome, physics, plan, shuffle_connections, volition, world_mechanic};
 use serde_json::Value;
 
 pub mod chooser;
@@ -879,7 +879,7 @@ impl<'s> Mechanics<'s> {
         let falls = self
             .walked(Some(here), Some(room))
             .filter(|edge| text(edge, "hazard") == Some(physics::FALL))
-            .and_then(|_| physics::storeys(int(here, "z"), int(room, "z")))
+            .and_then(|_| physics::storeys(plan::storey(here), plan::storey(room)))
             .and_then(|storeys| physics::dice(storeys, self.gravity().as_deref()));
         if falls.is_some() {
             Landing::Fell
@@ -1161,7 +1161,10 @@ impl<'s> Mechanics<'s> {
     /// where the thrower stands to what the thing was thrown at, and where it
     /// comes down when it carries less far. Nothing is measured, and the
     /// range is only told, in a room with no box, or at a way out with no
-    /// doorway in this room's walls (a stair, a window).
+    /// doorway in this room's walls (a stair, a window, a way out of a
+    /// building's room to a place that stands on its own). A way out of a
+    /// room that stands on its own leaves by the side rolled for it
+    /// (`layout::by_the_way_out`).
     fn measure(
         &self,
         range: i64,
@@ -1187,9 +1190,20 @@ impl<'s> Mechanics<'s> {
                 let target = self.row("characters", person.id)?;
                 Some((self.stands_at(&target, &here, &room), 0))
             }
-            Record::Place(place) => plan::box_of(&self.row("locations", place.id)?)
-                .and_then(|other| physics::by_the_way_out(&room, &other, from))
-                .map(|beside| (beside, 1)),
+            Record::Place(place) if layout::stands_alone(&here) => self
+                .records
+                .first("location_connections", |edge| {
+                    int(edge, "location_id") == Some(id(&here))
+                        && int(edge, "connected_location_id") == Some(place.id)
+                })
+                .map(|way| (layout::by_the_way_out(self.story_id(), &room, id(way)), 1)),
+            Record::Place(place) => {
+                let other = self.row("locations", place.id)?;
+                plan::box_of(&other)
+                    .filter(|_| !layout::stands_alone(&other))
+                    .and_then(|other| physics::by_the_way_out(&room, &other, from))
+                    .map(|beside| (beside, 1))
+            }
             _ => None,
         };
         let Some((to, through)) = to else {
@@ -3094,7 +3108,7 @@ impl<'s> Mechanics<'s> {
     /// generator keyed on the doorway. Nothing is thrown or written in a
     /// world with no gravity, or through a doorway that does not go down.
     fn fall(&mut self, edge: &Row, from: Option<&Row>, room: &Row) -> Result<(), Error> {
-        let storeys = physics::storeys(from.and_then(|from| int(from, "z")), int(room, "z"));
+        let storeys = physics::storeys(from.and_then(plan::storey), plan::storey(room));
         let gravity = self.gravity();
         let Some(dice) = storeys.and_then(|storeys| physics::dice(storeys, gravity.as_deref()))
         else {

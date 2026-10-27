@@ -57,7 +57,10 @@ on a body and what the doctor reports about worn things, whose cases carry
 their own rows, `divide`, how each material breaks apart, whether a tear or
 a smash is offered on a thing and what it leaves, and `reach`, what is within
 arm's length in a laid-out room, where walking up to something or stepping
-back from it puts you, and the doctor's warning for a place with no layout.
+back from it puts you, and the doctor's warning for a place with no layout,
+and `layout`, the size band of each sort of room that stands on its own and
+the size rolled from it, the side each of its ways out leaves by, and what a
+story's rooms with no layout are given.
 
 Never edit the game's portions by hand. To refresh them, in the game's
 repository:
