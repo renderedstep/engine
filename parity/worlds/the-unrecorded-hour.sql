@@ -272,13 +272,13 @@ FOREIGN KEY ("quest_id")
 );
 INSERT INTO quest_outcomes VALUES(1000000001,NULL,NULL,'2026-10-02 13:25:40.006073',1,NULL,'query-answered',1000000001,NULL,NULL,NULL,'With Perrin''s index and the unsigned writ side by side on your desk, the missing hour has a source at last -- the same hand closed 0714, 0902 and Perrin Lasco. Query 1188 stays open in your name, and this time the record says why.','2026-10-02 13:25:40.006073');
 INSERT INTO quest_outcomes VALUES(1000000002,NULL,'out_of_order','2026-10-02 13:25:40.009948',0,NULL,'closed-blind',1000000001,NULL,NULL,NULL,'You had the writ before you had any reason for it, and a clerk holding a blank closure with no source to set against it is a clerk explaining herself. By the time the index was in your hand, Rowe had written the hour up as your error, and Query 1188 was closed on your own report.','2026-10-02 13:25:40.009948');
-CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
+CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, companion_id integer, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-INSERT INTO quest_steps VALUES(1000000001,'2026-08-31 18:40:00','2026-10-02 13:25:39.902070',NULL,1,1000000001,'Open the one door in this office nobody has audited in eleven years.',1000000002,'The Supply Closet','Location','Whatever filled the missing hour was put where nobody counts.','reach_location','2026-10-02 13:25:39.928274');
-INSERT INTO quest_steps VALUES(1000000002,'2026-08-31 18:40:00','2026-10-02 13:25:39.935005',NULL,2,1000000001,'Take the private index that names the hand behind the amendments.',1000000004,'Perrin''s private index','Item',NULL,'hold_item','2026-10-02 13:25:39.945720');
-INSERT INTO quest_steps VALUES(1000000003,'2026-08-31 18:40:00','2026-10-02 13:25:39.947629',NULL,3,1000000001,'Take the blank closure writ out of the tube basket before anybody fills in its name.',1000000001,'blank closure writ','Item',NULL,'hold_item','2026-10-02 13:25:39.954303');
+INSERT INTO quest_steps VALUES(1000000001,'2026-08-31 18:40:00','2026-10-02 13:25:39.902070',NULL,1,1000000001,'Open the one door in this office nobody has audited in eleven years.',1000000002,'The Supply Closet','Location','Whatever filled the missing hour was put where nobody counts.','reach_location','2026-10-02 13:25:39.928274',NULL);
+INSERT INTO quest_steps VALUES(1000000002,'2026-08-31 18:40:00','2026-10-02 13:25:39.935005',NULL,2,1000000001,'Take the private index that names the hand behind the amendments.',1000000004,'Perrin''s private index','Item',NULL,'hold_item','2026-10-02 13:25:39.945720',NULL);
+INSERT INTO quest_steps VALUES(1000000003,'2026-08-31 18:40:00','2026-10-02 13:25:39.947629',NULL,3,1000000001,'Take the blank closure writ out of the tube basket before anybody fills in its name.',1000000001,'blank closure writ','Item',NULL,'hold_item','2026-10-02 13:25:39.954303',NULL);
 CREATE TABLE IF NOT EXISTS "quests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "contributes" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "origin" varchar DEFAULT 'seeded' NOT NULL, "parent_quest_id" integer, "premise" text NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "story_id" integer NOT NULL, "title" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a64954ae79"
 FOREIGN KEY ("parent_quest_id")
   REFERENCES "quests" ("id")
@@ -423,6 +423,7 @@ INSERT INTO schema_migrations VALUES('20261024120000');
 INSERT INTO schema_migrations VALUES('20261025120000');
 INSERT INTO schema_migrations VALUES('20261025200000');
 INSERT INTO schema_migrations VALUES('20261025230000');
+INSERT INTO schema_migrations VALUES('20261027120117');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -639,5 +640,6 @@ CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mecha
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
 CREATE UNIQUE INDEX "index_playthrough_due_endings_on_playthrough_id" ON "playthrough_due_endings" ("playthrough_id");
 CREATE INDEX "index_playthrough_due_endings_on_quest_outcome_id" ON "playthrough_due_endings" ("quest_outcome_id");
+CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

@@ -273,12 +273,12 @@ FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
 INSERT INTO quest_outcomes VALUES(1000000001,NULL,NULL,'2026-10-26 02:10:11.922977',1,NULL,'filed',1000000001,NULL,NULL,NULL,'The blank writ is filed in the archive, unwritten.','2026-10-26 02:10:11.922977');
-CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
+CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, companion_id integer, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-INSERT INTO quest_steps VALUES(1000000001,'2026-10-25 09:00:00','2026-10-26 02:10:11.810794',NULL,1,1000000001,'Take up the blank writ.',1000000001,'blank writ','Item',NULL,'hold_item','2026-10-26 02:10:11.843906');
-INSERT INTO quest_steps VALUES(1000000002,'2026-10-25 09:00:00','2026-10-26 02:10:11.852710',NULL,2,1000000001,'Carry it into the Archive.',1000000002,'The Archive','Location',NULL,'reach_location','2026-10-26 02:10:11.865072');
+INSERT INTO quest_steps VALUES(1000000001,'2026-10-25 09:00:00','2026-10-26 02:10:11.810794',NULL,1,1000000001,'Take up the blank writ.',1000000001,'blank writ','Item',NULL,'hold_item','2026-10-26 02:10:11.843906',NULL);
+INSERT INTO quest_steps VALUES(1000000002,'2026-10-25 09:00:00','2026-10-26 02:10:11.852710',NULL,2,1000000001,'Carry it into the Archive.',1000000002,'The Archive','Location',NULL,'reach_location','2026-10-26 02:10:11.865072',NULL);
 CREATE TABLE IF NOT EXISTS "quests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "contributes" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "origin" varchar DEFAULT 'seeded' NOT NULL, "parent_quest_id" integer, "premise" text NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "story_id" integer NOT NULL, "title" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a64954ae79"
 FOREIGN KEY ("parent_quest_id")
   REFERENCES "quests" ("id")
@@ -420,6 +420,7 @@ INSERT INTO schema_migrations VALUES('20250823023925');
 INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
+INSERT INTO schema_migrations VALUES('20261027120117');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-26 02:09:45.289336','2026-10-26 02:09:45.289340');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','9fcff787fff0ed60123ee84a65c7f80738f353f3','2026-10-26 02:09:45.295415','2026-10-26 02:09:45.295421');
@@ -630,5 +631,6 @@ CREATE INDEX "index_world_events_on_story_id" ON "world_events" ("story_id");
 CREATE INDEX "index_world_events_on_world_mechanic_id" ON "world_events" ("world_mechanic_id");
 CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mechanics" ("story_id", "name");
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
+CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

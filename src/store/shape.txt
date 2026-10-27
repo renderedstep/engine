@@ -308,6 +308,7 @@ column quest_outcomes.step_position integer pk=0
 column quest_outcomes.summary text not null pk=0
 column quest_outcomes.updated_at datetime(6) not null pk=0
 column quest_steps.bound_at datetime(6) pk=0
+column quest_steps.companion_id integer pk=0
 column quest_steps.created_at datetime(6) not null pk=0
 column quest_steps.id integer not null pk=1
 column quest_steps.minutes integer pk=0
@@ -632,6 +633,7 @@ index playthroughs (token) unique
 index quest_outcomes (character_id)
 index quest_outcomes (quest_id)
 index quest_outcomes (quest_id, name) unique
+index quest_steps (companion_id)
 index quest_steps (quest_id)
 index quest_steps (quest_id, position) unique
 index quest_steps (target_type, target_id)

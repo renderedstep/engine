@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS "quest_outcomes" ("id" integer PRIMARY KEY AUTOINCREM
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
+CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, companion_id integer, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
@@ -402,6 +402,7 @@ INSERT INTO schema_migrations VALUES('20261024120000');
 INSERT INTO schema_migrations VALUES('20261025120000');
 INSERT INTO schema_migrations VALUES('20261025200000');
 INSERT INTO schema_migrations VALUES('20261025230000');
+INSERT INTO schema_migrations VALUES('20261027120117');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-15 21:43:40.193939','2026-10-15 21:43:40.193941');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','62d31b9fa38811bdb1f557cc2a6f6d523066e2aa','2026-10-15 21:43:40.198165','2026-10-15 21:43:40.198167');
@@ -618,5 +619,6 @@ CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mecha
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
 CREATE UNIQUE INDEX "index_playthrough_due_endings_on_playthrough_id" ON "playthrough_due_endings" ("playthrough_id");
 CREATE INDEX "index_playthrough_due_endings_on_quest_outcome_id" ON "playthrough_due_endings" ("quest_outcome_id");
+CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

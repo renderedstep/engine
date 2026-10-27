@@ -267,6 +267,51 @@ fn the_first_rule_the_world_wrote_wins_when_two_hold() {
     );
 }
 
+/// The prince, by id in the Iron Gate.
+const PRINCE: i64 = 1_000_000_004;
+
+/// The dry cell's beat naming the prince as its companion: standing in the
+/// cell with him chained there, not following, meets nothing, and the arc
+/// stays open.
+#[test]
+fn a_beat_that_names_a_companion_waits_for_them_to_be_with_the_player() {
+    let (mut engine, game) = the_iron_gate(&format!(
+        "UPDATE quest_steps SET companion_id = {PRINCE} WHERE position = 3;"
+    ));
+    play(&mut engine, game, &lines("an-ending-with-words"));
+    assert_eq!(beats(&engine, game), [1, 2]);
+    assert_eq!(ending(&engine, game), None);
+    assert!(!ended(&engine, game));
+}
+
+/// `with_you` at the last beat: the prince in the room and not following is
+/// not with the player, so the default is the ending; following, he is.
+#[test]
+fn an_ending_with_you_wants_the_companion_following_at_the_last_beat() {
+    let with_you = format!(
+        "{} UPDATE quest_outcomes SET character_id = {PRINCE} WHERE id = 1000000000;",
+        outcome(1_000_000_000, "together", "'with_you'", "NULL")
+    );
+    assert_eq!(
+        the_cell_reached("an-ending-with-words", &with_you, None).as_deref(),
+        Some("rescued")
+    );
+    let (mut engine, game) = the_iron_gate(&with_you);
+    let script = "an-ending-with-words";
+    let last = before(script, "go to the dry cell").len();
+    play(&mut engine, game, &lines(script)[..last]);
+    sql(
+        &engine,
+        &format!(
+            "INSERT INTO playthrough_npc_states (playthrough_id, character_id, location_id, following, created_at, updated_at)
+             SELECT {game}, {PRINCE}, current_location_id, 1, '2026-10-02', '2026-10-02' FROM playthroughs WHERE id = {game};"
+        ),
+    );
+    play(&mut engine, game, &lines(script)[last..]);
+    assert_eq!(beats(&engine, game), [1, 2, 3]);
+    assert_eq!(ending(&engine, game).as_deref(), Some("together"));
+}
+
 /// A beat that waits on time is reached once this game's clock stands at
 /// the start plus its minutes, and not a minute before.
 #[test]

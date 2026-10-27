@@ -269,13 +269,13 @@ FOREIGN KEY ("quest_id")
 );
 INSERT INTO quest_outcomes VALUES(1000000001,NULL,NULL,'2026-10-02 13:25:47.280814',1,NULL,'the-court-rises-true',1000000001,NULL,NULL,NULL,'You ring the court up on the water''s own figure, with Neb''s cord for the count and nobody''s chalk for the hour. Justicar Brace hears him with the stain band still dry above his head, and the seventy minutes go into the record as what they were -- somebody''s hand, and not the sea''s.','2026-10-02 13:25:47.280814');
 INSERT INTO quest_outcomes VALUES(1000000002,NULL,'out_of_order','2026-10-02 13:25:47.285031',0,NULL,'rung-on-the-chalk',1000000001,NULL,NULL,NULL,'You rang the court up before you had been out to the water, so it sat on the chalk. Neb Halloran is heard at last from the causeway''s edge, soaked to the chest; the hearing is lawful in every particular, and the figure it sat on is the forger''s.','2026-10-02 13:25:47.285031');
-CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
+CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, companion_id integer, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-INSERT INTO quest_steps VALUES(1000000001,'2026-09-01 05:20:00','2026-10-02 13:25:47.202962',NULL,1,1000000001,'Go out to the tide post and read the stain band against the water yourself.',1000000002,'The Tide Post','Location','The water at the post will say whether the slate is lying.','reach_location','2026-10-02 13:25:47.222311');
-INSERT INTO quest_steps VALUES(1000000002,'2026-09-01 05:20:00','2026-10-02 13:25:47.229007',NULL,2,1000000001,'Get the knotted cord Neb has been keeping since the ebb, the water''s own count.',1000000003,'Neb''s knotted cord','Item',NULL,'hold_item','2026-10-02 13:25:47.240998');
-INSERT INTO quest_steps VALUES(1000000003,'2026-09-01 05:20:00','2026-10-02 13:25:47.244296',NULL,3,1000000001,'Take the hand-bell off its hook and ring the court up on the true figure.',1000000001,'Assize hand-bell','Item',NULL,'hold_item','2026-10-02 13:25:47.258200');
+INSERT INTO quest_steps VALUES(1000000001,'2026-09-01 05:20:00','2026-10-02 13:25:47.202962',NULL,1,1000000001,'Go out to the tide post and read the stain band against the water yourself.',1000000002,'The Tide Post','Location','The water at the post will say whether the slate is lying.','reach_location','2026-10-02 13:25:47.222311',NULL);
+INSERT INTO quest_steps VALUES(1000000002,'2026-09-01 05:20:00','2026-10-02 13:25:47.229007',NULL,2,1000000001,'Get the knotted cord Neb has been keeping since the ebb, the water''s own count.',1000000003,'Neb''s knotted cord','Item',NULL,'hold_item','2026-10-02 13:25:47.240998',NULL);
+INSERT INTO quest_steps VALUES(1000000003,'2026-09-01 05:20:00','2026-10-02 13:25:47.244296',NULL,3,1000000001,'Take the hand-bell off its hook and ring the court up on the true figure.',1000000001,'Assize hand-bell','Item',NULL,'hold_item','2026-10-02 13:25:47.258200',NULL);
 CREATE TABLE IF NOT EXISTS "quests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "contributes" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "origin" varchar DEFAULT 'seeded' NOT NULL, "parent_quest_id" integer, "premise" text NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "story_id" integer NOT NULL, "title" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a64954ae79"
 FOREIGN KEY ("parent_quest_id")
   REFERENCES "quests" ("id")
@@ -420,6 +420,7 @@ INSERT INTO schema_migrations VALUES('20261024120000');
 INSERT INTO schema_migrations VALUES('20261025120000');
 INSERT INTO schema_migrations VALUES('20261025200000');
 INSERT INTO schema_migrations VALUES('20261025230000');
+INSERT INTO schema_migrations VALUES('20261027120117');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -636,5 +637,6 @@ CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mecha
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
 CREATE UNIQUE INDEX "index_playthrough_due_endings_on_playthrough_id" ON "playthrough_due_endings" ("playthrough_id");
 CREATE INDEX "index_playthrough_due_endings_on_quest_outcome_id" ON "playthrough_due_endings" ("quest_outcome_id");
+CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

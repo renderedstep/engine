@@ -3259,8 +3259,29 @@ impl<'s> Mechanics<'s> {
         int(self.game().story(), "start_time")
     }
 
-    /// `Playthrough::Arc#reached?`.
+    /// `Playthrough::Arc#reached?`: the step's own trigger is met, and the
+    /// companion it names, if any, is with the player as it is.
     fn beat_reached(&self, step: &Row) -> bool {
+        self.trigger_met(step) && self.companion_with_player(step)
+    }
+
+    /// Whether the person a step names as its `companion_id` is with the
+    /// player: one of [`Game::followers`], in the room, alive, following and
+    /// not a foe. A step that names nobody needs nobody.
+    fn companion_with_player(&self, step: &Row) -> bool {
+        int(step, "companion_id").is_none_or(|companion| self.with_player(companion))
+    }
+
+    /// Whether this person is one of the player's followers as things stand.
+    fn with_player(&self, who: i64) -> bool {
+        self.game()
+            .followers()
+            .iter()
+            .any(|follower| id(follower) == who)
+    }
+
+    /// The step's own trigger, whoever is with the player.
+    fn trigger_met(&self, step: &Row) -> bool {
         if text(step, "trigger_kind") == Some("time_passed") {
             return match (self.start_time(), int(step, "minutes")) {
                 (Some(start), Some(minutes)) => self.story_now() >= start + minutes * 60,
@@ -3311,6 +3332,7 @@ impl<'s> Mechanics<'s> {
                         return match (self.start_time(), int(step, "minutes")) {
                             (Some(start), Some(minutes)) => {
                                 self.story_now() + later >= start + minutes * 60
+                                    && self.companion_with_player(step)
                             }
                             _ => false,
                         };
@@ -3394,6 +3416,12 @@ impl<'s> Mechanics<'s> {
                 positions != sorted
             }
             Some("while_alive") => self.alive_at_beat(outcome),
+            // Asked when the ending falls due, which is the turn the arc's
+            // last beat is reached: whether the outcome's `character` is with
+            // the player as it is reached.
+            Some("with_you") => {
+                int(outcome, "character_id").is_some_and(|who| self.with_player(who))
+            }
             _ => false,
         }
     }

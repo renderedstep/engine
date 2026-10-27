@@ -266,13 +266,13 @@ FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
 INSERT INTO quest_outcomes VALUES(1000000001,NULL,NULL,'2026-10-02 13:25:58.265444',1,NULL,'rung',1000000001,NULL,NULL,NULL,'The bell rings over the valley for the first time in a generation.','2026-10-02 13:25:58.265444');
-CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
+CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, companion_id integer, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-INSERT INTO quest_steps VALUES(1000000001,NULL,'2026-10-02 13:25:58.231154',NULL,1,1000000001,'Take up the brass censer the bell-keeper carried.',NULL,'brass censer',NULL,NULL,'hold_item','2026-10-02 13:25:58.231154');
-INSERT INTO quest_steps VALUES(1000000002,NULL,'2026-10-02 13:25:58.242755',NULL,2,1000000001,'Hear Brother Anselm out about the last time the bell rang.',NULL,'Brother Anselm',NULL,NULL,'speak_to','2026-10-02 13:25:58.242755');
-INSERT INTO quest_steps VALUES(1000000003,NULL,'2026-10-02 13:25:58.247030',NULL,3,1000000001,'Climb to the Bell Tower.',NULL,'the Bell Tower',NULL,'The tower stands over the cloister, its door long unlocked.','reach_location','2026-10-02 13:25:58.247030');
+INSERT INTO quest_steps VALUES(1000000001,NULL,'2026-10-02 13:25:58.231154',NULL,1,1000000001,'Take up the brass censer the bell-keeper carried.',NULL,'brass censer',NULL,NULL,'hold_item','2026-10-02 13:25:58.231154',NULL);
+INSERT INTO quest_steps VALUES(1000000002,NULL,'2026-10-02 13:25:58.242755',NULL,2,1000000001,'Hear Brother Anselm out about the last time the bell rang.',NULL,'Brother Anselm',NULL,NULL,'speak_to','2026-10-02 13:25:58.242755',NULL);
+INSERT INTO quest_steps VALUES(1000000003,NULL,'2026-10-02 13:25:58.247030',NULL,3,1000000001,'Climb to the Bell Tower.',NULL,'the Bell Tower',NULL,'The tower stands over the cloister, its door long unlocked.','reach_location','2026-10-02 13:25:58.247030',NULL);
 CREATE TABLE IF NOT EXISTS "quests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "contributes" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "origin" varchar DEFAULT 'seeded' NOT NULL, "parent_quest_id" integer, "premise" text NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "story_id" integer NOT NULL, "title" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a64954ae79"
 FOREIGN KEY ("parent_quest_id")
   REFERENCES "quests" ("id")
@@ -414,6 +414,7 @@ INSERT INTO schema_migrations VALUES('20261024120000');
 INSERT INTO schema_migrations VALUES('20261025120000');
 INSERT INTO schema_migrations VALUES('20261025200000');
 INSERT INTO schema_migrations VALUES('20261025230000');
+INSERT INTO schema_migrations VALUES('20261027120117');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -630,5 +631,6 @@ CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mecha
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
 CREATE UNIQUE INDEX "index_playthrough_due_endings_on_playthrough_id" ON "playthrough_due_endings" ("playthrough_id");
 CREATE INDEX "index_playthrough_due_endings_on_quest_outcome_id" ON "playthrough_due_endings" ("quest_outcome_id");
+CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

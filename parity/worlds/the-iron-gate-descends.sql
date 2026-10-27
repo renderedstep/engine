@@ -321,13 +321,13 @@ FOREIGN KEY ("quest_id")
 );
 INSERT INTO quest_outcomes VALUES(1000000001,NULL,NULL,'2026-10-02 13:26:06.647666',1,NULL,'rescued',1000000001,NULL,NULL,NULL,'The prince is found alive in the dry cell, and the iron gate opens outward at last.','2026-10-02 13:26:06.647666');
 INSERT INTO quest_outcomes VALUES(1000000002,NULL,'out_of_order','2026-10-02 13:26:06.650267',0,NULL,'too-late',1000000001,180,'The Blackfang answer for the cell being opened, and the low door at the tunnel''s end is barred from the inside.',NULL,'The cell is opened and the prince is already cold; the decree is answered, and not the way anybody wanted.','2026-10-02 13:26:06.650267');
-CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
+CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, companion_id integer, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-INSERT INTO quest_steps VALUES(1000000001,'2026-09-05 20:17:00','2026-10-02 13:26:06.579350',NULL,1,1000000001,'Take the signet ring that proves he came this way.',1000000002,'prince''s signet ring','Item',NULL,'hold_item','2026-10-02 13:26:06.613995');
-INSERT INTO quest_steps VALUES(1000000002,'2026-09-05 20:17:00','2026-10-02 13:26:06.617815',NULL,2,1000000001,'Get inside the warren where the Blackfang keep what they take.',1000000011,'Blackfang Warren','Location','The Blackfang hold him somewhere below the old workings.','reach_location','2026-10-02 13:26:06.621601');
-INSERT INTO quest_steps VALUES(1000000003,'2026-09-05 20:17:00','2026-10-02 13:26:06.622707',NULL,3,1000000001,'Find the cell they are keeping him in.',1000000014,'the dry cell','Location',NULL,'reach_location','2026-10-02 13:26:06.626011');
+INSERT INTO quest_steps VALUES(1000000001,'2026-09-05 20:17:00','2026-10-02 13:26:06.579350',NULL,1,1000000001,'Take the signet ring that proves he came this way.',1000000002,'prince''s signet ring','Item',NULL,'hold_item','2026-10-02 13:26:06.613995',NULL);
+INSERT INTO quest_steps VALUES(1000000002,'2026-09-05 20:17:00','2026-10-02 13:26:06.617815',NULL,2,1000000001,'Get inside the warren where the Blackfang keep what they take.',1000000011,'Blackfang Warren','Location','The Blackfang hold him somewhere below the old workings.','reach_location','2026-10-02 13:26:06.621601',NULL);
+INSERT INTO quest_steps VALUES(1000000003,'2026-09-05 20:17:00','2026-10-02 13:26:06.622707',NULL,3,1000000001,'Find the cell they are keeping him in.',1000000014,'the dry cell','Location',NULL,'reach_location','2026-10-02 13:26:06.626011',NULL);
 CREATE TABLE IF NOT EXISTS "quests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "contributes" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "origin" varchar DEFAULT 'seeded' NOT NULL, "parent_quest_id" integer, "premise" text NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "story_id" integer NOT NULL, "title" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a64954ae79"
 FOREIGN KEY ("parent_quest_id")
   REFERENCES "quests" ("id")
@@ -472,6 +472,7 @@ INSERT INTO schema_migrations VALUES('20261024120000');
 INSERT INTO schema_migrations VALUES('20261025120000');
 INSERT INTO schema_migrations VALUES('20261025200000');
 INSERT INTO schema_migrations VALUES('20261025230000');
+INSERT INTO schema_migrations VALUES('20261027120117');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -688,5 +689,6 @@ CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mecha
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
 CREATE UNIQUE INDEX "index_playthrough_due_endings_on_playthrough_id" ON "playthrough_due_endings" ("playthrough_id");
 CREATE INDEX "index_playthrough_due_endings_on_quest_outcome_id" ON "playthrough_due_endings" ("quest_outcome_id");
+CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

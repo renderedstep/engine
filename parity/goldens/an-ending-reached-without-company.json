@@ -1,0 +1,312 @@
+{
+  "script": "an-ending-reached-without-company",
+  "story": "A Friend at the Gate",
+  "steps": [
+    {
+      "step": "step 1 she-comes-along",
+      "player": "first",
+      "typed": "talk to Maren",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "Market",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "Courtyard",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Maren"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Maren": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "Maren is now accompanying Cal and will travel with them.",
+        "refused": false,
+        "offers": null,
+        "understood": "talk -> Maren",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "bound",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 there-together",
+      "player": "first",
+      "typed": "go to Courtyard",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Courtyard",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "Lane",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000001,
+            "name": "Market",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Maren"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Maren": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: Market -> Courtyard",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> Courtyard",
+        "resolved_by": "grammar",
+        "note": "the story: Reach the courtyard with Maren.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 she-stays",
+      "player": "first",
+      "typed": "talk to Maren",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "Courtyard",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "Lane",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000001,
+            "name": "Market",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Maren"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Maren": 53
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "Maren stopped accompanying the player and remains in Courtyard.",
+        "refused": false,
+        "offers": null,
+        "understood": "talk -> Maren",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "bound"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 out-by-the-lane-alone",
+      "player": "first",
+      "typed": "go to Lane",
+      "dump": {
+        "location": {
+          "id": 1000000003,
+          "name": "Lane",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "Courtyard",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: Courtyard -> Lane",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> Lane",
+        "resolved_by": "grammar",
+        "note": "the story: Take the lane out of town.\nthe story can end here (/end): Cal takes the old way out of town alone.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 and-the-story-ends",
+      "player": "first",
+      "typed": "/end",
+      "dump": {
+        "location": {
+          "id": 1000000003,
+          "name": "Lane",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000002,
+            "name": "Courtyard",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": true,
+        "changed": true,
+        "change": "ended the story",
+        "refused": false,
+        "offers": null,
+        "understood": "end -> the story",
+        "resolved_by": "grammar",
+        "note": "the story is over: Cal takes the old way out of town alone.",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {
+          "1": "reached",
+          "2": "reached"
+        },
+        "volitions": 0,
+        "acts": 0,
+        "ending": "alone",
+        "ending_words": "Cal takes the old way out of town alone.",
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}
