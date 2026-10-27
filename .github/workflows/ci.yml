@@ -37,7 +37,7 @@ jobs:
     env:
       # The game commit whose runner, scripts and judges this checkout is
       # held to (parity/README.md, "Changing a rule").
-      SERVER_COMMIT: 15b6e10f3b6fc69e790a6e2bfc24be01730cbd9c
+      SERVER_COMMIT: 0dfdfbf5b6d22e4d9e56dd3b3c31d05033890d45
     steps:
       # Side by side, not one inside the other: the game's extension is a
       # crate of its own, and inside this checkout cargo would read it as a

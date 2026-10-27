@@ -1,0 +1,40 @@
+---
+story: A Friend at the Gate
+steps:
+- id: she-comes-along
+  type: talk to Maren
+  npc_action: follow
+  expect:
+    changed: true
+    present:
+    - Maren
+- id: there-together
+  type: go to Courtyard
+  expect:
+    changed: true
+    location: Courtyard (realized)
+    present:
+    - Maren
+    quest:
+      1: reached
+      2: bound
+- id: she-stays
+  type: talk to Maren
+  npc_action: stop_following
+  expect:
+    changed: true
+- id: out-by-the-lane-alone
+  type: go to Lane
+  expect:
+    changed: true
+    location: Lane (realized)
+    present: []
+    quest:
+      1: reached
+      2: reached
+    ending: none
+- id: and-the-story-ends
+  type: "/end"
+  expect:
+    changed: true
+    ending: alone

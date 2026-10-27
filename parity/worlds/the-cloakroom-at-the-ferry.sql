@@ -275,7 +275,7 @@ CREATE TABLE IF NOT EXISTS "quest_outcomes" ("id" integer PRIMARY KEY AUTOINCREM
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
-CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ba1603d17b"
+CREATE TABLE IF NOT EXISTS "quest_steps" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bound_at" datetime(6), "created_at" datetime(6) NOT NULL, "minutes" integer, "position" integer NOT NULL, "quest_id" integer NOT NULL, "summary" text NOT NULL, "target_id" integer, "target_name" varchar, "target_type" varchar, "teaser" text, "trigger_kind" varchar NOT NULL, "updated_at" datetime(6) NOT NULL, companion_id integer, CONSTRAINT "fk_rails_ba1603d17b"
 FOREIGN KEY ("quest_id")
   REFERENCES "quests" ("id")
 );
@@ -419,6 +419,7 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 INSERT INTO schema_migrations VALUES('20261025230000');
+INSERT INTO schema_migrations VALUES('20261027120117');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-25 22:48:20.183741','2026-10-25 22:48:20.183743');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','1ce6b3b7eea61111c69aac54baf282539c772990','2026-10-25 22:48:20.187552','2026-10-25 22:48:20.187553');
@@ -629,5 +630,6 @@ CREATE INDEX "index_world_events_on_story_id" ON "world_events" ("story_id");
 CREATE INDEX "index_world_events_on_world_mechanic_id" ON "world_events" ("world_mechanic_id");
 CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mechanics" ("story_id", "name");
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
+CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

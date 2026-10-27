@@ -1,6 +1,7 @@
 # The sweep scripts this engine plays exactly as the Ruby engine does, step
 # for step. `cargo test` and `parity --check parity` fail when one of these
 # diverges, and when a script agrees and is not listed here.
+a-beat-that-waits-for-company
 a-body-says-who-killed-it
 a-branch-broken-off-the-old-tree
 a-branch-that-holds-moves-nothing
@@ -27,6 +28,7 @@ an-act-waits-out-the-engines-own-words
 an-arc-that-ends-the-other-way
 an-arrival-cut-off-at-its-cap-is-not-kept
 an-earlier-line-still-goes-first
+an-ending-reached-without-company
 an-ending-kept-when-the-narrator-fails
 an-ending-taken-under-his-hands
 an-ending-the-ringer-did-not-stand-for

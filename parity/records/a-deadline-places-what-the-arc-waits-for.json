@@ -916,7 +916,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -1509,7 +1510,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -3339,7 +3341,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             },
             {
               "id": 1000000002,
@@ -3352,7 +3355,8 @@
               "target_name": "the Salt Stair",
               "target_type": "Location",
               "teaser": "A stair cut down through the salt to the old road.",
-              "trigger_kind": "reach_location"
+              "trigger_kind": "reach_location",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -4823,7 +4827,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             },
             {
               "id": 1000000002,
@@ -4836,7 +4841,8 @@
               "target_name": "the Salt Stair",
               "target_type": "Location",
               "teaser": "A stair cut down through the salt to the old road.",
-              "trigger_kind": "reach_location"
+              "trigger_kind": "reach_location",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -6743,7 +6749,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             },
             {
               "id": 1000000002,
@@ -6756,7 +6763,8 @@
               "target_name": "the Salt Stair",
               "target_type": "Location",
               "teaser": "A stair cut down through the salt to the old road.",
-              "trigger_kind": "reach_location"
+              "trigger_kind": "reach_location",
+              "companion_id": null
             },
             {
               "id": 1000000003,
@@ -6769,7 +6777,8 @@
               "target_name": "iron seal",
               "target_type": "Item",
               "teaser": null,
-              "trigger_kind": "hold_item"
+              "trigger_kind": "hold_item",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -8317,7 +8326,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             },
             {
               "id": 1000000002,
@@ -8330,7 +8340,8 @@
               "target_name": "the Salt Stair",
               "target_type": "Location",
               "teaser": "A stair cut down through the salt to the old road.",
-              "trigger_kind": "reach_location"
+              "trigger_kind": "reach_location",
+              "companion_id": null
             },
             {
               "id": 1000000003,
@@ -8343,7 +8354,8 @@
               "target_name": "iron seal",
               "target_type": "Item",
               "teaser": null,
-              "trigger_kind": "hold_item"
+              "trigger_kind": "hold_item",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -9891,7 +9903,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             },
             {
               "id": 1000000002,
@@ -9904,7 +9917,8 @@
               "target_name": "the Salt Stair",
               "target_type": "Location",
               "teaser": "A stair cut down through the salt to the old road.",
-              "trigger_kind": "reach_location"
+              "trigger_kind": "reach_location",
+              "companion_id": null
             },
             {
               "id": 1000000003,
@@ -9917,7 +9931,8 @@
               "target_name": "iron seal",
               "target_type": "Item",
               "teaser": null,
-              "trigger_kind": "hold_item"
+              "trigger_kind": "hold_item",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -11465,7 +11480,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             },
             {
               "id": 1000000002,
@@ -11478,7 +11494,8 @@
               "target_name": "the Salt Stair",
               "target_type": "Location",
               "teaser": "A stair cut down through the salt to the old road.",
-              "trigger_kind": "reach_location"
+              "trigger_kind": "reach_location",
+              "companion_id": null
             },
             {
               "id": 1000000003,
@@ -11491,7 +11508,8 @@
               "target_name": "iron seal",
               "target_type": "Item",
               "teaser": null,
-              "trigger_kind": "hold_item"
+              "trigger_kind": "hold_item",
+              "companion_id": null
             }
           ],
           "removed": []
@@ -13039,7 +13057,8 @@
               "target_name": "Warden Hesk",
               "target_type": "Character",
               "teaser": "A broad woman with the warden's chain about her neck.",
-              "trigger_kind": "speak_to"
+              "trigger_kind": "speak_to",
+              "companion_id": null
             },
             {
               "id": 1000000002,
@@ -13052,7 +13071,8 @@
               "target_name": "the Salt Stair",
               "target_type": "Location",
               "teaser": "A stair cut down through the salt to the old road.",
-              "trigger_kind": "reach_location"
+              "trigger_kind": "reach_location",
+              "companion_id": null
             },
             {
               "id": 1000000003,
@@ -13065,7 +13085,8 @@
               "target_name": "iron seal",
               "target_type": "Item",
               "teaser": null,
-              "trigger_kind": "hold_item"
+              "trigger_kind": "hold_item",
+              "companion_id": null
             }
           ],
           "removed": []
