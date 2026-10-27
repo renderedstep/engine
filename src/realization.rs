@@ -7,7 +7,7 @@ use crate::cast::{MAX_PER_ROOM, MAX_PER_STORY};
 use crate::data;
 use crate::interior::MAX_EXITS;
 use crate::plan::{box_of, interior, Plan};
-use crate::records::{id, int, string, text, Records, Row};
+use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::schemas;
 use crate::text::{is_blank, natural_key, presence};
 use serde_json::{json, Value};
@@ -406,6 +406,48 @@ impl<'a> Realization<'a> {
         format!("\n{}", lines.join("\n"))
     }
 
+    /// Who the story already has standing in the room, the player left off,
+    /// in the order they were made.
+    fn standing(&self) -> Vec<&'a Row> {
+        let here = Some(id(self.location));
+        let mut rows = self.records.select("characters", |who| {
+            int(who, "location_id") == here && !flag(who, "is_protagonist")
+        });
+        rows.sort_by_key(|who| id(who));
+        rows
+    }
+
+    /// `#already_standing`: who is in the room before it is written, read
+    /// off the records, or nothing for a room nobody stands in.
+    fn already_standing(&self) -> String {
+        let standing = self.standing();
+        if standing.is_empty() {
+            return String::new();
+        }
+        let mut lines: Vec<String> = vec![
+            "## Already Standing Here, Decided By The Game".into(),
+            "The game's own records of who is in this room, already decided and not yours".into(),
+            "to change. Write the room with them in it, as they are, and do not write any".into(),
+            "of them again as a new person.".into(),
+        ];
+        for who in standing {
+            let race = int(who, "race_id")
+                .and_then(|race| self.records.find("races", race))
+                .map_or("", |race| string(race, "name"));
+            let age = int(who, "age").map_or(String::new(), |age| age.to_string());
+            let line = format!(
+                "  {}, {race}, about {age}, {}",
+                string(who, "fullname"),
+                string(who, "sex")
+            );
+            lines.push(match text(who, "appearance").filter(|a| !is_blank(a)) {
+                Some(appearance) => format!("{line}: {appearance}"),
+                None => line,
+            });
+        }
+        format!("\n{}", lines.join("\n"))
+    }
+
     fn items_instructions(&self) -> String {
         let lying = self
             .lying_here()
@@ -484,9 +526,21 @@ impl<'a> Realization<'a> {
 
     fn people_instructions(&self) -> String {
         let wanted = self.slots.len() as i64;
+        let standing = !self.standing().is_empty();
         if wanted == 0 {
+            if standing {
+                return "## Who Is Here\n\
+                        Write NOBODY new into this place. The people Already Standing Here above are\n\
+                        everyone who is here."
+                    .into();
+            }
             return data::location_generator("nobody_here").to_string();
         }
+        let besides = if standing {
+            ", besides the people Already Standing Here above"
+        } else {
+            ""
+        };
         let lines: Vec<String> = self
             .slots
             .iter()
@@ -503,7 +557,7 @@ impl<'a> Realization<'a> {
             .collect();
         format!(
             "## Who Is Here\n\
-             Write EXACTLY {wanted} {} who {} in this place right now.\n\
+             Write EXACTLY {wanted} {} who {} in this place right now{besides}.\n\
              - Anyone you write is somebody the player can walk up to and talk to, so they\n  \
              have to have a reason to be standing here and an enduring aim that today's\n  \
              reason serves, threatens or exposes\n\
@@ -545,7 +599,7 @@ impl<'a> Realization<'a> {
             );
         }
         format!(
-            "{}\n\n{place}{}{}\n## Instructions\n\
+            "{}\n\n{place}{}{}{}\n## Instructions\n\
              Write this place out in full.\n\
              - The description is what the player reads on arrival. Address them as \"you\"\n\
              - Describe what is here now, not the history -- the history is the lore\n\
@@ -554,6 +608,7 @@ impl<'a> Realization<'a> {
             self.story_context(),
             self.geometry_facts(),
             self.already_here(),
+            self.already_standing(),
             self.name_instruction(),
             self.items_instructions(),
             self.people_instructions()
@@ -790,4 +845,84 @@ pub fn room_for_people(records: &Records, location: &Row) -> (i64, i64) {
         (MAX_PER_ROOM - present).max(0),
         (MAX_PER_STORY - in_story).max(0),
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Realization, Slot};
+    use crate::records::Records;
+    use serde_json::json;
+
+    fn records(characters: serde_json::Value) -> Records {
+        Records::from_json(&json!({
+            "locations": [{"id": 1, "story_id": 1, "name": "Warren room 2"}],
+            "races": [{"id": 5, "name": "Gnoll"}],
+            "characters": characters
+        }))
+    }
+
+    fn room(records: &Records, slots: Vec<Slot>) -> Realization<'_> {
+        Realization {
+            records,
+            location: &records.table("locations")[0],
+            slots,
+        }
+    }
+
+    /// A room nobody stands in is told nothing new, and nobody is the
+    /// stored sentence.
+    #[test]
+    fn a_room_nobody_stands_in_says_nothing_about_who_stands_there() {
+        let records = records(json!([
+            {"id": 9, "story_id": 1, "location_id": 2, "fullname": "Elsewhere", "is_protagonist": false},
+            {"id": 3, "story_id": 1, "location_id": 1, "fullname": "Player", "is_protagonist": true}
+        ]));
+        let room = room(&records, Vec::new());
+        assert_eq!(room.already_standing(), "");
+        assert_eq!(
+            room.people_instructions(),
+            crate::data::location_generator("nobody_here")
+        );
+    }
+
+    /// Somebody already in the room is named before it is written, and the
+    /// people asked for are asked for besides them.
+    #[test]
+    fn who_already_stands_in_a_room_is_named_before_it_is_written() {
+        let records = records(json!([
+            {"id": 7, "story_id": 1, "location_id": 1, "fullname": "Grisk", "race_id": 5,
+             "age": 30, "sex": "man", "appearance": "Scarred.", "is_protagonist": false},
+            {"id": 8, "story_id": 1, "location_id": 1, "fullname": "Vell", "race_id": 5,
+             "age": 41, "sex": "woman", "appearance": null, "is_protagonist": false}
+        ]));
+        let nobody = room(&records, Vec::new());
+        assert_eq!(
+            nobody.already_standing(),
+            "\n## Already Standing Here, Decided By The Game\n\
+             The game's own records of who is in this room, already decided and not yours\n\
+             to change. Write the room with them in it, as they are, and do not write any\n\
+             of them again as a new person.\n  \
+             Grisk, Gnoll, about 30, man: Scarred.\n  \
+             Vell, Gnoll, about 41, woman"
+        );
+        assert_eq!(
+            nobody.people_instructions(),
+            "## Who Is Here\n\
+             Write NOBODY new into this place. The people Already Standing Here above are\n\
+             everyone who is here."
+        );
+        let one = room(
+            &records,
+            vec![Slot {
+                race: "Gnoll".into(),
+                age: 22,
+                sex: "man".into(),
+            }],
+        );
+        assert!(one.people_instructions().starts_with(
+            "## Who Is Here\n\
+             Write EXACTLY 1 person who is in this place right now, \
+             besides the people Already Standing Here above.\n"
+        ));
+    }
 }
