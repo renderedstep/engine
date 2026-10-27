@@ -258,6 +258,15 @@ fn a_name_is_read_as_a_garment_only_off_the_kits_table() {
         ("breathing mask", "face"),
         ("the helmet lamp", "head"),
         ("aprons", "waist"),
+        ("a tattered wool cloak", "outer"),
+        ("boots", "feet"),
+        ("muddy riding boots", "feet"),
+        ("leather breeches", "legs"),
+        ("a pair of wool stockings", "legs"),
+        ("silk dresses", "body"),
+        ("iron gauntlets", "hands"),
+        ("a dented helmet", "head"),
+        ("a sword belt", "waist"),
     ] {
         assert_eq!(wear::place_for(name), Some(place), "{name}");
     }
@@ -271,7 +280,7 @@ fn a_name_is_read_as_a_garment_only_off_the_kits_table() {
         "glove box",
         "hat stand",
         "coat hook",
-        "shirt",
+        "shoe horn",
         "capstan",
     ] {
         assert_eq!(wear::place_for(name), None, "{name}");

@@ -1059,12 +1059,12 @@ mod tests {
     #[test]
     fn a_thing_with_a_place_on_a_body_is_a_garment_by_its_last_word() {
         let mut room = pegs();
-        assert!(!dressed(&room, "take off the cloak"));
-        let mut cloak = Thing::new(25, "sealskin cloak", true);
-        cloak.wear = Some("outer".into());
-        room.carried.push(cloak);
-        assert!(dressed(&room, "take off the cloak"));
-        assert!(dressed(&room, "remove the sealskin cloak"));
+        assert!(!dressed(&room, "take off the pelisse"));
+        let mut pelisse = Thing::new(25, "sealskin pelisse", true);
+        pelisse.wear = Some("outer".into());
+        room.carried.push(pelisse);
+        assert!(dressed(&room, "take off the pelisse"));
+        assert!(dressed(&room, "remove the sealskin pelisse"));
     }
 
     /// The line read as a blow at Rowe, clearly present and single, as
