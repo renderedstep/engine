@@ -2,7 +2,6 @@
 story: Two Clerks at One Counter
 steps:
 - id: a-sure-reading-is-played-whatever-else-the-line-names
-  why: The local reader is sure of the talk and of Tamsin, so the line is played as read, though it names Rowe too.
   type: ask Tamsin about Rowe
   browser:
     token: sure-about
@@ -40,7 +39,6 @@ steps:
     - Rowe Harker
     - Tamsin Gale
 - id: an-unsure-act-is-asked-about-and-not-played
-  why: The reader is barely surer of a talk than of an attack, under the 0.9 floor, so nothing happens and its guess is offered back as a line to type.
   type: approach Tamsin
   browser:
     token: unsure-act
@@ -60,13 +58,13 @@ steps:
     changed: false
     offers:
     - The game is not sure what you meant by that, so nothing has happened.
-    - Its best guess was `/talk Tamsin Gale`. Type that to do it, or say what you meant another way.
+    - Its best guess was `/talk Tamsin Gale`. Type that to do it, or say what you
+      meant another way.
     present:
     - Rowe Harker
     - Tamsin Gale
 - id: the-guess-typed-is-played-with-no-reader
-  why: The guess is a slash line, so the grammar plays it and no reader is asked.
-  type: /talk Tamsin Gale
+  type: "/talk Tamsin Gale"
   browser:
     token: guess
     replies:
@@ -87,7 +85,6 @@ steps:
     understood: talk -> Tamsin Gale
     resolved_by: grammar
 - id: an-unsure-thing-is-asked-about-and-not-played
-  why: The reader is sure of the talk but not of who, so it asks; a guess with a name is offered as the slash line for it.
   type: have a word with the clerk
   browser:
     token: unsure-thing
