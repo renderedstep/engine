@@ -10,7 +10,9 @@ steps:
   type: drop the daybook
   expect:
     changed: true
-    carrying: []
+    carrying:
+    - office coat
+    - spectacles
 - id: collective-words
   type: take everything
   expect:
@@ -37,13 +39,17 @@ steps:
     offers:
     - Perrin's private index
     - copy-room apron
-    carrying: []
+    carrying:
+    - office coat
+    - spectacles
 - id: one-noun-at-a-time
   type: take the index
   expect:
     changed: true
     understood: take -> Perrin's private index
     carrying:
+    - office coat
+    - spectacles
     - Perrin's private index
 - id: look-at-the-closet
   type: look

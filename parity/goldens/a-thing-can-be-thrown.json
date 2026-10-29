@@ -27,22 +27,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -54,12 +62,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -124,22 +132,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -151,12 +167,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -174,7 +190,7 @@
         "changed": false,
         "change": null,
         "refused": true,
-        "offers": "throw what at what? `throw <thing> at <somebody, or a way out>`, and there is: Ward Office 12 daybook, blank closure writ, filing press, ward stamp",
+        "offers": "throw what at what? `throw <thing> at <somebody, or a way out>`, and there is: Ward Office 12 daybook, office coat, spectacles, blank closure writ, filing press, ward stamp",
         "understood": null,
         "resolved_by": "engine_view",
         "note": null,
@@ -221,22 +237,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -248,12 +272,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -318,22 +342,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -345,12 +377,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -415,22 +447,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -442,12 +482,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -512,22 +552,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -539,12 +587,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -562,7 +610,7 @@
         "changed": false,
         "change": null,
         "refused": true,
-        "offers": "there is no thing in your hands or lying here called \"the private index\". There is: Ward Office 12 daybook, blank closure writ, filing press, ward stamp",
+        "offers": "there is no thing in your hands or lying here called \"the private index\". There is: Ward Office 12 daybook, office coat, spectacles, blank closure writ, filing press, ward stamp",
         "understood": null,
         "resolved_by": "engine_view",
         "note": null,
@@ -609,22 +657,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -636,12 +692,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -706,22 +762,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -733,12 +797,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -803,22 +867,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -830,12 +902,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -900,22 +972,30 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook"
+          },
+          {
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -927,12 +1007,12 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
+            "id": 1000000012,
             "name": "Ward Office 12 daybook",
             "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
           },
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -953,7 +1033,7 @@
         "offers": null,
         "understood": "throw -> ward stamp at Halkett Rowe",
         "resolved_by": "grammar",
-        "note": "threw: ward stamp at Halkett Rowe -- strength -> d20(20) <= 9 FAIL\nthe lift failed: nothing was thrown and no row moved",
+        "note": "threw: ward stamp at Halkett Rowe -- strength -> d20(15) <= 9 FAIL\nthe lift failed: nothing was thrown and no row moved",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,
@@ -997,22 +1077,26 @@
         ],
         "here": [
           {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ"
           },
           {
-            "id": 1000000009,
+            "id": 1000000016,
             "name": "filing press"
           },
           {
-            "id": 1000000010,
+            "id": 1000000017,
             "name": "ward stamp"
           }
         ],
         "carrying": [
           {
-            "id": 1000000007,
-            "name": "Ward Office 12 daybook"
+            "id": 1000000013,
+            "name": "office coat"
+          },
+          {
+            "id": 1000000014,
+            "name": "spectacles"
           }
         ],
         "present": [
@@ -1024,12 +1108,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000007,
-            "name": "Ward Office 12 daybook",
-            "text": "3.40 — Levee boundary, Marchmain acre 7. Amendment received, ward-marked, entered. O.V.\n4.00 —\n5.00 —\n5.15 — Query 1188 (Marchmain acre 7) still open. Second application made. O.V."
-          },
-          {
-            "id": 1000000008,
+            "id": 1000000015,
             "name": "blank closure writ",
             "text": "WRIT OF CLOSURE — Ward 12. The file of ______________________ is closed, no query to be raised. By order of the Inspectorate. Countersigned."
           }
@@ -1044,13 +1123,13 @@
           "will": 15
         },
         "dead": false,
-        "changed": false,
-        "change": null,
+        "changed": true,
+        "change": "it went through and is lying in The Supply Closet",
         "refused": false,
         "offers": null,
         "understood": "throw -> Ward Office 12 daybook at The Supply Closet",
         "resolved_by": "grammar",
-        "note": "threw: Ward Office 12 daybook at The Supply Closet -- strength -> d20(17) <= 7 FAIL\nthe lift failed: nothing was thrown and no row moved",
+        "note": "threw: Ward Office 12 daybook at The Supply Closet -- strength -> d20(5) <= 7 PASS",
         "drifts": 0,
         "blows": 0,
         "hazards": 0,

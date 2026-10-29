@@ -13,6 +13,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     present:
     - Halkett Rowe
@@ -29,6 +31,8 @@ steps:
     - Perrin Lasco
     - Halkett Rowe
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: unreadable-offline
   type: ponder the ward stamp
@@ -37,6 +41,8 @@ steps:
     changed: false
     note: take <item>      pick up something lying here
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: into-the-room-with-two-things-in-it
   type: go to the Supply Closet
@@ -44,6 +50,8 @@ steps:
     changed: true
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: both-names-in-full
   type: take Perrin's private index and copy-room apron
@@ -56,6 +64,8 @@ steps:
     - Perrin's private index
     - copy-room apron
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: two-readable-names-in-full
   type: read Perrin's private index and Ward Office 12 daybook
@@ -68,6 +78,8 @@ steps:
     - Perrin's private index
     - Ward Office 12 daybook
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: and-one-of-them-on-its-own-still-reads
   type: read the private index
@@ -83,6 +95,8 @@ steps:
     changed: true
     understood: take -> Perrin's private index
     carrying:
+    - office coat
+    - spectacles
     - Perrin's private index
     - Ward Office 12 daybook
 - id: a-name-that-lands-on-nothing
@@ -95,6 +109,8 @@ steps:
     - there is no thing lying here called "the tide-slate"
     - copy-room apron
     carrying:
+    - office coat
+    - spectacles
     - Perrin's private index
     - Ward Office 12 daybook
 - id: back-to-the-office
@@ -103,6 +119,8 @@ steps:
     changed: true
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Perrin's private index
     - Ward Office 12 daybook
 - id: two-acts-across-two-sets

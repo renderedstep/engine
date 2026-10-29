@@ -9,6 +9,8 @@ steps:
     - The Supply Closet (realized)
     - The Long Hallway (stub)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     changed: false
     refused: false
@@ -18,6 +20,8 @@ steps:
   expect:
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: take-the-stamp
   type: take the ward stamp
@@ -28,6 +32,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: carry-it-into-the-closet
@@ -36,6 +42,8 @@ steps:
     changed: true
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: drop-it-there
@@ -44,6 +52,8 @@ steps:
     changed: true
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: re-seed-the-world-mid-game
   reseed: true
@@ -54,6 +64,8 @@ steps:
     exits:
     - Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     note: re-seeded from the-unrecorded-hour.yml
 - id: the-office-still-has-one-closet
@@ -68,6 +80,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: the-second-player-still-holds-its-own-daybook
   type: look
@@ -75,6 +89,8 @@ steps:
   expect:
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: and-a-second-re-seed-changes-nothing-at-all
   reseed: true
@@ -88,6 +104,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: the-file-renames-the-closet
   reseed:
@@ -105,6 +123,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     note: is "Supply Closet" in the file, so the row was renamed
 - id: and-the-closet-is-still-the-closet-that-was-played-in
@@ -115,6 +135,8 @@ steps:
     exits:
     - Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: and-renaming-it-back-renames-the-same-row-again
   reseed: true

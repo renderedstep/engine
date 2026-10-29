@@ -86,6 +86,8 @@ steps:
   type: take the ward stamp
   expect:
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
     changed: true

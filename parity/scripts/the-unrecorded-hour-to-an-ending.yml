@@ -24,6 +24,8 @@ steps:
   expect:
     changed: true
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - Perrin's private index
     quest:

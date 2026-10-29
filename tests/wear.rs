@@ -35,10 +35,14 @@ const COURT_BLACK: i64 = 1000000011;
 const CAP: i64 = 1000000012;
 const EVERYBODY: [i64; 3] = [COAT, COURT_BLACK, CAP];
 
-/// The Salt Assizes with its people dressed by hand, each of `dressed`
-/// worn and the rest worn nowhere: Coraith Vell in an oilskin coat over
-/// court black, Ammon Brace (in the room the game starts in) in a
-/// brass-badged cap, and `more` after them.
+/// Neb Halloran's knotted cord, which nobody wears.
+const CORD: i64 = 1000000008;
+
+/// The Salt Assizes with the clothes it is seeded with taken off and its
+/// people dressed by hand instead, each of `dressed` worn and the rest worn
+/// nowhere: Coraith Vell in an oilskin coat over court black, Ammon Brace
+/// (in the room the game starts in) in a brass-badged cap, and `more` after
+/// them.
 fn salt_assizes(dressed: &[i64], more: &str) -> Engine {
     let row = |id: i64, name: &str, character: i64, place: &str| {
         let (wear, worn) = if dressed.contains(&id) {
@@ -53,7 +57,7 @@ fn salt_assizes(dressed: &[i64], more: &str) -> Engine {
         )
     };
     let sql = format!(
-        "{}{}{}{}{more}",
+        "{}DELETE FROM items WHERE wear IS NOT NULL;\n{}{}{}{more}",
         world_sql("the-salt-assizes"),
         row(COAT, "oilskin coat", 1000000001, "outer"),
         row(COURT_BLACK, "court black", 1000000001, "body"),
@@ -151,15 +155,17 @@ fn a_game_copies_what_its_people_wear_and_the_doctor_finds_nothing() {
 
 #[test]
 fn the_doctor_names_a_worn_record_out_of_line() {
-    let more = "INSERT INTO items (id, name, character_id, wear, worn, created_at, updated_at) \
-                VALUES (1000000013, 'tricorn', 1000000002, 'head', 1, '2026-10-25 00:00:00', \
-                '2026-10-25 00:00:00');\n\
-                INSERT INTO items (id, name, location_id, wear, worn, created_at, updated_at) \
-                VALUES (1000000014, 'apron', 1000000001, 'waist', 1, '2026-10-25 00:00:00', \
-                '2026-10-25 00:00:00');\n\
-                UPDATE items SET worn = 1 WHERE id = 1000000003;\n\
-                UPDATE items SET wear = 'tail' WHERE id = 1000000002;\n";
-    let engine = salt_assizes(&EVERYBODY, more);
+    let more = format!(
+        "INSERT INTO items (id, name, character_id, wear, worn, created_at, updated_at) \
+         VALUES (1000000013, 'tricorn', 1000000002, 'head', 1, '2026-10-25 00:00:00', \
+         '2026-10-25 00:00:00');\n\
+         INSERT INTO items (id, name, location_id, wear, worn, created_at, updated_at) \
+         VALUES (1000000014, 'apron', 1000000001, 'waist', 1, '2026-10-25 00:00:00', \
+         '2026-10-25 00:00:00');\n\
+         UPDATE items SET worn = 1 WHERE id = {CORD};\n\
+         UPDATE items SET wear = 'tail' WHERE id = 1000000002;\n"
+    );
+    let engine = salt_assizes(&EVERYBODY, &more);
     let story = stories(&engine)[0];
     let found: Vec<(&str, i64)> = engine
         .wear_findings(story)
@@ -171,7 +177,7 @@ fn the_doctor_names_a_worn_record_out_of_line() {
         found,
         [
             (wear::NO_SUCH_PLACE, 1000000002),
-            (wear::UNWEARABLE, 1000000003),
+            (wear::UNWEARABLE, CORD),
             (wear::PLACE_TAKEN, 1000000013),
             (wear::NOT_HELD, 1000000014),
         ]

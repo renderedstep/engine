@@ -13,6 +13,8 @@ steps:
     - "/throw <thing> at <somebody here"
     - or a way out>
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: the-command-is-played
   type: "/throw ward stamp at Halkett Rowe"
@@ -25,4 +27,6 @@ steps:
     resolved_by: grammar
     refused: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook

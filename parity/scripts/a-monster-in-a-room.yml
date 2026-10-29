@@ -39,7 +39,8 @@ steps:
     - Grenn's Boarding House hallway (stub)
     here:
     - climbers' bearing book
-    carrying: []
+    carrying:
+    - surveyor's coat
 - id: a-monster-is-still-somebody-you-can-address
   type: talk to Marek Sollen
   expect:

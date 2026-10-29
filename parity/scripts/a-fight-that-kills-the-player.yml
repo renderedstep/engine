@@ -97,6 +97,8 @@ steps:
   type: drop the tide-slate
   expect:
     carrying:
+    - court black
+    - oilskin
     - Assize tide-slate
     refused: true
     changed: false

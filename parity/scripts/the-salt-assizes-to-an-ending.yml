@@ -27,6 +27,8 @@ steps:
   expect:
     changed: true
     carrying:
+    - court black
+    - oilskin
     - Assize tide-slate
     - Neb's knotted cord
     quest:

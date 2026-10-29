@@ -11,7 +11,7 @@ use renderedstep_engine::model::{Replay, Reply};
 use renderedstep_engine::parity::{open_world, TITLE_SUFFIX};
 use renderedstep_engine::playthrough::Game;
 use renderedstep_engine::roll::{self, Seed};
-use renderedstep_engine::{data, volition};
+use renderedstep_engine::{data, dialogue, volition};
 use serde_json::json;
 use std::path::Path;
 
@@ -198,6 +198,40 @@ fn a_thing_that_does_not_move_is_offered_to_nobody() {
         )
         .unwrap();
     assert!(!tokens(&engine, playthrough, BELL, OFFICE).contains(&take));
+}
+
+/// A worn thing is still held, so it is volition's own rule that keeps it
+/// on its wearer when the die comes up `give`; once it is off it is offered,
+/// and talking the wearer out of it is offered all along.
+#[test]
+fn a_thing_they_are_wearing_is_never_offered_as_a_gift() {
+    let (engine, playthrough) = office("", "", 0);
+    let receipt = receipt(&engine, playthrough);
+    let give = format!("give:{receipt}");
+    let wear = |worn: bool| {
+        engine
+            .store()
+            .connection()
+            .execute(
+                "UPDATE items SET character_id = ?1, location_id = NULL, wear = 'outer',
+                   worn = ?2 WHERE id = ?3",
+                rusqlite::params![BELL, worn, receipt],
+            )
+            .unwrap();
+    };
+    let talk = || {
+        let records = engine.store().load().unwrap();
+        let game = Game::new(&records, playthrough);
+        dialogue::choices(&game, game.character(BELL))
+            .into_iter()
+            .map(|(token, _)| token)
+            .collect::<Vec<_>>()
+    };
+    wear(true);
+    assert!(!tokens(&engine, playthrough, BELL, OFFICE).contains(&give));
+    assert!(talk().contains(&give), "dialogue keeps its offer");
+    wear(false);
+    assert!(tokens(&engine, playthrough, BELL, OFFICE).contains(&give));
 }
 
 /// Somebody who is not in the room is offered nothing there but waiting.

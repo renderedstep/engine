@@ -16,6 +16,7 @@ use crate::playthrough::Game;
 use crate::random::Random;
 use crate::records::{flag, id, int, string, text, Row};
 use crate::roll;
+use crate::wear;
 use serde_json::{json, Map, Value};
 
 pub const WAIT: &str = "wait";
@@ -145,8 +146,14 @@ fn acts(game: &Game, character: &Row, location: &Row, party: Option<i64>) -> Vec
     };
     let player_name = string(player, "fullname");
     let carried = game.carried();
+    // Never a thing they are wearing: a worn thing is still held, so without
+    // this a die could have a man hand over the shoes on his feet. Talking
+    // somebody out of their coat is still the player's to try (dialogue keeps
+    // its offer); only a person's own turn is ruled out.
     for item in holding {
-        if !carry::may_hold(game.records, game.story_id(), player, item, &carried) {
+        if wear::worn(item)
+            || !carry::may_hold(game.records, game.story_id(), player, item, &carried)
+        {
             continue;
         }
         available.push((

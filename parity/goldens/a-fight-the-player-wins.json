@@ -31,7 +31,12 @@
           }
         ],
         "here": [],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [
           {
             "id": 1000000002,
@@ -99,7 +104,12 @@
           }
         ],
         "here": [],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [],
@@ -156,11 +166,16 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [
           {
             "id": 1000000003,
@@ -175,7 +190,7 @@
         ],
         "inscription": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -235,11 +250,16 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [
           {
             "id": 1000000003,
@@ -254,7 +274,7 @@
         ],
         "inscription": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -314,11 +334,16 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [
           {
             "id": 1000000003,
@@ -333,7 +358,7 @@
         ],
         "inscription": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -393,11 +418,16 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [
           {
             "id": 1000000003,
@@ -412,7 +442,7 @@
         ],
         "inscription": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -472,11 +502,16 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [
           {
             "id": 1000000003,
@@ -491,7 +526,7 @@
         ],
         "inscription": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -551,25 +586,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -627,25 +667,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -703,25 +748,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -779,25 +829,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -855,25 +910,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -931,25 +991,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1007,25 +1072,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1083,25 +1153,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1159,25 +1234,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1235,25 +1315,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1311,25 +1396,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1387,25 +1477,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1463,25 +1558,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1539,25 +1639,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1615,25 +1720,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1691,25 +1801,30 @@
         ],
         "here": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1767,26 +1882,30 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1844,26 +1963,30 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1921,26 +2044,30 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -1998,26 +2125,30 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }
@@ -2081,15 +2212,19 @@
         "here": [],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           }
@@ -2147,26 +2282,30 @@
         ],
         "here": [
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally"
+          },
+          {
+            "id": 1000000004,
+            "name": "surveyor's coat"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000006,
             "name": "bell-rope tally",
             "text": "XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI. XI.\n————————————————————————————————"
           },
           {
-            "id": 1000000003,
+            "id": 1000000005,
             "name": "climbers' bearing book",
             "text": "From the bell, true: Celestial Spire 041. Sovereign's Circle 118. Larkspur, tonight -- (unfinished)\nRung the eleven. Rung the eleven. Rung the"
           }

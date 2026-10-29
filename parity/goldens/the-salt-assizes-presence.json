@@ -27,14 +27,22 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [
@@ -46,7 +54,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -111,14 +119,22 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [
@@ -130,7 +146,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -195,21 +211,29 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -268,8 +292,16 @@
         "here": [],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [
@@ -281,7 +313,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -342,15 +374,23 @@
         "here": [],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -409,15 +449,23 @@
         "here": [],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -480,21 +528,29 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -553,12 +609,20 @@
         "here": [],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           },
           {
-            "id": 1000000006,
+            "id": 1000000017,
             "name": "Neb's knotted cord"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [
@@ -574,7 +638,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -596,7 +660,7 @@
         "offers": null,
         "understood": "move -> The Vestry Hulk",
         "resolved_by": "grammar",
-        "note": "someone here: Ammon Brace spoke up unasked and asked Coraith Vell for Assize tide-slate. Nothing changed hands.\nsomeone here: Neb Halloran handed Neb's knotted cord to Coraith Vell; the player now carries it.\nthe world: drop on the way from The Causeway Court into The Vestry Hulk cost Coraith Vell 2 hit points (the way down is further than it looks from the top); Coraith Vell is hurt (15 of 18)\nthe story: Get the knotted cord Neb has been keeping since the ebb, the water's own count.",
+        "note": "someone here: Ammon Brace spoke up unasked and asked Coraith Vell for oilskin. Nothing changed hands.\nsomeone here: Neb Halloran handed Neb's knotted cord to Coraith Vell; the player now carries it.\nthe world: drop on the way from The Causeway Court into The Vestry Hulk cost Coraith Vell 2 hit points (the way down is further than it looks from the top); Coraith Vell is hurt (15 of 18)\nthe story: Get the knotted cord Neb has been keeping since the ebb, the water's own count.",
         "drifts": 0,
         "blows": 0,
         "hazards": 1,
@@ -636,12 +700,20 @@
         "here": [],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           },
           {
-            "id": 1000000006,
+            "id": 1000000017,
             "name": "Neb's knotted cord"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [
@@ -657,7 +729,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -719,12 +791,20 @@
         "here": [],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           },
           {
-            "id": 1000000006,
+            "id": 1000000017,
             "name": "Neb's knotted cord"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [
@@ -736,7 +816,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }

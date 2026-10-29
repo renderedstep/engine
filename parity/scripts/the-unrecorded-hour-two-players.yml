@@ -6,6 +6,8 @@ steps:
   expect:
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     changed: false
     refused: false
@@ -15,6 +17,8 @@ steps:
   expect:
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     changed: false
     refused: false
@@ -27,6 +31,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: second-is-not-holding-it
@@ -36,6 +42,8 @@ steps:
     changed: false
     refused: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: second-finds-the-office-as-it-was-generated
   type: look
@@ -54,6 +62,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: first-still-holds-the-one-it-took
@@ -62,6 +72,8 @@ steps:
     changed: false
     refused: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: second-can-still-drop-its-own-copy
@@ -71,6 +83,8 @@ steps:
     changed: true
     change: now lying in Ward Office 12
     carrying:
+    - office coat
+    - spectacles
     - ward stamp
 - id: first-does-not-see-the-other-players-daybook
   type: look
@@ -81,6 +95,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: first-walks-off-with-the-stamp
@@ -89,6 +105,8 @@ steps:
     changed: true
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: first-takes-the-index
@@ -96,6 +114,8 @@ steps:
   expect:
     changed: true
     carrying:
+    - office coat
+    - spectacles
     - Perrin's private index
     - Ward Office 12 daybook
     - ward stamp
@@ -106,6 +126,8 @@ steps:
     changed: true
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - ward stamp
 - id: first-is-still-in-the-closet-with-its-own-floor
   type: look
@@ -113,6 +135,8 @@ steps:
     changed: false
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Perrin's private index
     - Ward Office 12 daybook
     - ward stamp
