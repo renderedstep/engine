@@ -1,26 +1,34 @@
 //! `Playthrough::Classifier#classify` inside a turn: the reading is
 //! [`crate::classifier::read`]'s, asked through the turn's models, and a
 //! reach that found nothing is counted (`Playthrough::Drift`), and so is a
-//! line that named two things (`Playthrough::Overreach`).
+//! line that named two things (`Playthrough::Overreach`). Where the host
+//! asks for it, a line the local reader's reading refuses is kept in the
+//! refusal corpus ([`REFUSED_LINES`]).
 //!
 //! A turn played with a fixed reading ([`Fixed`]) takes it in place of both
 //! calls, as a bench that measures what comes after the reading does
 //! (`Eval::Prompt::Bench::FixedClassifier`).
 
 use super::{model, Turn};
-use crate::classifier::{self, Reader};
+use crate::cascade;
+use crate::classifier::{self, Reader, Reading};
+use crate::command;
 use crate::engine::Error;
 use crate::intent::{build_intent, Intent};
 use crate::model::{Agent, Answer, Book, Call, Failure, Filed, Models, Unavailable};
 use crate::records::{int, Records};
 use crate::room::{Record, Room};
-use crate::store::Store;
-use serde_json::Value;
+use crate::store::{Store, REFUSED_LINES};
+use serde_json::{json, Value};
 
 pub(super) use crate::classifier::MODEL_PATHS;
 
 /// `scenes.resolved_by` for a line read as a [`Fixed`] reading said.
 pub const FIXED: &str = "fixed";
+
+/// The refusals about how a line was read, which the refusal corpus keeps:
+/// the reader's to learn from. The rest refuse a reading that was right.
+pub const KEPT: &[&str] = &["unsure", "unresolved", "named_more_than_one", "unreadable"];
 
 /// A reading decided before the turn, in place of the classifier's: an
 /// action out of the intent table and the name of its target, resolved
@@ -85,7 +93,7 @@ impl Turn<'_, '_> {
     /// conversation for the turn's scene to claim.
     pub(super) fn classify(&mut self, typed: &str) -> Result<(Intent, String), Error> {
         let room = self.m.room();
-        let (intent, path) = match self.fixed.clone() {
+        let (intent, path, read) = match self.fixed.clone() {
             Some(fixed) => (
                 build_intent(
                     &room,
@@ -95,6 +103,7 @@ impl Turn<'_, '_> {
                     None,
                 ),
                 FIXED,
+                None,
             ),
             None => {
                 let call = classifier::call(&self.m.records, &room, typed);
@@ -110,7 +119,7 @@ impl Turn<'_, '_> {
                 if asking.agent.is_some() {
                     self.classifier = asking.agent;
                 }
-                (reading.intent, reading.path)
+                (reading.intent.clone(), reading.path, Some(reading))
             }
         };
         if intent.reached_for_nothing() {
@@ -119,7 +128,78 @@ impl Turn<'_, '_> {
         if intent.named_more_than_one() {
             self.record_overreach(typed, &intent)?;
         }
+        if let Some(reading) = read {
+            if self.models.local_classifier() && self.models.keeps_refusals() {
+                self.keep_refusal(&room, typed, &reading)?;
+            }
+        }
         Ok((intent, path.to_string()))
+    }
+
+    /// Keeps a line the local reader's reading refuses, as the turn's
+    /// refusal step will refuse it: the line, the position as the reader
+    /// was shown it, its whole reply, what it read and how sure it was, and
+    /// what the player was told. The label slots are left for whoever
+    /// labels it.
+    fn keep_refusal(&mut self, room: &Room, typed: &str, reading: &Reading) -> Result<(), Error> {
+        let Some(refusal) = self.m.refusal_for(&reading.intent, typed, room) else {
+            return Ok(());
+        };
+        if !KEPT.contains(&refusal.kind.as_str()) {
+            return Ok(());
+        }
+        let intent = &reading.intent;
+        let label = |record: Option<Record>| {
+            record.map_or(Value::Null, |record| Value::from(record.label()))
+        };
+        let target = match &intent.physical {
+            Some(choice) => Value::from(choice.name()),
+            None => label(intent.subject()),
+        };
+        let confidence = |pick: Option<f64>| pick.map_or(Value::Null, Value::from);
+        let (_, location, _) = self.filed_row();
+        self.m.store.insert(
+            REFUSED_LINES,
+            &[
+                ("typed", Value::from(typed)),
+                ("state", cascade::State::new(room, typed).to_json()),
+                ("answers", reading.answers.clone().unwrap_or(Value::Null)),
+                (
+                    "reading",
+                    json!({
+                        "action": intent.action,
+                        "target": target,
+                        "also_named": label(intent.also_named.clone()),
+                        "resolved_by": reading.path,
+                    }),
+                ),
+                (
+                    "act_confidence",
+                    confidence(reading.confidence.map(|c| c.act)),
+                ),
+                (
+                    "thing_confidence",
+                    confidence(reading.confidence.and_then(|c| c.thing)),
+                ),
+                ("refusal", command::refusal_columns(&refusal)),
+                (
+                    "place",
+                    room.here
+                        .as_ref()
+                        .map_or(Value::Null, |place| Value::from(place.name.as_str())),
+                ),
+                (
+                    "weights",
+                    self.models
+                        .classifier_weights()
+                        .map_or(Value::Null, Value::from),
+                ),
+                ("playthrough_id", Value::from(self.m.playthrough)),
+                ("location_id", location.map_or(Value::Null, Value::from)),
+                ("status", Value::from("new")),
+            ],
+        )?;
+        Ok(())
     }
 
     fn filed_row(&self) -> (Option<i64>, Option<i64>, i64) {

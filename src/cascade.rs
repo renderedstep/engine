@@ -28,6 +28,13 @@ pub const PRESENCE_THRESHOLD: f64 = 0.15;
 /// At or above this, the line is taken to name two records for one act.
 pub const TWO_NAME_THRESHOLD: f64 = 0.5;
 
+/// Below this, the local reader is too unsure of the act it picked, or of
+/// the thing it picked for that act, for the line to be played: the game
+/// refuses it and asks ([`crate::classifier::LOCAL_UNSURE`]). A round
+/// number, the captain's of 2026-10-29, to be confirmed on the lines the
+/// refusals keep before it moves.
+pub const CONFIDENCE_FLOOR: f64 = 0.9;
+
 /// The verbs a line opens with when the player is speaking to somebody.
 pub const SPEECH_VERBS: &[&str] = &[
     "tell", "ask", "say", "shout", "yell", "whisper", "warn", "inform", "remind", "promise",
@@ -632,6 +639,18 @@ impl<'q> Answers<'q> {
         Ok(chosen)
     }
 
+    /// The probability the reader gave the option it chose for one choice
+    /// question, or `None` where it gave none for it.
+    pub fn confidence(&self, id: &str) -> Option<f64> {
+        let answer = self.answer_of(id, "choice").ok()?;
+        let chosen = to_s(answer.get("choice").unwrap_or(&Value::Null));
+        answer
+            .get("probabilities")?
+            .get(&chosen)?
+            .as_f64()
+            .filter(|p| (0.0..=1.0).contains(p))
+    }
+
     /// The yes probability for one noul question.
     pub fn noul(&self, id: &str) -> Result<f64, Unavailable> {
         let reading = self.answer_of(id, "noul")?.get("noul");
@@ -657,6 +676,23 @@ pub enum Escalation {
     Off,
 }
 
+/// How sure the reader was of what it picked: the probability it gave the
+/// act it chose, and the one it gave the thing it chose for that act, where
+/// the act took one. A choice answered with no probability for itself counts
+/// as 0.0: a reader that does not say how sure it is is not taken to be sure.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Confidence {
+    pub act: f64,
+    pub thing: Option<f64>,
+}
+
+impl Confidence {
+    /// Whether both picks reach [`CONFIDENCE_FLOOR`].
+    pub fn sure(&self) -> bool {
+        self.act >= CONFIDENCE_FLOOR && self.thing.is_none_or(|p| p >= CONFIDENCE_FLOOR)
+    }
+}
+
 /// What one line composed to.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Outcome {
@@ -666,6 +702,8 @@ pub struct Outcome {
     pub named_more_than_one: Option<f64>,
     /// `None` when the line goes on to the model call.
     pub intent: Option<Intent>,
+    /// How sure the reader was of the intent, wherever one was composed.
+    pub confidence: Option<Confidence>,
 }
 
 impl Outcome {
@@ -675,6 +713,7 @@ impl Outcome {
             target_present,
             named_more_than_one,
             intent: None,
+            confidence: None,
         }
     }
 }
@@ -711,8 +750,10 @@ pub fn compose(
             target_present: Some(presence),
             named_more_than_one: Some(two_name),
             intent: None,
+            confidence: None,
         };
     }
+    let act = answers.confidence("intent").unwrap_or(0.0);
     // The talk's own target question names who is spoken to; with nobody
     // here it was never asked, and the talk reaches for nothing.
     let action = if action == "move" && spoken(&state.command) {
@@ -731,11 +772,17 @@ pub fn compose(
     let Ok((target, also)) = chosen else {
         return Outcome::unavailable(Some(presence), Some(two_name));
     };
+    // The thing counts only where the act's target was read: one the
+    // presence gate dropped was never picked.
+    let id = target_id(&action);
+    let thing = (presence >= PRESENCE_THRESHOLD && answers.asked(&id))
+        .then(|| answers.confidence(&id).unwrap_or(0.0));
     Outcome {
         path: "typed_model",
         target_present: Some(presence),
         named_more_than_one: Some(two_name),
         intent: Some(intent_for(&action, target, also)),
+        confidence: Some(Confidence { act, thing }),
     }
 }
 

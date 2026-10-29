@@ -13,7 +13,10 @@
 //!
 //! A System One reply names only the answers it cares about. Every other
 //! question is answered with the uninteresting answer: `nothing` for a
-//! choice, 0.0 for a noul.
+//! choice, 0.0 for a noul. A choice named by its option alone is answered
+//! with a probability of 1.0 for it; one written out as a map (`choice:`,
+//! and `probabilities:` or none) is answered as written, so a step can show
+//! the local reader unsure of what it chose.
 //!
 //! A chat reply may fail the call instead, in any of the ways a provider
 //! fails one (`failure:`, a `Failure` kind): so the notice a front end shows
@@ -114,6 +117,7 @@ pub struct Replay {
     misses: Vec<String>,
     keyed: bool,
     local: bool,
+    keeps: bool,
     sent: Vec<Value>,
 }
 
@@ -123,6 +127,7 @@ impl Replay {
             declared: replies.iter().map(|reply| reply.purpose.clone()).collect(),
             keyed: replies.iter().any(|reply| reply.purpose == SYSTEM_ONE),
             local: replies.iter().any(|reply| reply.purpose == LOCAL),
+            keeps: false,
             replies: replies.into(),
             calls: Vec::new(),
             misses: Vec::new(),
@@ -134,6 +139,12 @@ impl Replay {
     /// is declared for it: a line it leaves unread asks nothing.
     pub fn with_local_classifier(mut self) -> Replay {
         self.local = true;
+        self
+    }
+
+    /// Keeps each refused free-typed line ([`Models::keeps_refusals`]).
+    pub fn with_kept_refusals(mut self) -> Replay {
+        self.keeps = true;
         self
     }
 
@@ -240,6 +251,11 @@ fn answer(value: &Value) -> Value {
     if value.is_number() {
         return json!({ "type": "noul", "noul": value });
     }
+    if let Some(written) = value.as_object().filter(|map| map.contains_key("choice")) {
+        let mut answer = written.clone();
+        answer.insert("type".into(), json!("choice"));
+        return Value::Object(answer);
+    }
     let chosen = match value {
         Value::String(text) => text.clone(),
         other => other.to_string(),
@@ -305,6 +321,10 @@ impl Models for Replay {
 
     fn local_classifier(&self) -> bool {
         self.local
+    }
+
+    fn keeps_refusals(&self) -> bool {
+        self.keeps
     }
 
     fn ask_classifier_questions(

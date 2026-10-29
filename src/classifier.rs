@@ -10,8 +10,9 @@
 //! resolved to records the same way ([`crate::intent::build_intent`]).
 //!
 //! Where the classifier has the local reader ([`Reader::local`]), it is the
-//! only reader: what it reads is played, and what it cannot read is refused
-//! in the engine's words ([`read_locally`]). The model call is not made.
+//! only reader: what it reads surely is played, and what it is unsure of or
+//! cannot read is refused in the engine's words ([`read_locally`]). The
+//! model call is not made.
 //!
 //! A turn reads its line through this ([`crate::turn::Turn`]), and so does a
 //! caller holding a staged position's rows: whatever answers the two calls
@@ -31,8 +32,10 @@ use serde_json::Value;
 /// `Playthrough::Classifier::MODEL_PATHS`: the readings a model call made.
 pub const MODEL_PATHS: [&str; 3] = ["model", "typed_model_escalated", "typed_model_unavailable"];
 
-/// `scenes.resolved_by` for a line the local reader was unsure of, played on
-/// its own reading all the same: never a model call's.
+/// `resolved_by` for a line the local reader was unsure of
+/// ([`cascade::CONFIDENCE_FLOOR`]): refused, and the player asked
+/// ([`Unread::Unsure`]). It is the record of an ask, and never a model
+/// call's.
 pub const LOCAL_UNSURE: &str = "typed_model_unsure";
 
 /// `scenes.resolved_by` for a free-typed throw the local reader left unread.
@@ -72,6 +75,11 @@ pub struct Reading {
     /// System One's two readings, where it was asked and answered them.
     pub target_present: Option<f64>,
     pub named_more_than_one: Option<f64>,
+    /// How sure the local reader was of what it read, where it composed an
+    /// intent.
+    pub confidence: Option<cascade::Confidence>,
+    /// The local reader's whole reply, where it answered.
+    pub answers: Option<Value>,
 }
 
 /// Reads `typed` in `room`: System One first where it is on, then the model
@@ -138,17 +146,20 @@ pub fn read(
         path,
         target_present,
         named_more_than_one,
+        confidence: None,
+        answers: None,
     })
 }
 
 /// The local reader's reading: the presence gate on its own
-/// ([`Escalation::Off`]), so a line it is unsure of is played on its own
-/// reading ([`LOCAL_UNSURE`]), and a target it reads as absent is refused
-/// with the list of what is here. Three lines it does not read at all: a
-/// free-typed throw, which is asked nothing and pointed at `/throw`; a line
-/// that puts a thing on or takes it off, asked nothing and pointed at
-/// `/wear` and `/remove`; and any line while the reader is down or answers
-/// nothing it can compose.
+/// ([`Escalation::Off`]), so a target it reads as absent is refused with the
+/// list of what is here, and a line naming two things with the pair. Any
+/// other line it is unsure of ([`cascade::Confidence::sure`]) is refused and
+/// its best guess offered back ([`Unread::Unsure`], [`LOCAL_UNSURE`]), never
+/// played. Three lines it does not read at all: a free-typed throw, which is
+/// asked nothing and pointed at `/throw`; a line that puts a thing on or
+/// takes it off, asked nothing and pointed at `/wear` and `/remove`; and any
+/// line while the reader is down or answers nothing it can compose.
 pub fn read_locally(room: &Room, typed: &str, reader: &mut dyn Reader) -> Reading {
     if cascade::thrown(typed) {
         return unread(Unread::Throw, LOCAL_THROW, None, None);
@@ -168,16 +179,28 @@ pub fn read_locally(room: &Room, typed: &str, reader: &mut dyn Reader) -> Readin
         Escalation::Off,
     );
     let (presence, two_name) = (outcome.target_present, outcome.named_more_than_one);
-    let Some(intent) = outcome.intent else {
-        return unread(Unread::ReaderDown, LOCAL_DOWN, presence, two_name);
+    let answers = reply.ok();
+    let Some(mut intent) = outcome.intent else {
+        return Reading {
+            answers,
+            ..unread(Unread::ReaderDown, LOCAL_DOWN, presence, two_name)
+        };
     };
-    let unsure = presence.is_some_and(|p| p < cascade::PRESENCE_THRESHOLD)
-        || two_name.is_some_and(|p| p >= cascade::TWO_NAME_THRESHOLD);
+    // A reach for nothing and a second name are refused in their own words
+    // already, each with what the line could have meant.
+    let unsure = outcome.confidence.is_some_and(|c| !c.sure())
+        && !intent.reached_for_nothing()
+        && !intent.named_more_than_one();
+    if unsure {
+        intent.unread = Some(Unread::Unsure);
+    }
     Reading {
         intent,
         path: if unsure { LOCAL_UNSURE } else { outcome.path },
         target_present: presence,
         named_more_than_one: two_name,
+        confidence: outcome.confidence,
+        answers,
     }
 }
 
@@ -196,6 +219,8 @@ fn unread(
         path,
         target_present,
         named_more_than_one,
+        confidence: None,
+        answers: None,
     }
 }
 

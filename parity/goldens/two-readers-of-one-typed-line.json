@@ -72,7 +72,7 @@
       }
     },
     {
-      "step": "step 2 an-unsure-reading-is-played-on-its-own",
+      "step": "step 2 a-sure-reading-of-one-name-is-played-on-its-own",
       "player": "first",
       "typed": "put down the coin and the key",
       "dump": {
@@ -124,7 +124,7 @@
         "refused": false,
         "offers": null,
         "understood": "drop -> red coin",
-        "resolved_by": "typed_model_unsure",
+        "resolved_by": "typed_model",
         "note": "unsure: completed",
         "drifts": 0,
         "blows": 1,

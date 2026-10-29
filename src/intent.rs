@@ -64,6 +64,10 @@ pub enum Unread {
     Dress,
     /// The reader is down or not set up.
     ReaderDown,
+    /// The reader read the line but was unsure of what it read
+    /// ([`crate::cascade::CONFIDENCE_FLOOR`]): the intent around it is its
+    /// best guess, offered back to the player and not played.
+    Unsure,
 }
 
 impl Unread {
@@ -73,6 +77,7 @@ impl Unread {
             Unread::Throw => "throw",
             Unread::Dress => "dress",
             Unread::ReaderDown => "reader_down",
+            Unread::Unsure => "unsure",
         }
     }
 
@@ -81,6 +86,7 @@ impl Unread {
             "throw" => Some(Unread::Throw),
             "dress" => Some(Unread::Dress),
             "reader_down" => Some(Unread::ReaderDown),
+            "unsure" => Some(Unread::Unsure),
             _ => None,
         }
     }

@@ -1,0 +1,129 @@
+---
+story: Two Clerks at One Counter
+steps:
+- id: a-sure-reading-is-played-whatever-else-the-line-names
+  why: The local reader is sure of the talk and of Tamsin, so the line is played as read, though it names Rowe too.
+  type: ask Tamsin about Rowe
+  browser:
+    token: sure-about
+    replies:
+    - purpose: local_classifier
+      prompt_includes:
+      - ask Tamsin about Rowe
+      - Tamsin Gale
+      - Rowe Harker
+      content:
+        intent: talk
+        target_talk: person_1
+        also_named: nothing
+        named_more_than_one: 0.62
+        target_present: 0.93
+    - purpose: character
+      prompt_includes:
+      - ask Tamsin about Rowe
+      content:
+        pre_thought: He wants to know about Rowe, with Rowe standing right there.
+        pre_feeling: wary
+        action: Tamsin glances at Rowe and lowers her voice.
+        post_thought: Better he hears it from me than from the book.
+        post_feeling: careful
+        inner_resolution: I will tell him Rowe keeps the pledges.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Tamsin glances sideways at Rowe before she answers you, low.
+  expect:
+    changed: true
+    refused: false
+    understood: talk -> Tamsin Gale
+    resolved_by: typed_model
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+- id: an-unsure-act-is-asked-about-and-not-played
+  why: The reader is barely surer of a talk than of an attack, under the 0.9 floor, so nothing happens and its guess is offered back as a line to type.
+  type: approach Tamsin
+  browser:
+    token: unsure-act
+    replies:
+    - purpose: local_classifier
+      content:
+        intent:
+          choice: talk
+          probabilities:
+            talk: 0.55
+            attack: 0.45
+        target_talk: person_1
+        named_more_than_one: 0.02
+        target_present: 0.95
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - The game is not sure what you meant by that, so nothing has happened.
+    - Its best guess was `/talk Tamsin Gale`. Type that to do it, or say what you meant another way.
+    present:
+    - Rowe Harker
+    - Tamsin Gale
+- id: the-guess-typed-is-played-with-no-reader
+  why: The guess is a slash line, so the grammar plays it and no reader is asked.
+  type: /talk Tamsin Gale
+  browser:
+    token: guess
+    replies:
+    - purpose: character
+      content:
+        pre_thought: He hovered a moment ago and now he speaks.
+        pre_feeling: curious
+        action: Tamsin looks up from the ledger.
+        post_thought: Whatever he wants, it is not the weather.
+        post_feeling: attentive
+        inner_resolution: I will hear him out.
+        engine_action: none
+    - purpose: interaction-narration
+      content: Tamsin looks up from the ledger and waits for you to speak.
+  expect:
+    changed: true
+    refused: false
+    understood: talk -> Tamsin Gale
+    resolved_by: grammar
+- id: an-unsure-thing-is-asked-about-and-not-played
+  why: The reader is sure of the talk but not of who, so it asks; a guess with a name is offered as the slash line for it.
+  type: have a word with the clerk
+  browser:
+    token: unsure-thing
+    replies:
+    - purpose: local_classifier
+      content:
+        intent: talk
+        target_talk:
+          choice: person_2
+          probabilities:
+            person_2: 0.53
+            person_1: 0.47
+        named_more_than_one: 0.02
+        target_present: 0.95
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - Its best guess was `/talk Rowe Harker`.
+- id: an-absent-target-is-refused-with-what-is-here
+  type: ask the night porter where the watch went
+  browser:
+    token: absent
+    replies:
+    - purpose: local_classifier
+      content:
+        intent: talk
+        target_talk: person_1
+        named_more_than_one: 0.01
+        target_present: 0.04
+  expect:
+    refused: true
+    changed: false
+    offers:
+    - Tamsin Gale
+    - Rowe Harker
+    present:
+    - Rowe Harker
+    - Tamsin Gale
