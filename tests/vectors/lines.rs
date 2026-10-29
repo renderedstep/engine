@@ -307,8 +307,9 @@ fn classifier_intent() {
 }
 
 /// The provider's whole body for a short-written answer set: a string is a
-/// choice, a number a noul, and a question not named answers `nothing` or
-/// 0.0.
+/// choice, sure of itself, a map a choice as written (`probabilities` and
+/// all, or none), a number a noul, and a question not named answers
+/// `nothing` or 0.0.
 fn body_for(reply: &Value, questions: &Value) -> Value {
     if reply.get("answers").is_some() {
         return reply.clone();
@@ -327,8 +328,13 @@ fn body_for(reply: &Value, questions: &Value) -> Value {
             });
             let answer = if value.is_number() {
                 json!({ "type": "noul", "noul": value })
+            } else if let Some(written) = value.as_object() {
+                let mut written = written.clone();
+                written.insert("type".into(), json!("choice"));
+                Value::Object(written)
             } else {
-                json!({ "type": "choice", "choice": value, "confidence": 1.0 })
+                let chosen = value.as_str().map_or(value.to_string(), str::to_string);
+                json!({ "type": "choice", "choice": value, "probabilities": { chosen: 1.0 }, "confidence": 1.0 })
             };
             (id.clone(), answer)
         })
@@ -341,6 +347,7 @@ fn cascade() {
     let tables = json!({
         "presence_threshold": cascade::PRESENCE_THRESHOLD,
         "two_name_threshold": cascade::TWO_NAME_THRESHOLD,
+        "confidence_floor": cascade::CONFIDENCE_FLOOR,
         "nothing": NOTHING,
     });
     check_rooms("cascade", tables, |worlds, input| {
@@ -378,11 +385,15 @@ fn cascade() {
             };
             let reading =
                 classifier::read_locally(&built.room, &text(&input["typed"]), &mut reader);
+            let confidence = reading
+                .confidence
+                .map(|c| json!({ "act": c.act, "thing": c.thing }));
             return json!({
                 "path": reading.path,
                 "asked": reader.asked,
                 "target_present": reading.target_present,
                 "named_more_than_one": reading.named_more_than_one,
+                "confidence": confidence,
                 "intent": intent_json(Some(&reading.intent)),
             });
         }

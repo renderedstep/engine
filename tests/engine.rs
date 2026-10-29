@@ -1339,9 +1339,8 @@ fn a_fixed_reading_take_is_narrated_where_a_plain_take_is_not() {
 /// A free-typed line read through the local reader, in a whole turn: a throw
 /// is asked nothing and pointed at `/throw`, and a put-on is asked nothing
 /// and pointed at `/wear` and `/remove`; a down reader refuses the line
-/// and points at the slash menu; an unsure reading is played as read, so a
-/// target it reads as absent is refused with what is here; and the model call
-/// is never made.
+/// and points at the slash menu; a target it surely reads as absent is
+/// refused with what is here; and the model call is never made.
 #[test]
 fn the_local_reader_reads_a_typed_line_alone() {
     use renderedstep_engine::model::{Replay, Reply};
@@ -1371,6 +1370,7 @@ fn the_local_reader_reads_a_typed_line_alone() {
             "typed_model_dress",
             "typed_model_down",
             "typed_model_unsure",
+            "typed_model",
         ]
         .into_iter()
         .find(|path| kept.contains(&format!("\"{path}\"")))
@@ -1464,7 +1464,352 @@ fn the_local_reader_reads_a_typed_line_alone() {
             .is_some_and(|offer| offer.contains("red coin")),
         "{refusal:?}"
     );
-    assert_eq!(resolved_by(&engine), "typed_model_unsure");
+    assert_eq!(resolved_by(&engine), "typed_model");
+}
+
+/// The local reader's reply for a typed line, as a replay declares it.
+fn local_reply(content: serde_json::Value) -> renderedstep_engine::model::Reply {
+    renderedstep_engine::model::Reply::from_value(&serde_json::json!({
+        "purpose": "local_classifier",
+        "content": content,
+    }))
+    .unwrap()
+}
+
+/// The newest command's journal, where a refused line keeps its reading.
+fn newest_journal(engine: &Engine) -> String {
+    engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT journal FROM playthrough_commands ORDER BY id DESC LIMIT 1",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap()
+}
+
+/// A line the local reader is unsure of is not played: the game says so in
+/// the captain's words and offers its best guess as a slash line, which the
+/// grammar then plays with no reader asked. An answer that gives no
+/// probability for its own choice is unsure too.
+#[test]
+fn an_unsure_reading_is_asked_about_and_its_guess_plays() {
+    use renderedstep_engine::model::{Replay, Reply};
+    use renderedstep_engine::refusal::UNSURE_FACT;
+    let (mut engine, playthrough) = gate();
+    let held = |state: &renderedstep_engine::outcome::State| {
+        state.carrying.iter().any(|thing| thing.name == "red coin")
+    };
+    let scenes = |engine: &Engine| count(engine, "SELECT COUNT(*) FROM scenes");
+    let before = scenes(&engine);
+
+    let mut replay = Replay::new(vec![local_reply(serde_json::json!({
+        "intent": { "choice": "take", "probabilities": { "take": 0.52, "examine": 0.48 } },
+        "target_take": "available_item_1",
+        "target_present": 0.95,
+    }))]);
+    let submitted = engine
+        .submit(
+            playthrough,
+            "approach the coin",
+            "unsure",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    let refusal = submitted.turned.refusal.expect("an ask");
+    assert_eq!(refusal.kind, "unsure");
+    assert_eq!(refusal.fact, UNSURE_FACT);
+    assert_eq!(
+        refusal.text(),
+        "The game is not sure what you meant by that, so nothing has happened. Its best guess \
+         was `/take red coin`. Type that to do it, or say what you meant another way."
+    );
+    assert_eq!(scenes(&engine), before, "an ask writes no scene");
+    assert!(!held(&submitted.state), "nothing was taken");
+    let kept = newest_journal(&engine);
+    assert!(kept.contains("\"typed_model_unsure\""), "{kept}");
+    assert!(
+        kept.contains(r#"{"symbol":"unsure"}"#),
+        "a resumed turn asks again: {kept}"
+    );
+
+    let narration = Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![narration]).with_local_classifier();
+    let submitted = engine
+        .submit(
+            playthrough,
+            "/take red coin",
+            "guess",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert_eq!(replay.calls(), ["narration"], "the guess asks no reader");
+    assert!(submitted.turned.refusal.is_none());
+    assert!(held(&submitted.state), "the guess played");
+
+    // A reply with no probability for the act it chose is not taken as sure.
+    let mut replay = Replay::new(vec![local_reply(serde_json::json!({
+        "intent": { "choice": "move" },
+        "target_move": "way_1",
+        "target_present": 0.95,
+    }))]);
+    let submitted = engine
+        .submit(
+            playthrough,
+            "wander toward the noise",
+            "silent",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    let refusal = submitted.turned.refusal.expect("an ask");
+    assert_eq!(refusal.kind, "unsure");
+    assert!(
+        refusal
+            .offer
+            .as_deref()
+            .is_some_and(|offer| offer.contains("`/go ")),
+        "{refusal:?}"
+    );
+}
+
+/// The refusal corpus as the game's migration writes it: the shape
+/// `refused_lines` must have for the engine to keep a refused line in it.
+const REFUSED_LINES: &str = r#"CREATE TABLE "refused_lines" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "typed" text NOT NULL, "state" json NOT NULL, "answers" json, "reading" json NOT NULL, "act_confidence" float, "thing_confidence" float, "refusal" json NOT NULL, "place" varchar, "weights" varchar, "playthrough_id" integer, "location_id" integer, "status" varchar DEFAULT 'new' NOT NULL, "label" json, "labelled_at" datetime(6), "note" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)"#;
+
+/// Where the host asks for it, every free-typed line the local reader's
+/// reading refuses is kept with what the reader was shown and answered,
+/// and how sure it was; a line it plays, and a refusal of a reading that
+/// was right, are not. Nothing is kept where the host does not ask, and a
+/// database without the table plays as before.
+#[test]
+fn a_refused_free_typed_line_is_kept_where_the_host_asks() {
+    use renderedstep_engine::model::Replay;
+    let kept = |engine: &Engine| count(engine, "SELECT COUNT(*) FROM refused_lines");
+    let unsure = || {
+        local_reply(serde_json::json!({
+            "intent": { "choice": "take", "probabilities": { "take": 0.52, "examine": 0.48 } },
+            "target_take": "available_item_1",
+            "target_present": 0.95,
+        }))
+    };
+
+    // No table: the ask is made all the same, and a host that asks for the
+    // line to be kept is told the table is missing.
+    let (mut engine, playthrough) = gate();
+    let mut replay = Replay::new(vec![unsure()]);
+    let submitted = engine
+        .submit(
+            playthrough,
+            "approach the coin",
+            "a",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    assert_eq!(submitted.turned.refusal.expect("an ask").kind, "unsure");
+    let mut replay = Replay::new(vec![unsure()]).with_kept_refusals();
+    let missing = engine
+        .submit(
+            playthrough,
+            "approach the coin",
+            "z",
+            &mut replay,
+            &mut |_| {},
+        )
+        .expect_err("no table to keep it in");
+    assert!(missing.to_string().contains("refused_lines"), "{missing}");
+
+    let scratch = Scratch::new(
+        "refused-lines",
+        &format!("{}\n{REFUSED_LINES};", world("a-turn-at-the-gate")),
+    );
+    let mut engine = Engine::open(&scratch.0).expect("the database opens");
+    let story = engine
+        .story_titled(&format!("A Turn at the Gate{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+
+    let mut replay = Replay::new(vec![unsure()]);
+    engine
+        .submit(
+            playthrough,
+            "approach the coin",
+            "b",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    assert_eq!(kept(&engine), 0, "the host did not ask");
+
+    let mut replay = Replay::new(vec![unsure()]).with_kept_refusals();
+    engine
+        .submit(
+            playthrough,
+            "approach the coin",
+            "c",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    replay.finish().unwrap();
+    assert_eq!(kept(&engine), 1);
+    let row: (
+        String,
+        String,
+        Option<String>,
+        String,
+        f64,
+        Option<f64>,
+        String,
+        String,
+        String,
+    ) = engine
+        .store()
+        .connection()
+        .query_row(
+            "SELECT typed, state, answers, reading, act_confidence, thing_confidence, \
+                 refusal, place, status FROM refused_lines",
+            [],
+            |row| {
+                Ok((
+                    row.get(0)?,
+                    row.get(1)?,
+                    row.get(2)?,
+                    row.get(3)?,
+                    row.get(4)?,
+                    row.get(5)?,
+                    row.get(6)?,
+                    row.get(7)?,
+                    row.get(8)?,
+                ))
+            },
+        )
+        .unwrap();
+    let json = |text: &str| serde_json::from_str::<serde_json::Value>(text).unwrap();
+    let (typed, state, answers, reading, act, thing, refusal, place, status) = row;
+    assert_eq!(typed, "approach the coin");
+    let state = json(&state);
+    assert_eq!(state["player_action"], "approach the coin");
+    assert_eq!(
+        state["available_items"]["available_item_1"]["name"],
+        "red coin"
+    );
+    let answers = json(&answers.expect("the reader's reply"));
+    assert_eq!(answers["answers"]["intent"]["probabilities"]["take"], 0.52);
+    assert_eq!(
+        json(&reading),
+        serde_json::json!({
+            "action": "take",
+            "target": "red coin",
+            "also_named": null,
+            "resolved_by": "typed_model_unsure",
+        })
+    );
+    assert_eq!((act, thing), (0.52, Some(1.0)));
+    let refusal = json(&refusal);
+    assert_eq!(refusal["kind"], "unsure");
+    assert!(refusal["offer"]
+        .as_str()
+        .is_some_and(|offer| offer.contains("`/take red coin`")));
+    assert_eq!(place, state["location"].as_str().unwrap());
+    assert_eq!(status, "new");
+
+    // A line the reader is sure of and plays is not kept.
+    let narration = renderedstep_engine::model::Reply::from_value(&serde_json::json!({
+        "purpose": "narration",
+        "content": "You pocket the red coin.",
+    }))
+    .unwrap();
+    let mut replay = Replay::new(vec![
+        local_reply(serde_json::json!({
+            "intent": "take",
+            "target_take": "available_item_1",
+            "target_present": 0.95,
+        })),
+        narration,
+    ])
+    .with_kept_refusals();
+    let submitted = engine
+        .submit(playthrough, "take the coin", "d", &mut replay, &mut |_| {})
+        .unwrap();
+    replay.finish().unwrap();
+    assert!(submitted.turned.refusal.is_none());
+    assert_eq!(kept(&engine), 1, "a played line is not kept");
+
+    // A reach for nothing, read surely, is kept with its own refusal; so is
+    // a line the reader is down for, with no reply to keep.
+    let mut replay = Replay::new(vec![local_reply(serde_json::json!({
+        "intent": "take",
+        "target_present": 0.05,
+    }))])
+    .with_kept_refusals();
+    engine
+        .submit(
+            playthrough,
+            "take the brass key",
+            "e",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    let mut replay = Replay::new(vec![renderedstep_engine::model::Reply::from_value(
+        &serde_json::json!({ "purpose": "local_classifier", "unavailable": true }),
+    )
+    .unwrap()])
+    .with_kept_refusals();
+    engine
+        .submit(
+            playthrough,
+            "take the brass key",
+            "f",
+            &mut replay,
+            &mut |_| {},
+        )
+        .unwrap();
+    let kinds: Vec<(String, Option<String>)> = {
+        let connection = engine.store().connection();
+        let mut statement = connection
+            .prepare(
+                "SELECT json_extract(refusal, '$.kind'), json_extract(reading, '$.resolved_by') \
+                 FROM refused_lines ORDER BY id",
+            )
+            .unwrap();
+        statement
+            .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))
+            .unwrap()
+            .collect::<Result<_, _>>()
+            .unwrap()
+    };
+    assert_eq!(
+        kinds,
+        vec![
+            ("unsure".to_string(), Some("typed_model_unsure".to_string())),
+            ("unresolved".to_string(), Some("typed_model".to_string())),
+            (
+                "unreadable".to_string(),
+                Some("typed_model_down".to_string())
+            ),
+        ]
+    );
+    assert_eq!(
+        count(
+            &engine,
+            "SELECT COUNT(*) FROM refused_lines WHERE answers IS NULL"
+        ),
+        1,
+        "a reader that never answered leaves no reply"
+    );
 }
 
 /// The classifier's reading over rows, with no turn: System One composes

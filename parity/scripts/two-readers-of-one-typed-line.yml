@@ -24,7 +24,7 @@ steps:
     resolved_by: typed_model
     changed: true
     refused: false
-- id: an-unsure-reading-is-played-on-its-own
+- id: a-sure-reading-of-one-name-is-played-on-its-own
   type: put down the coin and the key
   browser:
     token: unsure
@@ -42,7 +42,7 @@ steps:
     carrying: []
     here:
     - red coin
-    resolved_by: typed_model_unsure
+    resolved_by: typed_model
     changed: true
     refused: false
 - id: a-free-throw-is-pointed-at-the-command

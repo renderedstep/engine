@@ -15,6 +15,7 @@ pub const KINDS: &[&str] = &[
     "immovable",
     "cannot_carry",
     "unreadable",
+    "unsure",
     "unplayable",
     "dead",
     "concluded",
@@ -23,6 +24,10 @@ pub const KINDS: &[&str] = &[
 
 /// The kinds that are a state of the game rather than a reading of a line.
 const GAME_OVER: &[&str] = &["dead", "concluded", "stopped"];
+
+/// The kind of a line the local reader read and was unsure of: the game asks
+/// instead of playing it ([`crate::intent::Unread::Unsure`]).
+pub const UNSURE: &str = "unsure";
 
 /// Said on every shape that leaves the player another line to type.
 pub const UNCHANGED: &str = "Nothing has changed.";
@@ -111,9 +116,47 @@ fn offers(action: &str) -> Option<&'static str> {
     }
 }
 
+/// What a refused line can be said again as.
+const PLAIN_ACTION: &str = "Say it again as one plain action -- go somewhere, talk to somebody, \
+     take something, or put something down.";
+
 const UNREADABLE: &str = "That did not come back as anything the game knows how to do. \
      Say it again as one plain action -- go somewhere, talk to somebody, \
      take something, or put something down.";
+
+/// A line the local reader was unsure of: the captain's words of
+/// 2026-10-29, followed by the reader's best guess as a line to type
+/// ([`guessed`]), or where the guess has none, by [`PLAIN_ACTION`]. It says
+/// itself that nothing happened, so [`UNCHANGED`] is not added to it.
+pub const UNSURE_FACT: &str =
+    "The game is not sure what you meant by that, so nothing has happened.";
+
+/// The guess, as a line the grammar plays with no reader.
+fn guessed(line: &str) -> String {
+    format!("Its best guess was `{line}`. Type that to do it, or say what you meant another way.")
+}
+
+/// The slash line the grammar plays as `intent`, in the words the slash menu
+/// completes ([`crate::slash_menu::SlashMenu`]), or `None` where the intent
+/// has none: an `other`, or a reach with nothing to reach.
+pub fn slash_line(intent: &Intent) -> Option<String> {
+    if let Some(choice) = &intent.physical {
+        let argument = choice.argument();
+        return Some(if argument.is_empty() {
+            format!("/{}", choice.kind)
+        } else {
+            format!("/{} {argument}", choice.kind)
+        });
+    }
+    if intent.action == "examine" && intent.item.is_none() {
+        return Some("/look".to_string());
+    }
+    let (word, _) = crate::grammar::RESOLVING
+        .iter()
+        .find(|(_, action)| *action == intent.action)?;
+    let name = intent.subject()?.label();
+    (!crate::text::is_blank(&name)).then(|| format!("/{word} {name}"))
+}
 
 /// A free-typed throw, which the local reader leaves unread.
 pub const THROW_UNREAD: &str =
@@ -228,12 +271,21 @@ impl Refusal {
                 offer,
             ));
         }
+        if intent.unread == Some(Unread::Unsure) {
+            let offer = slash_line(intent).map_or(PLAIN_ACTION.to_string(), |line| guessed(&line));
+            return Some(Refusal::of(
+                UNSURE,
+                typed,
+                UNSURE_FACT.to_string(),
+                Some(offer),
+            ));
+        }
         if intent.unreadable() {
             let fact = match intent.unread {
                 Some(Unread::Throw) => THROW_UNREAD,
                 Some(Unread::Dress) => DRESS_UNREAD,
                 Some(Unread::ReaderDown) => READER_DOWN,
-                None => UNREADABLE,
+                Some(Unread::Unsure) | None => UNREADABLE,
             };
             return Some(Refusal::of("unreadable", typed, fact.into(), None));
         }
@@ -410,12 +462,18 @@ impl Refusal {
         GAME_OVER.contains(&self.kind.as_str())
     }
 
+    /// Whether [`UNCHANGED`] follows the words: not where the game is over,
+    /// and not where the words already say that nothing happened.
+    fn says_unchanged(&self) -> bool {
+        !self.game_over() && self.kind != UNSURE
+    }
+
     /// The fact alone, for a reader that prints the room's lists beneath it.
     pub fn reason(&self) -> String {
-        if self.game_over() {
-            self.fact.clone()
-        } else {
+        if self.says_unchanged() {
             format!("{} {UNCHANGED}", self.fact)
+        } else {
+            self.fact.clone()
         }
     }
 
@@ -423,7 +481,7 @@ impl Refusal {
     pub fn text(&self) -> String {
         let mut parts = vec![self.fact.clone()];
         parts.extend(self.offer.clone());
-        if !self.game_over() {
+        if self.says_unchanged() {
             parts.push(UNCHANGED.to_string());
         }
         parts

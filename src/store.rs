@@ -76,6 +76,19 @@ pub const WRITTEN: &[&str] = &["ruby_llm_usages", "system_one_receipts"];
 /// receipt is priced from.
 pub const QUERIED: &[&str] = &["ruby_llm_models"];
 
+/// The refusal corpus: one row for each free-typed line the local reader's
+/// reading refused, kept where the host asks for it
+/// ([`crate::model::Models::keeps_refusals`]) with what the reader was shown
+/// and what it answered, so the line can be labelled and trained on later.
+/// It holds no account data, and nothing ties it to a game: it outlives
+/// the one its line was typed in.
+pub const REFUSED_LINES: &str = "refused_lines";
+
+/// Tables the engine writes only where the database has them, and never
+/// loads. They are not in [`SHAPE`], so a database from before one was
+/// added still opens; a write to one it lacks is an error.
+pub const OPTIONAL: &[&str] = &[REFUSED_LINES];
+
 /// What the engine relies on in a database, one fact per line, sorted: for
 /// every table it touches, each column's declared type (in lower case, as
 /// SQLite compares it), nullability, default
@@ -306,7 +319,7 @@ impl Store {
             }
         }
         let mut columns = HashMap::new();
-        for table in TABLES.iter().chain(WRITTEN) {
+        for table in TABLES.iter().chain(WRITTEN).chain(OPTIONAL) {
             let mut statement =
                 conn.prepare("SELECT name, type FROM pragma_table_info(?1) ORDER BY name")?;
             let found: Vec<Column> = statement
@@ -318,6 +331,9 @@ impl Store {
                 })?
                 .collect::<Result<_, _>>()?;
             if found.is_empty() {
+                if OPTIONAL.contains(table) {
+                    continue;
+                }
                 return Err(Error::Database(format!(
                     "the database has no {table} table"
                 )));
@@ -332,10 +348,13 @@ impl Store {
     }
 
     fn columns(&self, table: &str) -> Result<&[Column], Error> {
-        self.columns
-            .get(table)
-            .map(Vec::as_slice)
-            .ok_or_else(|| Error::Database(format!("{table} is not a table the engine reads")))
+        self.columns.get(table).map(Vec::as_slice).ok_or_else(|| {
+            Error::Database(if OPTIONAL.contains(&table) {
+                format!("the database has no {table} table")
+            } else {
+                format!("{table} is not a table the engine reads")
+            })
+        })
     }
 
     fn has_id(&self, table: &str) -> Result<bool, Error> {

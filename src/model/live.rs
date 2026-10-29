@@ -44,6 +44,8 @@ pub struct Live<T: Transport = Https> {
     /// The classifier's own transport, where it does not share
     /// `system_one`'s.
     classifier: Option<SystemOne>,
+    /// Whether a refused free-typed line is kept ([`Models::keeps_refusals`]).
+    keeps_refusals: bool,
 }
 
 impl Live<Https> {
@@ -72,6 +74,7 @@ impl<T: Transport> Live<T> {
             transport,
             system_one,
             classifier: None,
+            keeps_refusals: false,
         }
     }
 
@@ -94,6 +97,14 @@ impl<T: Transport> Live<T> {
     /// classifier the local reader's alone.
     pub fn with_classifier(mut self, classifier: SystemOne) -> Live<T> {
         self.classifier = Some(classifier);
+        self
+    }
+
+    /// Keeps each free-typed line the local reader's reading refuses
+    /// ([`Models::keeps_refusals`]): the host says so only for the person
+    /// building the game.
+    pub fn with_kept_refusals(mut self, keeps: bool) -> Live<T> {
+        self.keeps_refusals = keeps;
         self
     }
 
@@ -405,6 +416,18 @@ impl<T: Transport> Models for Live<T> {
 
     fn local_classifier(&self) -> bool {
         self.classifier.as_ref().is_some_and(SystemOne::local)
+    }
+
+    fn keeps_refusals(&self) -> bool {
+        self.keeps_refusals
+    }
+
+    fn classifier_weights(&self) -> Option<String> {
+        self.classifier
+            .as_ref()
+            .filter(|classifier| classifier.local())
+            .map(|classifier| classifier.model().to_string())
+            .filter(|model| !model.trim().is_empty())
     }
 
     fn classifier_system_one(&self) -> bool {

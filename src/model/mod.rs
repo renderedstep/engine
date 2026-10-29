@@ -224,6 +224,20 @@ pub trait Models {
         false
     }
 
+    /// Whether a free-typed line the local reader's reading refuses is kept,
+    /// with what the reader was shown and what it answered
+    /// ([`crate::store::REFUSED_LINES`]). Off unless the host turns it on,
+    /// which it does only for the person building the game.
+    fn keeps_refusals(&self) -> bool {
+        false
+    }
+
+    /// The weights the local reader answers with (their digest), where it
+    /// has any: a kept refusal says which weights read it.
+    fn classifier_weights(&self) -> Option<String> {
+        None
+    }
+
     /// Whether the classifier asks System One first. Unless the classifier
     /// has a transport of its own, it shares [`Models::system_one`]'s.
     fn classifier_system_one(&self) -> bool {
