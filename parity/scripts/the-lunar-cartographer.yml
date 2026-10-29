@@ -14,7 +14,8 @@ steps:
     - Grenn's Boarding House hallway (stub)
     - Larkspur Quarter rooftops (stub)
     here: []
-    carrying: []
+    carrying:
+    - surveyor's coat
 - id: into-the-lane
   type: go to Mournwell Lane
   expect:

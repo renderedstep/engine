@@ -21,6 +21,7 @@ steps:
   expect:
     changed: true
     carrying:
+    - surveyor's coat
     - climbers' bearing book
     foes:
     - Marek Sollen
@@ -119,6 +120,7 @@ steps:
   expect:
     changed: true
     carrying:
+    - surveyor's coat
     - climbers' bearing book
     - bell-rope tally
     quest:

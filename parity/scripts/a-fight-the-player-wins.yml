@@ -129,7 +129,8 @@ steps:
     here:
     - climbers' bearing book
     - bell-rope tally
-    carrying: []
+    carrying:
+    - surveyor's coat
     dead: false
     changed: false
     blows: 0
@@ -140,6 +141,7 @@ steps:
     here:
     - climbers' bearing book
     carrying:
+    - surveyor's coat
     - bell-rope tally
     blows: 0
 - id: what-is-written-on-it-came-with-the-copy
@@ -171,6 +173,7 @@ steps:
   expect:
     location: Grenn's Boarding House hallway (stub)
     carrying:
+    - surveyor's coat
     - bell-rope tally
     present: []
     changed: true
@@ -183,6 +186,7 @@ steps:
     here:
     - climbers' bearing book
     carrying:
+    - surveyor's coat
     - bell-rope tally
     changed: true
     blows: 0

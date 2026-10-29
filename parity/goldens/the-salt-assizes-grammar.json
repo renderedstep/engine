@@ -27,14 +27,22 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           }
         ],
         "carrying": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
+          },
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
           }
         ],
         "present": [
@@ -46,7 +54,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -111,20 +119,29 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           },
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
+          }
+        ],
         "present": [],
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -181,7 +198,16 @@
           }
         ],
         "here": [],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
+          }
+        ],
         "present": [
           {
             "id": 1000000003,
@@ -250,15 +276,24 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           },
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
+          }
+        ],
         "present": [
           {
             "id": 1000000003,
@@ -268,7 +303,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -327,7 +362,16 @@
           }
         ],
         "here": [],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
+          }
+        ],
         "present": [
           {
             "id": 1000000002,
@@ -352,7 +396,7 @@
         "offers": null,
         "understood": "move -> The Vestry Hulk",
         "resolved_by": "grammar",
-        "note": "someone here: Ammon Brace spoke up unasked and told Coraith Vell to leave The Vestry Hulk. Nobody moved.\nsomeone here: Neb Halloran walked out of The Causeway Court to The Tide Post and is no longer in The Causeway Court.\nthe world: drop on the way from The Causeway Court into The Vestry Hulk cost Coraith Vell 2 hit points (the way down is further than it looks from the top); Coraith Vell is hurt (15 of 18)",
+        "note": "someone here: Ammon Brace spoke up unasked and asked Coraith Vell for court black. Nothing changed hands.\nsomeone here: Neb Halloran walked out of The Causeway Court to The Tide Post and is no longer in The Causeway Court.\nthe world: drop on the way from The Causeway Court into The Vestry Hulk cost Coraith Vell 2 hit points (the way down is further than it looks from the top); Coraith Vell is hurt (15 of 18)",
         "drifts": 0,
         "blows": 0,
         "hazards": 1,
@@ -396,15 +440,24 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           },
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
+          }
+        ],
         "present": [
           {
             "id": 1000000002,
@@ -414,7 +467,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -479,15 +532,24 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           },
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
+          }
+        ],
         "present": [
           {
             "id": 1000000002,
@@ -497,7 +559,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -562,15 +624,24 @@
         ],
         "here": [
           {
-            "id": 1000000005,
+            "id": 1000000013,
             "name": "Assize hand-bell"
           },
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate"
           }
         ],
-        "carrying": [],
+        "carrying": [
+          {
+            "id": 1000000011,
+            "name": "court black"
+          },
+          {
+            "id": 1000000012,
+            "name": "oilskin"
+          }
+        ],
         "present": [
           {
             "id": 1000000002,
@@ -580,7 +651,7 @@
         "foes": [],
         "inscription": [
           {
-            "id": 1000000004,
+            "id": 1000000010,
             "name": "Assize tide-slate",
             "text": "HIGH WATER, THIS DAY — three hours and forty minutes after noon. Court rises on the bell. Sworn: the Bell-Keeper of the Causeway."
           }
@@ -598,7 +669,7 @@
         "changed": false,
         "change": null,
         "refused": true,
-        "offers": "there is no thing you are carrying called \"the ledger\". There is: nothing",
+        "offers": "there is no thing you are carrying called \"the ledger\". There is: court black, oilskin",
         "understood": null,
         "resolved_by": "grammar",
         "note": null,

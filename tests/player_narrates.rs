@@ -650,12 +650,22 @@ fn the_game_walks_the_unrecorded_hour_by_the_rules() {
 fn a_game_on_a_keyless_install_walks_only_into_written_rooms() {
     // Every way out of the Lunar Cartographer's first room leads to a room
     // nobody has written, so with no model to write one there is nothing the
-    // game may choose, and it says so in its own words.
-    let (mut engine, playthrough) = open(
-        "the-lunar-cartographer",
-        "The Lunar Cartographer",
-        Mode::PlayerNarrates,
-    );
+    // game may choose, and it says so in its own words. Its surveyor opens in
+    // her coat, which she could always look at, so the coat is taken off the
+    // world first: the premise is a room with nothing in it to choose.
+    let sql = std::fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("parity/worlds/the-lunar-cartographer.sql"),
+    )
+    .expect("the world fixture");
+    let mut engine = open_world(&format!(
+        "{sql}DELETE FROM items WHERE playthrough_id IS NULL
+           AND character_id IN (SELECT id FROM characters WHERE is_protagonist);"
+    ))
+    .unwrap();
+    let story = engine
+        .story_titled(&format!("The Lunar Cartographer{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start_in(story, Mode::PlayerNarrates).unwrap();
     assert!(engine.candidates(playthrough, false).unwrap().is_empty());
     let unwritten = engine.candidates(playthrough, true).unwrap();
     assert!(!unwritten.is_empty());

@@ -11,6 +11,8 @@ steps:
     here:
     - Assize hand-bell
     carrying:
+    - court black
+    - oilskin
     - Assize tide-slate
     volitions: 0
     acts: 0
@@ -20,7 +22,9 @@ steps:
     changed: true
     refused: false
     understood: drop -> Assize tide-slate
-    carrying: []
+    carrying:
+    - court black
+    - oilskin
 - id: go-to-the-tide-post
   type: go to the Tide Post
   expect:

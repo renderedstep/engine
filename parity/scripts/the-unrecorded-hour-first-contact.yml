@@ -6,6 +6,8 @@ steps:
   expect:
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     changed: false
     refused: false
@@ -18,6 +20,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: the-office-stays-empty-on-the-next-turn
@@ -29,6 +33,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: the-closet-is-copied-when-the-party-walks-in
@@ -37,6 +43,8 @@ steps:
     changed: true
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: put-the-stamp-down-somewhere-it-was-never-seeded
@@ -45,6 +53,8 @@ steps:
     changed: true
     change: now lying in The Supply Closet
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: walk-back-to-an-office-that-is-still-empty
   type: go to Ward Office 12
@@ -55,6 +65,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: and-the-closet-still-holds-what-was-left-there
   type: go to the Supply Closet
@@ -62,6 +74,8 @@ steps:
     changed: true
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: the-index-is-still-takeable-after-all-that
   type: take the index
@@ -69,5 +83,7 @@ steps:
     changed: true
     understood: take -> Perrin's private index
     carrying:
+    - office coat
+    - spectacles
     - Perrin's private index
     - Ward Office 12 daybook

@@ -13,6 +13,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     present:
     - Halkett Rowe
@@ -26,6 +28,8 @@ steps:
     understood: take -> ward stamp
     resolved_by: grammar
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: a-slashed-drop-puts-it-back
@@ -36,6 +40,8 @@ steps:
     understood: drop -> ward stamp
     resolved_by: grammar
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: the-same-refusal-with-and-without-a-slash
   type: "/take the filing press"
@@ -62,6 +68,8 @@ steps:
     resolved_by: grammar
     location: The Supply Closet (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: a-slashed-read-recites-the-record
   type: "/read the daybook"
@@ -88,6 +96,8 @@ steps:
     offers:
     - there is no thing lying here called
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: a-slash-in-front-of-a-word-the-grammar-does-not-have
   type: "/ponder the apron"

@@ -9,6 +9,8 @@ steps:
     exits:
     - Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: leave-the-closet-by-its-one-way-out
   type: Leave the closet
@@ -25,6 +27,8 @@ steps:
     resolved_by: engine_leave
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: leave-the-office-could-be-either-act
   type: leave the office
@@ -35,6 +39,8 @@ steps:
     refused: true
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: exit-from-two-ways-out-asks-which
   type: exit
@@ -45,6 +51,8 @@ steps:
     refused: true
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: a-slashed-leave-is-read-the-same
   type: "/leave this place"
@@ -72,4 +80,6 @@ steps:
     refused: false
     resolved_by: typed_model
     location: Ward Office 12 (realized)
-    carrying: []
+    carrying:
+    - office coat
+    - spectacles

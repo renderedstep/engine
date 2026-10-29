@@ -13,6 +13,8 @@ steps:
     - filing press
     - blank closure writ
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     present:
     - Halkett Rowe
@@ -26,6 +28,8 @@ steps:
     changed: true
     understood: take -> ward stamp
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
     drifts: 0
@@ -41,6 +45,8 @@ steps:
     inscription:
       Ward Office 12 daybook: 3.40 — Levee boundary, Marchmain acre 7.
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: nothing-is-written-on-a-stamp
@@ -60,6 +66,8 @@ steps:
     exits:
     - Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
 - id: secure-the-apron
@@ -68,6 +76,8 @@ steps:
     changed: true
     understood: take -> copy-room apron
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - ward stamp
     - copy-room apron
@@ -77,6 +87,8 @@ steps:
     changed: true
     understood: drop -> ward stamp
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - copy-room apron
 - id: take-something-by-a-fragment
@@ -87,6 +99,8 @@ steps:
     offers:
     - You are already carrying the copy-room apron.
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - copy-room apron
 - id: read-what-is-in-hand
@@ -100,6 +114,8 @@ steps:
     inscription:
       Ward Office 12 daybook: 3.40 — Levee boundary, Marchmain acre 7.
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - copy-room apron
 - id: read-it-again-and-it-says-the-same-thing
@@ -116,6 +132,8 @@ steps:
     changed: false
     refused: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - copy-room apron
 - id: back-through-the-door-it-came-in-by
@@ -124,6 +142,8 @@ steps:
     changed: true
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - copy-room apron
 - id: take-what-is-not-here
@@ -134,6 +154,8 @@ steps:
     offers:
     - there is no thing lying here
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     - copy-room apron
     drifts: 0
@@ -162,6 +184,8 @@ steps:
     changed: true
     understood: drop -> copy-room apron
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: walk-into-the-unwritten-room
   type: go to the Long Hallway

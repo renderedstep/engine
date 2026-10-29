@@ -109,6 +109,7 @@ steps:
   expect:
     changed: true
     carrying:
+    - surveyor's coat
     - bell-rope tally
     quest:
       1: reached
@@ -119,6 +120,7 @@ steps:
   expect:
     changed: true
     carrying:
+    - surveyor's coat
     - bell-rope tally
     - climbers' bearing book
     quest:

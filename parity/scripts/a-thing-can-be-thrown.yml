@@ -6,6 +6,8 @@ steps:
   expect:
     location: Ward Office 12 (realized)
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     foes: []
     hp: 18
@@ -21,6 +23,8 @@ steps:
     - ward stamp
     changed: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: a-throw-with-no-aim-names-both-aim-sets
   type: throw the daybook
@@ -32,6 +36,8 @@ steps:
     - 'The ways out are: The Supply Closet, The Long Hallway'
     changed: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: an-aim-that-lands-on-nothing-is-refused
   type: throw the daybook at the moon
@@ -43,6 +49,8 @@ steps:
     - Halkett Rowe
     changed: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: scenery-is-not-a-target-and-the-thing-stays-on-the-floor
   type: throw the ward stamp at the desk
@@ -53,6 +61,8 @@ steps:
     - 'Nothing was thrown: the ward stamp stays where it is lying'
     changed: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: a-thing-not-here-and-not-carried-is-refused
   type: throw the private index at Halkett Rowe
@@ -71,6 +81,8 @@ steps:
     - no die was thrown for it
     changed: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     hp: 18
     blows: 0
@@ -84,6 +96,8 @@ steps:
     - cannot be picked up
     changed: false
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
     hp: 18
     blows: 0
@@ -106,6 +120,8 @@ steps:
     - strength -> d20(
     - "<= 9 "
     carrying:
+    - office coat
+    - spectacles
     - Ward Office 12 daybook
 - id: and-one-through-a-doorway
   type: throw the daybook at the supply closet
