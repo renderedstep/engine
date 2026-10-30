@@ -412,10 +412,11 @@ INSERT INTO schema_migrations VALUES('20261027120117');
 INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
+INSERT INTO schema_migrations VALUES('20261031090000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-25 22:57:23.355205','2026-10-25 22:57:23.355207');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','9fcff787fff0ed60123ee84a65c7f80738f353f3','2026-10-25 22:57:23.358867','2026-10-25 22:57:23.358868');
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -437,6 +438,16 @@ FOREIGN KEY ("posted_to_id")
  ON DELETE SET NULL);
 INSERT INTO characters VALUES(1000000001,14,'Ink on her fingers and a satchel strap with no satchel.','The warden''s runner, sent with the tally and never with anything heavy.',NULL,'2026-10-25 22:57:24.717037',0,NULL,13,'Being told something is too heavy','Dropping the warden''s slate','Nell Fisk',6,0,0,1,1,'A tally that comes out even',NULL,NULL,'Nell','Quick, and certain she can carry more than she can.',1000000001,NULL,'female',1000000001,5,NULL,NULL,'2026-10-25 22:57:24.717037',12,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000002,41,'Shoulders like a door, and a weigh ticket tucked in his cap.','Has carried the market''s loads on the same yoke for twenty years.',NULL,'2026-10-25 22:57:24.767089',0,NULL,10,'A yoke set down in the wet','His back going','Bram Hale',8,0,0,0,2,'An even load',1000000001,NULL,'Bram','Slow to speak, and kind about other people''s arms.',1000000001,NULL,'male',1000000001,16,NULL,NULL,'2026-10-25 22:57:24.767089',10,NULL,NULL,NULL);
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_f82b72b677"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_b4a8914069"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -648,5 +659,9 @@ CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
 CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
 CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
+CREATE INDEX "index_playthrough_floors_on_playthrough_id" ON "playthrough_floors" ("playthrough_id");
+CREATE INDEX "index_playthrough_floors_on_location_id" ON "playthrough_floors" ("location_id");
+CREATE INDEX "index_playthrough_floors_on_scene_id" ON "playthrough_floors" ("scene_id");
+CREATE UNIQUE INDEX "index_playthrough_floors_on_playthrough_and_location" ON "playthrough_floors" ("playthrough_id", "location_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

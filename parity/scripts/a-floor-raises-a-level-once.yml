@@ -1,0 +1,109 @@
+---
+story: Three Floors That Raise You
+steps:
+- id: hurt-on-the-landing
+  type: harm 5
+  expect:
+    change: Odile unhurt -> hurt (13 of 18)
+    hp: 13
+- id: the-first-floor-raises-her-to-level-four
+  type: "/move The First Floor"
+  browser:
+    token: into-the-first-floor
+    realizes: The First Floor
+    replies:
+    - purpose: location
+      content:
+        description: A level of black stone passages lit by nothing you can see.
+        lore: The first floor was cut by people nobody remembers.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: A low chamber at the foot of the stair.
+        lore: Delvers rest here before going on.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The First Floor room 1 (realized)
+    hp: 23
+- id: level-four-takes-twenty-three
+  type: harm 3
+  expect:
+    change: Odile unhurt -> hurt (20 of 23)
+    hp: 20
+- id: to-the-way-down
+  type: "/move The First Floor room 2"
+  browser:
+    token: first-floor-room-2
+    realizes: The First Floor room 2
+    replies:
+    - purpose: location
+      content:
+        description: A bare chamber with a stair cut down into its floor.
+        lore: The stair down is older than the rest.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The First Floor room 2 (realized)
+    exits_include:
+    - The Second Floor (stub)
+    hp: 20
+- id: the-second-floor-raises-her-to-level-five
+  type: "/move The Second Floor"
+  browser:
+    token: into-the-second-floor
+    realizes: The Second Floor
+    replies:
+    - purpose: location
+      content:
+        description: A colder level, the air still and the dark close.
+        lore: Few delvers come this far.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: The foot of the stair, cold and quiet.
+        lore: The stair comes down here from the floor above.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Second Floor room 1 (realized)
+    hp: 28
+- id: level-five-takes-twenty-eight
+  type: harm 4
+  expect:
+    change: Odile unhurt -> hurt (24 of 28)
+    hp: 24
+- id: back-up-onto-the-first-floor
+  type: "/move The First Floor room 2"
+  expect:
+    location: The First Floor room 2 (realized)
+    hp: 24
+- id: she-keeps-level-five-on-the-first-floor
+  type: harm 1
+  expect:
+    change: Odile hurt (24 of 28) -> hurt (23 of 28)
+    hp: 23
+- id: down-onto-the-second-floor-again
+  type: "/move The Second Floor room 1"
+  expect:
+    location: The Second Floor room 1 (realized)
+    hp: 23
+- id: still-level-five
+  type: mend 99
+  expect:
+    change: Odile hurt (23 of 28) -> unhurt
+    hp: 28
+- id: a-second-game-is-raised-from-the-worlds-level
+  player: second
+  type: "/move The First Floor"
+  expect:
+    location: The First Floor room 1 (realized)
+    hp: 23
+    note: 'the game: Reaching The First Floor raised Odile to level 4: 23 hit points,
+      and healed to full.'

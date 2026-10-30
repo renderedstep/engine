@@ -916,12 +916,7 @@ impl Turn<'_, '_> {
     /// leaves the ordinary starting level.
     fn monster_level(&self, location: i64) -> Option<i64> {
         let row = self.m.records.find("locations", location)?;
-        let places = [Some(location), int(row, "parent_location_id")];
-        self.m
-            .records
-            .first(store::FLOORS, |floor| {
-                places.contains(&int(floor, "location_id"))
-            })
+        crate::playthrough::floor_of(&self.m.records, row)
             .and_then(|floor| int(floor, "monster_level"))
     }
 

@@ -403,6 +403,7 @@ INSERT INTO schema_migrations VALUES('20261027120117');
 INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
+INSERT INTO schema_migrations VALUES('20261031090000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -413,7 +414,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("quest_outcome_id")
   REFERENCES "quest_outcomes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -437,6 +438,16 @@ INSERT INTO characters VALUES(1000000001,31,'A drover''s cloak and mud to the kn
 INSERT INTO characters VALUES(1000000002,44,'A porter''s sash and a ring of lodge keys.','The head porter, who has met every traveller through this gate for twenty years.','Mabry wants to see every traveller in and settled before they reach the market.','2026-10-02 13:25:50.949246',0,'attend',12,'A cold lodge.','Letting the wrong person through.','Mabry Quill',8,0,0,0,10,'A traveller with news.',1000000002,'keep','Mabry','Warm and nosy.',1000000001,'Mabry needs to keep the lodge book.','female',1000000001,12,'Mabry wants to be thanked.','Mabry needs to let someone pass without questions.','2026-10-02 13:25:50.949246',12,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000003,23,'A sash too big for him and ink on one thumb.','The under-porter, who took the post to be left alone and has not been.','Osric wants to be anywhere but the lodge when a traveller comes in.','2026-10-02 13:25:50.954473',0,'avoid',12,'Being looked at.','Being asked a question he cannot answer.','Osric Venn',8,0,0,0,10,'The back stair when nobody is on it.',1000000002,'withhold','Osric','Shy and restless.',1000000001,'Osric needs to answer the door.','male',1000000001,12,'Osric wants to be good at the post.','Osric needs to stay in the room.','2026-10-02 13:25:50.954473',12,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000004,57,'A keeper''s coat and an iron-shod staff.','The toll keeper, who has decided every traveller is trying to cheat the bar.','Grist wants the booth to himself and every token in his box.','2026-10-02 13:25:50.969712',0,'keep',12,'Travellers who come into the booth.','Being short at the count.','Grist Harrow',8,1,0,0,10,'A full toll box.',1000000003,'withhold','Grist','Suspicious and quick with a staff.',1000000001,'Grist needs to keep the count true.','male',1000000001,12,'Grist wants to be trusted with the gate.','Grist needs to let one traveller through for nothing.','2026-10-02 13:25:50.969712',12,NULL,NULL,NULL);
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_f82b72b677"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_b4a8914069"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -647,5 +658,9 @@ CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
 CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
 CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
+CREATE INDEX "index_playthrough_floors_on_playthrough_id" ON "playthrough_floors" ("playthrough_id");
+CREATE INDEX "index_playthrough_floors_on_location_id" ON "playthrough_floors" ("location_id");
+CREATE INDEX "index_playthrough_floors_on_scene_id" ON "playthrough_floors" ("scene_id");
+CREATE UNIQUE INDEX "index_playthrough_floors_on_playthrough_and_location" ON "playthrough_floors" ("playthrough_id", "location_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

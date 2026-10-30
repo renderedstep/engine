@@ -403,6 +403,7 @@ INSERT INTO schema_migrations VALUES('20261027120117');
 INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
+INSERT INTO schema_migrations VALUES('20261031090000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -413,7 +414,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("quest_outcome_id")
   REFERENCES "quest_outcomes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -436,6 +437,16 @@ FOREIGN KEY ("posted_to_id")
 INSERT INTO characters VALUES(1000000001,27,'Tar to the wrists, and a rope burn across one palm.','Walks the ropewalk twice a day, and can tell a bad strand by the feel of it.',NULL,'2026-10-02 13:26:03.006411',0,NULL,11,'Being hurried on a long lay','The walk closing for good','Jory Pask',8,0,0,1,2,'A cable laid without a kink',NULL,NULL,'Jory','Steady, and slow to say what he has noticed.',1000000001,NULL,'male',1000000001,18,NULL,NULL,'2026-10-02 13:26:03.006411',10,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000002,61,'Bent at the shoulders, with a net across his knees.','Laid rope on the walk for forty years, and mends nets on the green now.',NULL,'2026-10-02 13:26:03.102878',0,NULL,12,'New rope','Being asked to walk the ropewalk again','Wat Coyle',6,0,0,0,1,'A fine day for mending',1000000001,NULL,'Wat','Talkative, and certain the old ways were better.',1000000001,NULL,'male',1000000001,11,NULL,NULL,'2026-10-02 13:26:03.102878',10,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000003,38,'Ink on one cuff, tar on the other.','Keeps the ropewalk''s book, and signs for every fathom that leaves it.',NULL,'2026-10-02 13:26:03.111748',0,NULL,13,'Rope sold off the book','The parted cable being traced to her signature','Hester Vane',6,0,0,0,1,'A book that balances',1000000002,NULL,'Hester','Exact, and short with anybody who is not.',1000000001,NULL,'female',1000000001,10,NULL,NULL,'2026-10-02 13:26:03.111748',12,18,1,NULL);
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_f82b72b677"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_b4a8914069"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -646,5 +657,9 @@ CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
 CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
 CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
+CREATE INDEX "index_playthrough_floors_on_playthrough_id" ON "playthrough_floors" ("playthrough_id");
+CREATE INDEX "index_playthrough_floors_on_location_id" ON "playthrough_floors" ("location_id");
+CREATE INDEX "index_playthrough_floors_on_scene_id" ON "playthrough_floors" ("scene_id");
+CREATE UNIQUE INDEX "index_playthrough_floors_on_playthrough_and_location" ON "playthrough_floors" ("playthrough_id", "location_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

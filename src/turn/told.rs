@@ -32,7 +32,7 @@ use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::revisit::{self, Since};
 use crate::room::{Choice, Record, REMOVE, WAIT, WEAR};
-use crate::store::Store;
+use crate::store::{self, Store};
 use crate::text::{is_blank, presence, ruby_strip};
 use crate::turn::chooser;
 use kept::Kept;
@@ -595,6 +595,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         })?;
         self.safety = self.safety || scene.as_ref().is_some_and(|told| told.safety);
         self.commit("told_tolls", |turn| turn.claim_tolls(scene.as_ref()))?;
+        self.commit("told_floors", |turn| turn.claim_floors(scene.as_ref()))?;
         self.commit("told_volitions", |turn| {
             turn.claim_volitions(scene.as_ref())
         })?;
@@ -811,6 +812,31 @@ impl<'s, 'm> Turn<'s, 'm> {
             )?;
         }
         Ok(tolls.len() as i64)
+    }
+
+    /// The floors the turn reached belong to its scene, whose log entry
+    /// shows what each raised in the engine's own words. No paragraph tells
+    /// them, and no model is told of them.
+    fn claim_floors(&mut self, scene: Option<&Told>) -> Result<i64, Error> {
+        let Some(scene) = scene else {
+            return Ok(0);
+        };
+        let reached: Vec<i64> = self
+            .m
+            .game()
+            .floors_reached()
+            .into_iter()
+            .filter(|row| int(row, "scene_id").is_none())
+            .map(id)
+            .collect();
+        for row in &reached {
+            self.m.update(
+                store::PLAYTHROUGH_FLOORS,
+                *row,
+                vec![("scene_id", Value::from(scene.id))],
+            )?;
+        }
+        Ok(reached.len() as i64)
     }
 
     /// `#claim_volitions!`.

@@ -18,13 +18,13 @@ use crate::engine::Error;
 use crate::grammar::{self, Grammar, Reading};
 use crate::intent::Intent;
 use crate::physics::{Break, Landing, Reach};
-use crate::playthrough::{max_hp, stat_block, Condition, Game};
+use crate::playthrough::{stat_block, Condition, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::roll::{self, Seed};
 use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing, REMOVE, WAIT, WEAR};
 use crate::spot;
-use crate::store::Store;
+use crate::store::{self, Store};
 use crate::text::to_sentence;
 use crate::volition::{Asked, Judgment};
 use crate::{data, layout, outcome, physics, plan, shuffle_connections, volition, world_mechanic};
@@ -229,6 +229,8 @@ pub struct Mechanics<'s> {
     engine_refused: bool,
     round: i64,
     tolls_before: i64,
+    /// The last floor this game had reached when the line began.
+    floors_before: i64,
     decision: Option<String>,
     decided: bool,
     /// What the arc concluded with on this line, if it did
@@ -313,6 +315,7 @@ impl<'s> Mechanics<'s> {
             engine_refused: false,
             round: 1,
             tolls_before: 0,
+            floors_before: 0,
             decision: None,
             decided: false,
             concluded: None,
@@ -466,6 +469,13 @@ impl<'s> Mechanics<'s> {
             .select("playthrough_tolls", |row| {
                 int(row, "playthrough_id") == Some(game)
             })
+            .iter()
+            .map(|row| id(row))
+            .max()
+            .unwrap_or(0);
+        self.floors_before = self
+            .game()
+            .floors_reached()
             .iter()
             .map(|row| id(row))
             .max()
@@ -1109,7 +1119,7 @@ impl<'s> Mechanics<'s> {
                     Some(blow) => {
                         let condition = Condition {
                             hp: int(&blow, "hp_after").unwrap_or_default(),
-                            max: max_hp(&target_row).unwrap_or_default(),
+                            max: self.game().max_hp(&target_row).unwrap_or_default(),
                         };
                         format!(
                             "it hit {who} for {} and {lying}; {who} is {}",
@@ -1851,12 +1861,13 @@ impl<'s> Mechanics<'s> {
         }) {
             return Ok(Some(row.clone()));
         }
+        let full = self.game().max_hp(character);
         let row = self.insert(
             "playthrough_vitals",
             vec![
                 ("playthrough_id", Value::from(game)),
                 ("character_id", Value::from(who)),
-                ("hp_current", Value::from(max_hp(character))),
+                ("hp_current", Value::from(full)),
             ],
         )?;
         Ok(Some(row))
@@ -1900,7 +1911,7 @@ impl<'s> Mechanics<'s> {
         if hp <= 0 {
             return Ok(self.condition_of(character));
         }
-        let after = (hp + amount).min(max_hp(character).unwrap_or(hp));
+        let after = (hp + amount).min(self.game().max_hp(character).unwrap_or(hp));
         if after != hp {
             self.update(
                 "playthrough_vitals",
@@ -2347,6 +2358,15 @@ impl<'s> Mechanics<'s> {
                 .map(|toll| view.toll_to_s(toll))
                 .collect()
         };
+        let floors_before = self.floors_before;
+        let raised: Vec<String> = {
+            let view = self.game();
+            view.floors_reached()
+                .into_iter()
+                .filter(|row| id(row) > floors_before)
+                .filter_map(|row| view.floor_to_s(row))
+                .collect()
+        };
         let ended = if self.over() {
             self.ending_of_the_arc()
         } else {
@@ -2364,6 +2384,7 @@ impl<'s> Mechanics<'s> {
         if blows.is_empty()
             && closing.is_none()
             && taken.is_empty()
+            && raised.is_empty()
             && beats.is_empty()
             && ended.is_none()
             && acts.is_empty()
@@ -2372,6 +2393,7 @@ impl<'s> Mechanics<'s> {
         }
 
         let mut notes = report.note.clone();
+        notes.extend(raised.iter().map(|raised| format!("the game: {raised}")));
         notes.extend(blows.iter().map(|blow| format!("answered: {blow}")));
         notes.extend(acts.iter().map(|act| format!("someone here: {}", act.fact)));
         notes.extend(taken.iter().map(|toll| format!("the world: {toll}")));
@@ -2461,6 +2483,7 @@ impl<'s> Mechanics<'s> {
             damage,
             after.hp,
             round,
+            after.max,
         )))
     }
 
@@ -3089,8 +3112,12 @@ impl<'s> Mechanics<'s> {
         })
     }
 
-    /// `Playthrough::Hazards#on_arrival!`: the doorway walked, then the room.
+    /// `Playthrough::Hazards#on_arrival!`, after the floor is reached: the
+    /// doorway walked, then the room. A floor's level is the game's before
+    /// anything on its way in costs a hit point, so every toll and blow of
+    /// the turn is said against the same maximum.
     fn on_arrival(&mut self, destination: &Row, from: Option<&Row>) -> Result<(), Error> {
+        self.reach_floor(destination)?;
         if let Some(edge) = self.walked(from, Some(destination)) {
             let save = text(&edge, "hazard")
                 .and_then(|hazard| DOORWAY_HAZARDS.iter().find(|(key, _)| *key == hazard));
@@ -3101,6 +3128,53 @@ impl<'s> Mechanics<'s> {
             }
         }
         self.standing(destination, "on_arrival")
+    }
+
+    /// The first time this game stands on a floor (a place with a `floors`
+    /// row, or a room of one), its row of `playthrough_floors`: when it
+    /// arrived, and on a floor that raises a level (`floors.levels_up`),
+    /// the level it raised the player to, one past the level the game had,
+    /// with the player healed to full at once: before the way in or the room
+    /// costs anything, and before anybody strikes. A floor is reached once a
+    /// game: walking back onto it writes
+    /// nothing and raises nothing. A database without the table keeps no
+    /// row and raises nobody.
+    fn reach_floor(&mut self, room: &Row) -> Result<(), Error> {
+        if !self.store.has(store::PLAYTHROUGH_FLOORS) || self.over() {
+            return Ok(());
+        }
+        let Some(floor) = crate::playthrough::floor_of(&self.records, room).cloned() else {
+            return Ok(());
+        };
+        let place = int(&floor, "location_id");
+        if self
+            .game()
+            .floors_reached()
+            .iter()
+            .any(|reached| int(reached, "location_id") == place)
+        {
+            return Ok(());
+        }
+        let player = self.player().filter(stat_block);
+        let level = player
+            .as_ref()
+            .filter(|_| flag(&floor, "levels_up"))
+            .and_then(|who| self.game().level(who))
+            .map(|level| (level + 1).min(crate::playthrough::HIGHEST_LEVEL));
+        self.insert(
+            store::PLAYTHROUGH_FLOORS,
+            vec![
+                ("playthrough_id", Value::from(self.playthrough)),
+                ("location_id", Value::from(place)),
+                ("arrived_at", Value::from(self.story_now())),
+                ("level", Value::from(level)),
+            ],
+        )?;
+        if let (Some(_), Some(who)) = (level, &player) {
+            let full = self.game().max_hp(who).unwrap_or_default();
+            self.mend(who, full)?;
+        }
+        Ok(())
     }
 
     /// A fall through a doorway: the storeys between its two rooms at the
@@ -3814,6 +3888,9 @@ impl<'s> Mechanics<'s> {
                     int(blow, "damage").unwrap_or_default(),
                     int(blow, "hp_after").unwrap_or_default(),
                     int(blow, "round").unwrap_or_default(),
+                    self.game()
+                        .max_hp_at(&target, int(blow, "story_timestamp"))
+                        .unwrap_or_default(),
                 )
             })
             .collect();
@@ -4500,18 +4577,17 @@ fn weight_of(row: &[(String, i64)], shape: &str) -> i64 {
         .map_or(0, |(_, weight)| *weight)
 }
 
-/// `Playthrough::Blow#to_s`.
+/// `Playthrough::Blow#to_s`: `max` is what the target could take when the
+/// blow landed ([`Game::max_hp_at`]).
 pub(crate) fn blow_to_s(
     attacker: &str,
     target: &Row,
     damage: i64,
     hp_after: i64,
     round: i64,
+    max: i64,
 ) -> String {
-    let condition = Condition {
-        hp: hp_after,
-        max: max_hp(target).unwrap_or_default(),
-    };
+    let condition = Condition { hp: hp_after, max };
     format!(
         "{attacker} hit {} for {damage} (round {round}); {} is {}",
         string(target, "fullname"),

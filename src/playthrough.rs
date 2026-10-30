@@ -29,11 +29,31 @@ pub fn stat_block(character: &Row) -> bool {
     int(character, "level").is_some() && int(character, "hit_die").is_some()
 }
 
-/// `Character#max_hp`, or none without a stat block.
+/// `Character#max_hp`, or none without a stat block: the world's own, at the
+/// level the character's row holds. A game's player may have risen past it
+/// ([`Game::max_hp`]).
 pub fn max_hp(character: &Row) -> Option<i64> {
-    let level = int(character, "level")?;
-    let hit_die = int(character, "hit_die")?;
-    Some(hit_die + (level - 1) * (hit_die.div_euclid(2) + 1))
+    Some(hit_points(
+        int(character, "level")?,
+        int(character, "hit_die")?,
+    ))
+}
+
+/// The hit points a body of this level and hit die can take.
+pub fn hit_points(level: i64, hit_die: i64) -> i64 {
+    hit_die + (level - 1) * (hit_die.div_euclid(2) + 1)
+}
+
+/// `Character::LEVELS.max`: no floor raises a body past it.
+pub const HIGHEST_LEVEL: i64 = 20;
+
+/// The `floors` row of a floor, or of a room laid out inside one: the
+/// floor's own, or its parent's.
+pub fn floor_of<'a>(records: &'a Records, location: &Row) -> Option<&'a Row> {
+    let places = [Some(id(location)), int(location, "parent_location_id")];
+    records.first(crate::store::FLOORS, |floor| {
+        places.contains(&int(floor, "location_id"))
+    })
 }
 
 /// `Playthrough::EndNotice#reason`: why a finished game is over, off records.
@@ -248,9 +268,69 @@ impl<'a> Game<'a> {
             .find(|row| int(row, "character_id") == Some(character))
     }
 
+    /// The floors this game has reached, in the order it reached them.
+    pub fn floors_reached(&self) -> Vec<&'a Row> {
+        self.own(crate::store::PLAYTHROUGH_FLOORS)
+    }
+
+    /// The level a body has in this game by story time `at` (none: now).
+    /// For the player it is the level of the highest floor this game has
+    /// reached by then that raised one (`playthrough_floors.level`); for
+    /// anybody else, and for a player no floor has raised, it is the
+    /// world's (`characters.level`).
+    pub fn level_at(&self, character: &Row, at: Option<i64>) -> Option<i64> {
+        let world = int(character, "level")?;
+        if int(self.row, "character_id") != Some(id(character)) {
+            return Some(world);
+        }
+        let raised = self
+            .floors_reached()
+            .into_iter()
+            .filter(|row| at.is_none_or(|at| int(row, "arrived_at").is_some_and(|then| then <= at)))
+            .filter_map(|row| int(row, "level"))
+            .max();
+        Some(raised.unwrap_or(world))
+    }
+
+    /// The level a body has in this game now.
+    pub fn level(&self, character: &Row) -> Option<i64> {
+        self.level_at(character, None)
+    }
+
+    /// The hit points a body can take in this game now, or none without a
+    /// stat block.
+    pub fn max_hp(&self, character: &Row) -> Option<i64> {
+        self.max_hp_at(character, None)
+    }
+
+    /// The hit points a body could take in this game at story time `at`:
+    /// what a blow or a toll of then is said against.
+    pub fn max_hp_at(&self, character: &Row, at: Option<i64>) -> Option<i64> {
+        Some(hit_points(
+            self.level_at(character, at)?,
+            int(character, "hit_die")?,
+        ))
+    }
+
+    /// What the engine says of a floor that raised the player's level, in
+    /// its own words and to the player only: "Reaching The Second Floor
+    /// raised Odile to level 5: 28 hit points, and healed to full." None for
+    /// a floor that raised nothing.
+    pub fn floor_to_s(&self, reached: &Row) -> Option<String> {
+        let level = int(reached, "level")?;
+        let player = self.protagonist()?;
+        let floor = self.location(int(reached, "location_id")?);
+        Some(format!(
+            "Reaching {} raised {} to level {level}: {} hit points, and healed to full.",
+            string(floor, "name"),
+            string(player, "fullname"),
+            hit_points(level, int(player, "hit_die")?)
+        ))
+    }
+
     /// `#vitals_for`: none for somebody with no stat block.
     pub fn vitals_for(&self, character: &Row) -> Option<Condition> {
-        let max = max_hp(character)?;
+        let max = self.max_hp(character)?;
         let hp = self
             .vitals_row(id(character))
             .and_then(|row| int(row, "hp_current"))
@@ -511,7 +591,12 @@ impl<'a> Game<'a> {
         let damage = int(toll, "damage").expect("damage");
         let condition = Condition {
             hp: int(toll, "hp_after").expect("hp_after"),
-            max: max_hp(self.character(int(toll, "character_id").unwrap())).expect("a stat block"),
+            max: self
+                .max_hp_at(
+                    self.character(int(toll, "character_id").unwrap()),
+                    int(toll, "story_timestamp"),
+                )
+                .expect("a stat block"),
         };
         format!(
             "{hazard} on {where_it_was} cost {who} {damage} hit point{} ({}); {who} is {}",

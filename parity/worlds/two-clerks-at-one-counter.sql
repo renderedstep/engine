@@ -399,6 +399,7 @@ INSERT INTO schema_migrations VALUES('20261027120117');
 INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
+INSERT INTO schema_migrations VALUES('20261031090000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -409,7 +410,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("quest_outcome_id")
   REFERENCES "quest_outcomes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -432,6 +433,16 @@ FOREIGN KEY ("posted_to_id")
 INSERT INTO characters VALUES(1000000001,38,'A carter''s coat with straw on the shoulders.','A carter who pawned his late father''s watch and has come to get it back.','Ansel wants his father''s watch back across the counter before noon.','2026-10-02 13:25:56.043954',0,'obtain',12,'Being kept waiting at a counter.','Finding the watch already sold.','Ansel Mott',8,0,0,1,10,'A fair count.',NULL,'offer','Ansel','Quiet and determined.',1000000001,'Ansel needs to keep hold of the ticket, because it is the only proof he has.','male',1000000001,12,'Ansel wants somebody to tell him the pledge was not a betrayal.','Ansel needs to say out loud why he pawned it.','2026-10-02 13:25:56.043954',12,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000002,29,'Ink on her cuffs and a pencil behind one ear.','The pawnbroker''s niece, who keeps the ticket book and wants every stub back in it.','Tamsin wants every pawn ticket back in the book, starting with the one in Ansel''s hand.','2026-10-02 13:25:56.157492',0,'obtain',12,'A stub that walks out of the shop.','Her uncle finding the book short.','Tamsin Gale',8,0,0,0,10,'A ticket book with no gaps in it.',1000000001,'attend','Tamsin','Quick, friendly and acquisitive.',1000000001,'Tamsin needs to keep the book square.','female',1000000001,12,'Tamsin wants to be trusted with the till.','Tamsin needs to let one pledge go without a fight.','2026-10-02 13:25:56.157492',12,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000003,52,'A leather apron and a loupe on a cord.','The pawnbroker''s partner, who would rather close early than haggle.','Rowe wants the counter to himself and the door shut.','2026-10-02 13:25:56.174444',0,'keep',12,'Customers who lean on the counter.','Being made a fool of by a pledge.','Rowe Harker',8,0,0,0,10,'An empty shop at closing time.',1000000001,'withhold','Rowe','Gruff and territorial.',1000000001,'Rowe needs to keep the shop''s reputation.','male',1000000001,12,'Rowe wants somebody to ask his advice.','Rowe needs to admit the watch is already sold.','2026-10-02 13:25:56.174444',12,NULL,NULL,NULL);
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_f82b72b677"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_b4a8914069"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -642,5 +653,9 @@ CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
 CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
 CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
+CREATE INDEX "index_playthrough_floors_on_playthrough_id" ON "playthrough_floors" ("playthrough_id");
+CREATE INDEX "index_playthrough_floors_on_location_id" ON "playthrough_floors" ("location_id");
+CREATE INDEX "index_playthrough_floors_on_scene_id" ON "playthrough_floors" ("scene_id");
+CREATE UNIQUE INDEX "index_playthrough_floors_on_playthrough_and_location" ON "playthrough_floors" ("playthrough_id", "location_id");
 PRAGMA writable_schema=OFF;
 COMMIT;
