@@ -1,0 +1,152 @@
+---
+story: A Stocked Floor
+steps:
+- id: onto-the-stocked-floor
+  type: "/move The Stocked Floor"
+  browser:
+    token: into-the-stocked-floor
+    realizes: The Stocked Floor
+    replies:
+    - purpose: location
+      content:
+        description: A level of black stone passages.
+        lore: The first floor was cut by people nobody remembers.
+        place_kind: warren
+    - purpose: location
+      prompt_excludes:
+      - 'Loose, and could be picked up: red draught'
+      content:
+        description: A low chamber of black stone at the foot of the stair.
+        lore: Delvers pass through here on their way in.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Stocked Floor room 1 (realized)
+    here:
+    - coin
+    - rock shelf
+    - rubble
+    - stalagmite
+- id: a-room-with-a-draught-and-its-kit
+  type: "/move The Stocked Floor room 2"
+  browser:
+    token: stocked-floor-room-2
+    realizes: The Stocked Floor room 2
+    replies:
+    - purpose: location
+      prompt_includes:
+      - 'Loose, and could be picked up: red draught.'
+      - List AT MOST 3 portable things
+      content:
+        description: A cramped chamber, a rock shelf along one wall and rubble heaped
+          in a corner.
+        lore: Somebody sheltered here once.
+        items:
+        - name: tallow candle
+          description: A stub of yellow tallow candle, its wick black.
+          use_kind: ordinary
+        - name: coil of twine
+          description: A coil of waxed twine, still tight.
+          use_kind: ordinary
+        - name: chalk stick
+          description: A stick of white chalk worn down at one end.
+          use_kind: ordinary
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Stocked Floor room 2 (realized)
+    here:
+    - chalk stick
+    - coil of twine
+    - red draught
+    - rock shelf
+    - rubble
+    - shard of pottery
+    - tallow candle
+- id: take-the-draught
+  type: "/take red draught"
+  expect:
+    carrying:
+    - red draught
+- id: a-room-with-nothing-left-in-it
+  type: "/move The Stocked Floor room 3"
+  browser:
+    token: stocked-floor-room-3
+    realizes: The Stocked Floor room 3
+    replies:
+    - purpose: location
+      prompt_excludes:
+      - 'Loose, and could be picked up: red draught'
+      content:
+        description: A long chamber where a ledge runs above a stalagmite.
+        lore: Bats roost here.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Stocked Floor room 3 (realized)
+    here:
+    - bat skull
+    - bone
+    - ledge
+    - rock shelf
+    - stalagmite
+- id: the-safe-room
+  type: "/move The Stocked Floor room 4"
+  browser:
+    token: stocked-floor-room-4
+    realizes: The Stocked Floor room 4
+    replies:
+    - purpose: location
+      prompt_includes:
+      - 'Loose, and could be picked up: red draught'
+      - Write NOBODY into this place.
+      prompt_excludes:
+      - safe room
+      - sanctuary
+      content:
+        description: A still chamber around a dark pool, the air quiet.
+        lore: Nothing comes in here.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Stocked Floor room 4 (realized)
+    present: []
+    here:
+    - bone
+    - coin
+    - crack
+    - pool
+    - red draught
+    - rubble
+    - stalagmite
+- id: a-second-game-finds-the-floor-as-it-was-stocked
+  player: second
+  type: "/move The Stocked Floor"
+  expect:
+    location: The Stocked Floor room 1 (realized)
+    here:
+    - coin
+    - rock shelf
+    - rubble
+    - stalagmite
+- id: and-the-draught-the-first-game-took
+  player: second
+  type: "/move The Stocked Floor room 2"
+  expect:
+    location: The Stocked Floor room 2 (realized)
+    carrying: []
+    here:
+    - chalk stick
+    - coil of twine
+    - red draught
+    - rock shelf
+    - rubble
+    - shard of pottery
+    - tallow candle

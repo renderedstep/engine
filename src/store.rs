@@ -96,11 +96,13 @@ pub const OPTIONAL: &[&str] = &[REFUSED_LINES];
 /// them; a floor's monster level and the floor a person is posted to
 /// (migration 20261030230000), which read as null, and so as nobody born
 /// stronger and nobody posted; whether a floor raises a level (migration
-/// 20261031090000), which reads as false; and a floor's countdown and when
+/// 20261031090000), which reads as false; a floor's countdown and when
 /// it fell in a game (migration 20261031120000), which read as null, and so
-/// as a floor that never falls. [`shape`] leaves them out, so a database
-/// opens with or without them; one declared any other way is still a
-/// difference.
+/// as a floor that never falls; and a floor's supplies, whether a room is
+/// safe and the marker on a thing a floor left (migration 20261031150000),
+/// which read as none, not safe and no supply. [`shape`] leaves them out,
+/// so a database opens with or without them; one declared any other way is
+/// still a difference.
 pub const OPTIONAL_COLUMNS: &[&str] = &[
     "column stories.people_limit integer pk=0",
     "column stories.things_limit integer pk=0",
@@ -111,6 +113,12 @@ pub const OPTIONAL_COLUMNS: &[&str] = &[
     "column floors.levels_up boolean not null default FALSE pk=0",
     "column floors.minutes integer pk=0",
     "column playthrough_floors.fell_at datetime(6) pk=0",
+    "column floors.safe_rooms integer not null default 0 pk=0",
+    "column floors.healing_count integer not null default 0 pk=0",
+    "column floors.healing_name varchar pk=0",
+    "column floors.healing_description text pk=0",
+    "column locations.sanctuary boolean not null default FALSE pk=0",
+    "column items.supply varchar pk=0",
 ];
 
 /// A floor's own layout numbers, one row per place laid out as a floor

@@ -7,13 +7,16 @@
 //! Every draw comes from the place's own generator (`Roll::INTERIOR`), in
 //! this order: the grid's column widths, row depths and serpentine, each
 //! room's danger and hazard as it is created, the way-down room, then the
-//! extra doors, and last, on a guarded floor with no way down, the room its
-//! guards stand in. A place with no `floors` row is laid out by `interior`,
-//! exactly as before.
+//! extra doors, on a guarded floor with no way down the room its guards
+//! stand in, and last its supplies: the safe rooms, then the rooms a
+//! healing thing is left in. A floor with none of them draws nothing more,
+//! so it is laid out exactly as it was before supplies. A place with no
+//! `floors` row is laid out by `interior`, exactly as before.
 
 use crate::interior::{Builder, Layout, Place, WALKING};
 use crate::kind;
 use crate::parameters::Parameters;
+use crate::random::Random;
 use crate::roll;
 
 /// The paces a side of a floor's room is given on average when the floor's
@@ -37,6 +40,10 @@ pub struct Floor<'a> {
     pub down: bool,
     /// Whether anybody is posted to the floor (`characters.posted_to_id`).
     pub guarded: bool,
+    /// How many rooms are made safe (`floors.safe_rooms`).
+    pub safe_rooms: i64,
+    /// How many healing things are left about it (`floors.healing_count`).
+    pub healing: i64,
 }
 
 /// A floor's rooms and doorways, and which room the way down lands on.
@@ -49,6 +56,22 @@ pub struct Laid {
     /// room, or with no way down a room rolled after every other draw, never
     /// the entry unless it is the only room.
     pub guard_room: Option<usize>,
+    /// The indices of the safe rooms, in the order they were drawn: never
+    /// the entry, the way-down room or the guards' room. Each is laid out
+    /// `safe` with no hazard.
+    pub safe: Vec<usize>,
+    /// The indices of the rooms a healing thing is left in, one each, in
+    /// the order they were drawn: never the entry.
+    pub healing: Vec<usize>,
+}
+
+/// Up to `count` of `candidates`, each drawn once, in the order drawn. A
+/// count of 0 throws no die.
+fn draw(mut candidates: Vec<usize>, count: i64, rng: &mut Random) -> Vec<usize> {
+    let count = count.clamp(0, candidates.len() as i64) as usize;
+    (0..count)
+        .map(|_| candidates.remove(roll::one_of(candidates.len(), rng)))
+        .collect()
 }
 
 /// How many rooms a floor is drawn with: its own count, at least one, and
@@ -124,6 +147,18 @@ pub fn lay_out(place: &Place, floor: &Floor) -> Laid {
         None if count > 1 => 1 + roll::one_of(count - 1, &mut builder.rng),
         None => 0,
     });
+    let safe = draw(
+        (1..count)
+            .filter(|room| Some(*room) != way_down && Some(*room) != guard_room)
+            .collect(),
+        floor.safe_rooms,
+        &mut builder.rng,
+    );
+    for &room in &safe {
+        builder.rooms[room].danger = "safe";
+        builder.rooms[room].hazard = None;
+    }
+    let healing = draw((1..count).collect(), floor.healing, &mut builder.rng);
     Laid {
         layout: Layout {
             footprint: (width, depth),
@@ -132,6 +167,8 @@ pub fn lay_out(place: &Place, floor: &Floor) -> Laid {
         },
         way_down,
         guard_room,
+        safe,
+        healing,
     }
 }
 
@@ -190,6 +227,8 @@ mod tests {
                         hazard: Some("unlit"),
                         down,
                         guarded: id % 2 == 0,
+                        safe_rooms: rooms / 20,
+                        healing: rooms / 16,
                     };
                     let laid = lay_out(&place(id * 1009, None), &floor);
                     let layout = &laid.layout;
@@ -204,6 +243,36 @@ mod tests {
                             }
                         }
                         None => assert!(!floor.guarded, "{what}"),
+                    }
+                    let count = layout.rooms.len();
+                    let kept_back = 1 + [laid.way_down, laid.guard_room]
+                        .iter()
+                        .flatten()
+                        .filter(|room| **room != 0)
+                        .collect::<std::collections::BTreeSet<_>>()
+                        .len();
+                    assert_eq!(
+                        laid.safe.len(),
+                        (floor.safe_rooms as usize).min(count.saturating_sub(kept_back)),
+                        "{what}"
+                    );
+                    assert_eq!(
+                        laid.healing.len(),
+                        (floor.healing as usize).min(count - 1),
+                        "{what}"
+                    );
+                    for (drawn, rooms) in [(&laid.safe, "safe"), (&laid.healing, "healing")] {
+                        let mut distinct = drawn.clone();
+                        distinct.sort_unstable();
+                        distinct.dedup();
+                        assert_eq!(distinct.len(), drawn.len(), "{what}: {rooms}");
+                        assert!(!drawn.contains(&0), "{what}: {rooms} in the entry");
+                    }
+                    for room in &laid.safe {
+                        assert_ne!(Some(*room), laid.way_down, "{what}");
+                        assert_ne!(Some(*room), laid.guard_room, "{what}");
+                        assert_eq!(layout.rooms[*room].danger, "safe", "{what}");
+                        assert_eq!(layout.rooms[*room].hazard, None, "{what}");
                     }
                     assert_eq!(layout.rooms.len(), room_count(&floor), "{what}");
                     let mut reached = reachable(layout);
@@ -286,6 +355,8 @@ mod tests {
             hazard: Some("flooded"),
             down: true,
             guarded: false,
+            safe_rooms: 2,
+            healing: 3,
         };
         assert_eq!(
             lay_out(&place(42, Some("warren")), &floor),
@@ -311,6 +382,7 @@ mod tests {
                     hazard: None,
                     down,
                     guarded: false,
+                    ..Floor::default()
                 };
                 let open = lay_out(&place(id, Some("warren")), &floor);
                 let guarded = lay_out(
@@ -347,6 +419,62 @@ mod tests {
         );
     }
 
+    /// Supplies are the last draws: a stocked floor's rooms, doorways, way
+    /// down and guards' room are the bare floor's, but for each safe room's
+    /// danger and hazard; and a floor with none draws nothing more.
+    #[test]
+    fn supplies_are_drawn_last_and_move_no_other_draw() {
+        for down in [false, true] {
+            for id in 1..=40 {
+                let bare = Floor {
+                    rooms: 12,
+                    danger: Some("dangerous"),
+                    hazard: Some("unlit"),
+                    down,
+                    guarded: id % 3 == 0,
+                    ..Floor::default()
+                };
+                let stocked = Floor {
+                    safe_rooms: 2,
+                    healing: 3,
+                    ..bare
+                };
+                let open = lay_out(&place(id, Some("warren")), &bare);
+                let laid = lay_out(&place(id, Some("warren")), &stocked);
+                assert!(open.safe.is_empty() && open.healing.is_empty());
+                assert_eq!(laid.way_down, open.way_down, "place {id}");
+                assert_eq!(laid.guard_room, open.guard_room, "place {id}");
+                assert_eq!(laid.layout.edges, open.layout.edges, "place {id}");
+                assert_eq!(laid.safe.len(), 2, "place {id}");
+                assert_eq!(laid.healing.len(), 3, "place {id}");
+                for (index, (room, was)) in
+                    laid.layout.rooms.iter().zip(&open.layout.rooms).enumerate()
+                {
+                    if laid.safe.contains(&index) {
+                        assert_eq!(room.danger, "safe");
+                        assert_eq!(room.hazard, None);
+                        assert_eq!((&room.name, room.bounds), (&was.name, was.bounds));
+                    } else {
+                        assert_eq!(room, was, "place {id}, room {index}");
+                    }
+                }
+                assert_eq!(laid, lay_out(&place(id, Some("warren")), &stocked));
+            }
+        }
+        let two = lay_out(
+            &place(5, None),
+            &Floor {
+                rooms: 2,
+                down: true,
+                safe_rooms: 4,
+                healing: 4,
+                ..Floor::default()
+            },
+        );
+        assert!(two.safe.is_empty(), "the only other room is the way down");
+        assert_eq!(two.healing, vec![1], "one room besides the entry");
+    }
+
     #[test]
     fn the_grid_is_as_square_as_it_goes_and_the_footprint_holds_it() {
         assert_eq!(grid(1), (1, 1));
@@ -380,6 +508,7 @@ mod tests {
             hazard: None,
             down: true,
             guarded: false,
+            ..Floor::default()
         };
         let laid = lay_out(&place(9, None), &floor);
         let safe = Parameters::default().danger_for(0);

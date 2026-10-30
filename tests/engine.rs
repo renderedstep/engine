@@ -880,6 +880,59 @@ fn a_minutes_or_a_fell_at_declared_another_way_is_refused() {
 }
 
 #[test]
+fn a_database_from_before_the_supplies_is_opened_and_plays() {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch(&world("a-stocked-floor")).unwrap();
+    conn.execute_batch(
+        r#"ALTER TABLE "floors" DROP COLUMN "safe_rooms";
+           ALTER TABLE "floors" DROP COLUMN "healing_count";
+           ALTER TABLE "floors" DROP COLUMN "healing_name";
+           ALTER TABLE "floors" DROP COLUMN "healing_description";
+           ALTER TABLE "locations" DROP COLUMN "sanctuary";
+           ALTER TABLE "items" DROP COLUMN "supply";
+           DELETE FROM schema_migrations WHERE version = '20261031150000';"#,
+    )
+    .unwrap();
+    let mut engine = Engine::from_connection(conn).expect("the older shape is opened");
+    let story = engine
+        .story_titled(&format!("A Stocked Floor{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let outcome = engine
+        .play(playthrough, "/move The Stocked Floor", &mut |_| {})
+        .unwrap();
+    assert!(outcome.state.location.is_some());
+}
+
+#[test]
+fn a_supply_column_declared_another_way_is_refused() {
+    let differences = changed(migrated(
+        "a-stocked-floor",
+        r#"ALTER TABLE "floors" DROP COLUMN "safe_rooms";
+           ALTER TABLE "floors" ADD "safe_rooms" integer;"#,
+    ));
+    assert_eq!(differences, ["found column floors.safe_rooms integer pk=0"]);
+    let differences = changed(migrated(
+        "a-stocked-floor",
+        r#"ALTER TABLE "locations" DROP COLUMN "sanctuary";
+           ALTER TABLE "locations" ADD "sanctuary" varchar;"#,
+    ));
+    assert_eq!(
+        differences,
+        ["found column locations.sanctuary varchar pk=0"]
+    );
+    let differences = changed(migrated(
+        "a-stocked-floor",
+        r#"ALTER TABLE "items" DROP COLUMN "supply";
+           ALTER TABLE "items" ADD "supply" boolean DEFAULT FALSE NOT NULL;"#,
+    ));
+    assert_eq!(
+        differences,
+        ["found column items.supply boolean not null default FALSE pk=0"]
+    );
+}
+
+#[test]
 fn a_newer_schema_that_adds_a_unique_index_to_a_table_the_engine_uses_is_refused() {
     let differences = changed(migrated(
         "the-quay-house",
