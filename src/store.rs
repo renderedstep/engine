@@ -93,11 +93,12 @@ pub const OPTIONAL: &[&str] = &[REFUSED_LINES];
 /// fact [`shape`] would state, with the key and index each comes with: a
 /// story's own people and thing limits (migration 20261030120000), which
 /// read as null, and so as the ordinary limits, in a database from before
-/// them; and a floor's monster level and the floor a person is posted to
+/// them; a floor's monster level and the floor a person is posted to
 /// (migration 20261030230000), which read as null, and so as nobody born
-/// stronger and nobody posted. [`shape`] leaves them out, so a database
-/// opens with or without them; one declared any other way is still a
-/// difference.
+/// stronger and nobody posted; and whether a floor raises a level
+/// (migration 20261031090000), which reads as false. [`shape`] leaves them
+/// out, so a database opens with or without them; one declared any other
+/// way is still a difference.
 pub const OPTIONAL_COLUMNS: &[&str] = &[
     "column stories.people_limit integer pk=0",
     "column stories.things_limit integer pk=0",
@@ -105,38 +106,67 @@ pub const OPTIONAL_COLUMNS: &[&str] = &[
     "column characters.posted_to_id integer pk=0",
     "foreign key characters.posted_to_id -> locations.id on update NO ACTION on delete SET NULL",
     "index characters (posted_to_id)",
+    "column floors.levels_up boolean not null default FALSE pk=0",
 ];
 
 /// A floor's own layout numbers, one row per place laid out as a floor
 /// (migration 20261030200000, `floor`).
 pub const FLOORS: &str = "floors";
 
-/// Tables the engine loads only where the database has them, and never
-/// writes: a database from before one was added reads as holding no rows of
-/// it.
-pub const OPTIONAL_LOADED: &[&str] = &[FLOORS];
+/// The floors one game has reached, one row per game and floor, written the
+/// first time the game stands on it (migration 20261031090000): when it
+/// arrived, and on a floor that raises a level, the level it raised the
+/// player to.
+pub const PLAYTHROUGH_FLOORS: &str = "playthrough_floors";
+
+/// Tables the engine loads only where the database has them: a database
+/// from before one was added reads as holding no rows of it. The engine
+/// writes only [`PLAYTHROUGH_FLOORS`] of them, and only where it is there.
+pub const OPTIONAL_LOADED: &[&str] = &[FLOORS, PLAYTHROUGH_FLOORS];
 
 /// The shape of each table of [`OPTIONAL_LOADED`], as [`shape`] would state
 /// it, foreign keys included. [`shape`] leaves these facts out when every
 /// one of a table's is there, so a database opens with the table whole or
 /// without it; a table there in any other shape is still a difference.
-pub const OPTIONAL_SHAPES: &[(&str, &[&str])] = &[(
-    FLOORS,
-    &[
-        "column floors.created_at datetime(6) not null pk=0",
-        "column floors.danger varchar pk=0",
-        "column floors.down_location_id integer pk=0",
-        "column floors.hazard varchar pk=0",
-        "column floors.id integer not null pk=1",
-        "column floors.location_id integer not null pk=0",
-        "column floors.rooms integer not null pk=0",
-        "column floors.updated_at datetime(6) not null pk=0",
-        "foreign key floors.down_location_id -> locations.id on update NO ACTION on delete SET NULL",
-        "foreign key floors.location_id -> locations.id on update NO ACTION on delete CASCADE",
-        "index floors (down_location_id)",
-        "index floors (location_id) unique",
-    ],
-)];
+pub const OPTIONAL_SHAPES: &[(&str, &[&str])] = &[
+    (
+        FLOORS,
+        &[
+            "column floors.created_at datetime(6) not null pk=0",
+            "column floors.danger varchar pk=0",
+            "column floors.down_location_id integer pk=0",
+            "column floors.hazard varchar pk=0",
+            "column floors.id integer not null pk=1",
+            "column floors.location_id integer not null pk=0",
+            "column floors.rooms integer not null pk=0",
+            "column floors.updated_at datetime(6) not null pk=0",
+            "foreign key floors.down_location_id -> locations.id on update NO ACTION on delete SET NULL",
+            "foreign key floors.location_id -> locations.id on update NO ACTION on delete CASCADE",
+            "index floors (down_location_id)",
+            "index floors (location_id) unique",
+        ],
+    ),
+    (
+        PLAYTHROUGH_FLOORS,
+        &[
+            "column playthrough_floors.arrived_at datetime(6) not null pk=0",
+            "column playthrough_floors.created_at datetime(6) not null pk=0",
+            "column playthrough_floors.id integer not null pk=1",
+            "column playthrough_floors.level integer pk=0",
+            "column playthrough_floors.location_id integer not null pk=0",
+            "column playthrough_floors.playthrough_id integer not null pk=0",
+            "column playthrough_floors.scene_id integer pk=0",
+            "column playthrough_floors.updated_at datetime(6) not null pk=0",
+            "foreign key playthrough_floors.location_id -> locations.id on update NO ACTION on delete NO ACTION",
+            "foreign key playthrough_floors.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION",
+            "foreign key playthrough_floors.scene_id -> scenes.id on update NO ACTION on delete NO ACTION",
+            "index playthrough_floors (location_id)",
+            "index playthrough_floors (playthrough_id)",
+            "index playthrough_floors (playthrough_id, location_id) unique",
+            "index playthrough_floors (scene_id)",
+        ],
+    ),
+];
 
 /// What the engine relies on in a database, one fact per line, sorted: for
 /// every table it touches, each column's declared type (in lower case, as
@@ -413,6 +443,13 @@ impl Store {
 
     pub fn connection(&self) -> &Connection {
         &self.conn
+    }
+
+    /// Whether the database has this table: always, for a table of
+    /// [`TABLES`]; for one of [`OPTIONAL`] or [`OPTIONAL_LOADED`], only
+    /// where a migration added it.
+    pub fn has(&self, table: &str) -> bool {
+        self.columns.contains_key(table)
     }
 
     fn columns(&self, table: &str) -> Result<&[Column], Error> {

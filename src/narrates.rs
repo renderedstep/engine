@@ -274,6 +274,8 @@ pub fn card(records: &Records, playthrough: i64, scene: i64) -> Option<FactsCard
                 int(blow, "damage")?,
                 int(blow, "hp_after")?,
                 int(blow, "round")?,
+                game.max_hp_at(target, int(blow, "story_timestamp"))
+                    .unwrap_or_default(),
             ))
         })
         .collect();

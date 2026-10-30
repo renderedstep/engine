@@ -462,6 +462,7 @@ INSERT INTO schema_migrations VALUES('20261027120117');
 INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
+INSERT INTO schema_migrations VALUES('20261031090000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -472,7 +473,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("quest_outcome_id")
   REFERENCES "quest_outcomes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -496,6 +497,16 @@ INSERT INTO characters VALUES(1000000001,107,'Towering over most, Veythra’s gr
 INSERT INTO characters VALUES(1000000002,54,'A tall Trollkin woman with weathered, grayish skin and deep-set, amber eyes. She wears a patched cloak of stitched hides and carries a notched axe at her belt. Her hair, streaked with white, is tied back in a loose braid.','Gorva was once part of a nomadic band, but age and injury left her behind. She now drifts between towns like Hollow’s End, trading odd jobs for coin or shelter. She knows the paths through the black pines better than most, and she has a grudging respect for the Iron Council’s reach.',NULL,'2026-10-02 13:26:06.347579',0,NULL,14,'fools, the Church, wasted time','fire, deep water','Gorva the Wanderer',6,0,0,0,1,'quiet, strong drink, sharp blades',1000000007,NULL,'Gorva','Gorva speaks little but watches everything, her voice a low rumble when she does. She treats strangers with cautious curiosity, though her patience wears thin quickly.',1000000003,NULL,'female',1000000001,10,NULL,NULL,'2026-10-02 13:26:06.347579',6,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000003,41,'A Veythi woman with dark, braided hair streaked with silver, her sharp features framed by a high-collared coat of river-worn leather. Her hands are calloused from years of hauling nets and ropes, and her eyes flicker with the restlessness of someone used to the water.','Lyssa was born on the barges of the Veythi but left the river life after a falling-out with her kin. Now she trades in Hollow’s End, smuggling goods between the town and the Rust Market hidden in the river’s mist. She knows the Iron Council’s patrols and the goblin raids better than anyone.',NULL,'2026-10-02 13:26:06.351914',0,NULL,7,'the Church, betrayal, cold nights','being trapped, the Spire’s shadow','Lyssa of the Mist',10,0,0,0,1,'bargaining, river stories, fine cloth',1000000007,NULL,'Lyssa','Lyssa is quick with a joke and quicker with a deal, her voice smooth as the river’s current. She sizes up strangers with a practiced eye, always weighing what they might be worth.',1000000004,NULL,'trans woman',1000000001,10,NULL,NULL,'2026-10-02 13:26:06.351914',9,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000004,19,'A tall Durnish youth gone gaunt, his ashen skin greyer still for a season without sun, and his dark hair cropped to the scalp where the goblins took it for their own uses. What is left of a doublet of Council blue hangs off him, rotted at the seams and stiff with old blood at the collar. His wrists carry two bright rings of scar from the chain, and the third finger of his left hand is scarred around the base where the signet was pulled over the knuckle. His eyes have adjusted to the fungi’s glow and water in any brighter light.','Aurel Durn is the last living son of the Iron Council’s ruling line, and until the spring he had never been further from the Obsidian Throne than the smelters at the Spire’s foot. He was taken on the north road to Hollow’s End with eleven men-at-arms around him, none of whom outlived the ambush; the Blackfang came out of the black pines without a sound, which is how the clan hunts, and cut the horses first. Somewhere outside the iron gate they wrenched the signet from his left hand, and he understood, watching it go into the mud, that they meant to be believed rather than paid. He has been in the dark since. The clan keeps him whole and keeps him fed on fungus-mash because a corpse buys nothing, and they have told him plainly what he is worth: the sacred obsidian the Durnish took in the War of the Spire, weighed out and returned. He counts the dimming of the fungi to keep the days, and he has counted enough of them to know the arithmetic the Church will do. Rescue is not what he expects. Being burned with the caves is.',NULL,'2026-10-02 13:26:06.357747',0,NULL,10,'fungus-mash, the Church’s arithmetic, being spoken to as a price, pity, torchlight held close to his face','the Council burning the caves with him inside them, the Silent Maw’s hunger, losing his count of the hours, hearing his own name used as a sum','Prince Aurel Durn',6,0,0,0,1,'the twelve-hour dimming of the fungi, which is his only clock, clean water, the sound of iron being worked, his mother’s salt-and-iron psalm, being told the truth about numbers',1000000014,NULL,'Aurel','Aurel is courteous in a way that has stopped costing him anything, and he has learned the goblin habit of silence well enough to make Durnish visitors uneasy. He listens first, at length, before he says a word, and what he says is usually a price or a warning. He does not beg and he does not thank; he bargains, even from the floor of a cell, because bargaining is the only office left to him and he was raised to hold one.',1000000001,NULL,'male',1000000001,8,NULL,NULL,'2026-10-02 13:26:06.357747',16,10,7,NULL);
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_f82b72b677"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_b4a8914069"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -706,5 +717,9 @@ CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
 CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
 CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
+CREATE INDEX "index_playthrough_floors_on_playthrough_id" ON "playthrough_floors" ("playthrough_id");
+CREATE INDEX "index_playthrough_floors_on_location_id" ON "playthrough_floors" ("location_id");
+CREATE INDEX "index_playthrough_floors_on_scene_id" ON "playthrough_floors" ("scene_id");
+CREATE UNIQUE INDEX "index_playthrough_floors_on_playthrough_and_location" ON "playthrough_floors" ("playthrough_id", "location_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

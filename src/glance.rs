@@ -351,7 +351,7 @@ impl Glance {
             condition: player
                 .and_then(|who| game.vitals_for(who))
                 .map(|condition| condition.in_words()),
-            sheet: player.map(sheet).unwrap_or_default(),
+            sheet: player.map(|who| sheet(&game, who)).unwrap_or_default(),
             next_beat: crate::moment::Moment::new(game).next_beat(),
             story_time: game.story_time(),
             ending_due: !over && mechanics.due_ending().is_some(),
@@ -392,13 +392,14 @@ fn containing_place(records: &Records, room: &Row) -> Option<String> {
 }
 
 /// `Playthrough::Mechanics::State#sheet`: each half of the sheet the world
-/// has, and nothing for a half it does not.
-fn sheet(character: &Row) -> Vec<String> {
+/// has, and nothing for a half it does not. The level is this game's, which
+/// a floor may have raised past the world's.
+fn sheet(game: &Game, character: &Row) -> Vec<String> {
     let mut sheet = Vec::new();
     if crate::playthrough::stat_block(character) {
         sheet.push(format!(
             "level {}, d{}",
-            int(character, "level").unwrap_or_default(),
+            game.level(character).unwrap_or_default(),
             int(character, "hit_die").unwrap_or_default()
         ));
     }

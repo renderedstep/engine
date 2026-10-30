@@ -411,10 +411,11 @@ INSERT INTO schema_migrations VALUES('20261027120117');
 INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
+INSERT INTO schema_migrations VALUES('20261031090000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-25 22:48:20.183741','2026-10-25 22:48:20.183743');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','1ce6b3b7eea61111c69aac54baf282539c772990','2026-10-25 22:48:20.187552','2026-10-25 22:48:20.187553');
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -436,6 +437,16 @@ FOREIGN KEY ("posted_to_id")
  ON DELETE SET NULL);
 INSERT INTO characters VALUES(1000000001,31,'Wind-reddened cheeks and ink on her fingers.','A surveyor waiting on the morning crossing.',NULL,'2026-10-25 22:48:32.982956',0,NULL,12,'Waiting.','A missed crossing.','Wren Calloway',8,0,0,1,3,'A dry bench.',NULL,NULL,'Wren','Patient and cold.',1000000001,NULL,'female',1000000001,12,NULL,NULL,'2026-10-25 22:48:32.982956',12,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000002,62,'A white beard and a tarred cap.','The ferryman, who has worked the chain for forty years.',NULL,'2026-10-25 22:48:33.060368',0,NULL,8,'Passengers who talk.','The chain parting.','Abel Moss',6,0,0,0,1,'A slack tide.',1000000001,NULL,'Abel','Gruff and slow.',1000000001,NULL,'male',1000000001,8,NULL,NULL,'2026-10-25 22:48:33.060368',10,NULL,NULL,NULL);
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_f82b72b677"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_b4a8914069"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -647,5 +658,9 @@ CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
 CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
 CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
+CREATE INDEX "index_playthrough_floors_on_playthrough_id" ON "playthrough_floors" ("playthrough_id");
+CREATE INDEX "index_playthrough_floors_on_location_id" ON "playthrough_floors" ("location_id");
+CREATE INDEX "index_playthrough_floors_on_scene_id" ON "playthrough_floors" ("scene_id");
+CREATE UNIQUE INDEX "index_playthrough_floors_on_playthrough_and_location" ON "playthrough_floors" ("playthrough_id", "location_id");
 PRAGMA writable_schema=OFF;
 COMMIT;
