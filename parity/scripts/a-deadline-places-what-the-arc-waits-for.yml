@@ -73,14 +73,10 @@ steps:
   type: go to Yard
   expect:
     location: Yard (realized)
-- id: through-the-kitchen
-  type: go to Kitchen
+- id: into-the-wash-house-again
+  type: go to Wash House
   expect:
-    location: Kitchen (realized)
-- id: up-to-the-loft
-  type: go to Loft
-  expect:
-    location: Loft (realized)
+    location: Wash House (realized)
 - id: to-where-the-warden-is
   type: go to where Warden Hesk is
   expect:

@@ -1,0 +1,196 @@
+---
+story: A Yard Before the Winter
+steps:
+- id: into-the-cold-store
+  type: "/move Cold Store"
+  browser:
+    token: cold-store
+    realizes: Cold Store
+    replies:
+    - purpose: location
+      content:
+        description: A stone store with empty salt bins.
+        lore: Nobody has used it since the road closed.
+    - purpose: location
+      content:
+        exits: []
+    - purpose: arrival
+      content:
+        description: You step into the cold store.
+        summary: Tamsin looks into the cold store.
+  expect:
+    location: Cold Store (realized)
+    exits:
+    - Yard (realized)
+    note: completed
+    quest:
+      1: bound
+      2: unbound
+      3: unbound
+- id: back-out-of-the-cold-store
+  type: go to Yard
+  expect:
+    location: Yard (realized)
+    exits:
+    - Kitchen (realized)
+    - Cold Store (realized)
+    - Wash House (stub)
+    - Byre (stub)
+- id: into-the-wash-house
+  type: "/move Wash House"
+  browser:
+    token: wash-house
+    realizes: Wash House
+    replies:
+    - purpose: location
+      content:
+        description: A lean-to with a cold copper.
+        lore: Nobody has used it since the road closed.
+    - purpose: location
+      content:
+        exits: []
+    - purpose: arrival
+      content:
+        description: You step into the wash house.
+        summary: Tamsin looks into the wash house.
+  expect:
+    location: Wash House (realized)
+    exits:
+    - Yard (realized)
+    - where Warden Hesk is room 1 (stub)
+    note: completed
+    quest:
+      1: bound
+      2: bound
+      3: unbound
+- id: back-out-of-the-wash-house
+  type: go to Yard
+  expect:
+    location: Yard (realized)
+    exits:
+    - Kitchen (realized)
+    - Cold Store (realized)
+    - Wash House (realized)
+    - Byre (stub)
+- id: into-the-byre
+  type: "/move Byre"
+  browser:
+    token: byre
+    realizes: Byre
+    replies:
+    - purpose: location
+      content:
+        description: An empty byre smelling of old straw.
+        lore: Nobody has used it since the road closed.
+    - purpose: location
+      content:
+        exits: []
+    - purpose: arrival
+      content:
+        description: You step into the byre.
+        summary: Tamsin looks into the byre.
+  expect:
+    location: Byre (realized)
+    exits:
+    - Yard (realized)
+    here: []
+    note: completed
+    quest:
+      1: bound
+      2: bound
+      3: bound
+- id: back-out-of-the-byre
+  type: go to Yard
+  expect:
+    location: Yard (realized)
+    exits:
+    - Kitchen (realized)
+    - Cold Store (realized)
+    - Wash House (realized)
+    - Byre (realized)
+- id: through-the-kitchen
+  type: go to Kitchen
+  expect:
+    location: Kitchen (realized)
+    exits:
+    - Yard (realized)
+    - Loft (realized)
+- id: up-to-the-loft
+  type: go to Loft
+  expect:
+    location: Loft (realized)
+    exits:
+    - Kitchen (realized)
+- id: down-from-the-loft
+  type: go to Kitchen
+  expect:
+    location: Kitchen (realized)
+- id: out-to-the-yard
+  type: go to Yard
+  expect:
+    location: Yard (realized)
+- id: into-the-wash-house-again
+  type: go to Wash House
+  expect:
+    location: Wash House (realized)
+- id: into-where-the-warden-is
+  type: go to where Warden Hesk is room 1
+  expect:
+    location: where Warden Hesk is room 1 (stub)
+- id: on-through-room-2
+  type: go to where Warden Hesk is room 2
+  expect:
+    location: where Warden Hesk is room 2 (stub)
+- id: down-to-room-6
+  type: go to where Warden Hesk is room 6
+  expect:
+    location: where Warden Hesk is room 6 (stub)
+- id: down-to-the-warden
+  type: go to where Warden Hesk is room 4
+  expect:
+    location: where Warden Hesk is room 4 (stub)
+    present:
+    - Warden Hesk
+- id: across-to-room-3
+  type: go to where Warden Hesk is room 3
+  expect:
+    location: where Warden Hesk is room 3 (stub)
+- id: onto-the-salt-stair
+  type: go to the Salt Stair room 1
+  expect:
+    location: the Salt Stair room 1 (stub)
+    quest:
+      2: reached
+- id: down-the-stair-to-room-10
+  type: go to the Salt Stair room 10
+  expect:
+    location: the Salt Stair room 10 (stub)
+- id: on-to-room-11
+  type: go to the Salt Stair room 11
+  expect:
+    location: the Salt Stair room 11 (stub)
+- id: down-to-room-5
+  type: go to the Salt Stair room 5
+  expect:
+    location: the Salt Stair room 5 (stub)
+- id: on-to-room-6
+  type: go to the Salt Stair room 6
+  expect:
+    location: the Salt Stair room 6 (stub)
+- id: on-to-room-7
+  type: go to the Salt Stair room 7
+  expect:
+    location: the Salt Stair room 7 (stub)
+- id: to-where-the-seal-lies
+  type: go to the Salt Stair room 8
+  expect:
+    location: the Salt Stair room 8 (stub)
+    here:
+    - iron seal
+- id: take-up-the-iron-seal
+  type: take the iron seal
+  expect:
+    carrying:
+    - iron seal
+    quest:
+      3: reached

@@ -145,6 +145,11 @@
             "id": 1000000001,
             "name": "Yard",
             "detail": "realized"
+          },
+          {
+            "id": 1000000008,
+            "name": "where Warden Hesk is room 1",
+            "detail": "stub"
           }
         ],
         "here": [],
@@ -384,81 +389,20 @@
       }
     },
     {
-      "step": "step 7 through-the-kitchen",
+      "step": "step 7 into-the-wash-house-again",
       "player": "first",
-      "typed": "go to Kitchen",
+      "typed": "go to Wash House",
       "dump": {
         "location": {
-          "id": 1000000002,
-          "name": "Kitchen",
+          "id": 1000000005,
+          "name": "Wash House",
           "detail": "realized"
         },
         "storey": null,
         "exits": [
-          {
-            "id": 1000000003,
-            "name": "Loft",
-            "detail": "realized"
-          },
           {
             "id": 1000000001,
             "name": "Yard",
-            "detail": "realized"
-          }
-        ],
-        "here": [],
-        "carrying": [],
-        "present": [],
-        "foes": [],
-        "inscription": [],
-        "hp": 23,
-        "hp_of": {},
-        "abilities": {
-          "strength": 13,
-          "dexterity": 11,
-          "will": 10
-        },
-        "dead": false,
-        "changed": true,
-        "change": "moved: Yard -> Kitchen",
-        "refused": false,
-        "offers": null,
-        "understood": "move -> Kitchen",
-        "resolved_by": "grammar",
-        "note": null,
-        "drifts": 0,
-        "blows": 0,
-        "hazards": 0,
-        "quest": {
-          "1": "bound",
-          "2": "bound",
-          "3": "bound"
-        },
-        "volitions": 0,
-        "acts": 0,
-        "ending": "none",
-        "ending_words": null,
-        "scheduled": 0,
-        "fired": 0,
-        "elapsed_minutes": 0.0,
-        "shown": null
-      }
-    },
-    {
-      "step": "step 8 up-to-the-loft",
-      "player": "first",
-      "typed": "go to Loft",
-      "dump": {
-        "location": {
-          "id": 1000000003,
-          "name": "Loft",
-          "detail": "realized"
-        },
-        "storey": null,
-        "exits": [
-          {
-            "id": 1000000002,
-            "name": "Kitchen",
             "detail": "realized"
           },
           {
@@ -481,10 +425,10 @@
         },
         "dead": false,
         "changed": true,
-        "change": "moved: Kitchen -> Loft",
+        "change": "moved: Yard -> Wash House",
         "refused": false,
         "offers": null,
-        "understood": "move -> Loft",
+        "understood": "move -> Wash House",
         "resolved_by": "grammar",
         "note": null,
         "drifts": 0,
@@ -506,7 +450,7 @@
       }
     },
     {
-      "step": "step 9 to-where-the-warden-is",
+      "step": "step 8 to-where-the-warden-is",
       "player": "first",
       "typed": "go to where Warden Hesk is",
       "dump": {
@@ -518,8 +462,8 @@
         "storey": 0,
         "exits": [
           {
-            "id": 1000000003,
-            "name": "Loft",
+            "id": 1000000005,
+            "name": "Wash House",
             "detail": "realized"
           },
           {
@@ -542,7 +486,7 @@
         },
         "dead": false,
         "changed": true,
-        "change": "moved: Loft -> where Warden Hesk is room 1 (a stub -- nobody has written this room, and no-model mode cannot)",
+        "change": "moved: Wash House -> where Warden Hesk is room 1 (a stub -- nobody has written this room, and no-model mode cannot)",
         "refused": false,
         "offers": null,
         "understood": "move -> where Warden Hesk is room 1",

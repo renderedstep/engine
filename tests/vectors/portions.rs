@@ -464,6 +464,7 @@ fn deadline() {
                 z: room["z"].as_i64(),
                 // A place is written with its one room inside, so it is laid out.
                 laid_out: room["place"] == true,
+                place: room["place"] == true,
             })
             .collect();
         let connections = id_pairs(&input["connections"]);
