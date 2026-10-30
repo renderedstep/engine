@@ -162,12 +162,13 @@ impl Matchup {
 
     /// Reads a matchup from its YAML text.
     pub fn parse(name: &str, source: &str) -> Result<Matchup, String> {
-        let inner = |source: &str| -> Result<Matchup, String> {
-            let document = YamlLoader::load_from_str(source)
-                .map_err(|error| error.to_string())?
-                .into_iter()
-                .next()
-                .ok_or("an empty file")?;
+        Matchup::read(name, &document(name, source)?)
+    }
+
+    /// Reads a matchup from its YAML document. A `sweep:` key is not read
+    /// here: `sweep::grid` sets each of its points and reads every one.
+    pub fn read(name: &str, document: &Yaml) -> Result<Matchup, String> {
+        let inner = |document: &Yaml| -> Result<Matchup, String> {
             let mut matchup = Matchup::new(name, Vec::new());
             if !document["seeds"].is_badvalue() {
                 matchup.seeds = seeds(&document["seeds"])?;
@@ -208,7 +209,7 @@ impl Matchup {
             }
             Ok(matchup)
         };
-        inner(source).map_err(|error| format!("{name}: {error}"))
+        inner(document).map_err(|error| format!("{name}: {error}"))
     }
 
     /// Every foe's full name, in the order their rows are written.
@@ -223,6 +224,15 @@ impl Matchup {
             .map(|name| format!("{name} {}", letter(letters.next().unwrap_or_default())))
             .collect()
     }
+}
+
+/// A matchup file's YAML document.
+pub fn document(name: &str, source: &str) -> Result<Yaml, String> {
+    YamlLoader::load_from_str(source)
+        .map_err(|error| format!("{name}: {error}"))?
+        .into_iter()
+        .next()
+        .ok_or_else(|| format!("{name}: an empty file"))
 }
 
 /// A, B, ... Z, then AA, AB: a name the grammar cannot read as a number.
