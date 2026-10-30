@@ -74,6 +74,7 @@ pub mod roll;
 pub mod room;
 pub mod schemas;
 pub mod shuffle_connections;
+pub mod sim;
 pub mod slash_menu;
 pub mod spot;
 pub mod stat_block;
