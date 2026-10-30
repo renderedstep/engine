@@ -247,6 +247,10 @@ impl Turn<'_, '_> {
                 })
                 .collect();
         }
+        // A safe room: nobody is born in it, whatever its population says.
+        if flag(row, "sanctuary") {
+            return Vec::new();
+        }
         let story = self.m.game().story();
         let universe = int(story, "universe_id");
         let races: Vec<&Row> = self
@@ -1338,22 +1342,35 @@ impl Turn<'_, '_> {
             Some(_) => self.posted_to(location),
             None => Vec::new(),
         };
-        let (layout, way_down, guard_room) = match &floor_row {
-            Some(floor_row) => {
-                let laid = floor::lay_out(
-                    &place,
-                    &Floor {
-                        rooms: int(floor_row, "rooms").unwrap_or_default(),
-                        danger: text(floor_row, "danger"),
-                        hazard: text(floor_row, "hazard"),
-                        down: int(floor_row, "down_location_id").is_some(),
-                        guarded: !guards.is_empty(),
-                    },
-                );
-                (laid.layout, laid.way_down, laid.guard_room)
-            }
-            None => (interior::lay_out(&place, None, parameters), None, None),
+        let healing = floor_row.as_ref().and_then(Supply::healing);
+        let laid = match &floor_row {
+            Some(floor_row) => floor::lay_out(
+                &place,
+                &Floor {
+                    rooms: int(floor_row, "rooms").unwrap_or_default(),
+                    danger: text(floor_row, "danger"),
+                    hazard: text(floor_row, "hazard"),
+                    down: int(floor_row, "down_location_id").is_some(),
+                    guarded: !guards.is_empty(),
+                    safe_rooms: int(floor_row, "safe_rooms").unwrap_or_default(),
+                    healing: healing.as_ref().map_or(0, |supply| supply.count),
+                },
+            ),
+            None => floor::Laid {
+                layout: interior::lay_out(&place, None, parameters),
+                way_down: None,
+                guard_room: None,
+                safe: Vec::new(),
+                healing: Vec::new(),
+            },
         };
+        let floor::Laid {
+            layout,
+            way_down,
+            guard_room,
+            safe,
+            healing: stocked,
+        } = laid;
         self.m.update(
             "locations",
             location,
@@ -1363,7 +1380,7 @@ impl Turn<'_, '_> {
             ],
         )?;
         let mut rooms = Vec::new();
-        for room in &layout.rooms {
+        for (index, room) in layout.rooms.iter().enumerate() {
             let bounds = room.bounds;
             let teaser = format!(
                 "A room inside {name}, {} by {} paces on storey {}.",
@@ -1391,6 +1408,10 @@ impl Turn<'_, '_> {
                 values.push(("hazard", Value::from(hazard.hazard)));
                 values.push(("hazard_die", Value::from(hazard.hazard_die)));
             }
+            if safe.contains(&index) {
+                values.push(("population", Value::from("nobody")));
+                values.push(("sanctuary", Value::Bool(true)));
+            }
             let room = id(&self.m.insert("locations", values)?);
             self.bind(Bound::Place, room)?;
             rooms.push(room);
@@ -1416,6 +1437,37 @@ impl Turn<'_, '_> {
         self.open_the_way_in(location, &rooms, way_down)?;
         if let Some(index) = guard_room {
             self.post_guards(rooms[index], &guards)?;
+        }
+        if let Some(healing) = &healing {
+            for index in stocked {
+                self.leave_supply(rooms[index], healing)?;
+            }
+        }
+        Ok(())
+    }
+
+    /// One of a floor's healing things left lying in `room` as the world's
+    /// own row, placed as any thing in it is. It is part of laying the
+    /// floor out, so it is written once, for the world, and never again:
+    /// whoever takes it in one game takes that game's copy. It carries the
+    /// supply marker and no `kit_key`, so it is neither kit (the room is
+    /// still furnished) nor one of the room writer's things (no limit
+    /// counts it, `realization::bespoke`).
+    fn leave_supply(&mut self, room: i64, supply: &Supply) -> Result<(), Error> {
+        let row = self.m.insert(
+            "items",
+            vec![
+                ("location_id", Value::from(room)),
+                ("name", Value::from(supply.name.as_str())),
+                ("description", Value::from(supply.description.as_str())),
+                ("use_kind", Value::from("healing")),
+                ("bulk", Value::from("handy")),
+                ("supply", Value::from(realization::FLOOR_SUPPLY)),
+            ],
+        )?;
+        let placed = self.placement(room, spot::Record::Item(id(&row)));
+        if !placed.is_empty() {
+            self.m.update("items", id(&row), placed)?;
         }
         Ok(())
     }
@@ -1650,6 +1702,29 @@ struct Side {
 }
 
 /// A value as Ruby's `to_s` writes it: a string itself, null empty.
+/// The healing things a floor's row says are left about it
+/// (`floors.healing_count`, `healing_name`, `healing_description`).
+struct Supply {
+    count: i64,
+    name: String,
+    description: String,
+}
+
+impl Supply {
+    /// None for a floor that leaves none: no count, or no name to give one.
+    fn healing(floor: &Row) -> Option<Supply> {
+        let count = int(floor, "healing_count").filter(|count| *count > 0)?;
+        let name = text(floor, "healing_name").filter(|name| !is_blank(name))?;
+        Some(Supply {
+            count,
+            name: name.to_string(),
+            description: text(floor, "healing_description")
+                .unwrap_or_default()
+                .to_string(),
+        })
+    }
+}
+
 fn value_text(value: &Value) -> String {
     match value {
         Value::Null => String::new(),

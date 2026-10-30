@@ -1,0 +1,597 @@
+{
+  "script": "a-floor-stocked-at-layout",
+  "story": "A Stocked Floor",
+  "steps": [
+    {
+      "step": "step 1 onto-the-stocked-floor",
+      "player": "first",
+      "typed": "/move The Stocked Floor",
+      "dump": {
+        "location": {
+          "id": 1000000003,
+          "name": "The Stocked Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000004,
+            "name": "The Stocked Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Stocked Floor room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000011,
+            "name": "coin"
+          },
+          {
+            "id": 1000000008,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000009,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000010,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Stocked Floor",
+        "resolved_by": "grammar",
+        "note": "into-the-stocked-floor: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 a-room-with-a-draught-and-its-kit",
+      "player": "first",
+      "typed": "/move The Stocked Floor room 2",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The Stocked Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Stocked Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Stocked Floor room 3",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000025,
+            "name": "chalk stick"
+          },
+          {
+            "id": 1000000024,
+            "name": "coil of twine"
+          },
+          {
+            "id": 1000000021,
+            "name": "red draught"
+          },
+          {
+            "id": 1000000019,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000020,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000022,
+            "name": "shard of pottery"
+          },
+          {
+            "id": 1000000023,
+            "name": "tallow candle"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Stocked Floor room 2",
+        "resolved_by": "grammar",
+        "note": "stocked-floor-room-2: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 take-the-draught",
+      "player": "first",
+      "typed": "/take red draught",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The Stocked Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Stocked Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Stocked Floor room 3",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000025,
+            "name": "chalk stick"
+          },
+          {
+            "id": 1000000024,
+            "name": "coil of twine"
+          },
+          {
+            "id": 1000000019,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000020,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000022,
+            "name": "shard of pottery"
+          },
+          {
+            "id": 1000000023,
+            "name": "tallow candle"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000021,
+            "name": "red draught"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: red draught (was lying in The Stocked Floor room 2, now carried by Odile)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> red draught",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 a-room-with-nothing-left-in-it",
+      "player": "first",
+      "typed": "/move The Stocked Floor room 3",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "The Stocked Floor room 3",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000004,
+            "name": "The Stocked Floor room 2",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Stocked Floor room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000034,
+            "name": "bat skull"
+          },
+          {
+            "id": 1000000035,
+            "name": "bone"
+          },
+          {
+            "id": 1000000033,
+            "name": "ledge"
+          },
+          {
+            "id": 1000000031,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000032,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000021,
+            "name": "red draught"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Stocked Floor room 3",
+        "resolved_by": "grammar",
+        "note": "stocked-floor-room-3: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 the-safe-room",
+      "player": "first",
+      "typed": "/move The Stocked Floor room 4",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Stocked Floor room 4",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Stocked Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Stocked Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000049,
+            "name": "bone"
+          },
+          {
+            "id": 1000000048,
+            "name": "coin"
+          },
+          {
+            "id": 1000000046,
+            "name": "crack"
+          },
+          {
+            "id": 1000000045,
+            "name": "pool"
+          },
+          {
+            "id": 1000000047,
+            "name": "red draught"
+          },
+          {
+            "id": 1000000043,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000044,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000021,
+            "name": "red draught"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Stocked Floor room 4",
+        "resolved_by": "grammar",
+        "note": "stocked-floor-room-4: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 a-second-game-finds-the-floor-as-it-was-stocked (second)",
+      "player": "second",
+      "typed": "/move The Stocked Floor",
+      "dump": {
+        "location": {
+          "id": 1000000003,
+          "name": "The Stocked Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000004,
+            "name": "The Stocked Floor room 2",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Stocked Floor room 4",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000054,
+            "name": "coin"
+          },
+          {
+            "id": 1000000051,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000052,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000053,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Landing -> The Stocked Floor room 1",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Stocked Floor room 1",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 and-the-draught-the-first-game-took (second)",
+      "player": "second",
+      "typed": "/move The Stocked Floor room 2",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The Stocked Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Stocked Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Stocked Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000062,
+            "name": "chalk stick"
+          },
+          {
+            "id": 1000000061,
+            "name": "coil of twine"
+          },
+          {
+            "id": 1000000058,
+            "name": "red draught"
+          },
+          {
+            "id": 1000000056,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000057,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000059,
+            "name": "shard of pottery"
+          },
+          {
+            "id": 1000000060,
+            "name": "tallow candle"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Stocked Floor room 1 -> The Stocked Floor room 2",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Stocked Floor room 2",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

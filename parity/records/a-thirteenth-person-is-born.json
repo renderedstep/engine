@@ -412,7 +412,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []

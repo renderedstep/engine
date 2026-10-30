@@ -4286,7 +4286,7 @@ const WITHIN: [&str; 2] = ["within_id", "how"];
 
 /// A column name as a `'static` string, for the columns an item copies.
 fn column_name(column: &str) -> &'static str {
-    const COLUMNS: [&str; 19] = [
+    const COLUMNS: [&str; 20] = [
         "bulk",
         "combustible",
         "description",
@@ -4300,6 +4300,7 @@ fn column_name(column: &str) -> &'static str {
         "name",
         "properties",
         "readable",
+        "supply",
         "tier",
         "use_kind",
         "wear",

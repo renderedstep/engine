@@ -100,7 +100,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -143,7 +144,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -327,7 +329,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -370,7 +373,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -567,7 +571,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000002,
@@ -592,7 +597,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -635,7 +641,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -897,7 +904,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000002,
@@ -922,7 +930,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -965,7 +974,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []

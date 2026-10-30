@@ -37,7 +37,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -80,7 +81,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -110,7 +112,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -140,7 +143,8 @@
               "hold": null,
               "material": "pottery",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -170,7 +174,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -200,7 +205,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -230,7 +236,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -260,7 +267,8 @@
               "hold": null,
               "material": "glass",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -358,7 +366,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -401,7 +410,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -431,7 +441,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -461,7 +472,8 @@
               "hold": null,
               "material": "pottery",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -491,7 +503,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -521,7 +534,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -551,7 +565,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -581,7 +596,8 @@
               "hold": null,
               "material": "glass",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -611,7 +627,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -730,7 +747,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -773,7 +791,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -803,7 +822,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -833,7 +853,8 @@
               "hold": null,
               "material": "pottery",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -863,7 +884,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -893,7 +915,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -923,7 +946,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -953,7 +977,8 @@
               "hold": null,
               "material": "glass",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -983,7 +1008,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -1013,7 +1039,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -1146,7 +1173,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -1189,7 +1217,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -1219,7 +1248,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -1249,7 +1279,8 @@
               "hold": null,
               "material": "pottery",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -1279,7 +1310,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -1309,7 +1341,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -1339,7 +1372,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -1369,7 +1403,8 @@
               "hold": null,
               "material": "glass",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -1399,7 +1434,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -1429,7 +1465,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -1562,7 +1599,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -1605,7 +1643,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -1635,7 +1674,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -1665,7 +1705,8 @@
               "hold": null,
               "material": "pottery",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -1695,7 +1736,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -1725,7 +1767,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -1755,7 +1798,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -1785,7 +1829,8 @@
               "hold": null,
               "material": "glass",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -1815,7 +1860,8 @@
               "hold": null,
               "material": "cloth",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -1845,7 +1891,8 @@
               "hold": null,
               "material": "paper",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []

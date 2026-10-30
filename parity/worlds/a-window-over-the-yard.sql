@@ -36,7 +36,7 @@ FOREIGN KEY ("character_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), "searched_at" datetime(6), "hold" varchar, "material" varchar, "wear" varchar, "worn" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_e8ed83a2e6"
+CREATE TABLE IF NOT EXISTS "items" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bulk" varchar DEFAULT 'handy' NOT NULL, "character_id" integer, "combustible" boolean DEFAULT FALSE NOT NULL, "created_at" datetime(6) NOT NULL, "description" text, "disposition" varchar DEFAULT 'intact' NOT NULL, "inscription" text, "location_id" integer, "name" varchar, "playthrough_id" integer, "properties" text, "readable" boolean DEFAULT FALSE NOT NULL, "template_id" integer, "updated_at" datetime(6) NOT NULL, "use_kind" varchar DEFAULT 'ordinary' NOT NULL, "x" integer, "y" integer, "fragility" varchar DEFAULT 'sturdy' NOT NULL, "tier" varchar DEFAULT 'portable' NOT NULL, "holds" varchar, "within_id" integer, "how" varchar, "kit_key" varchar, "noticed_at" datetime(6), "searched_at" datetime(6), "hold" varchar, "material" varchar, "wear" varchar, "worn" boolean DEFAULT FALSE NOT NULL, "supply" varchar, CONSTRAINT "fk_rails_e8ed83a2e6"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_35423c7ef8"
@@ -76,18 +76,18 @@ INSERT INTO location_connections VALUES(1000000005,'open',1000000003,'2026-10-02
 INSERT INTO location_connections VALUES(1000000006,'open',1000000004,'2026-10-02 13:25:52.800030','adjacent',NULL,NULL,NULL,1000000003,'about a minute','taking stairs','2026-10-02 13:25:52.800030');
 INSERT INTO location_connections VALUES(1000000007,'open',1000000005,'2026-10-02 13:25:52.801892','adjacent','fall',NULL,NULL,1000000003,'about 3 minutes','climbing','2026-10-02 13:25:52.801892');
 INSERT INTO location_connections VALUES(1000000008,'open',1000000003,'2026-10-02 13:25:52.803157','adjacent',NULL,NULL,NULL,1000000005,'about 3 minutes','climbing','2026-10-02 13:25:52.803157');
-CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, "surface" varchar, "kind" varchar, "density" varchar, CONSTRAINT "fk_rails_5bc98acf09"
+CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "depth" integer, "description" text, "detail_level" varchar DEFAULT 'stub' NOT NULL, "generation_checkpoint" json, "hazard" varchar, "hazard_die" integer, "last_protagonist_visit" datetime(6), "lore" text, "mobile" boolean DEFAULT FALSE NOT NULL, "name" varchar, "parent_location_id" integer, "population" varchar, "story_id" integer NOT NULL, "teaser" text, "updated_at" datetime(6) NOT NULL, "width" integer, "x" integer, "y" integer, "z" integer, "surface" varchar, "kind" varchar, "density" varchar, "sanctuary" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_fedd9b21a0"
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,'2026-10-02 13:25:52.560013','safe',NULL,'A rutted lane between hedges, ending at the farm gate and the yard beyond it.','realized',NULL,NULL,NULL,NULL,'The lane has flooded every spring since anybody wrote it down.',0,'The Lane',NULL,NULL,1000000001,'The lane up to Halloway Farm.','2026-10-02 13:25:52.560013',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000002,'2026-10-02 13:25:52.572928','safe',8,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'Halloway Farm',NULL,NULL,1000000001,'A farmhouse and its yard at the end of the lane.','2026-10-02 13:25:52.572928',12,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000003,'2026-10-02 13:25:52.590643','safe',8,'Straw bales under the rafters, and a shuttered window over the yard.','realized',NULL,NULL,NULL,NULL,'The loft has kept the winter hay dry for a hundred years.',0,'The Loft',1000000002,NULL,1000000001,'The loft above the kitchen.','2026-10-02 13:25:52.633106',6,6,0,1,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000004,'2026-10-02 13:25:52.606973','safe',8,'A range gone cold, a scrubbed table, and the stair up to the loft.','realized',NULL,NULL,NULL,NULL,'Every Halloway was born within earshot of this range.',0,'The Kitchen',1000000002,NULL,1000000001,'The farm kitchen, with the stair to the loft.','2026-10-02 13:25:52.639290',6,6,0,0,NULL,NULL,NULL);
-INSERT INTO locations VALUES(1000000005,'2026-10-02 13:25:52.620903','safe',8,'Cobbles, a well, and the loft window high in the house wall above.','realized',NULL,NULL,NULL,NULL,'The cobbles were laid by the first Halloway, and nobody has relaid one since.',0,'The Yard',1000000002,NULL,1000000001,'The farmyard, cobbled and wet.','2026-10-02 13:25:52.641823',6,0,0,0,NULL,NULL,NULL);
+INSERT INTO locations VALUES(1000000001,'2026-10-02 13:25:52.560013','safe',NULL,'A rutted lane between hedges, ending at the farm gate and the yard beyond it.','realized',NULL,NULL,NULL,NULL,'The lane has flooded every spring since anybody wrote it down.',0,'The Lane',NULL,NULL,1000000001,'The lane up to Halloway Farm.','2026-10-02 13:25:52.560013',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0);
+INSERT INTO locations VALUES(1000000002,'2026-10-02 13:25:52.572928','safe',8,NULL,'stub',NULL,NULL,NULL,NULL,NULL,0,'Halloway Farm',NULL,NULL,1000000001,'A farmhouse and its yard at the end of the lane.','2026-10-02 13:25:52.572928',12,NULL,NULL,NULL,NULL,NULL,NULL,0);
+INSERT INTO locations VALUES(1000000003,'2026-10-02 13:25:52.590643','safe',8,'Straw bales under the rafters, and a shuttered window over the yard.','realized',NULL,NULL,NULL,NULL,'The loft has kept the winter hay dry for a hundred years.',0,'The Loft',1000000002,NULL,1000000001,'The loft above the kitchen.','2026-10-02 13:25:52.633106',6,6,0,1,NULL,NULL,NULL,0);
+INSERT INTO locations VALUES(1000000004,'2026-10-02 13:25:52.606973','safe',8,'A range gone cold, a scrubbed table, and the stair up to the loft.','realized',NULL,NULL,NULL,NULL,'Every Halloway was born within earshot of this range.',0,'The Kitchen',1000000002,NULL,1000000001,'The farm kitchen, with the stair to the loft.','2026-10-02 13:25:52.639290',6,6,0,0,NULL,NULL,NULL,0);
+INSERT INTO locations VALUES(1000000005,'2026-10-02 13:25:52.620903','safe',8,'Cobbles, a well, and the loft window high in the house wall above.','realized',NULL,NULL,NULL,NULL,'The cobbles were laid by the first Halloway, and nobody has relaid one since.',0,'The Yard',1000000002,NULL,1000000001,'The farmyard, cobbled and wet.','2026-10-02 13:25:52.641823',6,0,0,0,NULL,NULL,NULL,0);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -406,6 +406,7 @@ INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
 INSERT INTO schema_migrations VALUES('20261031090000');
 INSERT INTO schema_migrations VALUES('20261031120000');
+INSERT INTO schema_migrations VALUES('20261031150000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -416,7 +417,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("quest_outcome_id")
   REFERENCES "quest_outcomes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, "minutes" integer, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, "minutes" integer, "safe_rooms" integer DEFAULT 0 NOT NULL, "healing_count" integer DEFAULT 0 NOT NULL, "healing_name" varchar, "healing_description" text, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"

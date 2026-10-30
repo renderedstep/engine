@@ -47,7 +47,8 @@
               "hold": null,
               "material": null,
               "wear": "outer",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -77,7 +78,8 @@
               "hold": null,
               "material": null,
               "wear": "body",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -107,7 +109,8 @@
               "hold": null,
               "material": null,
               "wear": "neck",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -137,7 +140,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -167,7 +171,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -197,7 +202,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -227,7 +233,8 @@
               "hold": null,
               "material": null,
               "wear": "hands",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -257,7 +264,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -325,7 +333,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -368,7 +377,8 @@
               "hold": null,
               "material": null,
               "wear": "outer",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -398,7 +408,8 @@
               "hold": null,
               "material": null,
               "wear": "body",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -428,7 +439,8 @@
               "hold": null,
               "material": null,
               "wear": "neck",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -458,7 +470,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -488,7 +501,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -518,7 +532,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -548,7 +563,8 @@
               "hold": null,
               "material": null,
               "wear": "hands",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -578,7 +594,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -680,7 +697,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -723,7 +741,8 @@
               "hold": null,
               "material": null,
               "wear": "outer",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -753,7 +772,8 @@
               "hold": null,
               "material": null,
               "wear": "body",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -783,7 +803,8 @@
               "hold": null,
               "material": null,
               "wear": "neck",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -813,7 +834,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -843,7 +865,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -873,7 +896,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -903,7 +927,8 @@
               "hold": null,
               "material": null,
               "wear": "hands",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -933,7 +958,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -1035,7 +1061,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -1078,7 +1105,8 @@
               "hold": null,
               "material": null,
               "wear": "outer",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -1108,7 +1136,8 @@
               "hold": null,
               "material": null,
               "wear": "body",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -1138,7 +1167,8 @@
               "hold": null,
               "material": null,
               "wear": "neck",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -1168,7 +1198,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -1198,7 +1229,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -1228,7 +1260,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -1258,7 +1291,8 @@
               "hold": null,
               "material": null,
               "wear": "hands",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -1288,7 +1322,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -1390,7 +1425,8 @@
               "z": null,
               "surface": null,
               "kind": null,
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -1433,7 +1469,8 @@
               "hold": null,
               "material": null,
               "wear": "outer",
-              "worn": 1
+              "worn": 1,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -1463,7 +1500,8 @@
               "hold": null,
               "material": null,
               "wear": "body",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -1493,7 +1531,8 @@
               "hold": null,
               "material": null,
               "wear": "neck",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -1523,7 +1562,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -1553,7 +1593,8 @@
               "hold": null,
               "material": null,
               "wear": "head",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -1583,7 +1624,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -1613,7 +1655,8 @@
               "hold": null,
               "material": null,
               "wear": "hands",
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -1643,7 +1686,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []

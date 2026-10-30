@@ -25,7 +25,7 @@ use crate::intent::{slot_for, Intent};
 use crate::noticed;
 use crate::outcome::State;
 use crate::playthrough::{Game, Mode};
-use crate::records::{id, int, string, text, Records, Row};
+use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::{self, Refusal};
 use crate::room::{Choice, Record, Room};
 use crate::slash_menu::SlashMenu;
@@ -58,7 +58,13 @@ pub struct Here {
     pub name: String,
     /// The containing place's name, for a room that has been placed in one.
     pub within: Option<String>,
+    /// For a safe room (`locations.sanctuary`), the engine's line saying
+    /// so, [`SAFE_ROOM`]. No model is told it.
+    pub safe: Option<String>,
 }
+
+/// The room panel's line for a safe room.
+pub const SAFE_ROOM: &str = "A safe room: nothing hostile is born here, and resting here heals.";
 
 /// A way out: the room beyond, whether it is written yet, and whether this
 /// game may cross it.
@@ -361,6 +367,7 @@ impl Glance {
                 id: id(room),
                 name: string(room, "name").to_string(),
                 within: containing_place(records, room),
+                safe: flag(room, "sanctuary").then(|| SAFE_ROOM.to_string()),
             }),
             exits,
             people,

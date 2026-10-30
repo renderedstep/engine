@@ -30,10 +30,16 @@ pub fn things_limit(story: &Row) -> i64 {
     int(story, "things_limit").unwrap_or(ITEMS_PER_STORY)
 }
 
+/// `items.supply` on a healing thing a floor's layout left lying in one of
+/// its rooms (`floors.healing_count`).
+pub const FLOOR_SUPPLY: &str = "floor";
+
 /// `Item.bespoke`: a thing the caps count -- portable, and written by the
-/// room writer or a world file rather than a kit.
+/// room writer or a world file rather than a kit or a floor's supplies.
 pub fn bespoke(item: &Row) -> bool {
-    text(item, "tier") != Some(crate::kit::FIXTURE) && text(item, "kit_key").is_none()
+    text(item, "tier") != Some(crate::kit::FIXTURE)
+        && text(item, "kit_key").is_none()
+        && text(item, "supply").is_none()
 }
 
 /// `Character::PURSUITS`: each label a desire is pursued by, and what it
@@ -324,7 +330,8 @@ impl<'a> Realization<'a> {
     }
 
     /// `#already_here`: what the game has already put in the room, read off
-    /// the records, or nothing for a room that holds none of it.
+    /// the records, or nothing for a room that holds none of it. A floor's
+    /// supplies are among the loose things, as the kit's are.
     fn already_here(&self) -> String {
         let here = self.lying_here();
         let fixture = |item: &Row| text(item, "tier") == Some(crate::kit::FIXTURE);
@@ -335,7 +342,7 @@ impl<'a> Realization<'a> {
             .filter(|item| {
                 !fixture(item)
                     && int(item, "within_id").is_none()
-                    && text(item, "kit_key").is_some()
+                    && (text(item, "kit_key").is_some() || text(item, "supply").is_some())
             })
             .collect();
         if fixed.is_empty() && loose.is_empty() {

@@ -385,7 +385,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -410,7 +411,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -435,7 +437,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -591,7 +594,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -621,7 +625,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -651,7 +656,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -681,7 +687,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -779,7 +786,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -804,7 +812,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -829,7 +838,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -985,7 +995,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -1015,7 +1026,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -1045,7 +1057,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -1075,7 +1088,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -1194,7 +1208,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -1219,7 +1234,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -1244,7 +1260,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -1400,7 +1417,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -1430,7 +1448,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -1460,7 +1479,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -1490,7 +1510,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -1630,7 +1651,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -1655,7 +1677,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -1680,7 +1703,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -1836,7 +1860,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -1866,7 +1891,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -1896,7 +1922,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -1926,7 +1953,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -2087,7 +2115,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -2112,7 +2141,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -2137,7 +2167,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -2293,7 +2324,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -2323,7 +2355,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -2353,7 +2386,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -2383,7 +2417,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -2565,7 +2600,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -2590,7 +2626,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -2615,7 +2652,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -2771,7 +2809,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -2801,7 +2840,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -2831,7 +2871,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -2861,7 +2902,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -3064,7 +3106,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -3089,7 +3132,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -3114,7 +3158,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -3270,7 +3315,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -3300,7 +3346,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -3330,7 +3377,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -3360,7 +3408,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -3577,7 +3626,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000004,
@@ -3602,7 +3652,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -3627,7 +3678,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -3783,7 +3835,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -3813,7 +3866,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -3843,7 +3897,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -3873,7 +3928,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []

@@ -439,7 +439,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -464,7 +465,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -489,7 +491,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -610,7 +613,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -640,7 +644,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -670,7 +675,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -700,7 +706,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -791,7 +798,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -816,7 +824,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -841,7 +850,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -962,7 +972,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -992,7 +1003,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -1022,7 +1034,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -1052,7 +1065,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -1377,7 +1391,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -1402,7 +1417,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -1427,7 +1443,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -1548,7 +1565,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -1578,7 +1596,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -1608,7 +1627,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -1638,7 +1658,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -1668,7 +1689,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -1698,7 +1720,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -1728,7 +1751,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -1758,7 +1782,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -1788,7 +1813,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -1818,7 +1844,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -1848,7 +1875,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -1878,7 +1906,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -1908,7 +1937,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -1938,7 +1968,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -1968,7 +1999,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -1998,7 +2030,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -2028,7 +2061,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -2058,7 +2092,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -2088,7 +2123,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -2118,7 +2154,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -2585,7 +2622,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000003,
@@ -2610,7 +2648,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -2635,7 +2674,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -2660,7 +2700,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000007,
@@ -2685,7 +2726,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000008,
@@ -2710,7 +2752,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -2881,7 +2924,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -2911,7 +2955,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -2941,7 +2986,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -2971,7 +3017,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -3001,7 +3048,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -3031,7 +3079,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -3061,7 +3110,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -3091,7 +3141,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -3121,7 +3172,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -3151,7 +3203,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -3181,7 +3234,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -3211,7 +3265,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -3241,7 +3296,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -3271,7 +3327,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -3301,7 +3358,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -3331,7 +3389,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -3361,7 +3420,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -3391,7 +3451,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -3421,7 +3482,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -3451,7 +3513,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000021,
@@ -3481,7 +3544,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000022,
@@ -3511,7 +3575,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000023,
@@ -3541,7 +3606,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000024,
@@ -3571,7 +3637,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000025,
@@ -3601,7 +3668,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000026,
@@ -3631,7 +3699,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000027,
@@ -3661,7 +3730,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000028,
@@ -3691,7 +3761,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000029,
@@ -3721,7 +3792,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000030,
@@ -3751,7 +3823,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -3884,7 +3957,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000003,
@@ -3909,7 +3983,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -3934,7 +4009,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -3959,7 +4035,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000007,
@@ -3984,7 +4061,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000008,
@@ -4009,7 +4087,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -4180,7 +4259,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -4210,7 +4290,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -4240,7 +4321,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -4270,7 +4352,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -4300,7 +4383,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -4330,7 +4414,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -4360,7 +4445,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -4390,7 +4476,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -4420,7 +4507,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -4450,7 +4538,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -4480,7 +4569,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -4510,7 +4600,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -4540,7 +4631,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -4570,7 +4662,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -4600,7 +4693,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -4630,7 +4724,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -4660,7 +4755,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -4690,7 +4786,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -4720,7 +4817,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -4750,7 +4848,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000021,
@@ -4780,7 +4879,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000022,
@@ -4810,7 +4910,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000023,
@@ -4840,7 +4941,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000024,
@@ -4870,7 +4972,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000025,
@@ -4900,7 +5003,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000026,
@@ -4930,7 +5034,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000027,
@@ -4960,7 +5065,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000028,
@@ -4990,7 +5096,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000029,
@@ -5020,7 +5127,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000030,
@@ -5050,7 +5158,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -5183,7 +5292,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000003,
@@ -5208,7 +5318,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -5233,7 +5344,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -5258,7 +5370,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000007,
@@ -5283,7 +5396,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000008,
@@ -5308,7 +5422,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -5479,7 +5594,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -5509,7 +5625,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -5539,7 +5656,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -5569,7 +5687,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -5599,7 +5718,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -5629,7 +5749,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -5659,7 +5780,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -5689,7 +5811,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -5719,7 +5842,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -5749,7 +5873,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -5779,7 +5904,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -5809,7 +5935,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -5839,7 +5966,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -5869,7 +5997,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -5899,7 +6028,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -5929,7 +6059,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -5959,7 +6090,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -5989,7 +6121,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -6019,7 +6152,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -6049,7 +6183,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000021,
@@ -6079,7 +6214,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000022,
@@ -6109,7 +6245,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000023,
@@ -6139,7 +6276,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000024,
@@ -6169,7 +6307,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000025,
@@ -6199,7 +6338,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000026,
@@ -6229,7 +6369,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000027,
@@ -6259,7 +6400,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000028,
@@ -6289,7 +6431,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000029,
@@ -6319,7 +6462,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000030,
@@ -6349,7 +6493,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -6482,7 +6627,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000003,
@@ -6507,7 +6653,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -6532,7 +6679,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -6557,7 +6705,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000007,
@@ -6582,7 +6731,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000008,
@@ -6607,7 +6757,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -6778,7 +6929,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -6808,7 +6960,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -6838,7 +6991,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -6868,7 +7022,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -6898,7 +7053,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -6928,7 +7084,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -6958,7 +7115,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -6988,7 +7146,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -7018,7 +7177,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -7048,7 +7208,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -7078,7 +7239,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -7108,7 +7270,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -7138,7 +7301,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -7168,7 +7332,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -7198,7 +7363,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -7228,7 +7394,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -7258,7 +7425,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -7288,7 +7456,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -7318,7 +7487,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -7348,7 +7518,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000021,
@@ -7378,7 +7549,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000022,
@@ -7408,7 +7580,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000023,
@@ -7438,7 +7611,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000024,
@@ -7468,7 +7642,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000025,
@@ -7498,7 +7673,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000026,
@@ -7528,7 +7704,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000027,
@@ -7558,7 +7735,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000028,
@@ -7588,7 +7766,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000029,
@@ -7618,7 +7797,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000030,
@@ -7648,7 +7828,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -7781,7 +7962,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000003,
@@ -7806,7 +7988,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -7831,7 +8014,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -7856,7 +8040,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000007,
@@ -7881,7 +8066,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000008,
@@ -7906,7 +8092,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -8077,7 +8264,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -8107,7 +8295,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -8137,7 +8326,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -8167,7 +8357,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -8197,7 +8388,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -8227,7 +8419,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -8257,7 +8450,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -8287,7 +8481,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -8317,7 +8512,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -8347,7 +8543,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -8377,7 +8574,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -8407,7 +8605,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -8437,7 +8636,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -8467,7 +8667,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -8497,7 +8698,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -8527,7 +8729,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -8557,7 +8760,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -8587,7 +8791,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -8617,7 +8822,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -8647,7 +8853,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000021,
@@ -8677,7 +8884,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000022,
@@ -8707,7 +8915,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000023,
@@ -8737,7 +8946,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000024,
@@ -8767,7 +8977,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000025,
@@ -8797,7 +9008,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000026,
@@ -8827,7 +9039,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000027,
@@ -8857,7 +9070,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000028,
@@ -8887,7 +9101,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000029,
@@ -8917,7 +9132,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000030,
@@ -8947,7 +9163,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -9080,7 +9297,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000003,
@@ -9105,7 +9323,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -9130,7 +9349,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -9155,7 +9375,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000007,
@@ -9180,7 +9401,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000008,
@@ -9205,7 +9427,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -9376,7 +9599,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -9406,7 +9630,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -9436,7 +9661,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -9466,7 +9692,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -9496,7 +9723,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -9526,7 +9754,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -9556,7 +9785,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -9586,7 +9816,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -9616,7 +9847,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -9646,7 +9878,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -9676,7 +9909,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -9706,7 +9940,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -9736,7 +9971,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -9766,7 +10002,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -9796,7 +10033,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -9826,7 +10064,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -9856,7 +10095,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -9886,7 +10126,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -9916,7 +10157,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -9946,7 +10188,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000021,
@@ -9976,7 +10219,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000022,
@@ -10006,7 +10250,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000023,
@@ -10036,7 +10281,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000024,
@@ -10066,7 +10312,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000025,
@@ -10096,7 +10343,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000026,
@@ -10126,7 +10374,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000027,
@@ -10156,7 +10405,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000028,
@@ -10186,7 +10436,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000029,
@@ -10216,7 +10467,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000030,
@@ -10246,7 +10498,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
@@ -10379,7 +10632,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000003,
@@ -10404,7 +10658,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "warren",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000005,
@@ -10429,7 +10684,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000006,
@@ -10454,7 +10710,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000007,
@@ -10479,7 +10736,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             },
             {
               "id": 1000000008,
@@ -10504,7 +10762,8 @@
               "generation_checkpoint": null,
               "surface": null,
               "kind": "cave",
-              "density": null
+              "density": null,
+              "sanctuary": 0
             }
           ],
           "removed": []
@@ -10675,7 +10934,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000002,
@@ -10705,7 +10965,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000003,
@@ -10735,7 +10996,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000004,
@@ -10765,7 +11027,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000005,
@@ -10795,7 +11058,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000006,
@@ -10825,7 +11089,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000007,
@@ -10855,7 +11120,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000008,
@@ -10885,7 +11151,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000009,
@@ -10915,7 +11182,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000010,
@@ -10945,7 +11213,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000011,
@@ -10975,7 +11244,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000012,
@@ -11005,7 +11275,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000013,
@@ -11035,7 +11306,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000014,
@@ -11065,7 +11337,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000015,
@@ -11095,7 +11368,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000016,
@@ -11125,7 +11399,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000017,
@@ -11155,7 +11430,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000018,
@@ -11185,7 +11461,8 @@
               "hold": null,
               "material": "metal",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000019,
@@ -11215,7 +11492,8 @@
               "hold": null,
               "material": "rope",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000020,
@@ -11245,7 +11523,8 @@
               "hold": "stout",
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000021,
@@ -11275,7 +11554,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000022,
@@ -11305,7 +11585,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000023,
@@ -11335,7 +11616,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000024,
@@ -11365,7 +11647,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000025,
@@ -11395,7 +11678,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000026,
@@ -11425,7 +11709,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000027,
@@ -11455,7 +11740,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000028,
@@ -11485,7 +11771,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000029,
@@ -11515,7 +11802,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000030,
@@ -11545,7 +11833,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000031,
@@ -11575,7 +11864,8 @@
               "hold": null,
               "material": "stone",
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             },
             {
               "id": 1000000032,
@@ -11605,7 +11895,8 @@
               "hold": null,
               "material": null,
               "wear": null,
-              "worn": 0
+              "worn": 0,
+              "supply": null
             }
           ],
           "removed": []
