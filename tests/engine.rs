@@ -651,6 +651,55 @@ fn a_story_limit_declared_another_way_is_refused() {
 }
 
 #[test]
+fn a_database_from_before_the_floors_is_opened_and_plays() {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch(&world("two-floors-and-a-key")).unwrap();
+    conn.execute_batch(
+        r#"DROP TABLE "floors";
+           DELETE FROM schema_migrations WHERE version = '20261030200000';"#,
+    )
+    .unwrap();
+    let mut engine = Engine::from_connection(conn).expect("the older shape is opened");
+    let story = engine
+        .story_titled(&format!("Two Floors and a Key{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let outcome = engine
+        .play(playthrough, "look around", &mut |_| {})
+        .unwrap();
+    assert!(outcome.state.location.is_some());
+}
+
+#[test]
+fn a_floors_table_declared_another_way_is_refused() {
+    let differences = changed(migrated(
+        "the-quay-house",
+        r#"DROP TABLE "floors";
+           CREATE TABLE "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+ ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
+FOREIGN KEY ("down_location_id")
+  REFERENCES "locations" ("id")
+ ON DELETE SET NULL);
+           CREATE UNIQUE INDEX "index_floors_on_location_id" ON "floors" ("location_id");
+           CREATE INDEX "index_floors_on_down_location_id" ON "floors" ("down_location_id");"#,
+    ));
+    assert!(
+        differences.contains(&"found column floors.rooms integer pk=0".to_string()),
+        "{differences:?}"
+    );
+    let differences = changed(migrated(
+        "the-quay-house",
+        r#"DROP INDEX "index_floors_on_location_id";"#,
+    ));
+    assert!(
+        differences.contains(&"found column floors.rooms integer not null pk=0".to_string()),
+        "a floors table missing its unique index is not whole: {differences:?}"
+    );
+}
+
+#[test]
 fn a_newer_schema_that_adds_a_unique_index_to_a_table_the_engine_uses_is_refused() {
     let differences = changed(migrated(
         "the-quay-house",

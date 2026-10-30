@@ -1,0 +1,191 @@
+---
+story: Two Floors and a Key
+steps:
+- id: take-the-stair-key
+  type: "/take stair key"
+  expect:
+    location: The Landing (realized)
+    carrying:
+    - stair key
+- id: into-the-upper-floor
+  type: "/move The Upper Floor"
+  browser:
+    token: into-the-upper-floor
+    realizes: The Upper Floor
+    replies:
+    - purpose: location
+      content:
+        description: A level of black stone passages lit by nothing you can see.
+        lore: The first floor was cut by people nobody remembers.
+        place_kind: mansion
+        parameters:
+          inside: a few rooms
+          storeys_above: two storeys up
+          storeys_below: deep
+          danger: safe
+          gradient: worse the deeper you go
+          hazard: flooded
+    - purpose: location
+      content:
+        description: A low chamber at the foot of the stair.
+        lore: Delvers rest here before going on.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Upper Floor room 1 (realized)
+    storey: 0
+    exits:
+    - The Landing (realized)
+    - The Upper Floor room 2 (stub)
+    changed: true
+    refused: false
+- id: the-way-down-is-off-room-two
+  type: "/move The Upper Floor room 2"
+  browser:
+    token: room-2
+    realizes: The Upper Floor room 2
+    replies:
+    - purpose: location
+      content:
+        description: A bare chamber with a stair cut down into its floor.
+        lore: The stair down is older than the rest.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Upper Floor room 2 (realized)
+    storey: 0
+    exits:
+    - The Lower Floor (stub)
+    - The Upper Floor room 1 (realized)
+    - The Upper Floor room 3 (stub)
+- id: room-three
+  type: "/move The Upper Floor room 3"
+  browser:
+    token: room-3
+    realizes: The Upper Floor room 3
+    replies:
+    - purpose: location
+      content:
+        description: A narrow chamber of dripping stone.
+        lore: Water finds its way down here.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Upper Floor room 3 (realized)
+    exits:
+    - The Upper Floor room 2 (realized)
+    - The Upper Floor room 4 (stub)
+- id: room-four-is-the-last
+  type: "/move The Upper Floor room 4"
+  browser:
+    token: room-4
+    realizes: The Upper Floor room 4
+    replies:
+    - purpose: location
+      content:
+        description: A dead end of rough-cut stone.
+        lore: The cutters stopped here.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Upper Floor room 4 (realized)
+    exits:
+    - The Upper Floor room 3 (realized)
+- id: back-to-room-three
+  type: "/move The Upper Floor room 3"
+  expect:
+    location: The Upper Floor room 3 (realized)
+- id: back-to-the-way-down
+  type: "/move The Upper Floor room 2"
+  expect:
+    location: The Upper Floor room 2 (realized)
+- id: the-stair-down-kept-its-lock
+  type: "/move The Lower Floor"
+  expect:
+    location: The Upper Floor room 2 (realized)
+    refused: true
+    offers: locked
+    changed: false
+- id: the-stair-key-opens-it
+  type: "/unlock The Lower Floor with stair key"
+  expect:
+    location: The Upper Floor room 2 (realized)
+    changed: true
+    refused: false
+- id: down-to-the-lower-floor
+  type: "/move The Lower Floor"
+  browser:
+    token: into-the-lower-floor
+    realizes: The Lower Floor
+    replies:
+    - purpose: location
+      content:
+        description: A colder level, the air still and the dark close.
+        lore: Few delvers come this far.
+        place_kind: house
+    - purpose: location
+      content:
+        description: The foot of the stair, cold and unlit.
+        lore: The stair comes down here from the floor above.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Lower Floor room 1 (realized)
+    storey: 0
+    exits:
+    - The Lower Floor room 2 (stub)
+    - The Upper Floor room 2 (realized)
+    refused: false
+- id: the-lower-floor-has-two-rooms
+  type: "/move The Lower Floor room 2"
+  browser:
+    token: lower-room-2
+    realizes: The Lower Floor room 2
+    replies:
+    - purpose: location
+      content:
+        description: A low chamber at the bottom of everything.
+        lore: Nothing below this has been found.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Lower Floor room 2 (realized)
+    exits:
+    - The Lower Floor room 1 (realized)
+- id: a-second-game-finds-the-floor-as-it-was-laid-out
+  player: second
+  type: "/move The Upper Floor room 1"
+  expect:
+    location: The Upper Floor room 1 (realized)
+    storey: 0
+    exits:
+    - The Landing (realized)
+    - The Upper Floor room 2 (realized)
+- id: and-the-same-way-down
+  player: second
+  type: "/move The Upper Floor room 2"
+  expect:
+    location: The Upper Floor room 2 (realized)
+    exits:
+    - The Lower Floor room 1 (realized)
+    - The Upper Floor room 1 (realized)
+    - The Upper Floor room 3 (realized)
+- id: still-locked-for-the-second-game
+  player: second
+  type: "/move The Lower Floor room 1"
+  expect:
+    location: The Upper Floor room 2 (realized)
+    refused: true
+    offers: locked

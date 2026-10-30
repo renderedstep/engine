@@ -100,6 +100,37 @@ pub const OPTIONAL_COLUMNS: &[&str] = &[
     "column stories.things_limit integer pk=0",
 ];
 
+/// A floor's own layout numbers, one row per place laid out as a floor
+/// (migration 20261030200000, `floor`).
+pub const FLOORS: &str = "floors";
+
+/// Tables the engine loads only where the database has them, and never
+/// writes: a database from before one was added reads as holding no rows of
+/// it.
+pub const OPTIONAL_LOADED: &[&str] = &[FLOORS];
+
+/// The shape of each table of [`OPTIONAL_LOADED`], as [`shape`] would state
+/// it, foreign keys included. [`shape`] leaves these facts out when every
+/// one of a table's is there, so a database opens with the table whole or
+/// without it; a table there in any other shape is still a difference.
+pub const OPTIONAL_SHAPES: &[(&str, &[&str])] = &[(
+    FLOORS,
+    &[
+        "column floors.created_at datetime(6) not null pk=0",
+        "column floors.danger varchar pk=0",
+        "column floors.down_location_id integer pk=0",
+        "column floors.hazard varchar pk=0",
+        "column floors.id integer not null pk=1",
+        "column floors.location_id integer not null pk=0",
+        "column floors.rooms integer not null pk=0",
+        "column floors.updated_at datetime(6) not null pk=0",
+        "foreign key floors.down_location_id -> locations.id on update NO ACTION on delete SET NULL",
+        "foreign key floors.location_id -> locations.id on update NO ACTION on delete CASCADE",
+        "index floors (down_location_id)",
+        "index floors (location_id) unique",
+    ],
+)];
+
 /// What the engine relies on in a database, one fact per line, sorted: for
 /// every table it touches, each column's declared type (in lower case, as
 /// SQLite compares it), nullability, default
@@ -109,12 +140,14 @@ pub const OPTIONAL_COLUMNS: &[&str] = &[
 /// the engine deleting or rewriting one of its own. A table the engine does
 /// not touch, with no foreign key into one it does, is left out, so a
 /// migration that only adds such a table leaves the shape as it was. So is
-/// a column of [`OPTIONAL_COLUMNS`].
+/// a column of [`OPTIONAL_COLUMNS`], and a table of [`OPTIONAL_LOADED`]
+/// that is missing or whole.
 pub fn shape(conn: &Connection) -> Result<Vec<String>, Error> {
     let touched: Vec<&str> = TABLES
         .iter()
         .chain(WRITTEN)
         .chain(QUERIED)
+        .chain(OPTIONAL_LOADED)
         .copied()
         .collect();
     let mut facts = Vec::new();
@@ -219,6 +252,16 @@ pub fn shape(conn: &Connection) -> Result<Vec<String>, Error> {
         }
     }
     facts.retain(|fact| !OPTIONAL_COLUMNS.contains(&fact.as_str()));
+    for (table, expected) in OPTIONAL_SHAPES {
+        let missing = format!("missing {table}");
+        if expected
+            .iter()
+            .all(|fact| facts.iter().any(|found| found == fact))
+        {
+            facts.retain(|fact| !expected.contains(&fact.as_str()));
+        }
+        facts.retain(|fact| *fact != missing);
+    }
     facts.sort();
     Ok(facts)
 }
@@ -332,7 +375,12 @@ impl Store {
             }
         }
         let mut columns = HashMap::new();
-        for table in TABLES.iter().chain(WRITTEN).chain(OPTIONAL) {
+        for table in TABLES
+            .iter()
+            .chain(WRITTEN)
+            .chain(OPTIONAL)
+            .chain(OPTIONAL_LOADED)
+        {
             let mut statement =
                 conn.prepare("SELECT name, type FROM pragma_table_info(?1) ORDER BY name")?;
             let found: Vec<Column> = statement
@@ -344,7 +392,7 @@ impl Store {
                 })?
                 .collect::<Result<_, _>>()?;
             if found.is_empty() {
-                if OPTIONAL.contains(table) {
+                if OPTIONAL.contains(table) || OPTIONAL_LOADED.contains(table) {
                     continue;
                 }
                 return Err(Error::Database(format!(
@@ -377,10 +425,15 @@ impl Store {
             .any(|column| column.name == "id"))
     }
 
-    /// Every row of every table the loop reads, in id order.
+    /// Every row of every table the loop reads, in id order: none of a table
+    /// of [`OPTIONAL_LOADED`] the database lacks.
     pub fn load(&self) -> Result<Records, Error> {
         let mut records = Records::default();
-        for table in TABLES {
+        for table in TABLES.iter().chain(
+            OPTIONAL_LOADED
+                .iter()
+                .filter(|table| self.columns.contains_key(**table)),
+        ) {
             let columns = self.columns(table)?;
             let order = if self.has_id(table)? {
                 "\"id\"".to_string()

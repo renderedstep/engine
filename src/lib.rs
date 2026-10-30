@@ -40,6 +40,7 @@ pub mod dialogue;
 pub mod divide;
 pub mod engine;
 pub mod facts;
+pub mod floor;
 pub mod glance;
 pub mod grammar;
 pub mod identity;

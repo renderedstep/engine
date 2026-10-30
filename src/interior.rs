@@ -98,17 +98,7 @@ pub fn placeholder_name(place_name: &str, number: usize) -> String {
 /// When `below` is negative, which Ruby refuses too.
 pub fn lay_out(place: &Place, below: Option<i64>, parameters: Option<&Parameters>) -> Layout {
     assert!(below.is_none_or(|b| b >= 0), "below is a count of storeys");
-    let mut builder = Builder {
-        rng: Seed {
-            story: place.story_id.into(),
-            sequence: place.id.into(),
-            kind: roll::INTERIOR,
-            ..Seed::default()
-        }
-        .generator(),
-        rooms: Vec::new(),
-        edges: Vec::new(),
-    };
+    let mut builder = Builder::new(place);
     let rng = &mut builder.rng;
     let (width, depth) = place.footprint.unwrap_or_else(|| {
         let width = from_range(FOOTPRINT_SIDES, rng);
@@ -171,13 +161,34 @@ fn from_range((low, high): (i64, i64), rng: &mut Random) -> i64 {
     low + roll::one_of((high - low + 1) as usize, rng) as i64
 }
 
-struct Builder {
-    rng: Random,
-    rooms: Vec<Room>,
-    edges: Vec<Edge>,
+/// The rooms and doorways of one place as they are drawn, out of the
+/// place's own generator (`Roll::INTERIOR`). A floor (`floor`) is drawn
+/// with the same pieces.
+pub(crate) struct Builder {
+    pub(crate) rng: Random,
+    pub(crate) rooms: Vec<Room>,
+    pub(crate) edges: Vec<Edge>,
+    /// The room a floor's way down lands on, which keeps a doorway spare as
+    /// the entry does.
+    pub(crate) way_down: Option<usize>,
 }
 
 impl Builder {
+    pub(crate) fn new(place: &Place) -> Builder {
+        Builder {
+            rng: Seed {
+                story: place.story_id.into(),
+                sequence: place.id.into(),
+                kind: roll::INTERIOR,
+                ..Seed::default()
+            }
+            .generator(),
+            rooms: Vec::new(),
+            edges: Vec::new(),
+            way_down: None,
+        }
+    }
+
     fn storey_boxes(&mut self, width: i64, depth: i64, z: i64) -> Vec<Box> {
         let most_columns = (width / MINIMUM_SIDE).min(ROOMS_PER_STOREY.1).max(1);
         let columns = from_range((1, most_columns), &mut self.rng);
@@ -188,6 +199,18 @@ impl Builder {
             .max(1)
             .min(most_rows);
         let rows = from_range((fewest_rows, most_rows), &mut self.rng);
+        self.grid(width, depth, z, columns, rows)
+    }
+
+    /// `columns` by `rows` boxes over the footprint, in the serpentine.
+    pub(crate) fn grid(
+        &mut self,
+        width: i64,
+        depth: i64,
+        z: i64,
+        columns: i64,
+        rows: i64,
+    ) -> Vec<Box> {
         let widths = self.share(width, columns);
         let depths = self.share(depth, rows);
         let lefts = offsets(&widths);
@@ -237,7 +260,7 @@ impl Builder {
         }
     }
 
-    fn create_room(
+    pub(crate) fn create_room(
         &mut self,
         place: &Place,
         bounds: Box,
@@ -287,7 +310,7 @@ impl Builder {
         }
     }
 
-    fn open_extra_doors(&mut self, storey: &[usize]) {
+    pub(crate) fn open_extra_doors(&mut self, storey: &[usize]) {
         for (i, &one) in storey.iter().enumerate() {
             for &other in &storey[i + 1..] {
                 if !self.rooms[one]
@@ -304,7 +327,7 @@ impl Builder {
     }
 
     /// Joins any room the doorways so far leave stranded, nearest first.
-    fn close_connectivity(&mut self) {
+    pub(crate) fn close_connectivity(&mut self) {
         if self.rooms.is_empty() {
             return;
         }
@@ -358,7 +381,12 @@ impl Builder {
             })
     }
 
-    fn connect(&mut self, one: usize, other: usize, travel_method: &'static str) -> bool {
+    pub(crate) fn connect(
+        &mut self,
+        one: usize,
+        other: usize,
+        travel_method: &'static str,
+    ) -> bool {
         if self.connected(one, other) || !self.room_to_spare(one) || !self.room_to_spare(other) {
             return false;
         }
@@ -381,7 +409,11 @@ impl Builder {
     }
 
     fn room_to_spare(&self, room: usize) -> bool {
-        let cap = if room == 0 { MAX_EXITS - 1 } else { MAX_EXITS };
+        let cap = if room == 0 || self.way_down == Some(room) {
+            MAX_EXITS - 1
+        } else {
+            MAX_EXITS
+        };
         self.edges.iter().filter(|e| e.from == room).count() < cap
     }
 }
