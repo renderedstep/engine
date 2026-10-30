@@ -593,6 +593,12 @@ fn present_name(character: Option<&Person>) -> Option<&str> {
         .filter(|name| !crate::text::is_blank(name))
 }
 
+/// What a line naming a floor that has fallen in this game, or a way onto
+/// it, is told.
+pub fn fallen(floor: &str) -> String {
+    format!("{floor} has fallen. There is no way back onto it.")
+}
+
 /// What a dead player is told.
 pub fn death_sentence(character: Option<&Person>) -> String {
     let who = present_name(character).unwrap_or("You");

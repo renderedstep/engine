@@ -102,6 +102,33 @@ impl Condition {
     }
 }
 
+/// A floor the player stands on that falls in this game, and when.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Countdown {
+    /// The floor's name.
+    pub name: String,
+    /// Story time it gives way, in seconds since the epoch.
+    pub falls_at: i64,
+    /// Whole minutes until then, a part of a minute counted as one.
+    pub minutes_left: i64,
+}
+
+impl Countdown {
+    /// What the engine says of it, to the player only: "The First Floor
+    /// falls in 1 hour 5 minutes.", and under an hour "The First Floor
+    /// falls in 25 minutes."
+    pub fn in_words(&self) -> String {
+        let (hours, minutes) = (self.minutes_left / 60, self.minutes_left % 60);
+        let unit = |n: i64, word: &str| format!("{n} {word}{}", if n == 1 { "" } else { "s" });
+        let left = if hours == 0 {
+            unit(minutes, "minute")
+        } else {
+            format!("{} {}", unit(hours, "hour"), unit(minutes, "minute"))
+        };
+        format!("{} falls in {left}.", self.name)
+    }
+}
+
 /// How a game is told (`playthroughs.mode`), chosen when it starts and kept
 /// on it.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -328,6 +355,70 @@ impl<'a> Game<'a> {
         ))
     }
 
+    /// This game's row for the floor a room is on (the floor itself, or a
+    /// room laid out inside it), or none for a room on no floor and a floor
+    /// this game has not reached.
+    pub fn reached(&self, location: &Row) -> Option<&'a Row> {
+        let place = int(floor_of(self.records, location)?, "location_id");
+        self.floors_reached()
+            .into_iter()
+            .find(|row| int(row, "location_id") == place)
+    }
+
+    /// The story time a floor this game has reached gives way in it: its
+    /// countdown (`floors.minutes`) from the time this game first stood on
+    /// it. None for a floor with no countdown.
+    pub fn falls_at(&self, reached: &Row) -> Option<i64> {
+        let place = int(reached, "location_id");
+        let floor = self.records.first(crate::store::FLOORS, |floor| {
+            int(floor, "location_id") == place
+        })?;
+        Some(int(reached, "arrived_at")? + int(floor, "minutes")? * 60)
+    }
+
+    /// Whether a room is on a floor that has fallen in this game
+    /// (`playthrough_floors.fell_at`): nobody on it is alive in this game,
+    /// and no way out leads onto it. The world's rows are as they were, and
+    /// every other game sees the floor whole.
+    pub fn fallen(&self, location: &Row) -> bool {
+        self.reached(location)
+            .is_some_and(|row| int(row, "fell_at").is_some())
+    }
+
+    /// The floor the player stands on and how long it has left, while it
+    /// stands: none off a floor, on a floor with no countdown, and once it
+    /// has fallen.
+    pub fn countdown(&self) -> Option<Countdown> {
+        let here = self.current_location()?;
+        let row = self.reached(here)?;
+        if int(row, "fell_at").is_some() {
+            return None;
+        }
+        let falls_at = self.falls_at(row)?;
+        let left = (falls_at - self.story_time()?).max(0);
+        Some(Countdown {
+            name: string(self.location(int(row, "location_id")?), "name").to_string(),
+            falls_at,
+            minutes_left: (left + 59).div_euclid(60),
+        })
+    }
+
+    /// What the engine says of a floor that gave way under the player, in
+    /// its own words and to the player only: "The First Floor gave way at
+    /// 8:25 am, and Odile fell with it." None unless the game ended with the
+    /// player on a fallen floor; the death statement follows it.
+    pub fn collapse_to_s(&self) -> Option<String> {
+        int(self.row, "ended_at")?;
+        let row = self.reached(self.current_location()?)?;
+        let fell = int(row, "fell_at")?;
+        Some(format!(
+            "{} gave way at {}, and {} fell with it.",
+            string(self.location(int(row, "location_id")?), "name"),
+            crate::moment::clock_time(fell),
+            string(self.protagonist()?, "fullname")
+        ))
+    }
+
     /// `#vitals_for`: none for somebody with no stat block.
     pub fn vitals_for(&self, character: &Row) -> Option<Condition> {
         let max = self.max_hp(character)?;
@@ -428,9 +519,10 @@ impl<'a> Game<'a> {
         people
     }
 
-    /// `#cast_in`: the living in a room.
+    /// `#cast_in`: the living in a room. Nobody on a floor that has fallen
+    /// in this game is alive in it.
     pub fn cast_in(&self, location: Option<&Row>) -> Vec<&'a Row> {
-        let Some(location) = location else {
+        let Some(location) = location.filter(|room| !self.fallen(room)) else {
             return Vec::new();
         };
         self.characters_located_in(location)
@@ -559,7 +651,8 @@ impl<'a> Game<'a> {
         self.items(|item| int(item, "character_id") == Some(who))
     }
 
-    /// `#exits`: the rooms the current room's doorways lead to, by id.
+    /// `#exits`: the rooms the current room's doorways lead to, by id, less
+    /// any on a floor that has fallen in this game.
     pub fn exits(&self) -> Vec<&'a Row> {
         let Some(here) = self.current_location() else {
             return Vec::new();
@@ -572,6 +665,7 @@ impl<'a> Game<'a> {
             })
             .iter()
             .map(|edge| self.location(int(edge, "connected_location_id").expect("a far end")))
+            .filter(|room| !self.fallen(room))
             .collect();
         rooms.sort_by_key(|room| id(room));
         rooms

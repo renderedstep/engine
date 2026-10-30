@@ -95,10 +95,12 @@ pub const OPTIONAL: &[&str] = &[REFUSED_LINES];
 /// read as null, and so as the ordinary limits, in a database from before
 /// them; a floor's monster level and the floor a person is posted to
 /// (migration 20261030230000), which read as null, and so as nobody born
-/// stronger and nobody posted; and whether a floor raises a level
-/// (migration 20261031090000), which reads as false. [`shape`] leaves them
-/// out, so a database opens with or without them; one declared any other
-/// way is still a difference.
+/// stronger and nobody posted; whether a floor raises a level (migration
+/// 20261031090000), which reads as false; and a floor's countdown and when
+/// it fell in a game (migration 20261031120000), which read as null, and so
+/// as a floor that never falls. [`shape`] leaves them out, so a database
+/// opens with or without them; one declared any other way is still a
+/// difference.
 pub const OPTIONAL_COLUMNS: &[&str] = &[
     "column stories.people_limit integer pk=0",
     "column stories.things_limit integer pk=0",
@@ -107,6 +109,8 @@ pub const OPTIONAL_COLUMNS: &[&str] = &[
     "foreign key characters.posted_to_id -> locations.id on update NO ACTION on delete SET NULL",
     "index characters (posted_to_id)",
     "column floors.levels_up boolean not null default FALSE pk=0",
+    "column floors.minutes integer pk=0",
+    "column playthrough_floors.fell_at datetime(6) pk=0",
 ];
 
 /// A floor's own layout numbers, one row per place laid out as a floor
@@ -116,7 +120,8 @@ pub const FLOORS: &str = "floors";
 /// The floors one game has reached, one row per game and floor, written the
 /// first time the game stands on it (migration 20261031090000): when it
 /// arrived, and on a floor that raises a level, the level it raised the
-/// player to.
+/// player to; and on a floor with a countdown, when it fell in that game
+/// (`fell_at`, migration 20261031120000).
 pub const PLAYTHROUGH_FLOORS: &str = "playthrough_floors";
 
 /// Tables the engine loads only where the database has them: a database
@@ -450,6 +455,14 @@ impl Store {
     /// where a migration added it.
     pub fn has(&self, table: &str) -> bool {
         self.columns.contains_key(table)
+    }
+
+    /// Whether the database has this column of a table it has: one of
+    /// [`OPTIONAL_COLUMNS`] only where a migration added it.
+    pub fn has_column(&self, table: &str, column: &str) -> bool {
+        self.columns
+            .get(table)
+            .is_some_and(|columns| columns.iter().any(|found| found.name == column))
     }
 
     fn columns(&self, table: &str) -> Result<&[Column], Error> {

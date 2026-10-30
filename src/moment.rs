@@ -817,3 +817,12 @@ pub fn time_of_day(at: i64) -> String {
     };
     format!("{twelve} {}", if hour < 12 { "am" } else { "pm" })
 }
+
+/// `strftime("%-l:%M %P")` in UTC: [`time_of_day`] to the minute, "8:25 am".
+pub fn clock_time(at: i64) -> String {
+    let (hour, rest) = time_of_day(at)
+        .split_once(' ')
+        .map(|(hour, rest)| (hour.to_string(), rest.to_string()))
+        .unwrap_or_default();
+    format!("{hour}:{:02} {rest}", at.rem_euclid(3_600) / 60)
+}

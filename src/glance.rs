@@ -200,6 +200,19 @@ impl EndingOffer {
     }
 }
 
+/// The floor the player stands on, while it stands and has a countdown
+/// (`floors.minutes`). No model is told any of it.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Floor {
+    pub name: String,
+    /// Story time it gives way in this game, in seconds since the epoch.
+    pub falls_at: i64,
+    /// Whole minutes until then, a part of a minute counted as one.
+    pub minutes_left: i64,
+    /// The engine's line for it: "The First Floor falls in 25 minutes."
+    pub countdown: String,
+}
+
 /// Everything a front end reads between turns.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Glance {
@@ -223,6 +236,13 @@ pub struct Glance {
     pub next_beat: Option<String>,
     /// Story time now, in seconds since the epoch.
     pub story_time: Option<i64>,
+    /// The floor the player stands on and when it falls, while it stands.
+    pub floor: Option<Floor>,
+    /// For a game that ended with the player on a floor that gave way, the
+    /// engine's sentence for it, which the death statement (`ended`)
+    /// follows: "The First Floor gave way at 8:25 am, and Odile fell with
+    /// it."
+    pub collapse: Option<String>,
     /// Every goal is met and the ending decided: `/end` ends the story on
     /// it, whether or not it is still offered.
     pub ending_due: bool,
@@ -354,6 +374,13 @@ impl Glance {
             sheet: player.map(|who| sheet(&game, who)).unwrap_or_default(),
             next_beat: crate::moment::Moment::new(game).next_beat(),
             story_time: game.story_time(),
+            floor: game.countdown().map(|countdown| Floor {
+                countdown: countdown.in_words(),
+                name: countdown.name,
+                falls_at: countdown.falls_at,
+                minutes_left: countdown.minutes_left,
+            }),
+            collapse: game.collapse_to_s(),
             ending_due: !over && mechanics.due_ending().is_some(),
             ending_offer: ending_offer(mechanics, &game),
             over,

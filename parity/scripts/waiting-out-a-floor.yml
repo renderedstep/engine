@@ -1,0 +1,92 @@
+---
+story: A Floor That Falls
+steps:
+- id: onto-the-first-floor
+  type: "/move The First Floor"
+  browser:
+    token: into-the-first-floor
+    realizes: The First Floor
+    replies:
+    - purpose: location
+      content:
+        description: A level of black stone passages, cracked across every few paces.
+        lore: The first floor was cut by people nobody remembers.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: A low chamber at the foot of the stair, its floor split down
+          the middle.
+        lore: Delvers do not rest here long.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The First Floor room 1 (realized)
+    dead: false
+- id: wait-1
+  type: "/wait"
+  browser:
+    token: wait-1
+    replies:
+    - purpose: narration
+      content: You stand still and listen to the stone settle.
+  expect:
+    elapsed_minutes: 5.0
+    dead: false
+- id: wait-2
+  type: "/wait"
+  browser:
+    token: wait-2
+    replies:
+    - purpose: narration
+      content: Grit trickles from a crack overhead.
+  expect:
+    elapsed_minutes: 5.0
+    dead: false
+- id: wait-3
+  type: "/wait"
+  browser:
+    token: wait-3
+    replies:
+    - purpose: narration
+      content: The crack in the floor is wider than it was.
+  expect:
+    elapsed_minutes: 5.0
+    dead: false
+- id: wait-4
+  type: "/wait"
+  browser:
+    token: wait-4
+    replies:
+    - purpose: narration
+      content: Somewhere further in, something heavy drops.
+  expect:
+    elapsed_minutes: 5.0
+    dead: false
+- id: wait-5
+  type: "/wait"
+  browser:
+    token: wait-5
+    replies:
+    - purpose: narration
+      content: The floor shudders under your boots.
+  expect:
+    elapsed_minutes: 5.0
+    dead: false
+- id: wait-6
+  type: "/wait"
+  browser:
+    token: wait-6
+    replies:
+    - purpose: narration
+      content: The floor tilts.
+  expect:
+    elapsed_minutes: 5.0
+    dead: true
+- id: nothing-after
+  type: "/wait"
+  expect:
+    refused: true
+    dead: true
+    offers: is dead, and this playthrough is over

@@ -749,6 +749,9 @@ impl<'a> Grammar<'a> {
         }
         let found = self.resolve(&exits, argument);
         if !found.found() {
+            if let Some(fact) = self.fallen_way(argument) {
+                return Reading::refused(fact);
+            }
             return Reading::refused(cannot_find("way out", argument, &found, &exits));
         }
         intent_reading(Intent {
@@ -926,6 +929,31 @@ impl<'a> Grammar<'a> {
             None => text,
         };
         self.resolve(&self.room.items_carried(), &argument).record
+    }
+
+    /// The engine's words for a line whose name, read past its verb the way
+    /// [`Grammar::parse`] reads it, lands on a way onto a floor that has
+    /// fallen in this game (or on the floor), and so on no way out.
+    pub fn fallen_named(&self, command: &str) -> Option<String> {
+        let text = normalize_line(&unslashed(command));
+        let argument = match self.verb_for(&text) {
+            Some(verb) => ruby_strip(chars_after(&text, verb.chars().count())).to_string(),
+            None => text,
+        };
+        self.fallen_way(&argument)
+    }
+
+    fn fallen_way(&self, argument: &str) -> Option<String> {
+        let found = self.resolve(&self.room.fallen_here(), argument);
+        let place = found
+            .record
+            .or_else(|| found.candidates.into_iter().next())?;
+        let fallen = self
+            .room
+            .fallen
+            .iter()
+            .find(|fallen| Some(fallen.place.id) == place.id())?;
+        Some(crate::refusal::fallen(&fallen.floor))
     }
 
     /// What a line that opens by leaving ([`cascade::leaving`]) comes to in

@@ -98,6 +98,7 @@ fn build(worlds: &Value, name: &Value) -> Built {
                 key: exit["key"].as_i64(),
             })
             .collect(),
+        fallen: Vec::new(),
         cast: list(&world["cast"]).iter().map(person).collect(),
         lying: list(&world["lying"])
             .iter()

@@ -22,7 +22,7 @@ use crate::playthrough::{stat_block, Condition, Game};
 use crate::records::{flag, id, int, string, text, Records, Row};
 use crate::refusal::Refusal;
 use crate::roll::{self, Seed};
-use crate::room::{Choice, Exit, Person, Place, Record, Room, Thing, REMOVE, WAIT, WEAR};
+use crate::room::{Choice, Exit, Fallen, Person, Place, Record, Room, Thing, REMOVE, WAIT, WEAR};
 use crate::spot;
 use crate::store::{self, Store};
 use crate::text::to_sentence;
@@ -455,6 +455,12 @@ impl<'s> Mechanics<'s> {
         self.put_off_ending()?;
 
         self.catch_up_world()?;
+        if self.floors_fall()? {
+            return Ok(Report {
+                note: self.collapse_note(),
+                ..Report::refuse(self.over_refusal(command).reason(), None)
+            });
+        }
         let here = self.here();
         self.snapshot_room(here.as_ref())?;
 
@@ -508,7 +514,10 @@ impl<'s> Mechanics<'s> {
             Report::read(note_of(&reading), None)
         };
 
-        let report = self.answered_by_the_world(report, &reading, from.as_ref())?;
+        let mut report = self.answered_by_the_world(report, &reading, from.as_ref())?;
+        if self.floors_fall()? {
+            report.note.extend(self.collapse_note());
+        }
         let stayed = self.here().map(|room| id(&room)) == from.as_ref().map(id);
         let looked = narrates && crate::noticed::is_look_line(command);
         if narrates && stayed && !looked && report.change.is_some() && !self.over() {
@@ -637,6 +646,11 @@ impl<'s> Mechanics<'s> {
                 let thing = kept.item.as_ref()?;
                 let fact = crate::refusal::still_needed(thing, &kept.kind);
                 return Refusal::new("unplayable", command, &fact, None).ok();
+            }
+            if intent.action == "move" && intent.reached_for_nothing() {
+                if let Some(fact) = grammar.fallen_named(command) {
+                    return Refusal::new("unplayable", command, &fact, None).ok();
+                }
             }
             let named = grammar.carried_named(command);
             return Refusal::for_intent(
@@ -3177,6 +3191,59 @@ impl<'s> Mechanics<'s> {
         Ok(())
     }
 
+    /// Every floor this game has reached whose countdown has run out by
+    /// story time now (`Game::falls_at`) falls in this game: its row keeps
+    /// the time it gave way (`fell_at`), nobody on it is alive in this game
+    /// from then on, and no way out leads onto it. A player standing on it
+    /// falls with it: dead, and the game over. Asked before a line is read
+    /// and again once the line's time is spent; a rest that runs past the
+    /// countdown is not refused, and is fatal. The world's rows are never
+    /// touched, so every other game sees the floor whole. True when it took
+    /// the player. A database without the column keeps no countdown.
+    pub(crate) fn floors_fall(&mut self) -> Result<bool, Error> {
+        if !self.store.has_column(store::PLAYTHROUGH_FLOORS, "fell_at") || self.over() {
+            return Ok(false);
+        }
+        let now = self.story_now();
+        let due: Vec<(i64, i64)> = {
+            let game = self.game();
+            game.floors_reached()
+                .into_iter()
+                .filter(|row| int(row, "fell_at").is_none())
+                .filter_map(|row| Some((id(row), game.falls_at(row)?)))
+                .filter(|(_, at)| *at <= now)
+                .collect()
+        };
+        for (row, at) in due {
+            self.update(
+                store::PLAYTHROUGH_FLOORS,
+                row,
+                vec![("fell_at", Value::from(at))],
+            )?;
+        }
+        let here = self.here();
+        if !here.as_ref().is_some_and(|room| self.game().fallen(room)) {
+            return Ok(false);
+        }
+        if let Some(player) = self.player() {
+            if let Some(vitals) = self.vitals_row(&player)? {
+                let hp = int(&vitals, "hp_current").unwrap_or_default();
+                self.harm(&player, hp)?;
+            }
+        }
+        self.end_game(now)?;
+        Ok(true)
+    }
+
+    /// The engine-alone note for a floor that gave way under the player.
+    fn collapse_note(&self) -> Vec<String> {
+        self.game()
+            .collapse_to_s()
+            .map(|fell| format!("the game: {fell}"))
+            .into_iter()
+            .collect()
+    }
+
     /// A fall through a doorway: the storeys between its two rooms at the
     /// world's gravity, a dexterity save and then the dice, out of a
     /// generator keyed on the doorway. Nothing is thrown or written in a
@@ -4342,10 +4409,34 @@ pub fn whole_room_of(records: &Records, playthrough: i64) -> Room {
     let game = Game::new(records, playthrough);
     let here = game.current_location();
     let story_protagonist = story_protagonist(records, game.story_id());
+    let ways = here.map_or_else(Vec::new, |room| exits_of(records, room));
+    let mut fallen = Vec::new();
+    for (_, far) in ways.iter().filter(|(_, far)| game.fallen(far)) {
+        let floor = game
+            .reached(far)
+            .and_then(|row| int(row, "location_id"))
+            .and_then(|floor| records.find("locations", floor));
+        let name = floor.map_or("", |floor| string(floor, "name"));
+        for place in std::iter::once(far).chain(floor) {
+            if !fallen
+                .iter()
+                .any(|known: &Fallen| known.place.id == id(place))
+            {
+                fallen.push(Fallen {
+                    place: Place {
+                        id: id(place),
+                        name: string(place, "name").to_string(),
+                    },
+                    floor: name.to_string(),
+                });
+            }
+        }
+    }
     let exits = match here {
         None => Vec::new(),
-        Some(room) => exits_of(records, room)
+        Some(_) => ways
             .into_iter()
+            .filter(|(_, far)| !game.fallen(far))
             .map(|(edge, far)| Exit {
                 place: Place {
                     id: id(&far),
@@ -4379,6 +4470,7 @@ pub fn whole_room_of(records: &Records, playthrough: i64) -> Room {
             name: string(room, "name").to_string(),
         }),
         exits,
+        fallen,
         cast: game
             .cast_in(here)
             .into_iter()

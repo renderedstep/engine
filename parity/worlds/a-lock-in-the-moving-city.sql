@@ -404,6 +404,7 @@ INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
 INSERT INTO schema_migrations VALUES('20261031090000');
+INSERT INTO schema_migrations VALUES('20261031120000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');
@@ -414,7 +415,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("quest_outcome_id")
   REFERENCES "quest_outcomes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, "minutes" integer, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -435,7 +436,7 @@ FOREIGN KEY ("posted_to_id")
   REFERENCES "locations" ("id")
  ON DELETE SET NULL);
 INSERT INTO characters VALUES(1000000001,30,'A travel-worn coat.','A trader returning for supplies.',NULL,'2026-10-02 13:25:59.775380',0,NULL,12,'Waste.','Losing needed supplies.','Cal',8,0,0,1,3,'Well-kept tools.',NULL,NULL,'Cal','Patient and practical.',1000000001,NULL,'male',1000000001,12,NULL,NULL,'2026-10-02 13:25:59.775380',12,NULL,NULL,NULL);
-CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "fell_at" datetime(6), CONSTRAINT "fk_rails_340e8cdc38"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 , CONSTRAINT "fk_rails_f82b72b677"
