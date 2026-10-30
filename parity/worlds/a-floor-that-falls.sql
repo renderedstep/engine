@@ -444,9 +444,20 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 INSERT INTO schema_migrations VALUES('20261031150000');
+INSERT INTO schema_migrations VALUES('20261031180000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-30 17:25:19.682905','2026-10-30 17:25:19.682910');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','c2813cee903cf430f7b8afb47fa3a3021ac3a2f9','2026-10-30 17:25:19.687990','2026-10-30 17:25:19.687993');
+CREATE TABLE IF NOT EXISTS "playthrough_rests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "recovered" integer NOT NULL, "hp_after" integer NOT NULL, "story_timestamp" datetime(6) NOT NULL, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_d40226d075"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_52d7e18410"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_68b103131a"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -666,5 +677,8 @@ CREATE INDEX "index_world_events_on_story_id" ON "world_events" ("story_id");
 CREATE INDEX "index_world_events_on_world_mechanic_id" ON "world_events" ("world_mechanic_id");
 CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mechanics" ("story_id", "name");
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
+CREATE INDEX "index_playthrough_rests_on_playthrough_id" ON "playthrough_rests" ("playthrough_id");
+CREATE INDEX "index_playthrough_rests_on_location_id" ON "playthrough_rests" ("location_id");
+CREATE INDEX "index_playthrough_rests_on_scene_id" ON "playthrough_rests" ("scene_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

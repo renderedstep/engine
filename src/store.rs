@@ -132,10 +132,16 @@ pub const FLOORS: &str = "floors";
 /// (`fell_at`, migration 20261031120000).
 pub const PLAYTHROUGH_FLOORS: &str = "playthrough_floors";
 
+/// The rests one game has taken, one row per rest (migration
+/// 20261031180000): where, the hit points it mended and the player's after
+/// it, and when it began.
+pub const PLAYTHROUGH_RESTS: &str = "playthrough_rests";
+
 /// Tables the engine loads only where the database has them: a database
 /// from before one was added reads as holding no rows of it. The engine
-/// writes only [`PLAYTHROUGH_FLOORS`] of them, and only where it is there.
-pub const OPTIONAL_LOADED: &[&str] = &[FLOORS, PLAYTHROUGH_FLOORS];
+/// writes only [`PLAYTHROUGH_FLOORS`] and [`PLAYTHROUGH_RESTS`] of them, and
+/// only where they are there.
+pub const OPTIONAL_LOADED: &[&str] = &[FLOORS, PLAYTHROUGH_FLOORS, PLAYTHROUGH_RESTS];
 
 /// The shape of each table of [`OPTIONAL_LOADED`], as [`shape`] would state
 /// it, foreign keys included. [`shape`] leaves these facts out when every
@@ -177,6 +183,26 @@ pub const OPTIONAL_SHAPES: &[(&str, &[&str])] = &[
             "index playthrough_floors (playthrough_id)",
             "index playthrough_floors (playthrough_id, location_id) unique",
             "index playthrough_floors (scene_id)",
+        ],
+    ),
+    (
+        PLAYTHROUGH_RESTS,
+        &[
+            "column playthrough_rests.created_at datetime(6) not null pk=0",
+            "column playthrough_rests.hp_after integer not null pk=0",
+            "column playthrough_rests.id integer not null pk=1",
+            "column playthrough_rests.location_id integer not null pk=0",
+            "column playthrough_rests.playthrough_id integer not null pk=0",
+            "column playthrough_rests.recovered integer not null pk=0",
+            "column playthrough_rests.scene_id integer pk=0",
+            "column playthrough_rests.story_timestamp datetime(6) not null pk=0",
+            "column playthrough_rests.updated_at datetime(6) not null pk=0",
+            "foreign key playthrough_rests.location_id -> locations.id on update NO ACTION on delete NO ACTION",
+            "foreign key playthrough_rests.playthrough_id -> playthroughs.id on update NO ACTION on delete NO ACTION",
+            "foreign key playthrough_rests.scene_id -> scenes.id on update NO ACTION on delete NO ACTION",
+            "index playthrough_rests (location_id)",
+            "index playthrough_rests (playthrough_id)",
+            "index playthrough_rests (scene_id)",
         ],
     ),
 ];

@@ -429,6 +429,7 @@ INSERT INTO schema_migrations VALUES('20261030230000');
 INSERT INTO schema_migrations VALUES('20261031090000');
 INSERT INTO schema_migrations VALUES('20261031120000');
 INSERT INTO schema_migrations VALUES('20261031150000');
+INSERT INTO schema_migrations VALUES('20261031180000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-29 02:06:59.131845','2026-10-29 02:06:59.131848');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','9ea7d9a7496841168065535777683ed7c64300e0','2026-10-29 02:06:59.136646','2026-10-29 02:06:59.136649');
@@ -462,6 +463,16 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
 , CONSTRAINT "fk_rails_b4a8914069"
+FOREIGN KEY ("scene_id")
+  REFERENCES "scenes" ("id")
+);
+CREATE TABLE IF NOT EXISTS "playthrough_rests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "recovered" integer NOT NULL, "hp_after" integer NOT NULL, "story_timestamp" datetime(6) NOT NULL, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_d40226d075"
+FOREIGN KEY ("playthrough_id")
+  REFERENCES "playthroughs" ("id")
+, CONSTRAINT "fk_rails_52d7e18410"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_68b103131a"
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
@@ -680,5 +691,8 @@ CREATE INDEX "index_playthrough_floors_on_playthrough_id" ON "playthrough_floors
 CREATE INDEX "index_playthrough_floors_on_location_id" ON "playthrough_floors" ("location_id");
 CREATE INDEX "index_playthrough_floors_on_scene_id" ON "playthrough_floors" ("scene_id");
 CREATE UNIQUE INDEX "index_playthrough_floors_on_playthrough_and_location" ON "playthrough_floors" ("playthrough_id", "location_id");
+CREATE INDEX "index_playthrough_rests_on_playthrough_id" ON "playthrough_rests" ("playthrough_id");
+CREATE INDEX "index_playthrough_rests_on_location_id" ON "playthrough_rests" ("location_id");
+CREATE INDEX "index_playthrough_rests_on_scene_id" ON "playthrough_rests" ("scene_id");
 PRAGMA writable_schema=OFF;
 COMMIT;

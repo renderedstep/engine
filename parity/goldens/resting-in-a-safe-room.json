@@ -1,0 +1,800 @@
+{
+  "script": "resting-in-a-safe-room",
+  "story": "A Place To Rest",
+  "steps": [
+    {
+      "step": "step 1 hurt-on-the-landing",
+      "player": "first",
+      "typed": "harm 12",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Resting Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Shrine",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 6,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "harmed: Odile unhurt -> badly hurt (6 of 18)",
+        "refused": false,
+        "offers": null,
+        "understood": "harm -> 12 hit points",
+        "resolved_by": "engine_view",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 rest-on-the-landing",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Resting Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Shrine",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 14,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "rest-on-the-landing: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 60.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 rest-again-mends-only-to-her-maximum",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Resting Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Shrine",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "rest-again: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 60.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 into-the-shrine",
+      "player": "first",
+      "typed": "/move The Shrine",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Shrine",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Brother Amal"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Brother Amal": 6
+        },
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Landing -> The Shrine",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Shrine",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 strike-the-keeper",
+      "player": "first",
+      "typed": "/attack Brother Amal",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Shrine",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Brother Amal"
+          }
+        ],
+        "foes": [
+          {
+            "id": 1000000002,
+            "name": "Brother Amal"
+          }
+        ],
+        "inscription": [],
+        "hp": 14,
+        "hp_of": {
+          "Brother Amal": 5
+        },
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "struck: Odile hit Brother Amal for 1 (round 1); Brother Amal is hurt (5 of 6)",
+        "refused": false,
+        "offers": null,
+        "understood": "attack -> Brother Amal",
+        "resolved_by": "grammar",
+        "note": "answered: Brother Amal hit Odile for 4 (round 1); Odile is hurt (14 of 18)",
+        "drifts": 0,
+        "blows": 2,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 a-wait-with-a-foe-here-is-no-rest",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000002,
+          "name": "The Shrine",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Brother Amal"
+          }
+        ],
+        "foes": [
+          {
+            "id": 1000000002,
+            "name": "Brother Amal"
+          }
+        ],
+        "inscription": [],
+        "hp": 10,
+        "hp_of": {
+          "Brother Amal": 5
+        },
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait-with-a-foe: completed",
+        "drifts": 0,
+        "blows": 1,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 back-to-the-landing",
+      "player": "first",
+      "typed": "/move The Landing",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Resting Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Shrine",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 5,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Shrine -> The Landing",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Landing",
+        "resolved_by": "grammar",
+        "note": "answered: Brother Amal hit Odile for 5 (round 3); Odile is badly hurt (5 of 18)\nthe fight is over: The fight in The Shrine is over after 3 rounds. Nobody was killed: the party is no longer standing in it. 4 blows landed: Odile hit Brother Amal for 1 (round 1); Brother Amal is hurt (5 of 6); Brother Amal hit Odile for 4 (round 1); Odile is hurt (14 of 18); Brother Amal hit Odile for 4 (round 2); Odile is hurt (10 of 18); Brother Amal hit Odile for 5 (round 3); Odile is badly hurt (5 of 18).",
+        "drifts": 0,
+        "blows": 1,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 15.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 8 onto-the-resting-floor",
+      "player": "first",
+      "typed": "/move The Resting Floor",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The Resting Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Resting Floor room 2",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000016,
+            "name": "coin"
+          },
+          {
+            "id": 1000000015,
+            "name": "crack"
+          },
+          {
+            "id": 1000000014,
+            "name": "ledge"
+          },
+          {
+            "id": 1000000013,
+            "name": "pool"
+          },
+          {
+            "id": 1000000010,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000011,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000017,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000012,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 5,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Resting Floor",
+        "resolved_by": "grammar",
+        "note": "into-the-resting-floor: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 9 through-room-2",
+      "player": "first",
+      "typed": "/move The Resting Floor room 2",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "The Resting Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000004,
+            "name": "The Resting Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Resting Floor room 3",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000025,
+            "name": "crack"
+          },
+          {
+            "id": 1000000023,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000024,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 5,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Resting Floor room 2",
+        "resolved_by": "grammar",
+        "note": "through-room-2: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 10 into-the-safe-room",
+      "player": "first",
+      "typed": "/move The Resting Floor room 3",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Resting Floor room 3",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The Resting Floor room 2",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000036,
+            "name": "bat skull"
+          },
+          {
+            "id": 1000000035,
+            "name": "crack"
+          },
+          {
+            "id": 1000000037,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000033,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000034,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000038,
+            "name": "shard of pottery"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 5,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Resting Floor room 3",
+        "resolved_by": "grammar",
+        "note": "into-the-safe-room: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 11 rest-past-the-countdown",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Resting Floor room 3",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [],
+        "here": [
+          {
+            "id": 1000000036,
+            "name": "bat skull"
+          },
+          {
+            "id": 1000000035,
+            "name": "crack"
+          },
+          {
+            "id": 1000000037,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000033,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000034,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000038,
+            "name": "shard of pottery"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 0,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": true,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "rest-past-the-countdown: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 60.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 12 nothing-after",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Resting Floor room 3",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [],
+        "here": [
+          {
+            "id": 1000000036,
+            "name": "bat skull"
+          },
+          {
+            "id": 1000000035,
+            "name": "crack"
+          },
+          {
+            "id": 1000000037,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000033,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000034,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000038,
+            "name": "shard of pottery"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 0,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": true,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "Odile is dead, and this playthrough is over. Nothing you type can change it. Start a new playthrough to play this world again.",
+        "understood": null,
+        "resolved_by": null,
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}
