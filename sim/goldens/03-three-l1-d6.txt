@@ -1,0 +1,9 @@
+03-three-l1-d6: 25 fights, seeds 1..25, told driver, policy attack
+              rate   95% interval
+  won        0.160   [0.064, 0.347]
+  died       0.840   [0.653, 0.936]
+  fled       0.000   [0.000, 0.133]
+  rounds         mean 2.92   1:1 2:9 3:9 4:4 5:1 6:1
+  hp left        mean 2.75   2:2 3:1 4:1 (survivors)
+  damage         taken 18.88, dealt 12.20 a fight
+  blows          taken 5.20, struck 2.92 a fight

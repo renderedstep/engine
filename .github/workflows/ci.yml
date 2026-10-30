@@ -30,6 +30,8 @@ jobs:
       - run: cargo test --workspace --locked
       - name: the engine sweep against its goldens
         run: cargo run --release --locked --bin parity -- --check parity
+      - name: the standard fights against their goldens
+        run: cargo run --release --locked --bin fight -- --check sim
 
   runner:
     name: the engine sweep through the game's runner, and the game's gates

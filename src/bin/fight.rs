@@ -12,14 +12,19 @@
 //!
 //! `fight MATCHUP.yml --replay SEED` plays that one fight again and prints
 //! it line by line: what was typed, every blow, and everybody's hit points.
+//!
+//! `fight --check DIR` plays every matchup in `DIR/goldens` and fails when
+//! a table differs from the golden kept beside it (`sim::golden`).
+//! `fight --write DIR` writes each golden again whose table moved.
 
-use renderedstep_engine::sim::{self, matchup::Matchup, tally, Driver};
+use renderedstep_engine::sim::{self, golden, matchup::Matchup, tally, Driver};
 use std::path::Path;
 use std::process::ExitCode;
 use std::time::Instant;
 
 const USAGE: &str = "usage: fight MATCHUP.yml [--seeds A..B] [--driver told|mechanics] \
-                     [--threads N] [--json] [--replay SEED]";
+                     [--threads N] [--json] [--replay SEED] \
+                     | fight --check DIR | fight --write DIR";
 
 fn main() -> ExitCode {
     // SQLite counts every allocation under one lock for the whole process,
@@ -39,6 +44,15 @@ fn main() -> ExitCode {
 }
 
 fn run(args: Vec<String>) -> Result<(), String> {
+    match args.as_slice() {
+        [flag, dir] if flag == "--check" => return check(Path::new(dir)),
+        [flag, dir] if flag == "--write" => {
+            let written = golden::write(Path::new(dir))?;
+            println!("WROTE: {} golden(s): {}", written.len(), written.join(", "));
+            return Ok(());
+        }
+        _ => {}
+    }
     let mut file = None;
     let mut json = false;
     let mut replay = None;
@@ -104,36 +118,45 @@ fn run(args: Vec<String>) -> Result<(), String> {
         return Ok(());
     }
 
-    let started = Instant::now();
+    if !json {
+        let started = Instant::now();
+        print!("{}", golden::table(&matchup)?);
+        let seconds = started.elapsed().as_secs_f64();
+        eprintln!(
+            "  ({:.1}s, {:.0} fights/s on {} thread(s))",
+            seconds,
+            matchup.seeds.len() as f64 / seconds.max(1e-9),
+            matchup.threads.max(1)
+        );
+        return Ok(());
+    }
     let fights = sim::run(&matchup, &matchup.seeds, matchup.threads)?;
-    let seconds = started.elapsed().as_secs_f64();
-    let summary = tally::Summary::of(&fights);
     let (first, last) = (
         matchup.seeds.first().copied().unwrap_or_default(),
         matchup.seeds.last().copied().unwrap_or_default(),
     );
-    if json {
-        let mut out = summary.json();
-        out["matchup"] = matchup.name.clone().into();
-        out["driver"] = matchup.driver.as_str().into();
-        out["seeds"] = format!("{first}..{last}").into();
-        out["policy"] = matchup.policy.kind.clone().into();
-        println!("{out}");
-    } else {
-        let heading = format!(
-            "{}: {} fights, seeds {first}..{last}, {} driver, policy {}",
-            matchup.name,
-            fights.len(),
-            matchup.driver.as_str(),
-            matchup.policy.kind,
-        );
-        print!("{}", summary.text(&heading));
-        eprintln!(
-            "  ({:.1}s, {:.0} fights/s on {} thread(s))",
-            seconds,
-            fights.len() as f64 / seconds.max(1e-9),
-            matchup.threads.max(1)
-        );
-    }
+    let mut out = tally::Summary::of(&fights).json();
+    out["matchup"] = matchup.name.clone().into();
+    out["driver"] = matchup.driver.as_str().into();
+    out["seeds"] = format!("{first}..{last}").into();
+    out["policy"] = matchup.policy.kind.clone().into();
+    println!("{out}");
     Ok(())
+}
+
+fn check(dir: &Path) -> Result<(), String> {
+    let (played, failures) = golden::check(dir)?;
+    if failures.is_empty() {
+        println!("AGREED: {} fight golden(s).", played.len());
+        Ok(())
+    } else {
+        Err(format!(
+            "{}\nMOVED: {} of {} fight golden(s); if the odds were meant to move, \
+             run fight --write {} and keep the diff in the same PR.",
+            failures.join("\n"),
+            failures.len(),
+            played.len(),
+            dir.display()
+        ))
+    }
 }

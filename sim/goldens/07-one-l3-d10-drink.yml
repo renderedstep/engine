@@ -1,0 +1,9 @@
+# The house body against one level-3 d10 foe with a healing draught,
+# drinking at 8 hit points or below and otherwise attacking to the end.
+seeds: 1..25
+player:
+  carrying:
+    - {name: healing draught, use_kind: healing}
+foes:
+  - {count: 1, stats: {level: 3, hit_die: 10}}
+policy: {kind: drink_below, hp: 8}

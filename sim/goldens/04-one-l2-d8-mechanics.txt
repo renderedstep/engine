@@ -1,0 +1,9 @@
+04-one-l2-d8-mechanics: 25 fights, seeds 1..25, mechanics driver, policy attack
+              rate   95% interval
+  won        0.840   [0.653, 0.936]
+  died       0.160   [0.064, 0.347]
+  fled       0.000   [0.000, 0.133]
+  rounds         mean 3.16   2:8 3:6 4:10 5:1
+  hp left        mean 8.86   1:1 2:1 4:3 6:5 7:1 10:2 11:1 13:2 14:1 15:2 16:1 17:1 (survivors)
+  damage         taken 10.92, dealt 14.72 a fight
+  blows          taken 2.32, struck 3.16 a fight

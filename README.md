@@ -401,6 +401,10 @@ fight; and a fight's tally agreeing with its `playthrough_blows` rows.
   that can be negative.
 - Tables that Ruby keeps in a `Hash` are arrays of pairs here, so their order
   survives.
+- A change that moves fight odds re-blesses the fight goldens in the same
+  PR: `cargo run --release --bin fight -- --write sim`, then keep the diff of
+  `sim/goldens/*.txt`. CI runs `fight --check sim`, which fails on any table
+  that moved.
 
 ## Testing
 

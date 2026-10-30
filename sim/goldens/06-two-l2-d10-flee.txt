@@ -1,0 +1,10 @@
+06-two-l2-d10-flee: 25 fights, seeds 1..25, told driver, policy flee_below
+              rate   95% interval
+  won        0.000   [0.000, 0.133]
+  died       1.000   [0.867, 1.000]
+  fled       0.000   [0.000, 0.133]
+  rounds         mean 2.72   2:12 3:8 4:5
+  hp left        (nobody survived)
+  damage         taken 27.36, dealt 3.12 a fight
+  blows          taken 5.04, struck 0.72 a fight
+  used           drinks 0.84, throws 1.00 a fight

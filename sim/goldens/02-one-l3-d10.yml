@@ -1,0 +1,6 @@
+# The house body against one level-3 d10 foe, attacking to the end.
+# Exact P(win): 0.2338.
+seeds: 1..25
+foes:
+  - {count: 1, stats: {level: 3, hit_die: 10}}
+policy: attack

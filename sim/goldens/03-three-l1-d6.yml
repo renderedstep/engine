@@ -1,0 +1,6 @@
+# The house body against three level-1 d6 foes, attacking the first one
+# standing to the end. Exact P(win): 0.1914.
+seeds: 1..25
+foes:
+  - {count: 3, stats: {level: 1, hit_die: 6}}
+policy: attack

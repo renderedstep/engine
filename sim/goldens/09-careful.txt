@@ -1,0 +1,10 @@
+09-careful: 25 fights, seeds 1..25, told driver, policy careful
+              rate   95% interval
+  won        0.160   [0.064, 0.347]
+  died       0.360   [0.202, 0.555]
+  fled       0.480   [0.300, 0.665]
+  rounds         mean 2.24   1:8 2:5 3:11 5:1
+  hp left        mean 7.69   1:1 2:2 4:3 5:1 7:1 8:1 11:3 12:1 13:2 15:1 (survivors)
+  damage         taken 17.44, dealt 4.88 a fight
+  blows          taken 3.52, struck 1.00 a fight
+  used           drinks 0.40, throws 0.00 a fight

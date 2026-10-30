@@ -1,0 +1,6 @@
+# The house body against two level-1 foes of a rolled hit die, attacking
+# to the end: the engine's own roll for a foe's stats.
+seeds: 1..25
+foes:
+  - {count: 2, stats: {level: 1, hit_die: rolled}}
+policy: attack

@@ -3,3 +3,4 @@ data/**/*.yml -text
 tests/fixtures/*.json -text
 parity/** -text
 src/store/shape.txt -text
+sim/** -text

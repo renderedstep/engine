@@ -1,0 +1,6 @@
+# The house body against one level-2 d8 foe, running to the next room at
+# 8 hit points or below: the parting blow.
+seeds: 1..25
+foes:
+  - {count: 1, stats: {level: 2, hit_die: 8}}
+policy: {kind: flee_below, hp: 8}
