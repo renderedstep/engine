@@ -306,11 +306,11 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 INSERT INTO scenes VALUES(1000000001,1000000001,1000000001,NULL,'You stand with Maren beside the gate to the courtyard.','2026-09-08 12:00:00','Cal meets Maren at the market gate.','2026-10-27 12:13:21.602987','2026-10-27 12:13:21.602987',1,NULL,NULL,NULL,NULL,NULL,0,NULL);
-CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "genre" varchar, "preface" text, "summary" text, "start_time" datetime(6), "universe_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "generation_snapshot" text, CONSTRAINT "fk_rails_2a912ea846"
+CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "genre" varchar, "preface" text, "summary" text, "start_time" datetime(6), "universe_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "generation_snapshot" text, "people_limit" integer, "things_limit" integer, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'A Friend at the Gate (engine sweep)','town adventure','Maren has agreed to walk the old way with Cal, if Cal asks.','Cal and Maren cross the courtyard to the lane together, or Cal goes alone.','2026-09-08 12:00:00',1000000001,'2026-10-27 12:13:20.990086','2026-10-27 12:13:20.990086',NULL);
+INSERT INTO stories VALUES(1000000001,'A Friend at the Gate (engine sweep)','town adventure','Maren has agreed to walk the old way with Cal, if Cal asks.','Cal and Maren cross the courtyard to the lane together, or Cal goes alone.','2026-09-08 12:00:00',1000000001,'2026-10-27 12:13:20.990086','2026-10-27 12:13:20.990086',NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "cost_source" varchar DEFAULT 'estimated' NOT NULL, "latency_ms" integer, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -420,6 +420,7 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 INSERT INTO schema_migrations VALUES('20261027120117');
+INSERT INTO schema_migrations VALUES('20261030120000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-27 12:10:16.651328','2026-10-27 12:10:16.651334');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','deec051e019741f5fc4e8fe09fff00a4e1d2f04d','2026-10-27 12:10:16.662468','2026-10-27 12:10:16.662473');

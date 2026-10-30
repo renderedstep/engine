@@ -1,0 +1,75 @@
+{
+  "script": "a-thirteenth-person-is-born",
+  "story": "A Crowded Cellar",
+  "steps": [
+    {
+      "step": "step 1 down-into-the-cellar",
+      "player": "first",
+      "typed": "/move Cellar",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "Cellar",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "Taproom",
+            "detail": "realized"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000015,
+            "name": "Kit Lowan"
+          },
+          {
+            "id": 1000000013,
+            "name": "Orrin Vale"
+          },
+          {
+            "id": 1000000014,
+            "name": "Sabine Roe"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 53,
+        "hp_of": {
+          "Kit Lowan": 10,
+          "Orrin Vale": 6,
+          "Sabine Roe": 10
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> Cellar",
+        "resolved_by": "grammar",
+        "note": "into-the-cellar: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    }
+  ]
+}

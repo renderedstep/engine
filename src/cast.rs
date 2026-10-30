@@ -68,6 +68,9 @@ pub struct Room<'a> {
     pub present: i64,
     /// How many people the story already holds.
     pub in_story: i64,
+    /// How many people the story may hold: [`MAX_PER_STORY`] unless the
+    /// story names its own (`realization::people_limit`).
+    pub story_limit: i64,
 }
 
 /// The races a draw picks from: those of the wanted kind, or every race when
@@ -92,7 +95,7 @@ pub fn slots<'a>(room: &Room, races: &[Race<'a>]) -> Vec<Slot<'a>> {
     let (_, count) = population::for_room(room.name, room.population);
     let drawn = count
         .min((MAX_PER_ROOM - room.present).max(0))
-        .min((MAX_PER_STORY - room.in_story).max(0));
+        .min((room.story_limit - room.in_story).max(0));
     let mut rng = danger::generator_for(room.story_id, room.location_id);
     let throws: Vec<bool> = (0..drawn)
         .map(|_| danger::monstrous(room.danger, &mut rng))
@@ -142,5 +145,45 @@ pub fn generated<'a>(story_id: i64, sequence: i64, races: &[Race<'a>]) -> Genera
         attractiveness,
         born_in,
         raised_by,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{slots, Race, Room, MAX_PER_STORY};
+
+    const RACES: [Race; 1] = [Race {
+        name: "Countryfolk",
+        monstrous: false,
+    }];
+
+    /// A crowd's room with `in_story` people already in a story that may
+    /// hold `story_limit`.
+    fn crowd(in_story: i64, story_limit: i64) -> Room<'static> {
+        Room {
+            story_id: 1,
+            location_id: 5,
+            name: "Cellar",
+            danger: "safe",
+            population: Some("a crowd"),
+            present: 0,
+            in_story,
+            story_limit,
+        }
+    }
+
+    #[test]
+    fn a_story_at_the_ordinary_limit_draws_nobody_more() {
+        assert_eq!(slots(&crowd(11, MAX_PER_STORY), &RACES).len(), 1);
+        assert!(slots(&crowd(12, MAX_PER_STORY), &RACES).is_empty());
+    }
+
+    #[test]
+    fn a_raised_limit_draws_past_twelve_with_the_same_dice() {
+        let raised = slots(&crowd(12, 20), &RACES);
+        assert_eq!(raised.len(), 3, "the crowd's roll, with places to spare");
+        assert_eq!(slots(&crowd(0, MAX_PER_STORY), &RACES), raised);
+        assert_eq!(slots(&crowd(19, 20), &RACES), raised[..1]);
+        assert!(slots(&crowd(20, 20), &RACES).is_empty());
     }
 }

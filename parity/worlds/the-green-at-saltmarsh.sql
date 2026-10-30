@@ -299,11 +299,11 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 INSERT INTO scenes VALUES(1000000001,NULL,NULL,'2026-10-02 13:26:03.225594','The green runs down to the ropewalk, and Wat Coyle is mending a net on it.',NULL,0,1,1000000001,NULL,NULL,NULL,1000000001,'2026-09-21 07:00:00','The story opens on Saltmarsh Green, outside the ropewalk.',NULL,'2026-10-02 13:26:03.225594');
-CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_2a912ea846"
+CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "generation_snapshot" text, "genre" varchar, "preface" text, "start_time" datetime(6), "summary" text, "title" varchar, "universe_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, "people_limit" integer, "things_limit" integer, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'2026-10-02 13:26:02.877768',NULL,'village mystery','A new cable parted on its first day in harbour, and the ropewalk laid it.','2026-09-21 07:00:00','Jory Pask crosses the green to the ropewalk with an armful of the walk''s gear.','The Green at Saltmarsh (engine sweep)',1000000001,'2026-10-02 13:26:02.877768');
+INSERT INTO stories VALUES(1000000001,'2026-10-02 13:26:02.877768',NULL,'village mystery','A new cable parted on its first day in harbour, and the ropewalk laid it.','2026-09-21 07:00:00','Jory Pask crosses the green to the ropewalk with an armful of the walk''s gear.','The Green at Saltmarsh (engine sweep)',1000000001,'2026-10-02 13:26:02.877768',NULL,NULL);
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "updated_at" datetime(6) NOT NULL, "cost_source" varchar DEFAULT 'estimated' NOT NULL, "latency_ms" integer, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -413,6 +413,7 @@ INSERT INTO schema_migrations VALUES('20261025120000');
 INSERT INTO schema_migrations VALUES('20261025200000');
 INSERT INTO schema_migrations VALUES('20261025230000');
 INSERT INTO schema_migrations VALUES('20261027120117');
+INSERT INTO schema_migrations VALUES('20261030120000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-02 13:25:33.143313','2026-10-02 13:25:33.143316');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','072abc2bfb80d111a1808df270e9210911f5e81d','2026-10-02 13:25:33.148224','2026-10-02 13:25:33.148228');

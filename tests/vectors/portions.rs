@@ -598,6 +598,7 @@ fn cast() {
             population: input["population"].as_str(),
             present: 0,
             in_story: 0,
+            story_limit: cast::MAX_PER_STORY,
         };
         cast::slots(&room, &races)
             .iter()
