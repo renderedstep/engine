@@ -716,7 +716,9 @@ fn from_before_the_guards() -> rusqlite::Connection {
     let key = create
         .find(r#", CONSTRAINT "fk_rails_4c54fc506e""#)
         .expect("the posted_to key");
-    let older = format!("{})", &create[..key])
+    let cascade = " ON DELETE SET NULL";
+    let end = key + create[key..].find(cascade).expect("its action") + cascade.len();
+    let older = format!("{}{}", &create[..key], &create[end..])
         .replace(r#", "posted_to_id" integer"#, "")
         .replacen(r#""characters""#, r#""older_characters""#, 1);
     let mut statement = conn
