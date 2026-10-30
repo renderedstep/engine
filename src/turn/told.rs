@@ -158,6 +158,9 @@ pub struct Turn<'s, 'm> {
     /// The game, choosing the act in a game the player narrates, may walk
     /// into a room nobody has written, which writes it through the models.
     unwritten: bool,
+    /// The story seconds the act's scene spends: an action's beat, or a
+    /// rest's hour.
+    spends: i64,
 }
 
 /// What a scene records the turn did (`scenes.resolved_action`): the
@@ -229,6 +232,7 @@ impl<'s, 'm> Turn<'s, 'm> {
             fixed: None,
             line: None,
             unwritten: false,
+            spends: ACTION_SECONDS,
         })
     }
 
@@ -602,6 +606,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         self.commit("floor_fell_after", |turn| turn.m.floors_fall())?;
         self.commit("told_tolls", |turn| turn.claim_tolls(scene.as_ref()))?;
         self.commit("told_floors", |turn| turn.claim_floors(scene.as_ref()))?;
+        self.commit("told_rests", |turn| turn.claim_rests(scene.as_ref()))?;
         self.commit("told_volitions", |turn| {
             turn.claim_volitions(scene.as_ref())
         })?;
@@ -855,6 +860,31 @@ impl<'s, 'm> Turn<'s, 'm> {
         Ok(reached.len() as i64)
     }
 
+    /// The rest the turn took belongs to its scene, whose log entry shows
+    /// it in the engine's own words. No paragraph tells it, and no model is
+    /// told of it.
+    fn claim_rests(&mut self, scene: Option<&Told>) -> Result<i64, Error> {
+        let Some(scene) = scene else {
+            return Ok(0);
+        };
+        let rests: Vec<i64> = self
+            .m
+            .game()
+            .rests()
+            .into_iter()
+            .filter(|row| int(row, "scene_id").is_none())
+            .map(id)
+            .collect();
+        for row in &rests {
+            self.m.update(
+                store::PLAYTHROUGH_RESTS,
+                *row,
+                vec![("scene_id", Value::from(scene.id))],
+            )?;
+        }
+        Ok(rests.len() as i64)
+    }
+
     /// `#claim_volitions!`.
     fn claim_volitions(&mut self, scene: Option<&Told>) -> Result<i64, Error> {
         let Some(scene) = scene else {
@@ -900,6 +930,11 @@ impl<'s, 'm> Turn<'s, 'm> {
             (Some(thing), divide::TEAR | divide::SMASH) => Some(self.m.row("items", thing.id)?),
             _ => None,
         };
+        // A rest leaves the room and its foes as they were, so a turn
+        // resumed after its effect still reads it as one.
+        if choice.kind == WAIT && self.m.resting() {
+            self.spends = super::REST.minutes * 60;
+        }
         let mut thrown = None;
         let kept::Effect { fact, .. } = self.commit("physical_effect", |turn| {
             let (status, fact) = turn.m.apply_physical(choice)?;
@@ -925,7 +960,8 @@ impl<'s, 'm> Turn<'s, 'm> {
         if choice.kind == WAIT {
             // Nothing happened but the time, so the narrator is asked as for
             // any line the engine does nothing with; the engine's sentence
-            // stands only where no narrator answers.
+            // stands only where no narrator answers. A rest's mending is
+            // engine copy too: the narrator is not told of it.
             return self.narrate(command, None, None, None, Some(fact));
         }
         if matches!(choice.kind.as_str(), WEAR | REMOVE) {
@@ -1642,7 +1678,7 @@ impl<'s, 'm> Turn<'s, 'm> {
         let setup = failed == Some(Failure::NoModel);
         let told = self.commit("narrated", |turn| {
             let here = turn.m.here().map(|room| id(&room));
-            let at = turn.m.story_now() + ACTION_SECONDS;
+            let at = turn.m.story_now() + turn.spends;
             let mut values = vec![
                 ("location_id", here.map_or(Value::Null, Value::from)),
                 ("description", Value::from(text.as_str())),
@@ -1699,7 +1735,7 @@ impl<'s, 'm> Turn<'s, 'm> {
     fn tell_in_engine_words(&mut self, words: &str, fact: Option<&str>) -> Result<Told, Error> {
         self.commit("narrated", |turn| {
             let here = turn.m.here().map(|room| id(&room));
-            let at = turn.m.story_now() + ACTION_SECONDS;
+            let at = turn.m.story_now() + turn.spends;
             let mut values = vec![
                 ("location_id", here.map_or(Value::Null, Value::from)),
                 ("description", Value::from(words)),

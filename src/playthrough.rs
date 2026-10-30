@@ -355,6 +355,29 @@ impl<'a> Game<'a> {
         ))
     }
 
+    /// The rests this game has taken, in the order it took them.
+    pub fn rests(&self) -> Vec<&'a Row> {
+        self.own(crate::store::PLAYTHROUGH_RESTS)
+    }
+
+    /// What the engine says of a rest, in its own words and to the player
+    /// only: "Odile rested for an hour in The Stocked Floor room 4 and
+    /// recovered 8 hit points (14 of 18)."
+    pub fn rest_to_s(&self, rest: &Row) -> Option<String> {
+        let player = self.protagonist()?;
+        let room = self.location(int(rest, "location_id")?);
+        let condition = Condition {
+            hp: int(rest, "hp_after")?,
+            max: self.max_hp_at(player, int(rest, "story_timestamp"))?,
+        };
+        Some(crate::turn::rested(
+            string(player, "fullname"),
+            string(room, "name"),
+            int(rest, "recovered")?,
+            &condition,
+        ))
+    }
+
     /// This game's row for the floor a room is on (the floor itself, or a
     /// room laid out inside it), or none for a room on no floor and a floor
     /// this game has not reached.

@@ -1,0 +1,134 @@
+---
+story: A Place To Rest
+steps:
+- id: hurt-on-the-landing
+  type: harm 12
+  expect:
+    change: Odile unhurt -> badly hurt (6 of 18)
+    hp: 6
+- id: rest-on-the-landing
+  type: "/wait"
+  browser:
+    token: rest-on-the-landing
+    replies:
+    - purpose: narration
+      prompt_excludes:
+      - rested for an hour
+      - hit points
+      content: You sit with your back to the wall and let the lantern burn.
+  expect:
+    elapsed_minutes: 60.0
+    hp: 14
+    dead: false
+- id: rest-again-mends-only-to-her-maximum
+  type: "/wait"
+  browser:
+    token: rest-again
+    replies:
+    - purpose: narration
+      content: You doze, and wake to the same lantern.
+  expect:
+    elapsed_minutes: 60.0
+    hp: 18
+- id: into-the-shrine
+  type: "/move The Shrine"
+  expect:
+    location: The Shrine
+    present:
+    - Brother Amal
+- id: strike-the-keeper
+  type: "/attack Brother Amal"
+  expect:
+    foes:
+    - Brother Amal
+    hp: 14
+    dead: false
+- id: a-wait-with-a-foe-here-is-no-rest
+  type: "/wait"
+  browser:
+    token: wait-with-a-foe
+    replies:
+    - purpose: narration
+      content: You hold your ground and watch the old man's cudgel.
+  expect:
+    elapsed_minutes: 5.0
+    hp: 10
+    foes:
+    - Brother Amal
+- id: back-to-the-landing
+  type: "/move The Landing"
+  expect:
+    location: The Landing
+    hp: 5
+- id: onto-the-resting-floor
+  type: "/move The Resting Floor"
+  browser:
+    token: into-the-resting-floor
+    realizes: The Resting Floor
+    replies:
+    - purpose: location
+      content:
+        description: A level of black stone passages.
+        lore: The first floor was cut by people nobody remembers.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: A low chamber at the foot of the stair.
+        lore: Delvers pass through here on their way in.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Resting Floor room 1 (realized)
+- id: through-room-2
+  type: "/move The Resting Floor room 2"
+  browser:
+    token: through-room-2
+    realizes: The Resting Floor room 2
+    replies:
+    - purpose: location
+      content:
+        description: A bare chamber of black stone.
+        lore: Delvers do not stop here.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Resting Floor room 2 (realized)
+- id: into-the-safe-room
+  type: "/move The Resting Floor room 3"
+  browser:
+    token: into-the-safe-room
+    realizes: The Resting Floor room 3
+    replies:
+    - purpose: location
+      prompt_includes:
+      - Write NOBODY into this place.
+      content:
+        description: A quiet chamber with a dry floor.
+        lore: Nothing is born here.
+        items: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Resting Floor room 3 (realized)
+    hp: 5
+    dead: false
+- id: rest-past-the-countdown
+  type: "/wait"
+  browser:
+    token: rest-past-the-countdown
+    replies:
+    - purpose: narration
+      content: You close your eyes as the stone settles around you.
+  expect:
+    elapsed_minutes: 60.0
+    dead: true
+- id: nothing-after
+  type: "/wait"
+  expect:
+    refused: true
+    dead: true
+    offers: is dead, and this playthrough is over

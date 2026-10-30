@@ -69,6 +69,36 @@ const HEALING_POINTS: i64 = 8;
 /// What a `wait` did, in the engine's words: nothing but the time it took.
 pub const WAITED: &str = "You let time pass where you stand. Nothing else changed.";
 
+/// A rest: a `wait` in a sanctuary (`locations.sanctuary`) with no foe in
+/// it. What it takes in story minutes, in place of an action's beat, and
+/// what it mends.
+pub struct Rest {
+    pub minutes: i64,
+    pub mends: i64,
+}
+
+/// An hour, for one healing thing's worth.
+pub const REST: Rest = Rest {
+    minutes: 60,
+    mends: HEALING_POINTS,
+};
+
+/// What a rest did where no narrator answers. The rest's own notice is its
+/// row's ([`rested`]).
+pub const RESTED: &str = "You rest here a while.";
+
+/// What a rest did, in the engine's words, which no model is handed:
+/// "Odile rested for an hour in The Stocked Floor room 4 and recovered 8 hit
+/// points (14 of 18)."
+pub fn rested(fullname: &str, room: &str, recovered: i64, condition: &Condition) -> String {
+    format!(
+        "{fullname} rested for an hour in {room} and recovered {recovered} hit point{} ({} of {}).",
+        if recovered == 1 { "" } else { "s" },
+        condition.hp,
+        condition.max
+    )
+}
+
 /// What a `wear` did, in the engine's words: "You put on the cap.", or for
 /// a thing that was lying here, "You pick up the cap and put it on."
 pub fn put_on(item: &Row, lying: bool) -> String {
@@ -231,6 +261,8 @@ pub struct Mechanics<'s> {
     tolls_before: i64,
     /// The last floor this game had reached when the line began.
     floors_before: i64,
+    /// The last rest this game had taken when the line began.
+    rests_before: i64,
     decision: Option<String>,
     decided: bool,
     /// What the arc concluded with on this line, if it did
@@ -316,6 +348,7 @@ impl<'s> Mechanics<'s> {
             round: 1,
             tolls_before: 0,
             floors_before: 0,
+            rests_before: 0,
             decision: None,
             decided: false,
             concluded: None,
@@ -482,6 +515,13 @@ impl<'s> Mechanics<'s> {
         self.floors_before = self
             .game()
             .floors_reached()
+            .iter()
+            .map(|row| id(row))
+            .max()
+            .unwrap_or(0);
+        self.rests_before = self
+            .game()
+            .rests()
             .iter()
             .map(|row| id(row))
             .max()
@@ -1360,6 +1400,7 @@ impl<'s> Mechanics<'s> {
             "search" | "open" => self.search(&choice),
             "break" => self.snap(&choice),
             crate::divide::TEAR | crate::divide::SMASH => self.divide(&choice),
+            WAIT if self.resting() => self.rest(),
             WAIT => Ok(("applied", WAITED.into())),
             WEAR => self.put_on(item.unwrap_or_default()),
             REMOVE => self.take_off(item.unwrap_or_default()),
@@ -1368,6 +1409,48 @@ impl<'s> Mechanics<'s> {
                 "The item remains in your hands until its recipient accepts it.".into(),
             )),
         }
+    }
+
+    /// Whether a `wait` here is a rest: the room is a sanctuary, nobody in
+    /// it is fighting the party, and the player stands in it alive, with a
+    /// stat block to mend. A wait is the same act either way, never refused.
+    pub(crate) fn resting(&self) -> bool {
+        let game = self.game();
+        let Some(here) = game.current_location() else {
+            return false;
+        };
+        flag(here, "sanctuary")
+            && game.foes_in(Some(here)).is_empty()
+            && self
+                .player()
+                .and_then(|who| self.condition_of(&who))
+                .is_some_and(|condition| !condition.dead())
+    }
+
+    /// A rest: the player mends `REST.mends`, up to their maximum, and the
+    /// game keeps its row of `playthrough_rests`, which the notice is said
+    /// from. A database without the table keeps no row and says nothing.
+    /// The time it takes is the told turn's to spend.
+    fn rest(&mut self) -> Result<(&'static str, String), Error> {
+        let who = self.player().expect("a resting player");
+        let before = self
+            .condition_of(&who)
+            .expect("a resting player's condition");
+        let after = self.mend(&who, REST.mends)?.unwrap_or(before);
+        if self.store.has(store::PLAYTHROUGH_RESTS) {
+            let room = int(self.game().row, "current_location_id").expect("a room to rest in");
+            self.insert(
+                store::PLAYTHROUGH_RESTS,
+                vec![
+                    ("playthrough_id", Value::from(self.playthrough)),
+                    ("location_id", Value::from(room)),
+                    ("recovered", Value::from(after.hp - before.hp)),
+                    ("hp_after", Value::from(after.hp)),
+                    ("story_timestamp", Value::from(self.story_now())),
+                ],
+            )?;
+        }
+        Ok(("applied", RESTED.into()))
     }
 
     /// A thing put on: one lying here is picked up as part of the same act,
@@ -2394,11 +2477,21 @@ impl<'s> Mechanics<'s> {
         } else {
             None
         };
+        let rests_before = self.rests_before;
+        let rested: Vec<String> = {
+            let view = self.game();
+            view.rests()
+                .into_iter()
+                .filter(|row| id(row) > rests_before)
+                .filter_map(|row| view.rest_to_s(row))
+                .collect()
+        };
         let acts: Vec<&Volition> = volitions.iter().filter(|v| v.status == "applied").collect();
         if blows.is_empty()
             && closing.is_none()
             && taken.is_empty()
             && raised.is_empty()
+            && rested.is_empty()
             && beats.is_empty()
             && ended.is_none()
             && acts.is_empty()
@@ -2408,6 +2501,7 @@ impl<'s> Mechanics<'s> {
 
         let mut notes = report.note.clone();
         notes.extend(raised.iter().map(|raised| format!("the game: {raised}")));
+        notes.extend(rested.iter().map(|rest| format!("the game: {rest}")));
         notes.extend(blows.iter().map(|blow| format!("answered: {blow}")));
         notes.extend(acts.iter().map(|act| format!("someone here: {}", act.fact)));
         notes.extend(taken.iter().map(|toll| format!("the world: {toll}")));

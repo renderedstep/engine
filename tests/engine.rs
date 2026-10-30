@@ -933,6 +933,44 @@ fn a_supply_column_declared_another_way_is_refused() {
 }
 
 #[test]
+fn a_database_from_before_the_rests_is_opened_and_rests_with_no_row() {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch(&world("a-place-to-rest")).unwrap();
+    conn.execute_batch(
+        r#"DROP TABLE "playthrough_rests";
+           DELETE FROM schema_migrations WHERE version = '20261031180000';"#,
+    )
+    .unwrap();
+    let mut engine = Engine::from_connection(conn).expect("the older shape is opened");
+    let story = engine
+        .story_titled(&format!("A Place To Rest{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    engine.play(playthrough, "harm 12", &mut |_| {}).unwrap();
+    let outcome = engine.play(playthrough, "/wait", &mut |_| {}).unwrap();
+    assert_eq!(outcome.state.hp, Some(14), "the rest still mends");
+    assert!(
+        outcome.report.note.is_empty(),
+        "no row, so no notice: {:?}",
+        outcome.report.note
+    );
+}
+
+#[test]
+fn a_playthrough_rests_declared_another_way_is_refused() {
+    let differences = changed(migrated(
+        "a-place-to-rest",
+        r#"DROP INDEX "index_playthrough_rests_on_scene_id";"#,
+    ));
+    assert!(
+        differences.contains(
+            &"found column playthrough_rests.recovered integer not null pk=0".to_string()
+        ),
+        "a playthrough_rests missing an index is not whole: {differences:?}"
+    );
+}
+
+#[test]
 fn a_newer_schema_that_adds_a_unique_index_to_a_table_the_engine_uses_is_refused() {
     let differences = changed(migrated(
         "the-quay-house",
