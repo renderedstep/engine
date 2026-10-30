@@ -3,9 +3,10 @@
 //! in it, the same seed playing the same fight, and its tally agreeing with
 //! the blows the game wrote down.
 
+use renderedstep_engine::sim::export::{self, Played};
 use renderedstep_engine::sim::matchup::{Foes, Matchup, Stat, Stats};
 use renderedstep_engine::sim::policy::Policy;
-use renderedstep_engine::sim::{self, tally::Summary, Driver, End, Fight};
+use renderedstep_engine::sim::{self, sweep, tally::Summary, world, Driver, End, Fight};
 
 fn foes(count: usize, level: i64, hit_die: i64) -> Foes {
     Foes {
@@ -183,4 +184,133 @@ fn every_policy_plays_to_an_end() {
             }
         }
     }
+}
+
+/// A point of a sweep is the matchup it names: the same fights, seed for
+/// seed, as that matchup written out on its own.
+#[test]
+fn a_sweep_point_is_its_own_matchup() {
+    let points = sweep::grid(
+        "grid",
+        "seeds: 1..20\ndriver: mechanics\nfoes:\n  - {stats: {hit_die: 10}}\n\
+         sweep: {player.stats.level: [3, 5], foes.0.stats.level: [1, 3]}\n",
+    )
+    .unwrap();
+    assert_eq!(points.len(), 4);
+    let point = &points[1];
+    assert_eq!(point.name, "grid player.stats.level=3 foes.0.stats.level=3");
+    let alone = matchup(Driver::Mechanics, 1, 3, 10);
+    let seeds: Vec<i64> = (1..=20).collect();
+    assert_eq!(
+        sim::run(&point.matchup, &seeds, 2).unwrap(),
+        sim::run(&alone, &seeds, 2).unwrap()
+    );
+    let higher = sim::run(&points[3].matchup, &seeds, 2).unwrap();
+    assert!(
+        Summary::of(&higher).rate(End::Won)
+            > Summary::of(&sim::run(&alone, &seeds, 2).unwrap()).rate(End::Won)
+    );
+}
+
+/// A seeded world's hostiles are fought from a copy: the file is the same
+/// after as before, every hostile meets the protagonist at every level, and
+/// each fight is the one its stat blocks written into a matchup would play.
+#[test]
+fn a_world_s_hostiles_are_fought_from_a_copy() {
+    let path = std::env::temp_dir().join(format!("fight-world-{}.sqlite3", std::process::id()));
+    let _ = std::fs::remove_file(&path);
+    {
+        let conn = rusqlite::Connection::open(&path).unwrap();
+        conn.execute_batch(sim::arena::WORLD).unwrap();
+        conn.execute_batch(
+            "INSERT INTO characters (created_at, updated_at, fullname, hostile, race_id, \
+             story_id, level, hit_die, strength, dexterity, will) \
+             SELECT created_at, updated_at, 'Rust Hound', 1, race_id, story_id, 2, 10, 10, 10, 10 \
+             FROM characters WHERE is_protagonist = 1; \
+             INSERT INTO characters (created_at, updated_at, fullname, hostile, race_id, \
+             story_id, level, hit_die) \
+             SELECT created_at, updated_at, 'Hull Mite', 1, race_id, story_id, 1, 6 \
+             FROM characters WHERE is_protagonist = 1;",
+        )
+        .unwrap();
+    }
+    let before = std::fs::read(&path).unwrap();
+    let mut base = Matchup::new("base", Vec::new());
+    base.driver = Driver::Mechanics;
+    base.seeds = (1..=15).collect();
+    let points = world::points(&base, &path, sim::arena::STORY, &[3, 5]).unwrap();
+    let names: Vec<&str> = points.iter().map(|point| point.name.as_str()).collect();
+    assert_eq!(
+        names,
+        [
+            "Rust Hound vs L3",
+            "Rust Hound vs L5",
+            "Hull Mite vs L3",
+            "Hull Mite vs L5"
+        ]
+    );
+    let played: Vec<Played> = points
+        .iter()
+        .map(|point| Played {
+            point,
+            fights: sim::run(&point.matchup, &point.matchup.seeds, 2).unwrap(),
+        })
+        .collect();
+    assert_eq!(
+        std::fs::read(&path).unwrap(),
+        before,
+        "the world file was written"
+    );
+    let _ = std::fs::remove_file(&path);
+
+    // The world's protagonist is the player, at the level asked for.
+    let player = &points[0].matchup.player;
+    assert_eq!(player.level, Stat::Fixed(3));
+    assert_eq!(
+        (
+            player.hit_die,
+            player.strength,
+            player.dexterity,
+            player.will
+        ),
+        (
+            Stat::Fixed(8),
+            Stat::Fixed(12),
+            Stat::Fixed(12),
+            Stat::Fixed(12)
+        )
+    );
+    // A stat the world left empty is thrown for each seed.
+    assert_eq!(points[2].matchup.foes[0].stats.strength, Stat::Rolled);
+    let mut hound = matchup(Driver::Mechanics, 1, 2, 10);
+    hound.player = player.clone();
+    hound.foes[0].name = "Rust Hound".into();
+    assert_eq!(played[0].fights, sim::run(&hound, &base.seeds, 2).unwrap());
+
+    // The fight table's chances add up: each fight is won, lost, fled or
+    // stalled, and its hit-point loss with death is one whole draw.
+    let table = export::fight_table(&played);
+    for row in table["matchups"].as_array().unwrap() {
+        let ends: f64 = ["p_win", "p_died", "p_fled", "p_stalled"]
+            .iter()
+            .map(|key| row[key].as_f64().unwrap())
+            .sum();
+        assert!((ends - 1.0).abs() < 1e-9, "{row}");
+        let lost: f64 = row["hp_loss"]
+            .as_object()
+            .unwrap()
+            .values()
+            .map(|share| share.as_f64().unwrap())
+            .sum();
+        assert!(
+            (lost + row["p_died"].as_f64().unwrap() - 1.0).abs() < 1e-9,
+            "{row}"
+        );
+    }
+    let csv = export::csv(&played);
+    assert_eq!(csv.lines().count(), 5);
+    assert!(
+        csv.starts_with("matchup,hostile,player.stats.level,fights,won,"),
+        "{csv}"
+    );
 }

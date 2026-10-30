@@ -16,12 +16,19 @@
 //! [`arena::SEED_BASE`]: the dice a blow throws are seeded off the
 //! playthrough (`roll::Seed`), so the same seed plays the same fight again.
 //! [`tally::Summary`] counts what many fights did.
+//!
+//! A file's `sweep:` key makes a grid of matchups from it ([`sweep`]), and
+//! a seeded world's hostiles make another ([`world`]); [`export`] writes a
+//! grid as CSV, or as the fight table a dungeon-level study reads.
 
 pub mod arena;
+pub mod export;
 pub mod golden;
 pub mod matchup;
 pub mod policy;
+pub mod sweep;
 pub mod tally;
+pub mod world;
 
 use crate::engine::{Engine, Error};
 use crate::model::Replay;

@@ -1,0 +1,6 @@
+# Every player level 3-6 against one foe of a d10 at levels 1-3,
+# attacking to the end: how far a level carries the house body.
+seeds: 1..2000
+foes:
+  - {stats: {hit_die: 10}}
+sweep: {player.stats.level: [3, 4, 5, 6], foes.0.stats.level: [1, 2, 3]}

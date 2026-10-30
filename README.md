@@ -388,11 +388,37 @@ given, so a column a later rule adds needs no simulator change.
   intervals, rounds and hit points left (mean and histogram), and damage and
   blows on each side. `--json` prints the same as JSON. `--seeds A..B`,
   `--driver` and `--threads` override the file's values.
+- **Sweeps** (`sim::sweep`): a `sweep:` key makes a grid of matchups from one
+  file, every combination of its values, each played and printed as a row.
+  A key is a dotted path into the file (`player.stats.level`,
+  `foes.0.stats.level`, `story.lethality`, `policy.hp`), so anything a
+  matchup reads can be swept. `sim/matchups/levels-grid.yml` is every player
+  level 3 to 6 against a d10 foe of level 1 to 3.
+- **A real world** (`sim::world`): `--database FILE --story TITLE` fights
+  that seeded world's own hostiles, each against its protagonist, at
+  `--levels A..B` (default: the protagonist's own). The database is copied
+  into memory and the file is never written. Each body's stat block is
+  taken from the world and the fight is played in the arena, so no room
+  writer is needed; a stat the world left empty is rolled for each seed. A
+  matchup file given beside them sets the rest: seeds, carrying, policy.
+- **Exports** (`sim::export`): `--csv` prints a row a matchup, with every
+  rate's interval and the means. `--fight-table FILE` (`-` for standard
+  output) writes each matchup's P(win) and the share of fights that cost
+  each number of hit points, which with `p_died` sums to one. A
+  dungeon-level study reads this table instead of copying the fight rules.
+
+```sh
+cargo run --release --bin fight -- sim/matchups/levels-grid.yml --csv
+cargo run --release --bin fight -- --database dev.sqlite3 --story "The Iron Gate" \
+  --levels 3..6 --fight-table fights.json
+```
 
 `tests/sim.rs` holds it to four things: three matchups' exact odds, worked
 out from the rules by hand, within four standard errors; per-seed identity
 of the two drivers on fights with no move; the same seed playing the same
-fight; and a fight's tally agreeing with its `playthrough_blows` rows.
+fight; and a fight's tally agreeing with its `playthrough_blows` rows. It
+also holds a sweep's point to the fights of the matchup it names, and a
+world's fights to the file being left as it was.
 
 ## Rules for changing it
 
