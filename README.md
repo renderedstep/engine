@@ -40,7 +40,7 @@ rule rewrites them here, and the game vendors them at the commit it pins.
 | `divide` | none: it was written here | breaking a thing apart: whether a `tear` (paper, cloth) or a `smash` (glass, pottery) is offered on a thing, by its material, where it is and the check it would take; what it leaves, one row of scraps, strips or shards begun where the thing was, which ends `divided`; and the beat guard, which offers no tear, smash or burn of a thing an open step of the story names |
 | `shuffle_connections` | `WorldMechanic::ShuffleConnections` | how a shuffle rearranges the mobile rooms' doorways |
 | `world_mechanic` | `WorldMechanic` | the cadence boundaries a mechanic has to run for |
-| `deadline` | `Quest::Deadline` | the hops walk and the anchor room an overdue step is placed from |
+| `deadline` | `Quest::Deadline` | the hops walk, and the way on an overdue step is grown from: the deepest room the party can reach that nobody has written yet, or with none the room whose writing is finishing, never a room already written (`way_on`); and the game's old anchor room, which its vector still states |
 | `cast` | `Character::Registry`, `Character::Generator` | the seeded race, age, sex and background of new people |
 | `physics` | none: it was written here | a fall through a doorway: the storeys it drops, the dice the world's gravity throws for them, the save that halves them, and what the toll says it was; and whether a thing that came down on a floor broke: its fragility, how it came down and the floor's surface, as a share of one die; and how far a thrown thing carries: its bulk, the thrower's strength and the world's gravity, the paces to what it was thrown at in a laid-out room, and where it comes down when it falls short |
 | `carry` | none: it was written here | whether one more thing fits about a body: the hands its bulk takes, the room it takes in a storage place, and its weight against the load the body's strength bears, with no die; where it would go, and why not; and the doctor's fatal finding for an arc beat that asks the player to hold a thing nothing can pick up, and, where the limits hold, its warning for a person the world starts out holding more than fits (`starts_carrying_more_than_fits`: nothing is taken from them). Only a world whose `universes.carrying` is `limited` asks it: there a take, a throw or a wear of a thing lying here and a break of what would not fit are refused (`cannot_carry`), and a person is offered no take, and no give to the player, of what would not fit |
@@ -274,9 +274,14 @@ rooms as it is written and walked into at its entry. A place, a person or a
 thing a room's writing admits is taken by any step of the story's arc that
 was waiting for its name (`Quest::Binder`). Once the story has written more
 rooms than its grace, a room finishing its writing places the arc's first
-waiting step itself (`Quest::Deadline`): a place laid out two levels down
-off the deepest room the party can reach, a person in the deepest room of
-a place they can reach, or a thing on that room's floor.
+waiting step itself (`Quest::Deadline`), always in ground nobody has
+written yet: off the deepest room the party can reach that is still
+unwritten, or, with none, off the room whose writing is finishing. There
+it lays out a place two levels down, builds a place to keep a person in
+(unless a place the party can reach has a room for them, written or not),
+or lays a thing. A room already written is never given a doorway or a
+thing; with no such ground, nothing is placed until the next room is
+written.
 
 On the line that concludes the story's arc, the narrator writes the last
 paragraph over the closing scene the arc already wrote (`Scene::Ending`).

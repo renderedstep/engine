@@ -8,10 +8,14 @@
 //! name takes it. Nothing asks the arc whether a row may exist.
 //!
 //! Once the story has written more rooms than its grace, a room finishing
-//! its writing places the arc's first waiting step itself, off the deepest
-//! room the party can already reach: a place laid out two levels down, a
-//! person in the deepest room of a place they can reach (a place is built
-//! to keep them in when there is none), or a thing on the floor.
+//! its writing places the arc's first waiting step itself, in ground nobody
+//! has written yet (`deadline::way_on`): off the deepest room the party can
+//! already reach that is still unwritten, or, with none, off the room whose
+//! writing is finishing. What it places is a place laid out two levels down
+//! off that room, a person in the deepest room of a place they can reach (a
+//! place is built off that room to keep them in when there is none), or a
+//! thing lying in that room. A room the world has already written is never
+//! given a doorway or a thing; only a person may be brought into one.
 
 use super::{Parameters, Turn, Words};
 use crate::cast;
@@ -149,8 +153,10 @@ impl Turn<'_, '_> {
     }
 
     /// `Quest::Deadline.after_realizing!`: once the story is past its grace,
-    /// the arc's first step still waiting for a row is placed.
-    pub(super) fn after_realizing(&mut self) -> Result<(), Error> {
+    /// the arc's first step still waiting for a row is placed, as `written`
+    /// finishes its writing. With no ground to grow it in, nothing is
+    /// placed and the step waits for the next room written.
+    pub(super) fn after_realizing(&mut self, written: i64) -> Result<(), Error> {
         let story = Some(self.m.story_id());
         let realized = self
             .m
@@ -167,13 +173,11 @@ impl Turn<'_, '_> {
         };
         let (rooms, connections) = self.map_of_the_story();
         let hops = deadline::hops(&rooms, &connections);
-        let Some(anchor) = deadline::anchor(&rooms, &connections) else {
-            return Ok(());
-        };
-        match text(&step, "trigger_kind") {
-            Some("reach_location") => self.place_a_place(&step, anchor),
-            Some("speak_to") => self.place_a_person(&step, anchor, &hops),
-            Some("hold_item") => self.place_a_thing(&step, anchor),
+        let ground = deadline::way_on(&rooms, &connections, written);
+        match (text(&step, "trigger_kind"), ground) {
+            (Some("reach_location"), Some(ground)) => self.place_a_place(&step, ground),
+            (Some("speak_to"), _) => self.place_a_person(&step, ground, &hops),
+            (Some("hold_item"), Some(ground)) => self.place_a_thing(&step, ground),
             _ => Ok(()),
         }
     }
@@ -224,6 +228,7 @@ impl Turn<'_, '_> {
                 realized: text(room, "detail_level") == Some("realized"),
                 z: int(room, "z"),
                 laid_out: self.laid_out(room),
+                place: Self::is_place(room),
             })
             .collect();
         let connections = self
@@ -243,26 +248,28 @@ impl Turn<'_, '_> {
         (rooms, connections)
     }
 
-    /// `#place_a_place!`.
-    fn place_a_place(&mut self, step: &Row, anchor: i64) -> Result<(), Error> {
+    /// `#place_a_place!`: off the way on.
+    fn place_a_place(&mut self, step: &Row, ground: i64) -> Result<(), Error> {
         let name = string(step, "target_name").to_string();
         let place = self.create_stub(&name, &teaser_for(step), None, None, Words::default())?;
-        self.open_the_door(anchor, place)?;
+        self.open_the_door(ground, place)?;
         self.lay_out(place, Some(&picks()), None)
     }
 
     /// `#place_a_person!`: the deepest room of a place the party can reach,
-    /// or one built for them, and the person admitted to it from a sheet
-    /// the step itself writes.
+    /// written or not, since a person may be brought into a written room;
+    /// or one built for them off the way on; and the person admitted to it
+    /// from a sheet the step itself writes. With neither, nobody yet.
     fn place_a_person(
         &mut self,
         step: &Row,
-        anchor: i64,
+        ground: Option<i64>,
         hops: &BTreeMap<i64, i64>,
     ) -> Result<(), Error> {
-        let cell = match self.deepest_room_we_can_reach(hops) {
-            Some(cell) => cell,
-            None => self.somewhere_to_keep_them(step, anchor)?,
+        let cell = match (self.deepest_room_we_can_reach(hops), ground) {
+            (Some(cell), _) => cell,
+            (None, Some(ground)) => self.somewhere_to_keep_them(step, ground)?,
+            (None, None) => return Ok(()),
         };
         let target = string(step, "target_name").to_string();
         let unwritten = format!(
@@ -309,11 +316,11 @@ impl Turn<'_, '_> {
     }
 
     /// `#build_somewhere_to_keep_them!`: a place named for the person, off
-    /// the anchor room, laid out, and its deepest room.
-    fn somewhere_to_keep_them(&mut self, step: &Row, anchor: i64) -> Result<i64, Error> {
+    /// the way on, laid out, and its deepest room.
+    fn somewhere_to_keep_them(&mut self, step: &Row, ground: i64) -> Result<i64, Error> {
         let name = format!("where {} is", string(step, "target_name"));
         let place = self.create_stub(&name, &teaser_for(step), None, None, Words::default())?;
-        self.open_the_door(anchor, place)?;
+        self.open_the_door(ground, place)?;
         self.lay_out(place, Some(&picks()), None)?;
         Ok(self
             .m
@@ -326,21 +333,24 @@ impl Turn<'_, '_> {
             .map_or(place, id))
     }
 
-    /// `#place_a_thing!`: admitted to the anchor room's floor as any
-    /// thing a room's writing names is.
-    fn place_a_thing(&mut self, step: &Row, anchor: i64) -> Result<(), Error> {
+    /// `#place_a_thing!`: admitted to the way on as any thing a room's
+    /// writing names is. A room nobody has written yet that stands on its
+    /// own is given the box its writing would give it first, so the thing
+    /// has a spot in it; the writing then keeps that box.
+    fn place_a_thing(&mut self, step: &Row, ground: i64) -> Result<(), Error> {
         let name = string(step, "target_name").to_string();
         let description = match text(step, "teaser").filter(|teaser| !is_blank(teaser)) {
             Some(teaser) => teaser.to_string(),
             None => format!("{name}. {}", string(step, "summary")),
         };
+        self.lay_out_alone(ground)?;
         self.admit_items(
-            anchor,
+            ground,
             Some(&json!([{ "name": name, "description": description }])),
         )
     }
 
-    /// `#open_the_door!`: a doorway each way between the anchor and the new
+    /// `#open_the_door!`: a doorway each way between the way on and the new
     /// place, adjacent and on foot, where there is none already.
     fn open_the_door(&mut self, room: i64, place: i64) -> Result<(), Error> {
         self.connect(room, place, "adjacent", "walking")?;

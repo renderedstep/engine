@@ -625,7 +625,7 @@ impl Turn<'_, '_> {
                 ("generation_checkpoint", Value::Null),
             ],
         )?;
-        self.after_realizing()
+        self.after_realizing(location)
     }
 
     /// `#write_exits_serially!`.
