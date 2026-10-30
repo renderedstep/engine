@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_tool_calls" ("id" integer PRIMARY KEY AUTOI
 CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "chat_type" varchar NOT NULL, "chat_id" integer NOT NULL, "message_type" varchar, "message_id" integer, "operation" varchar NOT NULL, "provider" varchar NOT NULL, "model" varchar NOT NULL, "status" varchar NOT NULL, "input_tokens" integer, "output_tokens" integer, "cache_read_tokens" integer, "cache_write_tokens" integer, "thinking_tokens" integer, "input_cost" decimal(16,10), "output_cost" decimal(16,10), "cache_read_cost" decimal(16,10), "cache_write_cost" decimal(16,10), "thinking_cost" decimal(16,10), "total_cost" decimal(16,10), "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "latency_ms" integer, CONSTRAINT chk_rails_71abd85d6e CHECK (operation IN ('chat', 'embedding', 'moderation', 'image', 'speech', 'transcription', 'ocr', 'rerank')), CONSTRAINT chk_rails_f50895962a CHECK (status IN ('pending', 'succeeded', 'failed', 'cancelled')));
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("task" varchar NOT NULL, "last_id" integer, "completed" boolean DEFAULT FALSE NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "physics" text, "technology" text, "weapons" text, "civilizations" text, "geographies" text, "history" text, "economics" text, "politics" text, "religion" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "gravity" varchar, "carrying" varchar);
-INSERT INTO universes VALUES(1000000001,'Ordinary physics.','Lanterns, iron keys and hand tools.','Short blades and cudgels.','Delvers who sell what they bring up.','A dungeon cut down into black stone under a lantern-lit landing.','The dungeon was cut long ago by people nobody remembers.','Coin for what comes up from below.','Nobody governs the dungeon.','Delvers leave a coin on the landing for luck.','2026-10-30 18:15:52.983950','2026-10-30 18:15:52.983950',NULL,NULL);
+INSERT INTO universes VALUES(1000000001,'Ordinary physics.','Lanterns, iron keys and hand tools.','Short blades and cudgels.','Delvers who sell what they bring up.','A dungeon cut down into black stone under a lantern-lit landing.','The dungeon was cut long ago by people nobody remembers.','Coin for what comes up from below.','Nobody governs the dungeon.','Delvers leave a coin on the landing for luck.','2026-10-30 18:53:52.210423','2026-10-30 18:53:52.210423',NULL,NULL);
 CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "story_id" integer NOT NULL, "fullname" varchar, "nickname" varchar, "age" integer, "sex" varchar, "personality" text, "appearance" text, "likes" text, "dislikes" text, "fears" text, "backstory" text, "is_companion" boolean, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "race_id" integer NOT NULL, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "location_id" integer, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "level" integer, "hit_die" integer, "strength" integer, "dexterity" integer, "will" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "x" integer, "y" integer, "conscious_desire" text, "unconscious_desire" text, "recognized_need" text, "unrecognized_need" text, "desire_pursuit" varchar, "need_pursuit" varchar, "posted_to_id" integer, CONSTRAINT "fk_rails_56a213cbe2"
 FOREIGN KEY ("race_id")
   REFERENCES "races" ("id")
@@ -27,7 +27,7 @@ FOREIGN KEY ("posted_to_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO characters VALUES(1000000001,1000000001,'Odile','Odile',29,'female','Careful and stubborn.','A lantern on a pole and a short blade.','A clear way back.','Doors she cannot open.','Running out of draughts.','A delver who has never been below the first floor.',0,'2026-10-30 18:15:53.164578','2026-10-30 18:15:53.164578',1000000001,1,NULL,0,3,8,14,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000001,1000000001,'Odile','Odile',29,'female','Careful and stubborn.','A lantern on a pole and a short blade.','A clear way back.','Doors she cannot open.','Running out of draughts.','A delver who has never been below the first floor.',0,'2026-10-30 18:53:52.400623','2026-10-30 18:53:52.400623',1000000001,1,NULL,0,3,8,14,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "model_id_string" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "ruby_llm_model_id" integer, "purpose" varchar, "playthrough_id" integer, "character_id" integer, "cancelled" boolean DEFAULT FALSE NOT NULL, "player_id" integer, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -48,7 +48,7 @@ FOREIGN KEY ("down_location_id")
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE);
-INSERT INTO floors VALUES(1000000001,1000000002,4,'uneasy','none',NULL,'2026-10-30 18:15:53.058878','2026-10-30 18:15:53.068872',NULL,0,NULL,1,2,'red draught','A stoppered glass vial of thick red liquid, warm to the touch. Drinking it closes wounds.');
+INSERT INTO floors VALUES(1000000001,1000000002,4,'uneasy','none',NULL,'2026-10-30 18:53:52.289048','2026-10-30 18:53:52.299859',NULL,0,NULL,1,2,'red draught','A stoppered glass vial of thick red liquid, warm to the touch. Drinking it closes wounds.');
 CREATE TABLE IF NOT EXISTS "interactions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "character_id" integer NOT NULL, "scene_id" integer, "location_id" integer, "pre_thought" text, "pre_feeling" text, "action" text, "post_feeling" text, "post_thought" text, "inner_resolution" text, "summary" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "user_input" text, "engine_action" varchar, "action_status" varchar, "action_fact" text, CONSTRAINT "fk_rails_294d4ae9f8"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -91,8 +91,8 @@ FOREIGN KEY ("key_template_id")
 FOREIGN KEY ("connected_location_id")
   REFERENCES "locations" ("id")
 );
-INSERT INTO location_connections VALUES(1000000001,1000000001,1000000002,'adjacent','about a minute','taking stairs','2026-10-30 18:15:53.242351','2026-10-30 18:15:53.242351',NULL,NULL,'open',NULL);
-INSERT INTO location_connections VALUES(1000000002,1000000002,1000000001,'adjacent','about a minute','taking stairs','2026-10-30 18:15:53.250142','2026-10-30 18:15:53.250142',NULL,NULL,'open',NULL);
+INSERT INTO location_connections VALUES(1000000001,1000000001,1000000002,'adjacent','about a minute','taking stairs','2026-10-30 18:53:52.477148','2026-10-30 18:53:52.477148',NULL,NULL,'open',NULL);
+INSERT INTO location_connections VALUES(1000000002,1000000002,1000000001,'adjacent','about a minute','taking stairs','2026-10-30 18:53:52.486577','2026-10-30 18:53:52.486577',NULL,NULL,'open',NULL);
 CREATE TABLE IF NOT EXISTS "locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "story_id" integer NOT NULL, "name" varchar, "description" text, "lore" text, "last_protagonist_visit" datetime(6), "parent_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "detail_level" varchar DEFAULT 'stub' NOT NULL, "teaser" text, "mobile" boolean DEFAULT FALSE NOT NULL, "danger" varchar DEFAULT 'safe' NOT NULL, "hazard" varchar, "hazard_die" integer, "x" integer, "y" integer, "z" integer, "width" integer, "depth" integer, "population" varchar, "generation_checkpoint" json, "surface" varchar, "kind" varchar, "density" varchar, "sanctuary" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_5bc98acf09"
 FOREIGN KEY ("parent_location_id")
   REFERENCES "locations" ("id")
@@ -100,8 +100,8 @@ FOREIGN KEY ("parent_location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO locations VALUES(1000000001,1000000001,'The Landing','A square landing of black stone lit by one lantern, a stair going down from it.','Delvers gather here before they go down.',NULL,NULL,'2026-10-30 18:15:53.031626','2026-10-30 18:15:53.031626','realized','A lantern-lit landing.',0,'safe',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'nobody',NULL,NULL,NULL,NULL,0);
-INSERT INTO locations VALUES(1000000002,1000000001,'The Stocked Floor',NULL,NULL,NULL,NULL,'2026-10-30 18:15:53.051583','2026-10-30 18:15:53.051583','stub','The first level of the dungeon, where somebody has left supplies about.',0,'safe',NULL,NULL,NULL,NULL,NULL,12,12,NULL,NULL,NULL,'warren',NULL,0);
+INSERT INTO locations VALUES(1000000001,1000000001,'The Landing','A square landing of black stone lit by one lantern, a stair going down from it.','Delvers gather here before they go down.',NULL,NULL,'2026-10-30 18:53:52.257378','2026-10-30 18:53:52.257378','realized','A lantern-lit landing.',0,'safe',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'nobody',NULL,NULL,NULL,NULL,0);
+INSERT INTO locations VALUES(1000000002,1000000001,'The Stocked Floor',NULL,NULL,NULL,NULL,'2026-10-30 18:53:52.281050','2026-10-30 18:53:52.281050','stub','The first level of the dungeon, where somebody has left supplies about.',0,'safe',NULL,NULL,NULL,NULL,NULL,12,12,NULL,NULL,NULL,'warren',NULL,0);
 CREATE TABLE IF NOT EXISTS "locations_world_events" ("location_id" integer NOT NULL, "world_event_id" integer NOT NULL, CONSTRAINT "fk_rails_861146f35c"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT N
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO races VALUES(1000000001,1000000001,'Delvers','People who go down into the dungeon for a living.','2026-10-30 18:15:52.987605','2026-10-30 18:15:52.987605',0);
+INSERT INTO races VALUES(1000000001,1000000001,'Delvers','People who go down into the dungeon for a living.','2026-10-30 18:53:52.213743','2026-10-30 18:53:52.213743',0);
 CREATE TABLE IF NOT EXISTS "relay_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "player_id" integer NOT NULL, "route" varchar NOT NULL, "model" varchar NOT NULL, "stream" boolean DEFAULT FALSE NOT NULL, "status" varchar DEFAULT 'open' NOT NULL, "reserved_usd" decimal(12,6) NOT NULL, "cost_usd" decimal(12,6), "cost_source" varchar, "input_tokens" integer, "output_tokens" integer, "upstream_status" integer, "finished_at" datetime(6), "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_deae27bd71"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -317,12 +317,12 @@ FOREIGN KEY ("location_id")
 FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
-INSERT INTO scenes VALUES(1000000001,1000000001,1000000001,NULL,'You stand on the lantern-lit landing above the first floor.','2026-10-31 08:00:00','Odile reaches the landing.','2026-10-30 18:15:53.384092','2026-10-30 18:15:53.384092',1,NULL,NULL,NULL,NULL,NULL,0,NULL);
+INSERT INTO scenes VALUES(1000000001,1000000001,1000000001,NULL,'You stand on the lantern-lit landing above the first floor.','2026-10-31 08:00:00','Odile reaches the landing.','2026-10-30 18:53:52.605111','2026-10-30 18:53:52.605111',1,NULL,NULL,NULL,NULL,NULL,0,NULL);
 CREATE TABLE IF NOT EXISTS "stories" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "genre" varchar, "preface" text, "summary" text, "start_time" datetime(6), "universe_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "generation_snapshot" text, "people_limit" integer, "things_limit" integer, CONSTRAINT "fk_rails_2a912ea846"
 FOREIGN KEY ("universe_id")
   REFERENCES "universes" ("id")
 );
-INSERT INTO stories VALUES(1000000001,'A Stocked Floor (engine sweep)','dungeon crawl','Somebody left draughts about the first floor, and a room nothing is born in.','Odile walks every room of the first floor.','2026-10-31 08:00:00',1000000001,'2026-10-30 18:15:53.007739','2026-10-30 18:15:53.007739',NULL,NULL,NULL);
+INSERT INTO stories VALUES(1000000001,'A Stocked Floor (engine sweep)','dungeon crawl','Somebody left draughts about the first floor, and a room nothing is born in.','Odile walks every room of the first floor.','2026-10-31 08:00:00',1000000001,'2026-10-30 18:53:52.233466','2026-10-30 18:53:52.233466',NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "system_one_receipts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "transport" varchar, "cost_usd" decimal(12,6) NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "cost_source" varchar DEFAULT 'estimated' NOT NULL, "latency_ms" integer, CONSTRAINT "fk_rails_4ae941c854"
 FOREIGN KEY ("player_id")
   REFERENCES "players" ("id")
@@ -342,6 +342,7 @@ FOREIGN KEY ("story_id")
   REFERENCES "stories" ("id")
 );
 CREATE TABLE IF NOT EXISTS "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY);
+INSERT INTO schema_migrations VALUES('20261031150000');
 INSERT INTO schema_migrations VALUES('20261031120000');
 INSERT INTO schema_migrations VALUES('20261031090000');
 INSERT INTO schema_migrations VALUES('20261030230000');
@@ -438,10 +439,9 @@ INSERT INTO schema_migrations VALUES('20250823023925');
 INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
-INSERT INTO schema_migrations VALUES('20261031150000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
-INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-30 18:15:51.807364','2026-10-30 18:15:51.807367');
-INSERT INTO ar_internal_metadata VALUES('schema_sha1','c2813cee903cf430f7b8afb47fa3a3021ac3a2f9','2026-10-30 18:15:51.811429','2026-10-30 18:15:51.811430');
+INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-30 18:53:51.028064','2026-10-30 18:53:51.028066');
+INSERT INTO ar_internal_metadata VALUES('schema_sha1','17111cd817404c72f7bc1e85f49b33ee3eacee97','2026-10-30 18:53:51.032165','2026-10-30 18:53:51.032167');
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
