@@ -277,6 +277,7 @@ impl Turn<'_, '_> {
                     int(who, "story_id") == Some(self.m.story_id())
                 })
                 .len() as i64,
+            story_limit: realization::people_limit(story),
         };
         cast::slots(&room, &named)
             .into_iter()
@@ -825,7 +826,7 @@ impl Turn<'_, '_> {
             let refused = is_blank(&name)
                 || is_blank(&description)
                 || lying >= realization::ITEMS_PER_ROOM
-                || distinct.len() as i64 >= realization::ITEMS_PER_STORY
+                || distinct.len() as i64 >= realization::things_limit(self.m.game().story())
                 || created.iter().any(|made| ruby_downcase(made) == lowered)
                 || templates.iter().any(|item| {
                     text(item, "kit_key").is_none()
@@ -994,7 +995,7 @@ impl Turn<'_, '_> {
             || SHEET.iter().any(|name| is_blank(&field(name)))
             || !has_races
             || self.present_here(location) >= cast::MAX_PER_ROOM
-            || in_story >= cast::MAX_PER_STORY
+            || in_story >= realization::people_limit(self.m.game().story())
             || self.named_by_a_person(&fullname)
             || self.named_by_a_place(&fullname)
             || self

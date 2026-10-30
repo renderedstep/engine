@@ -1,0 +1,57 @@
+---
+story: A Crowded Cellar
+steps:
+- id: down-into-the-cellar
+  type: "/move Cellar"
+  browser:
+    token: into-the-cellar
+    realizes: Cellar
+    replies:
+    - purpose: location
+      prompt_includes:
+      - Write EXACTLY 3 people who are in this place right now.
+      content:
+        description: Barrels in rows and three latecomers on upturned crates.
+        lore: The cellar takes the overflow on a full night.
+        items: []
+        people:
+        - fullname: Orrin Vale
+          nickname: Orrin
+          appearance: A wet hat.
+          personality: Grumbling but kind.
+          backstory: A drover who came too late for a bed.
+          likes: Dry socks.
+          dislikes: Damp.
+          fears: Rats.
+        - fullname: Sabine Roe
+          nickname: Sabine
+          appearance: A mended shawl.
+          personality: Calm.
+          backstory: A weaver walking to the fair.
+          likes: Quiet.
+          dislikes: Noise.
+          fears: Thieves.
+        - fullname: Kit Lowan
+          nickname: Kit
+          appearance: A torn sleeve.
+          personality: Restless.
+          backstory: A runaway apprentice.
+          likes: Freedom.
+          dislikes: Masters.
+          fears: Being found.
+    - purpose: location
+      content:
+        exits:
+        - name: Taproom
+          teaser: Steps back up.
+          distance: adjacent
+          travel_method: walking
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: Cellar (realized)
+    present:
+    - Kit Lowan
+    - Orrin Vale
+    - Sabine Roe
+    changed: true

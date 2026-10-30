@@ -17,6 +17,19 @@ use serde_json::{json, Value};
 pub const ITEMS_PER_ROOM: i64 = 3;
 pub const ITEMS_PER_STORY: i64 = 60;
 
+/// How many people a story may hold: its own `stories.people_limit`, or
+/// [`MAX_PER_STORY`] where it names none (as every story did before the
+/// column, and a database without it still does).
+pub fn people_limit(story: &Row) -> i64 {
+    int(story, "people_limit").unwrap_or(MAX_PER_STORY)
+}
+
+/// How many distinct things a story may hold: its own
+/// `stories.things_limit`, or [`ITEMS_PER_STORY`] where it names none.
+pub fn things_limit(story: &Row) -> i64 {
+    int(story, "things_limit").unwrap_or(ITEMS_PER_STORY)
+}
+
 /// `Item.bespoke`: a thing the caps count -- portable, and written by the
 /// room writer or a world file rather than a kit.
 pub fn bespoke(item: &Row) -> bool {
@@ -463,7 +476,7 @@ impl<'a> Realization<'a> {
             .collect();
         names.sort();
         names.dedup();
-        let world = (ITEMS_PER_STORY - names.len() as i64).max(0);
+        let world = (things_limit(self.story()) - names.len() as i64).max(0);
         let allowance = room.min(world);
         if allowance == 0 {
             return "Do not list any items: this place already holds everything it can.".into();
@@ -841,10 +854,10 @@ pub fn room_for_people(records: &Records, location: &Row) -> (i64, i64) {
     let in_story = records
         .select("characters", |row| int(row, "story_id") == story)
         .len() as i64;
-    (
-        (MAX_PER_ROOM - present).max(0),
-        (MAX_PER_STORY - in_story).max(0),
-    )
+    let limit = story
+        .and_then(|story| records.find("stories", story))
+        .map_or(MAX_PER_STORY, people_limit);
+    ((MAX_PER_ROOM - present).max(0), (limit - in_story).max(0))
 }
 
 #[cfg(test)]
@@ -924,5 +937,31 @@ mod tests {
              Write EXACTLY 1 person who is in this place right now, \
              besides the people Already Standing Here above.\n"
         ));
+    }
+
+    /// Twelve people in a story leave no place in it, unless the story names
+    /// a limit of its own.
+    #[test]
+    fn a_story_s_own_people_limit_leaves_places_past_twelve() {
+        let twelve: Vec<_> = (1..=12)
+            .map(|id| json!({"id": id, "story_id": 1, "location_id": 2}))
+            .collect();
+        let with = |limit: serde_json::Value| {
+            Records::from_json(&json!({
+                "stories": [{"id": 1, "people_limit": limit}],
+                "locations": [{"id": 1, "story_id": 1, "name": "Cellar"}],
+                "characters": twelve,
+            }))
+        };
+        let ordinary = with(json!(null));
+        let raised = with(json!(20));
+        assert_eq!(
+            super::room_for_people(&ordinary, &ordinary.table("locations")[0]),
+            (3, 0)
+        );
+        assert_eq!(
+            super::room_for_people(&raised, &raised.table("locations")[0]),
+            (3, 8)
+        );
     }
 }

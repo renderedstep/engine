@@ -89,6 +89,17 @@ pub const REFUSED_LINES: &str = "refused_lines";
 /// added still opens; a write to one it lacks is an error.
 pub const OPTIONAL: &[&str] = &[REFUSED_LINES];
 
+/// Columns the engine reads only where the database has them, each as the
+/// fact [`shape`] would state: a story's own people and thing limits
+/// (migration 20261030120000), which read as null, and so as the ordinary
+/// limits, in a database from before them. [`shape`] leaves them out, so
+/// a database opens with or without them; one declared any other way is
+/// still a difference.
+pub const OPTIONAL_COLUMNS: &[&str] = &[
+    "column stories.people_limit integer pk=0",
+    "column stories.things_limit integer pk=0",
+];
+
 /// What the engine relies on in a database, one fact per line, sorted: for
 /// every table it touches, each column's declared type (in lower case, as
 /// SQLite compares it), nullability, default
@@ -97,7 +108,8 @@ pub const OPTIONAL: &[&str] = &[REFUSED_LINES];
 /// any other table that points into one of them, since a row there can stop
 /// the engine deleting or rewriting one of its own. A table the engine does
 /// not touch, with no foreign key into one it does, is left out, so a
-/// migration that only adds such a table leaves the shape as it was.
+/// migration that only adds such a table leaves the shape as it was. So is
+/// a column of [`OPTIONAL_COLUMNS`].
 pub fn shape(conn: &Connection) -> Result<Vec<String>, Error> {
     let touched: Vec<&str> = TABLES
         .iter()
@@ -206,6 +218,7 @@ pub fn shape(conn: &Connection) -> Result<Vec<String>, Error> {
             }
         }
     }
+    facts.retain(|fact| !OPTIONAL_COLUMNS.contains(&fact.as_str()));
     facts.sort();
     Ok(facts)
 }

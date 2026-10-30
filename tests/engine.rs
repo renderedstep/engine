@@ -458,7 +458,7 @@ fn a_database_at_an_older_schema_is_refused() {
     let conn = rusqlite::Connection::open_in_memory().unwrap();
     conn.execute_batch(&world("the-quay-house")).unwrap();
     conn.execute_batch(&format!(
-        "DELETE FROM schema_migrations WHERE version = '{SCHEMA_VERSION}'"
+        "DELETE FROM schema_migrations WHERE version >= '{SCHEMA_VERSION}'"
     ))
     .unwrap();
     match Engine::from_connection(conn) {
@@ -613,6 +613,40 @@ fn a_newer_schema_that_adds_a_column_to_a_table_the_engine_uses_is_refused() {
     assert_eq!(
         differences,
         ["found column items.weight decimal not null default 0 pk=0"]
+    );
+}
+
+#[test]
+fn a_database_from_before_the_story_limits_is_opened_and_plays_at_the_ordinary_limits() {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch(&world("the-quay-house")).unwrap();
+    conn.execute_batch(
+        r#"ALTER TABLE "stories" DROP COLUMN "people_limit";
+           ALTER TABLE "stories" DROP COLUMN "things_limit";
+           DELETE FROM schema_migrations WHERE version = '20261030120000';"#,
+    )
+    .unwrap();
+    let mut engine = Engine::from_connection(conn).expect("the older shape is opened");
+    let story = engine
+        .story_titled(&format!("The Quay House{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let outcome = engine
+        .play(playthrough, "look around", &mut |_| {})
+        .unwrap();
+    assert!(outcome.state.location.is_some());
+}
+
+#[test]
+fn a_story_limit_declared_another_way_is_refused() {
+    let differences = changed(migrated(
+        "the-quay-house",
+        r#"ALTER TABLE "stories" DROP COLUMN "people_limit";
+           ALTER TABLE "stories" ADD "people_limit" integer NOT NULL DEFAULT 12;"#,
+    ));
+    assert_eq!(
+        differences,
+        ["found column stories.people_limit integer not null default 12 pk=0"]
     );
 }
 
@@ -985,6 +1019,110 @@ fn a_room_whose_ways_out_failed_is_picked_up_where_it_stopped_on_the_live_path()
         count(&engine, "SELECT COUNT(*) FROM locations WHERE name = 'Workshop' AND detail_level = 'realized' AND generation_checkpoint IS NULL"),
         1
     );
+}
+
+/// The Lantern Inn's cellar walked into with `sql` run over the world first:
+/// the room writer names three people and two things whatever it is told.
+/// Returns how many people the story holds after, how many things lie in
+/// the cellar, and the detail prompt the writer was sent.
+fn into_the_crowded_cellar(sql: &str) -> (i64, i64, String) {
+    use renderedstep_engine::model::{Live, Route, Secret};
+    use serde_json::json;
+    let mut world = world("a-crowded-cellar");
+    world.push_str(sql);
+    let mut engine = open_world(&world).unwrap();
+    let story = engine
+        .story_titled(&format!("A Crowded Cellar{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let person = |fullname: &str| {
+        json!({
+            "fullname": fullname, "nickname": fullname, "appearance": "A wet hat.",
+            "personality": "Calm.", "backstory": "Late for a bed.",
+            "likes": "Quiet.", "dislikes": "Damp.", "fears": "Rats.",
+        })
+    };
+    let thing = |name: &str| json!({"name": name, "description": "Left by a guest.", "use_kind": "ordinary", "combustible": false, "readable": false});
+    let detail = json!({
+        "description": "Barrels in rows.",
+        "lore": "The cellar takes the overflow.",
+        "items": [thing("tin cup"), thing("wool cap")],
+        "people": [person("Orrin Vale"), person("Sabine Roe"), person("Kit Lowan")],
+    });
+    let exits = json!({"exits": [{"name": "Taproom", "teaser": "Steps up.", "distance": "adjacent", "travel_method": "walking"}]});
+    let arrival = json!({"description": "You go down.", "summary": "Into the cellar."});
+    let transport = Scripted {
+        answers: vec![answered(detail), answered(exits), answered(arrival)],
+        sent: Vec::new(),
+    };
+    let route = Route::Direct {
+        key: Secret::new("own"),
+    };
+    let mut live = Live::with_transport(route, transport);
+    engine
+        .submit(playthrough, "/move Cellar", "a", &mut live, &mut |_| {})
+        .unwrap();
+    let prompt = live.transport().sent[0]["messages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter_map(|message| message["content"].as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    let people = count(
+        &engine,
+        &format!("SELECT COUNT(*) FROM characters WHERE story_id = {story}"),
+    );
+    let things = count(
+        &engine,
+        "SELECT COUNT(*) FROM items WHERE playthrough_id IS NULL AND location_id = (SELECT id FROM locations WHERE name = 'Cellar')",
+    );
+    (people, things, prompt)
+}
+
+#[test]
+fn a_story_with_no_people_limit_of_its_own_holds_twelve() {
+    let (people, _, prompt) = into_the_crowded_cellar("UPDATE stories SET people_limit = NULL;\n");
+    assert_eq!(
+        people, 12,
+        "nobody the writer names past the twelfth is born"
+    );
+    assert!(
+        prompt.contains("## Who Is Here\nWrite NOBODY into this place."),
+        "{prompt}"
+    );
+}
+
+#[test]
+fn a_story_s_own_people_limit_lets_a_room_be_born_past_twelve() {
+    let (people, _, prompt) = into_the_crowded_cellar("");
+    assert_eq!(people, 15, "the cellar's crowd of three is born");
+    assert!(
+        prompt.contains("Write EXACTLY 3 people who are in this place right now"),
+        "{prompt}"
+    );
+    let (people, _, prompt) = into_the_crowded_cellar("UPDATE stories SET people_limit = 13;\n");
+    assert_eq!(people, 13, "one place was left, and one person is born");
+    assert!(
+        prompt.contains("Write EXACTLY 1 person who is in this place right now"),
+        "{prompt}"
+    );
+}
+
+#[test]
+fn a_story_s_own_things_limit_bounds_the_things_its_rooms_are_written_with() {
+    let (_, things, prompt) = into_the_crowded_cellar("");
+    assert_eq!(things, 2, "under the ordinary sixty both things lie there");
+    assert!(
+        prompt.contains("List AT MOST 3 portable things"),
+        "{prompt}"
+    );
+    let (_, things, prompt) = into_the_crowded_cellar("UPDATE stories SET things_limit = 1;\n");
+    assert_eq!(
+        things, 1,
+        "the story has room for one thing, and one is admitted"
+    );
+    assert!(prompt.contains("List AT MOST 1 portable thing"), "{prompt}");
 }
 
 #[test]
