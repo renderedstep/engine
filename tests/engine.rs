@@ -699,6 +699,107 @@ FOREIGN KEY ("down_location_id")
     );
 }
 
+/// The guarded world with `characters` rebuilt as it was before
+/// migration 20261030230000, the way Rails' SQLite adapter rebuilds a
+/// table: no `posted_to_id`, its key or its index; and `floors` without
+/// `monster_level`.
+fn from_before_the_guards() -> rusqlite::Connection {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch(&world("a-guarded-stair")).unwrap();
+    let create: String = conn
+        .query_row(
+            "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'characters'",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap();
+    let key = create
+        .find(r#", CONSTRAINT "fk_rails_4c54fc506e""#)
+        .expect("the posted_to key");
+    let cascade = " ON DELETE SET NULL";
+    let end = key + create[key..].find(cascade).expect("its action") + cascade.len();
+    let older = format!("{}{}", &create[..key], &create[end..])
+        .replace(r#", "posted_to_id" integer"#, "")
+        .replacen(r#""characters""#, r#""older_characters""#, 1);
+    let mut statement = conn
+        .prepare(
+            "SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = 'characters' \
+             AND sql IS NOT NULL AND name <> 'index_characters_on_posted_to_id'",
+        )
+        .unwrap();
+    let indexes: Vec<String> = statement
+        .query_map([], |row| row.get(0))
+        .unwrap()
+        .collect::<Result<_, _>>()
+        .unwrap();
+    drop(statement);
+    let mut statement = conn
+        .prepare("SELECT name FROM pragma_table_info('characters') WHERE name <> 'posted_to_id'")
+        .unwrap();
+    let columns: Vec<String> = statement
+        .query_map([], |row| row.get::<_, String>(0))
+        .unwrap()
+        .map(|name| format!("\"{}\"", name.unwrap()))
+        .collect();
+    drop(statement);
+    let columns = columns.join(", ");
+    conn.execute_batch(&format!(
+        r#"PRAGMA foreign_keys = OFF;
+           {older};
+           INSERT INTO "older_characters" ({columns}) SELECT {columns} FROM "characters";
+           DROP TABLE "characters";
+           ALTER TABLE "older_characters" RENAME TO "characters";
+           {};
+           ALTER TABLE "floors" DROP COLUMN "monster_level";
+           DELETE FROM schema_migrations WHERE version = '20261030230000';
+           PRAGMA foreign_keys = ON;"#,
+        indexes.join(";\n")
+    ))
+    .unwrap();
+    conn
+}
+
+#[test]
+fn a_database_from_before_the_guards_is_opened_and_plays() {
+    let conn = from_before_the_guards();
+    assert_eq!(
+        conn.query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('characters') WHERE name = 'posted_to_id'",
+            [],
+            |row| row.get::<_, i64>(0)
+        )
+        .unwrap(),
+        0
+    );
+    let mut engine = Engine::from_connection(conn).expect("the older shape is opened");
+    let story = engine
+        .story_titled(&format!("A Guarded Stair{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let outcome = engine
+        .play(playthrough, "look around", &mut |_| {})
+        .unwrap();
+    assert!(outcome.state.location.is_some());
+}
+
+#[test]
+fn a_monster_level_or_a_posting_declared_another_way_is_refused() {
+    let differences = changed(migrated(
+        "a-deeper-floor",
+        r#"ALTER TABLE "floors" DROP COLUMN "monster_level";
+           ALTER TABLE "floors" ADD "monster_level" varchar;"#,
+    ));
+    assert_eq!(
+        differences,
+        ["found column floors.monster_level varchar pk=0"]
+    );
+    let differences = changed(migrated(
+        "a-guarded-stair",
+        r#"CREATE INDEX "index_characters_on_posted_to_id_and_id" ON "characters" ("posted_to_id", "id");"#,
+    ));
+    assert_eq!(differences, ["found index characters (posted_to_id, id)"]);
+}
+
 #[test]
 fn a_newer_schema_that_adds_a_unique_index_to_a_table_the_engine_uses_is_refused() {
     let differences = changed(migrated(

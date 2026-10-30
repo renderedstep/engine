@@ -1,0 +1,73 @@
+---
+story: A Deeper Floor
+steps:
+- id: down-to-the-bottom-floor
+  type: "/move The Bottom Floor"
+  browser:
+    token: into-the-bottom-floor
+    realizes: The Bottom Floor
+    replies:
+    - purpose: location
+      content:
+        description: The bottom level of the dungeon, one chamber cut far down.
+        lore: Whatever lives this deep has lived here a long time.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: A wide chamber where somebody has made a camp among the stones.
+        lore: Delvers who stay down here too long stop going back up.
+        items: []
+        people:
+        - fullname: Hollin Graves
+          nickname: Hollin
+          appearance: A delver's coat gone grey with stone dust.
+          personality: Watchful and slow to speak.
+          backstory: A delver who stopped going back up years ago.
+          likes: The quiet down here.
+          dislikes: Lanterns from above.
+          fears: The surface.
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Bottom Floor room 1 (realized)
+    present:
+    - Hollin Graves
+    hp_of:
+      Hollin Graves: 18
+- id: back-up-to-the-landing
+  type: "/move The Landing"
+  expect:
+    location: The Landing (realized)
+- id: into-the-upper-floor
+  type: "/move The Upper Floor"
+  browser:
+    token: into-the-upper-floor
+    realizes: The Upper Floor
+    replies:
+    - purpose: location
+      content:
+        description: The upper level of the dungeon, one chamber just under the landing.
+        lore: Delvers pass through here on their way to somewhere worse.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: A low chamber with a bedroll by the wall.
+        lore: Somebody sleeps here between delves.
+        items: []
+        people:
+        - fullname: Wenna Cole
+          nickname: Wenna
+          appearance: A patched cloak and a sack of candles.
+          personality: Cheerful and talkative.
+          backstory: A candle-seller who follows the delvers down.
+          likes: Company.
+          dislikes: Silence.
+          fears: Being left in the dark.
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Upper Floor room 1 (realized)
+    present:
+    - Wenna Cole
+    hp_of:
+      Wenna Cole: 8

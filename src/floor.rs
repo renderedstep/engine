@@ -7,7 +7,8 @@
 //! Every draw comes from the place's own generator (`Roll::INTERIOR`), in
 //! this order: the grid's column widths, row depths and serpentine, each
 //! room's danger and hazard as it is created, the way-down room, then the
-//! extra doors. A place with no `floors` row is laid out by `interior`,
+//! extra doors, and last, on a guarded floor with no way down, the room its
+//! guards stand in. A place with no `floors` row is laid out by `interior`,
 //! exactly as before.
 
 use crate::interior::{Builder, Layout, Place, WALKING};
@@ -34,6 +35,8 @@ pub struct Floor<'a> {
     pub hazard: Option<&'a str>,
     /// Whether the floor has a way down (`floors.down_location_id`).
     pub down: bool,
+    /// Whether anybody is posted to the floor (`characters.posted_to_id`).
+    pub guarded: bool,
 }
 
 /// A floor's rooms and doorways, and which room the way down lands on.
@@ -42,6 +45,10 @@ pub struct Laid {
     pub layout: Layout,
     /// The index of the way-down room in `layout.rooms`; never 0, the entry.
     pub way_down: Option<usize>,
+    /// The index of the room a guarded floor's guards stand in: the way-down
+    /// room, or with no way down a room rolled after every other draw, never
+    /// the entry unless it is the only room.
+    pub guard_room: Option<usize>,
 }
 
 /// How many rooms a floor is drawn with: its own count, at least one, and
@@ -112,6 +119,11 @@ pub fn lay_out(place: &Place, floor: &Floor) -> Laid {
     {
         room.kind = dealt;
     }
+    let guard_room = floor.guarded.then(|| match way_down {
+        Some(room) => room,
+        None if count > 1 => 1 + roll::one_of(count - 1, &mut builder.rng),
+        None => 0,
+    });
     Laid {
         layout: Layout {
             footprint: (width, depth),
@@ -119,6 +131,7 @@ pub fn lay_out(place: &Place, floor: &Floor) -> Laid {
             edges: builder.edges,
         },
         way_down,
+        guard_room,
     }
 }
 
@@ -176,10 +189,22 @@ mod tests {
                         danger: Some("dangerous"),
                         hazard: Some("unlit"),
                         down,
+                        guarded: id % 2 == 0,
                     };
                     let laid = lay_out(&place(id * 1009, None), &floor);
                     let layout = &laid.layout;
                     let what = format!("{rooms} rooms, place {}, down {down}", id * 1009);
+                    match laid.guard_room {
+                        Some(room) => {
+                            assert!(floor.guarded, "{what}");
+                            assert!(room < layout.rooms.len(), "{what}");
+                            assert!(room != 0 || layout.rooms.len() == 1, "{what}");
+                            if down {
+                                assert_eq!(Some(room), laid.way_down, "{what}");
+                            }
+                        }
+                        None => assert!(!floor.guarded, "{what}"),
+                    }
                     assert_eq!(layout.rooms.len(), room_count(&floor), "{what}");
                     let mut reached = reachable(layout);
                     reached.sort_unstable();
@@ -260,6 +285,7 @@ mod tests {
             danger: Some("uneasy"),
             hazard: Some("flooded"),
             down: true,
+            guarded: false,
         };
         assert_eq!(
             lay_out(&place(42, Some("warren")), &floor),
@@ -269,6 +295,55 @@ mod tests {
             lay_out(&place(42, None), &floor).way_down,
             lay_out(&place(43, None), &floor).way_down,
             "another place rolls another way down"
+        );
+    }
+
+    /// Guards are the last draw: a guarded floor's rooms, doorways and way
+    /// down are the unguarded floor's, and its guards stand on the way down,
+    /// or with none in a room rolled off the entry.
+    #[test]
+    fn guards_stand_on_the_way_down_and_move_no_other_draw() {
+        for down in [false, true] {
+            for id in 1..=40 {
+                let floor = Floor {
+                    rooms: 9,
+                    danger: Some("uneasy"),
+                    hazard: None,
+                    down,
+                    guarded: false,
+                };
+                let open = lay_out(&place(id, Some("warren")), &floor);
+                let guarded = lay_out(
+                    &place(id, Some("warren")),
+                    &Floor {
+                        guarded: true,
+                        ..floor
+                    },
+                );
+                assert_eq!(open.guard_room, None);
+                assert_eq!(guarded.layout, open.layout);
+                assert_eq!(guarded.way_down, open.way_down);
+                let room = guarded
+                    .guard_room
+                    .expect("a guarded floor has a guard room");
+                assert_ne!(room, 0, "place {id}");
+                if down {
+                    assert_eq!(Some(room), open.way_down, "place {id}");
+                }
+            }
+        }
+        let alone = lay_out(
+            &place(5, None),
+            &Floor {
+                rooms: 1,
+                guarded: true,
+                ..Floor::default()
+            },
+        );
+        assert_eq!(
+            alone.guard_room,
+            Some(0),
+            "one room is the only room to stand in"
         );
     }
 
@@ -304,6 +379,7 @@ mod tests {
             danger: Some("safe"),
             hazard: None,
             down: true,
+            guarded: false,
         };
         let laid = lay_out(&place(9, None), &floor);
         let safe = Parameters::default().danger_for(0);

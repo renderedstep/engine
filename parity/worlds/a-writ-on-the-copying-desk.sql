@@ -13,17 +13,6 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCRE
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("completed" boolean DEFAULT FALSE NOT NULL, "last_id" integer, "task" varchar NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "civilizations" text, "created_at" datetime(6) NOT NULL, "economics" text, "geographies" text, "history" text, "physics" text, "politics" text, "religion" text, "technology" text, "updated_at" datetime(6) NOT NULL, "weapons" text, "gravity" varchar, "carrying" varchar);
 INSERT INTO universes VALUES(1000000001,'A town that keeps its records by hand.','2026-10-26 02:10:11.352145','A fee a page.','A copying house and its archive.','The copying house has copied every deed in the town.','Ordinary physics.','The registrar signs what the copyists write.','The town keeps a quiet calendar.','Pens, ink, lamps and tinderboxes.','2026-10-26 02:10:11.352145','Nothing anybody carries.',NULL,NULL);
-CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, CONSTRAINT "fk_rails_56a213cbe2"
-FOREIGN KEY ("race_id")
-  REFERENCES "races" ("id")
-, CONSTRAINT "fk_rails_0b4b445641"
-FOREIGN KEY ("location_id")
-  REFERENCES "locations" ("id")
-, CONSTRAINT "fk_rails_6608c248e8"
-FOREIGN KEY ("story_id")
-  REFERENCES "stories" ("id")
-);
-INSERT INTO characters VALUES(1000000001,29,'Ink on both cuffs.','A copyist who has been asked to run an errand instead of copying.',NULL,'2026-10-26 02:10:11.603319',0,NULL,12,'Errands.','Losing a deed.','Tamsin Rook',8,0,0,1,3,'A clean page.',NULL,NULL,'Tamsin','Careful, and tired of being careful.',1000000001,NULL,'female',1000000001,15,NULL,NULL,'2026-10-26 02:10:11.603319',12,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "cancelled" boolean DEFAULT FALSE NOT NULL, "character_id" integer, "created_at" datetime(6) NOT NULL, "model_id_string" varchar, "player_id" integer, "playthrough_id" integer, "purpose" varchar, "ruby_llm_model_id" integer, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -423,16 +412,31 @@ INSERT INTO schema_migrations VALUES('20250822184649');
 INSERT INTO schema_migrations VALUES('20261027120117');
 INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
+INSERT INTO schema_migrations VALUES('20261030230000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-26 02:09:45.289336','2026-10-26 02:09:45.289340');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','9fcff787fff0ed60123ee84a65c7f80738f353f3','2026-10-26 02:09:45.295415','2026-10-26 02:09:45.295421');
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
 FOREIGN KEY ("down_location_id")
   REFERENCES "locations" ("id")
  ON DELETE SET NULL);
+CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "age" integer, "appearance" text, "backstory" text, "conscious_desire" text, "created_at" datetime(6) NOT NULL, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "desire_pursuit" varchar, "dexterity" integer, "dislikes" text, "fears" text, "fullname" varchar, "hit_die" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "is_companion" boolean, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "level" integer, "likes" text, "location_id" integer, "need_pursuit" varchar, "nickname" varchar, "personality" text, "race_id" integer NOT NULL, "recognized_need" text, "sex" varchar, "story_id" integer NOT NULL, "strength" integer, "unconscious_desire" text, "unrecognized_need" text, "updated_at" datetime(6) NOT NULL, "will" integer, "x" integer, "y" integer, "posted_to_id" integer, CONSTRAINT "fk_rails_6608c248e8"
+FOREIGN KEY ("story_id")
+  REFERENCES "stories" ("id")
+, CONSTRAINT "fk_rails_0b4b445641"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_56a213cbe2"
+FOREIGN KEY ("race_id")
+  REFERENCES "races" ("id")
+, CONSTRAINT "fk_rails_4c54fc506e"
+FOREIGN KEY ("posted_to_id")
+  REFERENCES "locations" ("id")
+ ON DELETE SET NULL);
+INSERT INTO characters VALUES(1000000001,29,'Ink on both cuffs.','A copyist who has been asked to run an errand instead of copying.',NULL,'2026-10-26 02:10:11.603319',0,NULL,12,'Errands.','Losing a deed.','Tamsin Rook',8,0,0,1,3,'A clean page.',NULL,NULL,'Tamsin','Careful, and tired of being careful.',1000000001,NULL,'female',1000000001,15,NULL,NULL,'2026-10-26 02:10:11.603319',12,NULL,NULL,NULL);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -445,7 +449,6 @@ INSERT INTO sqlite_sequence VALUES('ruby_llm_models',1000000000);
 INSERT INTO sqlite_sequence VALUES('ruby_llm_tool_calls',1000000000);
 INSERT INTO sqlite_sequence VALUES('ruby_llm_usages',1000000000);
 INSERT INTO sqlite_sequence VALUES('universes',1000000001);
-INSERT INTO sqlite_sequence VALUES('characters',1000000001);
 INSERT INTO sqlite_sequence VALUES('chats',1000000000);
 INSERT INTO sqlite_sequence VALUES('interactions',1000000000);
 INSERT INTO sqlite_sequence VALUES('items',1000000007);
@@ -481,6 +484,7 @@ INSERT INTO sqlite_sequence VALUES('stories',1000000001);
 INSERT INTO sqlite_sequence VALUES('system_one_receipts',1000000000);
 INSERT INTO sqlite_sequence VALUES('world_events',1000000000);
 INSERT INTO sqlite_sequence VALUES('world_mechanics',1000000000);
+INSERT INTO sqlite_sequence VALUES('characters',1000000001);
 CREATE INDEX "index_characters_scenes_on_character_id_and_scene_id" ON "characters_scenes" ("character_id", "scene_id");
 CREATE INDEX "index_characters_scenes_on_scene_id_and_character_id" ON "characters_scenes" ("scene_id", "character_id");
 CREATE UNIQUE INDEX "index_players_on_name" ON "players" ("name");
@@ -501,13 +505,6 @@ CREATE INDEX "index_ruby_llm_usages_on_chat_type_and_chat_id" ON "ruby_llm_usage
 CREATE INDEX "index_ruby_llm_usages_on_message_type_and_message_id" ON "ruby_llm_usages" ("message_type", "message_id");
 CREATE INDEX "index_ruby_llm_usages_on_status" ON "ruby_llm_usages" ("status");
 CREATE UNIQUE INDEX "index_ruby_llm_v2_backfills_on_task" ON "ruby_llm_v2_backfills" ("task");
-CREATE UNIQUE INDEX "index_characters_on_story_id_and_lower_fullname" ON "characters" (story_id, LOWER(fullname));
-CREATE INDEX "index_characters_on_location_id_and_hostile" ON "characters" ("location_id", "hostile");
-CREATE INDEX "index_characters_on_location_id_and_id" ON "characters" ("location_id", "id");
-CREATE INDEX "index_characters_on_location_id" ON "characters" ("location_id");
-CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
-CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
-CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_chats_on_character_id" ON "chats" ("character_id");
 CREATE INDEX "index_chats_on_player_id" ON "chats" ("player_id");
 CREATE INDEX "index_chats_on_conversation_key" ON "chats" ("playthrough_id", "character_id", "purpose");
@@ -643,5 +640,13 @@ CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id
 CREATE INDEX "index_quest_steps_on_companion_id" ON "quest_steps" ("companion_id");
 CREATE UNIQUE INDEX "index_floors_on_location_id" ON "floors" ("location_id");
 CREATE INDEX "index_floors_on_down_location_id" ON "floors" ("down_location_id");
+CREATE UNIQUE INDEX "index_characters_on_story_id_and_lower_fullname" ON "characters" (story_id, LOWER(fullname));
+CREATE INDEX "index_characters_on_location_id_and_hostile" ON "characters" ("location_id", "hostile");
+CREATE INDEX "index_characters_on_location_id_and_id" ON "characters" ("location_id", "id");
+CREATE INDEX "index_characters_on_location_id" ON "characters" ("location_id");
+CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
+CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
+CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
+CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
 PRAGMA writable_schema=OFF;
 COMMIT;
