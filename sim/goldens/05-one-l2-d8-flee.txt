@@ -1,0 +1,9 @@
+05-one-l2-d8-flee: 25 fights, seeds 1..25, told driver, policy flee_below
+              rate   95% interval
+  won        0.400   [0.234, 0.593]
+  died       0.320   [0.172, 0.516]
+  fled       0.280   [0.143, 0.476]
+  rounds         mean 2.92   2:8 3:11 4:6
+  hp left        mean 9.18   1:1 2:2 3:2 5:1 6:1 10:2 11:1 13:2 14:1 15:2 16:1 17:1 (survivors)
+  damage         taken 12.32, dealt 11.20 a fight
+  blows          taken 2.52, struck 2.32 a fight

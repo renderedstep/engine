@@ -1,0 +1,10 @@
+07-one-l3-d10-drink: 25 fights, seeds 1..25, told driver, policy drink_below
+              rate   95% interval
+  won        0.560   [0.371, 0.733]
+  died       0.440   [0.267, 0.629]
+  fled       0.000   [0.000, 0.133]
+  rounds         mean 5.04   3:1 4:7 5:10 6:4 7:3
+  hp left        mean 5.50   1:2 2:2 3:1 5:3 8:3 9:2 11:1 (survivors)
+  damage         taken 23.88, dealt 20.48 a fight
+  blows          taken 4.48, struck 4.12 a fight
+  used           drinks 0.92, throws 0.00 a fight

@@ -1,0 +1,7 @@
+# The house body against one level-2 d8 foe, attacking to the end, on the
+# mechanics loop: the loop the told driver must agree with seed for seed.
+seeds: 1..25
+driver: mechanics
+foes:
+  - {count: 1, stats: {level: 2, hit_die: 8}}
+policy: attack

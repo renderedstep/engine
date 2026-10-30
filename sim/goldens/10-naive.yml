@@ -1,0 +1,9 @@
+# The dungeon studies' naive player against the careful one's fight
+# (09-careful): two level-1 foes of a rolled hit die, one healing draught.
+seeds: 1..25
+player:
+  carrying:
+    - {name: healing draught, use_kind: healing}
+foes:
+  - {count: 2, stats: {level: 1, hit_die: rolled}}
+policy: naive

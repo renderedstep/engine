@@ -18,6 +18,7 @@
 //! [`tally::Summary`] counts what many fights did.
 
 pub mod arena;
+pub mod golden;
 pub mod matchup;
 pub mod policy;
 pub mod tally;

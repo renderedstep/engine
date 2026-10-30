@@ -1,0 +1,6 @@
+# The house body (level 3, d8, 18 hit points) against one level-1 d8 foe,
+# attacking to the end. Exact P(win): 0.9854.
+seeds: 1..25
+foes:
+  - {count: 1, stats: {level: 1, hit_die: 8}}
+policy: attack
