@@ -869,6 +869,7 @@ mod tests {
                 edge: 100,
                 key: None,
             }],
+            fallen: Vec::new(),
             cast,
             lying: Vec::new(),
             carried: Vec::new(),

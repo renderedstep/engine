@@ -495,6 +495,9 @@ impl<'s, 'm> Turn<'s, 'm> {
             self.commit("not_yet", |turn| turn.m.put_off_ending())?;
         }
         self.commit("world_clock", |turn| turn.m.catch_up_world())?;
+        if self.commit("floor_fell", |turn| turn.m.floors_fall())? {
+            return Ok(Played::Refused(self.m.over_refusal(command)));
+        }
         self.commit("starting_room", |turn| {
             let here = turn.m.here();
             turn.m.snapshot_room(here.as_ref())
@@ -594,6 +597,9 @@ impl<'s, 'm> Turn<'s, 'm> {
             Ok(())
         })?;
         self.safety = self.safety || scene.as_ref().is_some_and(|told| told.safety);
+        // The act's time is spent: a floor whose countdown ran out under it
+        // falls now, before anybody strikes.
+        self.commit("floor_fell_after", |turn| turn.m.floors_fall())?;
         self.commit("told_tolls", |turn| turn.claim_tolls(scene.as_ref()))?;
         self.commit("told_floors", |turn| turn.claim_floors(scene.as_ref()))?;
         self.commit("told_volitions", |turn| {
@@ -694,6 +700,16 @@ impl<'s, 'm> Turn<'s, 'm> {
                     reading.intent.expect("a resolved reading"),
                     "grammar".into(),
                 ));
+            }
+            // A move onto a floor that has fallen in this game is the
+            // engine's to refuse, in its own words: no reader is asked.
+            let fallen = grammar.fallen_named(command);
+            if fallen.is_some() && reading.refusal == fallen {
+                let intent = Intent {
+                    declined: fallen,
+                    ..Intent::new("move")
+                };
+                return Ok((intent, "grammar".into()));
             }
         }
         // A line that only leaves the room it is said in is the engine's:

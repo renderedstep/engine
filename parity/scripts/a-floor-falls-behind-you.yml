@@ -1,0 +1,156 @@
+---
+story: A Floor That Falls
+steps:
+- id: onto-the-first-floor
+  type: "/move The First Floor"
+  browser:
+    token: into-the-first-floor
+    realizes: The First Floor
+    replies:
+    - purpose: location
+      content:
+        description: A level of black stone passages, cracked across every few paces.
+        lore: The first floor was cut by people nobody remembers.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: A low chamber at the foot of the stair, its floor split down
+          the middle.
+        lore: Delvers do not rest here long.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The First Floor room 1 (realized)
+    dead: false
+- id: to-the-way-down
+  type: "/move The First Floor room 2"
+  browser:
+    token: first-floor-room-2
+    realizes: The First Floor room 2
+    replies:
+    - purpose: location
+      content:
+        description: A bare chamber with a stair cut down into its floor.
+        lore: The stair down is older than the rest.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The First Floor room 2 (realized)
+    present:
+    - Wenna Cole
+    exits_include:
+    - The Second Floor (stub)
+- id: down-onto-the-second-floor
+  type: "/move The Second Floor"
+  browser:
+    token: into-the-second-floor
+    realizes: The Second Floor
+    replies:
+    - purpose: location
+      content:
+        description: A colder level, the air still and the dark close.
+        lore: Few delvers come this far.
+        place_kind: warren
+    - purpose: location
+      content:
+        description: The foot of the stair, cold and quiet.
+        lore: The stair comes down here from the floor above.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Second Floor room 1 (realized)
+    exits_include:
+    - The First Floor room 2 (realized)
+- id: wait-1
+  type: "/wait"
+  browser:
+    token: wait-1
+    replies:
+    - purpose: narration
+      content: You stand at the foot of the stair and listen.
+  expect:
+    elapsed_minutes: 5.0
+    exits_include:
+    - The First Floor room 2 (realized)
+- id: wait-2
+  type: "/wait"
+  browser:
+    token: wait-2
+    replies:
+    - purpose: narration
+      content: Grit trickles down the stair from above.
+  expect:
+    elapsed_minutes: 5.0
+- id: wait-3
+  type: "/wait"
+  browser:
+    token: wait-3
+    replies:
+    - purpose: narration
+      content: Something above you groans.
+  expect:
+    elapsed_minutes: 5.0
+- id: wait-4
+  type: "/wait"
+  browser:
+    token: wait-4
+    replies:
+    - purpose: narration
+      content: Dust drifts down the stair.
+  expect:
+    elapsed_minutes: 5.0
+- id: wait-5
+  type: "/wait"
+  browser:
+    token: wait-5
+    replies:
+    - purpose: narration
+      content: The groaning above grows louder.
+  expect:
+    elapsed_minutes: 5.0
+    exits_include:
+    - The First Floor room 2 (realized)
+- id: the-first-floor-falls-above-her
+  type: "/wait"
+  browser:
+    token: wait-6
+    replies:
+    - purpose: narration
+      content: A roar comes down the stair, and then nothing.
+  expect:
+    elapsed_minutes: 5.0
+    dead: false
+    exits_exclude:
+    - The First Floor room 2
+- id: there-is-no-way-back-up
+  type: "/move The First Floor room 2"
+  expect:
+    refused: true
+    offers: The First Floor has fallen. There is no way back onto it.
+    location: The Second Floor room 1 (realized)
+- id: nor-onto-the-floor-by-its-name
+  type: "/move The First Floor"
+  expect:
+    refused: true
+    offers: The First Floor has fallen. There is no way back onto it.
+- id: a-second-game-finds-the-first-floor-whole
+  player: second
+  type: "/move The First Floor"
+  expect:
+    location: The First Floor room 1 (realized)
+    dead: false
+- id: and-wenna-is-alive-at-its-stair
+  player: second
+  type: "/move The First Floor room 2"
+  expect:
+    location: The First Floor room 2 (realized)
+    present:
+    - Wenna Cole
+    exits_include:
+    - The Second Floor room 1 (realized)

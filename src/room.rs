@@ -198,6 +198,16 @@ pub struct Exit {
     pub key: Option<i64>,
 }
 
+/// A way out onto a floor that has fallen in this game, or that floor
+/// itself: never offered, and a line that names it is refused in the
+/// engine's words ([`crate::refusal::fallen`]).
+#[derive(Clone, Debug)]
+pub struct Fallen {
+    pub place: Place,
+    /// The fallen floor's name.
+    pub floor: String,
+}
+
 /// One physical attempt the room offers, built from this game's own things
 /// and doorways. A reader picks one; it never supplies an effect.
 #[derive(Clone, Debug)]
@@ -445,6 +455,9 @@ pub struct Room {
     /// Where the playthrough stands, or `None` for nowhere.
     pub here: Option<Place>,
     pub exits: Vec<Exit>,
+    /// The ways out of here onto a floor that has fallen in this game, and
+    /// each such floor, kept out of [`Room::exits`].
+    pub fallen: Vec<Fallen>,
     /// Who is standing here, the player not among them.
     pub cast: Vec<Person>,
     pub lying: Vec<Thing>,
@@ -469,6 +482,14 @@ impl Room {
         self.exits
             .iter()
             .map(|exit| Record::Place(exit.place.clone()))
+            .collect()
+    }
+
+    /// The ways out onto a fallen floor, as records a line could name.
+    pub fn fallen_here(&self) -> Vec<Record> {
+        self.fallen
+            .iter()
+            .map(|fallen| Record::Place(fallen.place.clone()))
             .collect()
     }
 

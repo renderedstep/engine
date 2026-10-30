@@ -1,0 +1,524 @@
+{
+  "script": "waiting-out-a-floor",
+  "story": "A Floor That Falls",
+  "steps": [
+    {
+      "step": "step 1 onto-the-first-floor",
+      "player": "first",
+      "typed": "/move The First Floor",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The First Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The First Floor",
+        "resolved_by": "grammar",
+        "note": "into-the-first-floor: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 wait-1",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The First Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait-1: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 wait-2",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The First Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait-2: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 wait-3",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The First Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait-3: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 wait-4",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The First Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait-4: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 wait-5",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The First Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait-5: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 wait-6",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 0,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": true,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": null,
+        "resolved_by": "grammar",
+        "note": "wait-6: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 5.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 8 nothing-after",
+      "player": "first",
+      "typed": "/wait",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The First Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "pool"
+          },
+          {
+            "id": 1000000003,
+            "name": "rock shelf"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 0,
+        "hp_of": {},
+        "abilities": {
+          "strength": 14,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": true,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "Odile is dead, and this playthrough is over. Nothing you type can change it. Start a new playthrough to play this world again.",
+        "understood": null,
+        "resolved_by": null,
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

@@ -840,6 +840,46 @@ fn a_levels_up_or_a_playthrough_floors_declared_another_way_is_refused() {
 }
 
 #[test]
+fn a_database_from_before_the_countdown_is_opened_and_plays() {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch(&world("a-floor-that-falls")).unwrap();
+    conn.execute_batch(
+        r#"ALTER TABLE "floors" DROP COLUMN "minutes";
+           ALTER TABLE "playthrough_floors" DROP COLUMN "fell_at";
+           DELETE FROM schema_migrations WHERE version = '20261031120000';"#,
+    )
+    .unwrap();
+    let mut engine = Engine::from_connection(conn).expect("the older shape is opened");
+    let story = engine
+        .story_titled(&format!("A Floor That Falls{TITLE_SUFFIX}"))
+        .unwrap();
+    let playthrough = engine.start(story).unwrap();
+    let outcome = engine
+        .play(playthrough, "/move The First Floor", &mut |_| {})
+        .unwrap();
+    assert!(outcome.state.location.is_some());
+}
+
+#[test]
+fn a_minutes_or_a_fell_at_declared_another_way_is_refused() {
+    let differences = changed(migrated(
+        "a-floor-that-falls",
+        r#"ALTER TABLE "floors" DROP COLUMN "minutes";
+           ALTER TABLE "floors" ADD "minutes" varchar;"#,
+    ));
+    assert_eq!(differences, ["found column floors.minutes varchar pk=0"]);
+    let differences = changed(migrated(
+        "a-floor-that-falls",
+        r#"ALTER TABLE "playthrough_floors" DROP COLUMN "fell_at";
+           ALTER TABLE "playthrough_floors" ADD "fell_at" datetime(6) NOT NULL DEFAULT '';"#,
+    ));
+    assert_eq!(
+        differences,
+        ["found column playthrough_floors.fell_at datetime(6) not null default '' pk=0"]
+    );
+}
+
+#[test]
 fn a_newer_schema_that_adds_a_unique_index_to_a_table_the_engine_uses_is_refused() {
     let differences = changed(migrated(
         "the-quay-house",

@@ -412,10 +412,11 @@ INSERT INTO schema_migrations VALUES('20261030120000');
 INSERT INTO schema_migrations VALUES('20261030200000');
 INSERT INTO schema_migrations VALUES('20261030230000');
 INSERT INTO schema_migrations VALUES('20261031090000');
+INSERT INTO schema_migrations VALUES('20261031120000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-27 12:10:16.651328','2026-10-27 12:10:16.651334');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','deec051e019741f5fc4e8fe09fff00a4e1d2f04d','2026-10-27 12:10:16.662468','2026-10-27 12:10:16.662473');
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, "minutes" integer, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
@@ -437,7 +438,7 @@ FOREIGN KEY ("posted_to_id")
  ON DELETE SET NULL);
 INSERT INTO characters VALUES(1000000001,1000000001,'Cal','Cal',30,'male','Patient and practical.','A travel-worn coat.','A fair bargain.','Needless arguments.','Losing a friend.','A trader returning to the market.',0,'2026-10-27 12:13:21.151410','2026-10-27 12:13:21.151410',1000000001,1,NULL,0,10,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO characters VALUES(1000000002,1000000001,'Maren','Maren',32,'female','Willing to listen and keep a promise.','A blue coat and a wooden staff.','Clear agreements.','Deception.','Betraying a trust.','A gatekeeper who knows the old way through the courtyard.',0,'2026-10-27 12:13:21.207835','2026-10-27 12:13:21.207835',1000000001,0,1000000001,0,10,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "fell_at" datetime(6), CONSTRAINT "fk_rails_340e8cdc38"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 , CONSTRAINT "fk_rails_f82b72b677"

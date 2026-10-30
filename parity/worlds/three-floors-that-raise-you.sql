@@ -41,16 +41,16 @@ FOREIGN KEY ("player_id")
 FOREIGN KEY ("ruby_llm_model_id")
   REFERENCES "ruby_llm_models" ("id")
 );
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, CONSTRAINT "fk_rails_8a0268155a"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, "levels_up" boolean DEFAULT FALSE NOT NULL, "minutes" integer, CONSTRAINT "fk_rails_8a0268155a"
 FOREIGN KEY ("down_location_id")
   REFERENCES "locations" ("id")
  ON DELETE SET NULL, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE);
-INSERT INTO floors VALUES(1000000001,1000000002,2,'safe','none',1000000003,'2026-10-30 16:09:38.312105','2026-10-30 16:09:38.358184',NULL,1);
-INSERT INTO floors VALUES(1000000002,1000000003,2,'safe','none',1000000004,'2026-10-30 16:09:38.332180','2026-10-30 16:09:38.368358',NULL,1);
-INSERT INTO floors VALUES(1000000003,1000000004,2,'safe','none',NULL,'2026-10-30 16:09:38.346863','2026-10-30 16:09:38.374301',NULL,1);
+INSERT INTO floors VALUES(1000000001,1000000002,2,'safe','none',1000000003,'2026-10-30 16:09:38.312105','2026-10-30 16:09:38.358184',NULL,1,NULL);
+INSERT INTO floors VALUES(1000000002,1000000003,2,'safe','none',1000000004,'2026-10-30 16:09:38.332180','2026-10-30 16:09:38.368358',NULL,1,NULL);
+INSERT INTO floors VALUES(1000000003,1000000004,2,'safe','none',NULL,'2026-10-30 16:09:38.346863','2026-10-30 16:09:38.374301',NULL,1,NULL);
 CREATE TABLE IF NOT EXISTS "interactions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "character_id" integer NOT NULL, "scene_id" integer, "location_id" integer, "pre_thought" text, "pre_feeling" text, "action" text, "post_feeling" text, "post_thought" text, "inner_resolution" text, "summary" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "user_input" text, "engine_action" varchar, "action_status" varchar, "action_fact" text, CONSTRAINT "fk_rails_294d4ae9f8"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
@@ -188,7 +188,7 @@ FOREIGN KEY ("playthrough_id")
 FOREIGN KEY ("scene_id")
   REFERENCES "scenes" ("id")
 );
-CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_340e8cdc38"
+CREATE TABLE IF NOT EXISTS "playthrough_floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "playthrough_id" integer NOT NULL, "location_id" integer NOT NULL, "arrived_at" datetime(6) NOT NULL, "level" integer, "scene_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "fell_at" datetime(6), CONSTRAINT "fk_rails_340e8cdc38"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
 , CONSTRAINT "fk_rails_f82b72b677"
@@ -445,6 +445,7 @@ INSERT INTO schema_migrations VALUES('20250823023925');
 INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
+INSERT INTO schema_migrations VALUES('20261031120000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-30 16:09:36.934157','2026-10-30 16:09:36.934160');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','5b41acc531745dba36c583b40f12d94bcf2d8eb7','2026-10-30 16:09:36.938862','2026-10-30 16:09:36.938864');
