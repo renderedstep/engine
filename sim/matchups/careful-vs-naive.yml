@@ -1,0 +1,10 @@
+# The dungeon studies' careful player, at the scale of one fight, against
+# two level-1 foes of a rolled hit die, with one healing draught. Play it
+# again with `policy: naive` to compare.
+seeds: 1..2000
+player:
+  carrying:
+    - {name: healing draught, use_kind: healing}
+foes:
+  - {count: 2, stats: {level: 1, hit_die: rolled}}
+policy: careful

@@ -1,0 +1,11 @@
+# The house body against two level-2 d10 foes, with a healing draught and a
+# brick in hand: throw the brick first, drink at 9 hit points or below, and
+# run to the next room at 6 or below.
+seeds: 1..1000
+player:
+  carrying:
+    - {name: healing draught, use_kind: healing}
+    - {name: brick, bulk: heavy}
+foes:
+  - {count: 2, stats: {level: 2, hit_die: 10}}
+policy: {kind: flee_below, hp: 6, drink_below: 9, throw_first: true}

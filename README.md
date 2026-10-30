@@ -329,6 +329,71 @@ both routes to the no-leak contract over a real socket on this machine. The
 kept requests of `vectors/kept_requests.json` are sent through the live
 client too (`tests/vectors/builders.rs`), and go out exactly as stored.
 
+## Measuring fights
+
+`fight` plays one matchup thousands of times through the engine's own turn
+loop and counts what happened. No model is asked, and no rule is copied: it
+types fight lines (`attack`, `go`, `drink`, `throw`) into a throwaway game,
+and the turn loop decides every blow. A rule is in the simulator as soon as
+it is in the engine.
+
+```sh
+cargo run --release --bin fight -- sim/matchups/one-l3-d10.yml
+cargo run --release --bin fight -- sim/matchups/one-l3-d10.yml --replay 812
+```
+
+```
+one-l3-d10: 2000 fights, seeds 1..2000, told driver, policy attack
+              rate   95% interval
+  won        0.230   [0.212, 0.249]
+  died       0.770   [0.751, 0.788]
+  fled       0.000   [0.000, 0.002]
+  rounds         mean 3.72   2:118 3:748 4:774 5:301 6:54 7:5
+  ...
+```
+
+A matchup file (`sim/matchups/*.yml`, read by `sim::matchup`) names the
+seeds, the player's stat block and what they carry, the foes, and a way of
+playing. Its keys are a world file's, so a stat block can be pasted from one,
+and `rolled` takes a number from the engine's own roll for each seed. Any
+other key of a foe, a carried thing or the story is written into that row as
+given, so a column a later rule adds needs no simulator change.
+
+- **The arena** is the sweep's one-room world
+  (`parity/worlds/a-chamber-of-one-room.sql`) with the foes in its first room
+  and its second room written, to run to (`sim::arena`). It is built once and
+  kept as an image of its database, and each fight opens a fresh copy, so
+  nothing one fight wrote reaches the next.
+- **Seeds.** A fight's playthrough id is its seed plus
+  `sim::arena::SEED_BASE`, and every blow's die is seeded off the
+  playthrough, so a seed always plays the same fight, on any number of
+  threads. `--replay SEED` prints that fight line by line.
+- **Drivers.** `told` (the default) plays each line with `Engine::submit` in
+  a game the player narrates, slashed, with a `model::Replay` that holds no
+  replies: the loop the browser plays, which moves the story's clock five
+  minutes a line. `mechanics` plays `Engine::play`, a little faster, and its
+  clock does not move between fights. Anything that hangs on time is
+  measured on `told`. With no move in the fight, the two give the same fight
+  seed for seed. A move does not: the told loop writes its arrival before the
+  parting blows, so they are thrown at a later time, from other dice.
+- **Policies** (`sim::policy`): `attack` the first foe standing every line;
+  `flee_below` (`hp: N`) to the next room; `drink_below` (`hp: N`) a healing
+  thing while one is carried; `throw_first`, which tries each carried
+  throwable once; `naive`, which drinks below 30%; and `careful`, which drinks
+  at half and leaves once one more round could kill (hit points at or below
+  the sum of the live foes' hit dice). The options combine:
+  `{kind: flee_below, hp: 6, drink_below: 9, throw_first: true}`. A refused
+  line is an error, not a turn, because it buys no riposte.
+- **Results** (`sim::tally`): win, death and flight rates with Wilson 95%
+  intervals, rounds and hit points left (mean and histogram), and damage and
+  blows on each side. `--json` prints the same as JSON. `--seeds A..B`,
+  `--driver` and `--threads` override the file's values.
+
+`tests/sim.rs` holds it to four things: three matchups' exact odds, worked
+out from the rules by hand, within four standard errors; per-seed identity
+of the two drivers on fights with no move; the same seed playing the same
+fight; and a fight's tally agreeing with its `playthrough_blows` rows.
+
 ## Rules for changing it
 
 - Draw only from `random::Random`. Any other generator rolls different dice.
