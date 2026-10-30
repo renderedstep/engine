@@ -504,7 +504,8 @@
               "unrecognized_need": "",
               "will": 10,
               "x": 3,
-              "y": 7
+              "y": 7,
+              "posted_to_id": null
             }
           ],
           "removed": []
@@ -859,7 +860,8 @@
               "unrecognized_need": "",
               "will": 10,
               "x": 3,
-              "y": 7
+              "y": 7,
+              "posted_to_id": null
             }
           ],
           "removed": []
@@ -1291,7 +1293,8 @@
               "unrecognized_need": "",
               "will": 10,
               "x": 3,
-              "y": 7
+              "y": 7,
+              "posted_to_id": null
             }
           ],
           "removed": []
@@ -2082,7 +2085,8 @@
               "unrecognized_need": "",
               "will": 10,
               "x": 3,
-              "y": 7
+              "y": 7,
+              "posted_to_id": null
             }
           ],
           "removed": []
@@ -2527,7 +2531,8 @@
               "unrecognized_need": "",
               "will": 10,
               "x": 3,
-              "y": 7
+              "y": 7,
+              "posted_to_id": null
             }
           ],
           "removed": []

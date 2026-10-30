@@ -90,14 +90,21 @@ pub const REFUSED_LINES: &str = "refused_lines";
 pub const OPTIONAL: &[&str] = &[REFUSED_LINES];
 
 /// Columns the engine reads only where the database has them, each as the
-/// fact [`shape`] would state: a story's own people and thing limits
-/// (migration 20261030120000), which read as null, and so as the ordinary
-/// limits, in a database from before them. [`shape`] leaves them out, so
-/// a database opens with or without them; one declared any other way is
-/// still a difference.
+/// fact [`shape`] would state, with the key and index each comes with: a
+/// story's own people and thing limits (migration 20261030120000), which
+/// read as null, and so as the ordinary limits, in a database from before
+/// them; and a floor's monster level and the floor a person is posted to
+/// (migration 20261030230000), which read as null, and so as nobody born
+/// stronger and nobody posted. [`shape`] leaves them out, so a database
+/// opens with or without them; one declared any other way is still a
+/// difference.
 pub const OPTIONAL_COLUMNS: &[&str] = &[
     "column stories.people_limit integer pk=0",
     "column stories.things_limit integer pk=0",
+    "column floors.monster_level integer pk=0",
+    "column characters.posted_to_id integer pk=0",
+    "foreign key characters.posted_to_id -> locations.id on update NO ACTION on delete SET NULL",
+    "index characters (posted_to_id)",
 ];
 
 /// A floor's own layout numbers, one row per place laid out as a floor

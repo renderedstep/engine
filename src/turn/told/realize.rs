@@ -33,7 +33,7 @@ use crate::records::{flag, id, int, string, text, Row};
 use crate::roll::{self, Seed};
 use crate::room::USE_KINDS;
 use crate::spot;
-use crate::stat_block;
+use crate::stat_block::{self, StatBlock};
 use crate::store;
 use crate::text::{is_blank, natural_key, ruby_downcase};
 use arc::Bound;
@@ -911,6 +911,20 @@ impl Turn<'_, '_> {
             .len() as i64
     }
 
+    /// The level everybody born at `location` is given when it is a floor or
+    /// a room of one whose row names one (`floors.monster_level`); none
+    /// leaves the ordinary starting level.
+    fn monster_level(&self, location: i64) -> Option<i64> {
+        let row = self.m.records.find("locations", location)?;
+        let places = [Some(location), int(row, "parent_location_id")];
+        self.m
+            .records
+            .first(store::FLOORS, |floor| {
+                places.contains(&int(floor, "location_id"))
+            })
+            .and_then(|floor| int(floor, "monster_level"))
+    }
+
     /// A proposal naming somebody the story already has: they may be here
     /// already, or brought here from nowhere, and nobody is moved.
     fn admit_known(&mut self, location: i64, name: &str) -> Result<Option<i64>, Error> {
@@ -1015,7 +1029,12 @@ impl Turn<'_, '_> {
             .records
             .find("races", *race)
             .is_some_and(|row| flag(row, "monstrous"));
-        let block = stat_block::roll(story, self.m.clock(), slot as i64);
+        let block = StatBlock {
+            level: self
+                .monster_level(location)
+                .unwrap_or(stat_block::STARTING_LEVEL),
+            ..stat_block::roll(story, self.m.clock(), slot as i64)
+        };
         let mut values: Vec<(&str, Value)> = vec![
             ("story_id", Value::from(story)),
             ("fullname", Value::from(fullname.as_str())),
@@ -1320,7 +1339,11 @@ impl Turn<'_, '_> {
             },
             density: text(&row, "density"),
         };
-        let (layout, way_down) = match &floor_row {
+        let guards = match floor_row {
+            Some(_) => self.posted_to(location),
+            None => Vec::new(),
+        };
+        let (layout, way_down, guard_room) = match &floor_row {
             Some(floor_row) => {
                 let laid = floor::lay_out(
                     &place,
@@ -1329,11 +1352,12 @@ impl Turn<'_, '_> {
                         danger: text(floor_row, "danger"),
                         hazard: text(floor_row, "hazard"),
                         down: int(floor_row, "down_location_id").is_some(),
+                        guarded: !guards.is_empty(),
                     },
                 );
-                (laid.layout, laid.way_down)
+                (laid.layout, laid.way_down, laid.guard_room)
             }
-            None => (interior::lay_out(&place, None, parameters), None),
+            None => (interior::lay_out(&place, None, parameters), None, None),
         };
         self.m.update(
             "locations",
@@ -1394,7 +1418,41 @@ impl Turn<'_, '_> {
                     .and_then(|row| int(row, "down_location_id")),
             )
             .map(|(index, down)| (rooms[index], down));
-        self.open_the_way_in(location, &rooms, way_down)
+        self.open_the_way_in(location, &rooms, way_down)?;
+        if let Some(index) = guard_room {
+            self.post_guards(rooms[index], &guards)?;
+        }
+        Ok(())
+    }
+
+    /// The people the world posts to a floor (`characters.posted_to_id`)
+    /// who stand nowhere yet, in id order: its guards, whom the file keeps
+    /// absent until the floor is laid out.
+    fn posted_to(&self, floor: i64) -> Vec<i64> {
+        self.m
+            .records
+            .select("characters", |who| {
+                int(who, "posted_to_id") == Some(floor) && int(who, "location_id").is_none()
+            })
+            .into_iter()
+            .map(id)
+            .collect()
+    }
+
+    /// A floor's guards stood in `room`, each placed in it as an admitted
+    /// person is. This is part of laying the floor out, so it happens once,
+    /// for the world: no later game, and no later absence the file writes,
+    /// moves them again.
+    fn post_guards(&mut self, room: i64, guards: &[i64]) -> Result<(), Error> {
+        for guard in guards {
+            let mut values = vec![
+                ("location_id", Value::from(room)),
+                ("deliberately_absent", Value::Bool(false)),
+            ];
+            values.extend(self.placement(room, spot::Record::Character(*guard)));
+            self.m.update("characters", *guard, values)?;
+        }
+        Ok(())
     }
 
     /// `#open_the_way_in!`: every doorway that led to the building now leads

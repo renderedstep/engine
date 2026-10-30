@@ -1,0 +1,239 @@
+{
+  "script": "a-deeper-floor-births-stronger-people",
+  "story": "A Deeper Floor",
+  "steps": [
+    {
+      "step": "step 1 down-to-the-bottom-floor",
+      "player": "first",
+      "typed": "/move The Bottom Floor",
+      "dump": {
+        "location": {
+          "id": 1000000004,
+          "name": "The Bottom Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000011,
+            "name": "bone"
+          },
+          {
+            "id": 1000000010,
+            "name": "pool"
+          },
+          {
+            "id": 1000000007,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000008,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000012,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000009,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000002,
+            "name": "Hollin Graves"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Hollin Graves": 18
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Bottom Floor",
+        "resolved_by": "grammar",
+        "note": "into-the-bottom-floor: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 back-up-to-the-landing",
+      "player": "first",
+      "typed": "/move The Landing",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000004,
+            "name": "The Bottom Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Upper Floor",
+            "detail": "stub"
+          }
+        ],
+        "here": [],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Bottom Floor room 1 -> The Landing",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Landing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 into-the-upper-floor",
+      "player": "first",
+      "typed": "/move The Upper Floor",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "The Upper Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000025,
+            "name": "bone"
+          },
+          {
+            "id": 1000000026,
+            "name": "candle stub"
+          },
+          {
+            "id": 1000000028,
+            "name": "coin"
+          },
+          {
+            "id": 1000000024,
+            "name": "ledge"
+          },
+          {
+            "id": 1000000023,
+            "name": "pool"
+          },
+          {
+            "id": 1000000021,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000022,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000027,
+            "name": "shard of pottery"
+          }
+        ],
+        "carrying": [],
+        "present": [
+          {
+            "id": 1000000003,
+            "name": "Wenna Cole"
+          }
+        ],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {
+          "Wenna Cole": 8
+        },
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor",
+        "resolved_by": "grammar",
+        "note": "into-the-upper-floor: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    }
+  ]
+}

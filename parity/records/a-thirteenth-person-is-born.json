@@ -454,7 +454,8 @@
               "recognized_need": "",
               "unrecognized_need": "",
               "desire_pursuit": null,
-              "need_pursuit": null
+              "need_pursuit": null,
+              "posted_to_id": null
             },
             {
               "id": 1000000014,
@@ -487,7 +488,8 @@
               "recognized_need": "",
               "unrecognized_need": "",
               "desire_pursuit": null,
-              "need_pursuit": null
+              "need_pursuit": null,
+              "posted_to_id": null
             },
             {
               "id": 1000000015,
@@ -520,7 +522,8 @@
               "recognized_need": "",
               "unrecognized_need": "",
               "desire_pursuit": null,
-              "need_pursuit": null
+              "need_pursuit": null,
+              "posted_to_id": null
             }
           ],
           "removed": []

@@ -16,28 +16,6 @@ CREATE TABLE IF NOT EXISTS "ruby_llm_usages" ("id" integer PRIMARY KEY AUTOINCRE
 CREATE TABLE IF NOT EXISTS "ruby_llm_v2_backfills" ("task" varchar NOT NULL, "last_id" integer, "completed" boolean DEFAULT FALSE NOT NULL);
 CREATE TABLE IF NOT EXISTS "universes" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "physics" text, "technology" text, "weapons" text, "civilizations" text, "geographies" text, "history" text, "economics" text, "politics" text, "religion" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "gravity" varchar, "carrying" varchar);
 INSERT INTO universes VALUES(1000000001,'Ordinary physics.','Lanterns, barrels and cart wheels.','Cudgels.','A market county.','A coaching inn on a wet road.','The inn has stood at the crossroads for a century.','Coin for beds, ale and stabling.','The county reeve keeps the road.','Harvest festivals.','2026-10-30 10:43:43.628832','2026-10-30 10:43:43.628832',NULL,NULL);
-CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "story_id" integer NOT NULL, "fullname" varchar, "nickname" varchar, "age" integer, "sex" varchar, "personality" text, "appearance" text, "likes" text, "dislikes" text, "fears" text, "backstory" text, "is_companion" boolean, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "race_id" integer NOT NULL, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "location_id" integer, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "level" integer, "hit_die" integer, "strength" integer, "dexterity" integer, "will" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "x" integer, "y" integer, "conscious_desire" text, "unconscious_desire" text, "recognized_need" text, "unrecognized_need" text, "desire_pursuit" varchar, "need_pursuit" varchar, CONSTRAINT "fk_rails_56a213cbe2"
-FOREIGN KEY ("race_id")
-  REFERENCES "races" ("id")
-, CONSTRAINT "fk_rails_0b4b445641"
-FOREIGN KEY ("location_id")
-  REFERENCES "locations" ("id")
-, CONSTRAINT "fk_rails_6608c248e8"
-FOREIGN KEY ("story_id")
-  REFERENCES "stories" ("id")
-);
-INSERT INTO characters VALUES(1000000001,1000000001,'Nell','Nell',33,'female','Plain-spoken.','A soaked cloak.','A dry corner.','Crowds.','Sleeping in the road.','A tinker caught out by the rain.',0,'2026-10-30 10:43:43.797067','2026-10-30 10:43:43.797067',1000000001,1,NULL,0,10,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000002,1000000001,'Hob Allard','Hob',44,'male','Gruff and fair.','A stained apron.','A full house.','Unpaid tabs.','A cold hearth.','The innkeeper, who has run the Lantern for twenty years.',0,'2026-10-30 10:43:43.829152','2026-10-30 10:43:43.829152',1000000001,0,1000000001,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000003,1000000001,'Ida Fenn','Ida',27,'female','Quick and wry.','Rolled sleeves.','Tips.','Spilled ale.','Deep water.','A barmaid saving for a boat of her own.',0,'2026-10-30 10:43:43.834649','2026-10-30 10:43:43.834649',1000000001,0,1000000001,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000004,1000000001,'Moss Tarrow','Moss',51,'male','Slow and certain.','A floury shirt.','Fresh bread.','Haste.','Fire in the flue.','The cook, who came with the inn.',0,'2026-10-30 10:43:43.839521','2026-10-30 10:43:43.839521',1000000001,0,1000000002,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000005,1000000001,'Pell Quill','Pell',19,'non-binary','Eager and clumsy.','Wet cuffs.','Praise.','Scouring pots.','The cook''s temper.','A scullion learning the trade.',0,'2026-10-30 10:43:43.851223','2026-10-30 10:43:43.851223',1000000001,0,1000000002,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000006,1000000001,'Rue Ambry','Rue',36,'female','Tired and patient.','A dusty coat.','A hot meal.','Delays.','A lame horse.','A carter waiting for her supper.',0,'2026-10-30 10:43:43.857509','2026-10-30 10:43:43.857509',1000000001,0,1000000002,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000007,1000000001,'Tam Brisk','Tam',23,'male','Cheerful and loud.','Straw in his hair.','Horses.','Tight fists.','Being kicked.','The ostler who minds the guests'' horses.',0,'2026-10-30 10:43:43.861686','2026-10-30 10:43:43.861686',1000000001,0,1000000003,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000008,1000000001,'Vey Corran','Vey',40,'female','Watchful.','A long oilskin.','Open roads.','Fences.','Wolves.','A drover passing through with her herd.',0,'2026-10-30 10:43:43.865582','2026-10-30 10:43:43.865582',1000000001,0,1000000003,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000009,1000000001,'Wick Dunmore','Wick',62,'male','Talkative.','A patched pack.','A good story.','Paying for a bed.','Dying alone.','An old pedlar sleeping in the hay to save a coin.',0,'2026-10-30 10:43:43.869814','2026-10-30 10:43:43.869814',1000000001,0,1000000003,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000010,1000000001,'Yara Holt','Yara',31,'female','Restless.','Riding boots.','Speed.','Waiting.','A lost letter.','A courier resting between runs.',0,'2026-10-30 10:43:43.874924','2026-10-30 10:43:43.874924',1000000001,0,1000000004,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000011,1000000001,'Zeb Marrow','Zeb',29,'male','Easygoing.','A green waistcoat.','Applause.','Silence.','A broken string.','A fiddler hired for the evening.',0,'2026-10-30 10:43:43.878653','2026-10-30 10:43:43.878653',1000000001,0,1000000004,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO characters VALUES(1000000012,1000000001,'Ash Penrose','Ash',34,'trans man','Precise.','Ink on his fingers.','Straight lines.','Muddle.','Getting lost.','A surveyor laid up by the rain.',0,'2026-10-30 10:43:43.882211','2026-10-30 10:43:43.882211',1000000001,0,1000000004,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 CREATE TABLE IF NOT EXISTS "chats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "model_id_string" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "ruby_llm_model_id" integer, "purpose" varchar, "playthrough_id" integer, "character_id" integer, "cancelled" boolean DEFAULT FALSE NOT NULL, "player_id" integer, CONSTRAINT "fk_rails_415520c982"
 FOREIGN KEY ("playthrough_id")
   REFERENCES "playthroughs" ("id")
@@ -436,16 +414,42 @@ INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
 INSERT INTO schema_migrations VALUES('20261030200000');
+INSERT INTO schema_migrations VALUES('20261030230000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-30 10:43:42.317995','2026-10-30 10:43:42.317999');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','ebdda9bf12dc2d5493a426a2e64de0ed551652b9','2026-10-30 10:43:42.324377','2026-10-30 10:43:42.324380');
-CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "monster_level" integer, CONSTRAINT "fk_rails_ce8b005cb2"
 FOREIGN KEY ("location_id")
   REFERENCES "locations" ("id")
  ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
 FOREIGN KEY ("down_location_id")
   REFERENCES "locations" ("id")
  ON DELETE SET NULL);
+CREATE TABLE IF NOT EXISTS "characters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "story_id" integer NOT NULL, "fullname" varchar, "nickname" varchar, "age" integer, "sex" varchar, "personality" text, "appearance" text, "likes" text, "dislikes" text, "fears" text, "backstory" text, "is_companion" boolean, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "race_id" integer NOT NULL, "is_protagonist" boolean DEFAULT FALSE NOT NULL, "location_id" integer, "deliberately_absent" boolean DEFAULT FALSE NOT NULL, "level" integer, "hit_die" integer, "strength" integer, "dexterity" integer, "will" integer, "hostile" boolean DEFAULT FALSE NOT NULL, "x" integer, "y" integer, "conscious_desire" text, "unconscious_desire" text, "recognized_need" text, "unrecognized_need" text, "desire_pursuit" varchar, "need_pursuit" varchar, "posted_to_id" integer, CONSTRAINT "fk_rails_6608c248e8"
+FOREIGN KEY ("story_id")
+  REFERENCES "stories" ("id")
+, CONSTRAINT "fk_rails_0b4b445641"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+, CONSTRAINT "fk_rails_56a213cbe2"
+FOREIGN KEY ("race_id")
+  REFERENCES "races" ("id")
+, CONSTRAINT "fk_rails_4c54fc506e"
+FOREIGN KEY ("posted_to_id")
+  REFERENCES "locations" ("id")
+ ON DELETE SET NULL);
+INSERT INTO characters VALUES(1000000001,1000000001,'Nell','Nell',33,'female','Plain-spoken.','A soaked cloak.','A dry corner.','Crowds.','Sleeping in the road.','A tinker caught out by the rain.',0,'2026-10-30 10:43:43.797067','2026-10-30 10:43:43.797067',1000000001,1,NULL,0,10,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000002,1000000001,'Hob Allard','Hob',44,'male','Gruff and fair.','A stained apron.','A full house.','Unpaid tabs.','A cold hearth.','The innkeeper, who has run the Lantern for twenty years.',0,'2026-10-30 10:43:43.829152','2026-10-30 10:43:43.829152',1000000001,0,1000000001,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000003,1000000001,'Ida Fenn','Ida',27,'female','Quick and wry.','Rolled sleeves.','Tips.','Spilled ale.','Deep water.','A barmaid saving for a boat of her own.',0,'2026-10-30 10:43:43.834649','2026-10-30 10:43:43.834649',1000000001,0,1000000001,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000004,1000000001,'Moss Tarrow','Moss',51,'male','Slow and certain.','A floury shirt.','Fresh bread.','Haste.','Fire in the flue.','The cook, who came with the inn.',0,'2026-10-30 10:43:43.839521','2026-10-30 10:43:43.839521',1000000001,0,1000000002,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000005,1000000001,'Pell Quill','Pell',19,'non-binary','Eager and clumsy.','Wet cuffs.','Praise.','Scouring pots.','The cook''s temper.','A scullion learning the trade.',0,'2026-10-30 10:43:43.851223','2026-10-30 10:43:43.851223',1000000001,0,1000000002,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000006,1000000001,'Rue Ambry','Rue',36,'female','Tired and patient.','A dusty coat.','A hot meal.','Delays.','A lame horse.','A carter waiting for her supper.',0,'2026-10-30 10:43:43.857509','2026-10-30 10:43:43.857509',1000000001,0,1000000002,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000007,1000000001,'Tam Brisk','Tam',23,'male','Cheerful and loud.','Straw in his hair.','Horses.','Tight fists.','Being kicked.','The ostler who minds the guests'' horses.',0,'2026-10-30 10:43:43.861686','2026-10-30 10:43:43.861686',1000000001,0,1000000003,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000008,1000000001,'Vey Corran','Vey',40,'female','Watchful.','A long oilskin.','Open roads.','Fences.','Wolves.','A drover passing through with her herd.',0,'2026-10-30 10:43:43.865582','2026-10-30 10:43:43.865582',1000000001,0,1000000003,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000009,1000000001,'Wick Dunmore','Wick',62,'male','Talkative.','A patched pack.','A good story.','Paying for a bed.','Dying alone.','An old pedlar sleeping in the hay to save a coin.',0,'2026-10-30 10:43:43.869814','2026-10-30 10:43:43.869814',1000000001,0,1000000003,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000010,1000000001,'Yara Holt','Yara',31,'female','Restless.','Riding boots.','Speed.','Waiting.','A lost letter.','A courier resting between runs.',0,'2026-10-30 10:43:43.874924','2026-10-30 10:43:43.874924',1000000001,0,1000000004,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000011,1000000001,'Zeb Marrow','Zeb',29,'male','Easygoing.','A green waistcoat.','Applause.','Silence.','A broken string.','A fiddler hired for the evening.',0,'2026-10-30 10:43:43.878653','2026-10-30 10:43:43.878653',1000000001,0,1000000004,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO characters VALUES(1000000012,1000000001,'Ash Penrose','Ash',34,'trans man','Precise.','Ink on his fingers.','Straight lines.','Muddle.','Getting lost.','A surveyor laid up by the rain.',0,'2026-10-30 10:43:43.882211','2026-10-30 10:43:43.882211',1000000001,0,1000000004,0,3,8,12,12,12,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -459,7 +463,6 @@ INSERT INTO sqlite_sequence VALUES('ruby_llm_models',1000000000);
 INSERT INTO sqlite_sequence VALUES('ruby_llm_tool_calls',1000000000);
 INSERT INTO sqlite_sequence VALUES('ruby_llm_usages',1000000000);
 INSERT INTO sqlite_sequence VALUES('universes',1000000001);
-INSERT INTO sqlite_sequence VALUES('characters',1000000012);
 INSERT INTO sqlite_sequence VALUES('chats',1000000000);
 INSERT INTO sqlite_sequence VALUES('interactions',1000000000);
 INSERT INTO sqlite_sequence VALUES('items',1000000000);
@@ -495,6 +498,7 @@ INSERT INTO sqlite_sequence VALUES('stories',1000000001);
 INSERT INTO sqlite_sequence VALUES('system_one_receipts',1000000000);
 INSERT INTO sqlite_sequence VALUES('world_events',1000000000);
 INSERT INTO sqlite_sequence VALUES('world_mechanics',1000000000);
+INSERT INTO sqlite_sequence VALUES('characters',1000000012);
 CREATE INDEX "index_characters_scenes_on_character_id_and_scene_id" ON "characters_scenes" ("character_id", "scene_id");
 CREATE INDEX "index_characters_scenes_on_scene_id_and_character_id" ON "characters_scenes" ("scene_id", "character_id");
 CREATE UNIQUE INDEX "index_players_on_name" ON "players" ("name");
@@ -516,13 +520,6 @@ CREATE INDEX "index_ruby_llm_usages_on_chat_type_and_chat_id" ON "ruby_llm_usage
 CREATE INDEX "index_ruby_llm_usages_on_message_type_and_message_id" ON "ruby_llm_usages" ("message_type", "message_id");
 CREATE INDEX "index_ruby_llm_usages_on_status" ON "ruby_llm_usages" ("status");
 CREATE UNIQUE INDEX "index_ruby_llm_v2_backfills_on_task" ON "ruby_llm_v2_backfills" ("task");
-CREATE UNIQUE INDEX "index_characters_on_story_id_and_lower_fullname" ON "characters" (story_id, LOWER(fullname));
-CREATE INDEX "index_characters_on_location_id_and_hostile" ON "characters" ("location_id", "hostile");
-CREATE INDEX "index_characters_on_location_id_and_id" ON "characters" ("location_id", "id");
-CREATE INDEX "index_characters_on_location_id" ON "characters" ("location_id");
-CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
-CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
-CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
 CREATE INDEX "index_chats_on_character_id" ON "chats" ("character_id");
 CREATE INDEX "index_chats_on_player_id" ON "chats" ("player_id");
 CREATE INDEX "index_chats_on_conversation_key" ON "chats" ("playthrough_id", "character_id", "purpose");
@@ -658,5 +655,13 @@ CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mecha
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
 CREATE UNIQUE INDEX "index_floors_on_location_id" ON "floors" ("location_id");
 CREATE INDEX "index_floors_on_down_location_id" ON "floors" ("down_location_id");
+CREATE UNIQUE INDEX "index_characters_on_story_id_and_lower_fullname" ON "characters" (story_id, LOWER(fullname));
+CREATE INDEX "index_characters_on_location_id_and_hostile" ON "characters" ("location_id", "hostile");
+CREATE INDEX "index_characters_on_location_id_and_id" ON "characters" ("location_id", "id");
+CREATE INDEX "index_characters_on_location_id" ON "characters" ("location_id");
+CREATE INDEX "index_characters_on_race_id" ON "characters" ("race_id");
+CREATE INDEX "index_characters_on_story_id_and_is_protagonist" ON "characters" ("story_id", "is_protagonist");
+CREATE INDEX "index_characters_on_story_id" ON "characters" ("story_id");
+CREATE INDEX "index_characters_on_posted_to_id" ON "characters" ("posted_to_id");
 PRAGMA writable_schema=OFF;
 COMMIT;
