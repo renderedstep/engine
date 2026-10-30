@@ -1,0 +1,1293 @@
+{
+  "script": "a-floor-laid-out-to-its-count",
+  "story": "Two Floors and a Key",
+  "steps": [
+    {
+      "step": "step 1 take-the-stair-key",
+      "player": "first",
+      "typed": "/take stair key",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000004,
+            "name": "The Old Cellar",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Upper Floor",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000004,
+            "name": "cellar key"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: stair key (was lying in The Landing, now carried by Odile)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> stair key",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 into-the-upper-floor",
+      "player": "first",
+      "typed": "/move The Upper Floor",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "The Upper Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Upper Floor room 2",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000017,
+            "name": "bone"
+          },
+          {
+            "id": 1000000018,
+            "name": "candle stub"
+          },
+          {
+            "id": 1000000020,
+            "name": "coin"
+          },
+          {
+            "id": 1000000016,
+            "name": "ledge"
+          },
+          {
+            "id": 1000000015,
+            "name": "pool"
+          },
+          {
+            "id": 1000000013,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000014,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000019,
+            "name": "shard of pottery"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor",
+        "resolved_by": "grammar",
+        "note": "into-the-upper-floor: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 the-way-down-is-off-room-two",
+      "player": "first",
+      "typed": "/move The Upper Floor room 2",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Upper Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Lower Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Upper Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000007,
+            "name": "The Upper Floor room 3",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000036,
+            "name": "bone"
+          },
+          {
+            "id": 1000000038,
+            "name": "coin"
+          },
+          {
+            "id": 1000000034,
+            "name": "crack"
+          },
+          {
+            "id": 1000000035,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000033,
+            "name": "pool"
+          },
+          {
+            "id": 1000000030,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000031,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000037,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000032,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor room 2",
+        "resolved_by": "grammar",
+        "note": "room-2: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 room-three",
+      "player": "first",
+      "typed": "/move The Upper Floor room 3",
+      "dump": {
+        "location": {
+          "id": 1000000007,
+          "name": "The Upper Floor room 3",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000006,
+            "name": "The Upper Floor room 2",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000008,
+            "name": "The Upper Floor room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000050,
+            "name": "bone"
+          },
+          {
+            "id": 1000000049,
+            "name": "candle stub"
+          },
+          {
+            "id": 1000000048,
+            "name": "crack"
+          },
+          {
+            "id": 1000000047,
+            "name": "pool"
+          },
+          {
+            "id": 1000000045,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000046,
+            "name": "rubble"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor room 3",
+        "resolved_by": "grammar",
+        "note": "room-3: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 room-four-is-the-last",
+      "player": "first",
+      "typed": "/move The Upper Floor room 4",
+      "dump": {
+        "location": {
+          "id": 1000000008,
+          "name": "The Upper Floor room 4",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000007,
+            "name": "The Upper Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000061,
+            "name": "bone"
+          },
+          {
+            "id": 1000000060,
+            "name": "ledge"
+          },
+          {
+            "id": 1000000057,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000058,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000059,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor room 4",
+        "resolved_by": "grammar",
+        "note": "room-4: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 back-to-room-three",
+      "player": "first",
+      "typed": "/move The Upper Floor room 3",
+      "dump": {
+        "location": {
+          "id": 1000000007,
+          "name": "The Upper Floor room 3",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000006,
+            "name": "The Upper Floor room 2",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000008,
+            "name": "The Upper Floor room 4",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000050,
+            "name": "bone"
+          },
+          {
+            "id": 1000000049,
+            "name": "candle stub"
+          },
+          {
+            "id": 1000000048,
+            "name": "crack"
+          },
+          {
+            "id": 1000000047,
+            "name": "pool"
+          },
+          {
+            "id": 1000000045,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000046,
+            "name": "rubble"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Upper Floor room 4 -> The Upper Floor room 3",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor room 3",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 back-to-the-way-down",
+      "player": "first",
+      "typed": "/move The Upper Floor room 2",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Upper Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Lower Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Upper Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000007,
+            "name": "The Upper Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000036,
+            "name": "bone"
+          },
+          {
+            "id": 1000000038,
+            "name": "coin"
+          },
+          {
+            "id": 1000000034,
+            "name": "crack"
+          },
+          {
+            "id": 1000000035,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000033,
+            "name": "pool"
+          },
+          {
+            "id": 1000000030,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000031,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000037,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000032,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Upper Floor room 3 -> The Upper Floor room 2",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor room 2",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 8 the-stair-down-kept-its-lock",
+      "player": "first",
+      "typed": "/move The Lower Floor",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Upper Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Lower Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Upper Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000007,
+            "name": "The Upper Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000036,
+            "name": "bone"
+          },
+          {
+            "id": 1000000038,
+            "name": "coin"
+          },
+          {
+            "id": 1000000034,
+            "name": "crack"
+          },
+          {
+            "id": 1000000035,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000033,
+            "name": "pool"
+          },
+          {
+            "id": 1000000030,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000031,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000037,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000032,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The way to The Lower Floor is locked. Open it before crossing or throwing anything through it. Nothing has changed.",
+        "understood": "move -> The Lower Floor",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 9 the-stair-key-opens-it",
+      "player": "first",
+      "typed": "/unlock The Lower Floor with stair key",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Upper Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000003,
+            "name": "The Lower Floor",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Upper Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000007,
+            "name": "The Upper Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000036,
+            "name": "bone"
+          },
+          {
+            "id": 1000000038,
+            "name": "coin"
+          },
+          {
+            "id": 1000000034,
+            "name": "crack"
+          },
+          {
+            "id": 1000000035,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000033,
+            "name": "pool"
+          },
+          {
+            "id": 1000000030,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000031,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000037,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000032,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You opened the way to The Lower Floor. You have not crossed it; you remain in The Upper Floor room 2.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> The Lower Floor",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 10 down-to-the-lower-floor",
+      "player": "first",
+      "typed": "/move The Lower Floor",
+      "dump": {
+        "location": {
+          "id": 1000000009,
+          "name": "The Lower Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000010,
+            "name": "The Lower Floor room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Upper Floor room 2",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000073,
+            "name": "bone"
+          },
+          {
+            "id": 1000000072,
+            "name": "candle stub"
+          },
+          {
+            "id": 1000000071,
+            "name": "pool"
+          },
+          {
+            "id": 1000000069,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000070,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000074,
+            "name": "shard of pottery"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Lower Floor",
+        "resolved_by": "grammar",
+        "note": "into-the-lower-floor: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 11 the-lower-floor-has-two-rooms",
+      "player": "first",
+      "typed": "/move The Lower Floor room 2",
+      "dump": {
+        "location": {
+          "id": 1000000010,
+          "name": "The Lower Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000009,
+            "name": "The Lower Floor room 1",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000084,
+            "name": "bat skull"
+          },
+          {
+            "id": 1000000085,
+            "name": "bone"
+          },
+          {
+            "id": 1000000086,
+            "name": "coin"
+          },
+          {
+            "id": 1000000083,
+            "name": "crack"
+          },
+          {
+            "id": 1000000081,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000082,
+            "name": "rubble"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Lower Floor room 2",
+        "resolved_by": "grammar",
+        "note": "lower-room-2: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 12 a-second-game-finds-the-floor-as-it-was-laid-out (second)",
+      "player": "second",
+      "typed": "/move The Upper Floor room 1",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "The Upper Floor room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Upper Floor room 2",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000093,
+            "name": "bone"
+          },
+          {
+            "id": 1000000094,
+            "name": "candle stub"
+          },
+          {
+            "id": 1000000096,
+            "name": "coin"
+          },
+          {
+            "id": 1000000092,
+            "name": "ledge"
+          },
+          {
+            "id": 1000000091,
+            "name": "pool"
+          },
+          {
+            "id": 1000000089,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000090,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000095,
+            "name": "shard of pottery"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Landing -> The Upper Floor room 1",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor room 1",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 13 and-the-same-way-down (second)",
+      "player": "second",
+      "typed": "/move The Upper Floor room 2",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Upper Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000009,
+            "name": "The Lower Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Upper Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000007,
+            "name": "The Upper Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000103,
+            "name": "bone"
+          },
+          {
+            "id": 1000000105,
+            "name": "coin"
+          },
+          {
+            "id": 1000000101,
+            "name": "crack"
+          },
+          {
+            "id": 1000000102,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000100,
+            "name": "pool"
+          },
+          {
+            "id": 1000000097,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000098,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000104,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000099,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Upper Floor room 1 -> The Upper Floor room 2",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Upper Floor room 2",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 14 still-locked-for-the-second-game (second)",
+      "player": "second",
+      "typed": "/move The Lower Floor room 1",
+      "dump": {
+        "location": {
+          "id": 1000000006,
+          "name": "The Upper Floor room 2",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000009,
+            "name": "The Lower Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000005,
+            "name": "The Upper Floor room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000007,
+            "name": "The Upper Floor room 3",
+            "detail": "realized"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000103,
+            "name": "bone"
+          },
+          {
+            "id": 1000000105,
+            "name": "coin"
+          },
+          {
+            "id": 1000000101,
+            "name": "crack"
+          },
+          {
+            "id": 1000000102,
+            "name": "pebble"
+          },
+          {
+            "id": 1000000100,
+            "name": "pool"
+          },
+          {
+            "id": 1000000097,
+            "name": "rock shelf"
+          },
+          {
+            "id": 1000000098,
+            "name": "rubble"
+          },
+          {
+            "id": 1000000104,
+            "name": "rusted hinge"
+          },
+          {
+            "id": 1000000099,
+            "name": "stalagmite"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The way to The Lower Floor room 1 is locked. Open it before crossing or throwing anything through it. Nothing has changed.",
+        "understood": "move -> The Lower Floor room 1",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

@@ -20,6 +20,7 @@ use crate::cast;
 use crate::danger;
 use crate::dialogue::sanitize;
 use crate::engine::Error;
+use crate::floor::{self, Floor};
 use crate::interior::{self, Place};
 use crate::kind;
 use crate::kit;
@@ -33,6 +34,7 @@ use crate::roll::{self, Seed};
 use crate::room::USE_KINDS;
 use crate::spot;
 use crate::stat_block;
+use crate::store;
 use crate::text::{is_blank, natural_key, ruby_downcase};
 use arc::Bound;
 use serde_json::{json, Map, Value};
@@ -1122,6 +1124,20 @@ impl Turn<'_, '_> {
     /// `#connect!`: one directed doorway, refused whole when its labels are
     /// not words the engine has (`UnusableExitLabel`).
     fn connect(&mut self, from: i64, to: i64, distance: &str, method: &str) -> Result<(), Error> {
+        self.connect_carrying(from, to, distance, method, Vec::new())
+            .map(|_| ())
+    }
+
+    /// `#connect!` with the columns a moved doorway carries (`carried`);
+    /// the doorway written, or none when it was already there.
+    fn connect_carrying(
+        &mut self,
+        from: i64,
+        to: i64,
+        distance: &str,
+        method: &str,
+        carried: Vec<(&'static str, Value)>,
+    ) -> Result<Option<i64>, Error> {
         let exists = self
             .m
             .records
@@ -1131,7 +1147,7 @@ impl Turn<'_, '_> {
             })
             .is_some();
         if exists {
-            return Ok(());
+            return Ok(None);
         }
         if !DISTANCES.contains(&distance)
             || crate::arrival::travel_minutes(distance, method).is_none()
@@ -1148,8 +1164,8 @@ impl Turn<'_, '_> {
         ];
         let time = super::super::travel_time(&values);
         values.push(("time_to_travel", time));
-        self.m.insert("location_connections", values)?;
-        Ok(())
+        values.extend(carried);
+        Ok(Some(id(&self.m.insert("location_connections", values)?)))
     }
 
     /// `#connect_exit!`.
@@ -1263,6 +1279,12 @@ impl Turn<'_, '_> {
     /// `Location::Interior.lay_out!` and `#open_the_way_in!`: a place's
     /// rooms and doorways, its footprint rolled first when it has none, and
     /// each room dealt its sort from `building`'s.
+    ///
+    /// A floor (a place with a `floors` row) is laid out by `floor` instead:
+    /// its own room count, danger and hazard, and its own kind when that is
+    /// a building's, whatever the model picked; and its way down, the
+    /// doorway to the floor its row names, is opened onto the room rolled
+    /// for it.
     fn lay_out(
         &mut self,
         location: i64,
@@ -1277,20 +1299,42 @@ impl Turn<'_, '_> {
             .select("locations", |l| int(l, "story_id") == Some(story))
             .len() as i64;
         let name = string(&row, "name").to_string();
-        let layout = interior::lay_out(
-            &Place {
-                story_id: story,
-                id: location,
-                name: &name,
-                clock: self.m.clock(),
-                existing_locations: existing,
-                footprint: int(&row, "width").zip(int(&row, "depth")),
-                kind: building,
-                density: text(&row, "density"),
+        let floor_row = self
+            .m
+            .records
+            .first(store::FLOORS, |floor| {
+                int(floor, "location_id") == Some(location)
+            })
+            .cloned();
+        let own_kind = text(&row, "kind").filter(|word| kind::buildings().contains(word));
+        let place = Place {
+            story_id: story,
+            id: location,
+            name: &name,
+            clock: self.m.clock(),
+            existing_locations: existing,
+            footprint: int(&row, "width").zip(int(&row, "depth")),
+            kind: match floor_row {
+                Some(_) => own_kind.or(building),
+                None => building,
             },
-            None,
-            parameters,
-        );
+            density: text(&row, "density"),
+        };
+        let (layout, way_down) = match &floor_row {
+            Some(floor_row) => {
+                let laid = floor::lay_out(
+                    &place,
+                    &Floor {
+                        rooms: int(floor_row, "rooms").unwrap_or_default(),
+                        danger: text(floor_row, "danger"),
+                        hazard: text(floor_row, "hazard"),
+                        down: int(floor_row, "down_location_id").is_some(),
+                    },
+                );
+                (laid.layout, laid.way_down)
+            }
+            None => (interior::lay_out(&place, None, parameters), None),
+        };
         self.m.update(
             "locations",
             location,
@@ -1343,12 +1387,31 @@ impl Turn<'_, '_> {
             values.push(("time_to_travel", time));
             self.m.insert("location_connections", values)?;
         }
-        self.open_the_way_in(location, &rooms)
+        let way_down = way_down
+            .zip(
+                floor_row
+                    .as_ref()
+                    .and_then(|row| int(row, "down_location_id")),
+            )
+            .map(|(index, down)| (rooms[index], down));
+        self.open_the_way_in(location, &rooms, way_down)
     }
 
     /// `#open_the_way_in!`: every doorway that led to the building now leads
-    /// to the first of its doorstep rooms with a doorway to spare.
-    fn open_the_way_in(&mut self, location: i64, rooms: &[i64]) -> Result<(), Error> {
+    /// to the first of its doorstep rooms with a doorway to spare, keeping
+    /// what it carried: its barrier and key, the hazard on each side of it,
+    /// and every game's passage opened through it and toll paid crossing it.
+    ///
+    /// `way_down` is a floor's way-down room and the place its way down
+    /// leads to: the doorway to that place, or to a room of it, opens onto
+    /// that room, and never onto a doorstep room; with no doorway to spare
+    /// there it is dropped, as any other doorway with nowhere to land is.
+    fn open_the_way_in(
+        &mut self,
+        location: i64,
+        rooms: &[i64],
+        way_down: Option<(i64, i64)>,
+    ) -> Result<(), Error> {
         let doorstep: Vec<i64> = rooms
             .iter()
             .enumerate()
@@ -1362,6 +1425,7 @@ impl Turn<'_, '_> {
                         == Some(0)
             })
             .map(|(_, room)| *room)
+            .filter(|room| way_down.is_none_or(|(down_room, _)| *room != down_room))
             .collect();
         if doorstep.is_empty() {
             return Ok(());
@@ -1386,6 +1450,15 @@ impl Turn<'_, '_> {
             }
         }
         for (neighbour, distance, method) in ways {
+            let sides = [(location, neighbour), (neighbour, location)]
+                .map(|(from, to)| self.doorway_side(from, to, (to, from)));
+            for toll in sides.iter().flat_map(|side| &side.tolls) {
+                self.m.update(
+                    "playthrough_tolls",
+                    *toll,
+                    vec![("location_connection_id", Value::Null)],
+                )?;
+            }
             let doomed: Vec<i64> = self
                 .m
                 .records
@@ -1398,21 +1471,129 @@ impl Turn<'_, '_> {
                 .map(|edge| id(edge))
                 .collect();
             for edge in doomed {
+                for passage in self
+                    .m
+                    .records
+                    .select("playthrough_passages", |passage| {
+                        int(passage, "location_connection_id") == Some(edge)
+                    })
+                    .into_iter()
+                    .map(id)
+                    .collect::<Vec<_>>()
+                {
+                    self.m.records.remove("playthrough_passages", passage);
+                }
                 self.m.store.delete("location_connections", edge)?;
                 self.m.records.remove("location_connections", edge);
             }
-            let Some(room) = doorstep
-                .iter()
-                .copied()
-                .find(|room| self.exits_from(*room) < MAX_EXITS)
-            else {
+            let down = way_down
+                .filter(|(_, down)| {
+                    neighbour == *down
+                        || self
+                            .m
+                            .records
+                            .find("locations", neighbour)
+                            .and_then(|far| int(far, "parent_location_id"))
+                            == Some(*down)
+                })
+                .map(|(room, _)| room);
+            let room = match down {
+                Some(room) => Some(room).filter(|room| self.exits_from(*room) < MAX_EXITS),
+                None => doorstep
+                    .iter()
+                    .copied()
+                    .find(|room| self.exits_from(*room) < MAX_EXITS),
+            };
+            let Some(room) = room else {
                 continue;
             };
-            self.connect(room, neighbour, &distance, &method)?;
-            self.connect(neighbour, room, &distance, &method)?;
+            let [outward, inward] = sides;
+            for ((from, to), side) in [((room, neighbour), outward), ((neighbour, room), inward)] {
+                let Some(written) =
+                    self.connect_carrying(from, to, &distance, &method, side.values)?
+                else {
+                    continue;
+                };
+                for mut opening in side.passages {
+                    opening.push(("location_connection_id", Value::from(written)));
+                    self.m.insert("playthrough_passages", opening)?;
+                }
+                for toll in side.tolls {
+                    self.m.update(
+                        "playthrough_tolls",
+                        toll,
+                        vec![("location_connection_id", Value::from(written))],
+                    )?;
+                }
+            }
         }
         Ok(())
     }
+
+    /// One side of a doorway about to be moved, `from` to `to`: its barrier,
+    /// its key, its hazard, and the passages and tolls of every game that
+    /// went through it. A side that was never written is made from the way
+    /// back (`back`), with no hazard and nothing gone through it.
+    fn doorway_side(&self, from: i64, to: i64, back: (i64, i64)) -> Side {
+        let row = |(from, to): (i64, i64)| {
+            self.m
+                .records
+                .first("location_connections", |edge| {
+                    int(edge, "location_id") == Some(from)
+                        && int(edge, "connected_location_id") == Some(to)
+                })
+                .cloned()
+        };
+        let own = row((from, to));
+        let Some(source) = own.clone().or_else(|| row(back)) else {
+            return Side::default();
+        };
+        let mut columns = vec!["barrier", "key_template_id"];
+        if own.is_some() {
+            columns.extend(["hazard", "hazard_die"]);
+        }
+        let values = columns
+            .into_iter()
+            .map(|column| (column, source.get(column).cloned().unwrap_or(Value::Null)))
+            .collect();
+        let Some(own) = own else {
+            return Side {
+                values,
+                ..Side::default()
+            };
+        };
+        let through = |table: &str| {
+            self.m.records.select(table, |row| {
+                int(row, "location_connection_id") == Some(id(&own))
+            })
+        };
+        Side {
+            values,
+            passages: through("playthrough_passages")
+                .into_iter()
+                .map(|passage| {
+                    super::super::PASSAGE_COLUMNS
+                        .iter()
+                        .map(|column| {
+                            (
+                                *column,
+                                passage.get(*column).cloned().unwrap_or(Value::Null),
+                            )
+                        })
+                        .collect()
+                })
+                .collect(),
+            tolls: through("playthrough_tolls").into_iter().map(id).collect(),
+        }
+    }
+}
+
+/// One side of a doorway as `#open_the_way_in!` moves it onto a room.
+#[derive(Default)]
+struct Side {
+    values: Vec<(&'static str, Value)>,
+    passages: Vec<Vec<(&'static str, Value)>>,
+    tolls: Vec<i64>,
 }
 
 /// A value as Ruby's `to_s` writes it: a string itself, null empty.

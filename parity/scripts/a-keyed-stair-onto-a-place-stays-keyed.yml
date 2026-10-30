@@ -1,0 +1,67 @@
+---
+story: Two Floors and a Key
+steps:
+- id: take-the-cellar-key
+  type: "/take cellar key"
+  expect:
+    location: The Landing (realized)
+    carrying:
+    - cellar key
+- id: the-cellar-stair-is-locked
+  type: "/move The Old Cellar"
+  expect:
+    location: The Landing (realized)
+    refused: true
+    offers: locked
+    changed: false
+- id: the-cellar-key-opens-it
+  type: "/unlock The Old Cellar with cellar key"
+  expect:
+    location: The Landing (realized)
+    changed: true
+    refused: false
+- id: down-into-the-cellar
+  type: "/move The Old Cellar"
+  browser:
+    token: into-the-cellar
+    realizes: The Old Cellar
+    replies:
+    - purpose: location
+      content:
+        description: A low vaulted cellar, damp and close.
+        lore: The cellar was dug before the landing was built.
+        place_kind: house
+    - purpose: location
+      content:
+        description: The foot of the narrow stair, its last step gone.
+        lore: The bottom step broke long ago.
+        items: []
+        people: []
+    - purpose: arrival
+      unavailable: true
+  expect:
+    location: The Old Cellar room 1 (realized)
+    exits_include:
+    - The Landing (realized)
+    hazards: 1
+    refused: false
+- id: climbing-back-up-is-free
+  type: "/move The Landing"
+  expect:
+    location: The Landing (realized)
+    hazards: 0
+    refused: false
+- id: and-down-again-drops-again
+  type: "/move The Old Cellar room 1"
+  expect:
+    location: The Old Cellar room 1 (realized)
+    hazards: 1
+    refused: false
+- id: a-second-game-finds-it-locked
+  player: second
+  type: "/move The Old Cellar room 1"
+  expect:
+    location: The Landing (realized)
+    refused: true
+    offers: locked
+    changed: false

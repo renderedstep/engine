@@ -1,0 +1,540 @@
+{
+  "script": "a-keyed-stair-onto-a-place-stays-keyed",
+  "story": "Two Floors and a Key",
+  "steps": [
+    {
+      "step": "step 1 take-the-cellar-key",
+      "player": "first",
+      "typed": "/take cellar key",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000004,
+            "name": "The Old Cellar",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Upper Floor",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "cellar key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "took: cellar key (was lying in The Landing, now carried by Odile)",
+        "refused": false,
+        "offers": null,
+        "understood": "take -> cellar key",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 2 the-cellar-stair-is-locked",
+      "player": "first",
+      "typed": "/move The Old Cellar",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000004,
+            "name": "The Old Cellar",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Upper Floor",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "cellar key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The way to The Old Cellar is locked. Open it before crossing or throwing anything through it. Nothing has changed.",
+        "understood": "move -> The Old Cellar",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 3 the-cellar-key-opens-it",
+      "player": "first",
+      "typed": "/unlock The Old Cellar with cellar key",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000004,
+            "name": "The Old Cellar",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Upper Floor",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "cellar key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "You opened the way to The Old Cellar. You have not crossed it; you remain in The Landing.",
+        "refused": false,
+        "offers": null,
+        "understood": "use -> The Old Cellar",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 4 down-into-the-cellar",
+      "player": "first",
+      "typed": "/move The Old Cellar",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "The Old Cellar room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Old Cellar room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000008,
+            "name": "The Old Cellar room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000017,
+            "name": "bowl"
+          },
+          {
+            "id": 1000000016,
+            "name": "cupboard"
+          },
+          {
+            "id": 1000000019,
+            "name": "dead fly"
+          },
+          {
+            "id": 1000000020,
+            "name": "feather"
+          },
+          {
+            "id": 1000000014,
+            "name": "shelves"
+          },
+          {
+            "id": 1000000018,
+            "name": "spool of thread"
+          },
+          {
+            "id": 1000000013,
+            "name": "table"
+          },
+          {
+            "id": 1000000015,
+            "name": "windowsill"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "cellar key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "The browser turn completed.",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Old Cellar",
+        "resolved_by": "grammar",
+        "note": "into-the-cellar: completed",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 1,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 1.5,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 5 climbing-back-up-is-free",
+      "player": "first",
+      "typed": "/move The Landing",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The Old Cellar room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Upper Floor",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000003,
+            "name": "stair key"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "cellar key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Old Cellar room 1 -> The Landing",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Landing",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 6 and-down-again-drops-again",
+      "player": "first",
+      "typed": "/move The Old Cellar room 1",
+      "dump": {
+        "location": {
+          "id": 1000000005,
+          "name": "The Old Cellar room 1",
+          "detail": "realized"
+        },
+        "storey": 0,
+        "exits": [
+          {
+            "id": 1000000001,
+            "name": "The Landing",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000006,
+            "name": "The Old Cellar room 2",
+            "detail": "stub"
+          },
+          {
+            "id": 1000000008,
+            "name": "The Old Cellar room 4",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000017,
+            "name": "bowl"
+          },
+          {
+            "id": 1000000016,
+            "name": "cupboard"
+          },
+          {
+            "id": 1000000019,
+            "name": "dead fly"
+          },
+          {
+            "id": 1000000020,
+            "name": "feather"
+          },
+          {
+            "id": 1000000014,
+            "name": "shelves"
+          },
+          {
+            "id": 1000000018,
+            "name": "spool of thread"
+          },
+          {
+            "id": 1000000013,
+            "name": "table"
+          },
+          {
+            "id": 1000000015,
+            "name": "windowsill"
+          }
+        ],
+        "carrying": [
+          {
+            "id": 1000000004,
+            "name": "cellar key"
+          }
+        ],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 17,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": true,
+        "change": "moved: The Landing -> The Old Cellar room 1",
+        "refused": false,
+        "offers": null,
+        "understood": "move -> The Old Cellar room 1",
+        "resolved_by": "grammar",
+        "note": "the world: drop on the way from The Landing into The Old Cellar room 1 cost Odile 1 hit point (the way down is further than it looks from the top); Odile is hurt (17 of 18)",
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 1,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    },
+    {
+      "step": "step 7 a-second-game-finds-it-locked (second)",
+      "player": "second",
+      "typed": "/move The Old Cellar room 1",
+      "dump": {
+        "location": {
+          "id": 1000000001,
+          "name": "The Landing",
+          "detail": "realized"
+        },
+        "storey": null,
+        "exits": [
+          {
+            "id": 1000000005,
+            "name": "The Old Cellar room 1",
+            "detail": "realized"
+          },
+          {
+            "id": 1000000002,
+            "name": "The Upper Floor",
+            "detail": "stub"
+          }
+        ],
+        "here": [
+          {
+            "id": 1000000022,
+            "name": "cellar key"
+          },
+          {
+            "id": 1000000021,
+            "name": "stair key"
+          }
+        ],
+        "carrying": [],
+        "present": [],
+        "foes": [],
+        "inscription": [],
+        "hp": 18,
+        "hp_of": {},
+        "abilities": {
+          "strength": 12,
+          "dexterity": 12,
+          "will": 12
+        },
+        "dead": false,
+        "changed": false,
+        "change": null,
+        "refused": true,
+        "offers": "The way to The Old Cellar room 1 is locked. Open it before crossing or throwing anything through it. Nothing has changed.",
+        "understood": "move -> The Old Cellar room 1",
+        "resolved_by": "grammar",
+        "note": null,
+        "drifts": 0,
+        "blows": 0,
+        "hazards": 0,
+        "quest": {},
+        "volitions": 0,
+        "acts": 0,
+        "ending": "none",
+        "ending_words": null,
+        "scheduled": 0,
+        "fired": 0,
+        "elapsed_minutes": 0.0,
+        "shown": null
+      }
+    }
+  ]
+}

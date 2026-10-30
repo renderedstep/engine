@@ -435,9 +435,17 @@ INSERT INTO schema_migrations VALUES('20250823023925');
 INSERT INTO schema_migrations VALUES('20250822184651');
 INSERT INTO schema_migrations VALUES('20250822184650');
 INSERT INTO schema_migrations VALUES('20250822184649');
+INSERT INTO schema_migrations VALUES('20261030200000');
 CREATE TABLE IF NOT EXISTS "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO ar_internal_metadata VALUES('environment','test','2026-10-30 10:43:42.317995','2026-10-30 10:43:42.317999');
 INSERT INTO ar_internal_metadata VALUES('schema_sha1','ebdda9bf12dc2d5493a426a2e64de0ed551652b9','2026-10-30 10:43:42.324377','2026-10-30 10:43:42.324380');
+CREATE TABLE IF NOT EXISTS "floors" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "location_id" integer NOT NULL, "rooms" integer NOT NULL, "danger" varchar, "hazard" varchar, "down_location_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_ce8b005cb2"
+FOREIGN KEY ("location_id")
+  REFERENCES "locations" ("id")
+ ON DELETE CASCADE, CONSTRAINT "fk_rails_8a0268155a"
+FOREIGN KEY ("down_location_id")
+  REFERENCES "locations" ("id")
+ ON DELETE SET NULL);
 PRAGMA writable_schema=ON;
 CREATE TABLE IF NOT EXISTS sqlite_sequence(name,seq);
 DELETE FROM sqlite_sequence;
@@ -648,5 +656,7 @@ CREATE INDEX "index_world_events_on_story_id" ON "world_events" ("story_id");
 CREATE INDEX "index_world_events_on_world_mechanic_id" ON "world_events" ("world_mechanic_id");
 CREATE UNIQUE INDEX "index_world_mechanics_on_story_id_and_name" ON "world_mechanics" ("story_id", "name");
 CREATE INDEX "index_world_mechanics_on_story_id" ON "world_mechanics" ("story_id");
+CREATE UNIQUE INDEX "index_floors_on_location_id" ON "floors" ("location_id");
+CREATE INDEX "index_floors_on_down_location_id" ON "floors" ("down_location_id");
 PRAGMA writable_schema=OFF;
 COMMIT;
